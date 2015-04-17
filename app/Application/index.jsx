@@ -13,12 +13,6 @@ var mui = require('material-ui');
 const TopNav = require('../TopNav');
 const SideNav = require('../SideNav');
 
-
-let menuItems = [
-    {route: 'home', text: 'Get Started'},
-    {route: 'todo', text: 'TODO'}
-];
-
 var Application = React.createClass({
 
     getInitialState() {
