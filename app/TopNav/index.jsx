@@ -8,11 +8,9 @@ var React      = require('react'),
 
 module.exports = React.createClass({
     render: function() {
-        var menuButton = <IconButton iconClassName="icon-navigation-black icon-navigation-black-ic_menu_black_24dp"/>;
-
         return <Paper className='topNav' rounded={false}>
             <mui.AppBar
-                iconElementLeft={menuButton}
+                iconClassNameLeft="icon-navigation-black icon-navigation-black-ic_menu_black_24dp"
                 title='RhinoBird'
                 zDepth={0} />
         </Paper>;
