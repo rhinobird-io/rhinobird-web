@@ -10,8 +10,8 @@ module.exports = React.createClass({
     render: function() {
         return <Paper className='topNav' rounded={false}>
             <mui.AppBar
-                iconClassNameLeft="icon-navigation-black icon-navigation-black-ic_menu_black_24dp"
-                title='RhinoBird'
+                onMenuIconButtonTouchTap={this.props.onMenuIconButtonTouchTap}
+                title={this.props.title}
                 zDepth={0} />
         </Paper>;
     }

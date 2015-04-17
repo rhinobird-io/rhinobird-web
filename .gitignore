@@ -2,3 +2,4 @@
 /build
 .vagrant
 .idea/
+npm-debug.log

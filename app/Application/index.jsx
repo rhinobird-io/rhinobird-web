@@ -1,7 +1,5 @@
 var React = require("react");
-var StateFromStoreMixin = require("items-store/StateFromStoresMixin");
 var RouteHandler = require("react-router").RouteHandler;
-var MainMenu = require("./MainMenu.jsx");
 var injectTapEventPlugin = require("react-tap-event-plugin");
 //Needed for onTouchTap
 //Can go away when react 1.0 release
@@ -12,30 +10,36 @@ injectTapEventPlugin();
 require("./style.less");
 
 var mui = require('material-ui');
-var TopNav = require('../TopNav');
+const TopNav = require('../TopNav');
+const SideNav = require('../SideNav');
 
+
+let menuItems = [
+    {route: 'home', text: 'Get Started'},
+    {route: 'todo', text: 'TODO'}
+];
 
 var Application = React.createClass({
-	mixins: [StateFromStoreMixin],
-	statics: {
-		getState: function(stores, params) {
-			var transition = stores.Router.getItem("transition");
-			return {
-				loading: !!transition
-			};
-		}
-	},
-	render: function() {
-		return <div>
-            <TopNav />
-			<RouteHandler />
-		</div>;
-	},
-	update: function() {
-		var { stores } = this.context;
-		Object.keys(stores).forEach(function(key) {
-			stores[key].update();
-		});
-	}
+
+    getInitialState() {
+      return {
+          title: 'Home'
+      }
+    },
+    render() {
+        return <div>
+            <TopNav onMenuIconButtonTouchTap={this._onMenuIconButtonTouch} title={this.state.title}/>
+            <SideNav ref='sideNav' onLeftNavChange={this._onLeftNavChange}/>
+            <RouteHandler />
+        </div>;
+    },
+    _onMenuIconButtonTouch() {
+        this.refs.sideNav.toggle();
+    },
+    _onLeftNavChange(title){
+        this.setState({
+            title: title
+        })
+    }
 });
 module.exports = Application;
