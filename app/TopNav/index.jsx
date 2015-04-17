@@ -11,6 +11,7 @@ module.exports = React.createClass({
         return <Paper className='topNav' rounded={false}>
             <mui.AppBar
                 onMenuIconButtonTouchTap={this.props.onMenuIconButtonTouchTap}
+                iconClassNameLeft="icon-navigation-white icon-navigation-white-ic_menu_white_24dp"
                 title={this.props.title}
                 zDepth={0} />
         </Paper>;
