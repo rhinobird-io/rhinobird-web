@@ -10,7 +10,7 @@ $.ajaxSetup({
     },
     processData: false
 });
-//require('jquery-mockjax');
+require('jquery-mockjax');
 
 var async = require("async");
 var React = require("react");

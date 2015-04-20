@@ -3,9 +3,21 @@ const React = require("react/addons");
 require('./style.less');
 
 const mui = require('material-ui');
+const LoginAction = require('../../actions/LoginAction');
+
+if ($.mockjax) {
+    $.mockjax({
+        url: '/api/login',
+        type: 'POST',
+        responseText: {"company": "Works Applications", "name": "Admin", role:'operator'}
+    });
+}
 
 var Login = React.createClass({
     mixins: [React.addons.LinkedStateMixin],
+    contextTypes: {
+        router: React.PropTypes.func.isRequired
+    },
     getInitialState() {
         return {
             email: '',
@@ -16,9 +28,11 @@ var Login = React.createClass({
         this.setState({
             error: false
         });
-        $.post('/login',{email:this.state.email, password:this.state.password}).then((data)=>{
-            console.log(data);
+        $.post('/api/login',{email:this.state.email, password:this.state.password}).then((data)=>{
+            LoginAction.updateLogin(data);
+            this.context.router.transitionTo(this.context.router.getCurrentQuery().target || "/");
         }).fail(()=>{
+            LoginAction.updateLogin(undefined);
             this.setState({
                 error: true
             });

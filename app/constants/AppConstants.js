@@ -3,9 +3,7 @@ const keyMirror = require('react/lib/keyMirror');
 module.exports = {
 
   ActionTypes: keyMirror({
-    ADD_TASK: null,
-    LOGIN_SUCCESS: null,
-    LOGIN_FAIL: null
+    LOGIN_SUCCESS: null
   }),
 
   EmployeeActionTypes: keyMirror({
