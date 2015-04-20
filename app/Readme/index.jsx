@@ -1,6 +1,9 @@
 var React = require("react");
 
 var Readme = React.createClass({
+    componentDidMount() {
+        this.props.setTitle("Read Me");
+    },
 	render: function() {
 		var style = {
 			default: {

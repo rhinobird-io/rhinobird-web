@@ -33,6 +33,5 @@ module.exports = React.createClass({
 
     _onLeftNavChange: function(e, key, payload) {
         this.transitionTo(payload.route);
-        this.props.onLeftNavChange(payload.text);
     }
 });

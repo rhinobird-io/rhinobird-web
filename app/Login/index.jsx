@@ -12,7 +12,9 @@ var mui = require('material-ui');
 
 var Login = React.createClass({
 
-
+    componentDidMount() {
+      this.props.setTitle("Login");
+    },
     render() {
         return <div>
             aa

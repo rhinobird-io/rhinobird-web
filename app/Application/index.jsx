@@ -16,24 +16,24 @@ const SideNav = require('../SideNav');
 var Application = React.createClass({
 
     getInitialState() {
-      return {
-          title: 'Home'
-      }
+        return {
+            title: ''
+        }
     },
     render() {
         return <div>
             <TopNav onMenuIconButtonTouchTap={this._onMenuIconButtonTouch} title={this.state.title}/>
-            <SideNav ref='sideNav' onLeftNavChange={this._onLeftNavChange}/>
-            <RouteHandler />
+            <SideNav ref='sideNav' />
+            <RouteHandler setTitle={this._setTitle}/>
         </div>;
+    },
+    _setTitle(title) {
+        this.setState({
+            title: title
+        });
     },
     _onMenuIconButtonTouch() {
         this.refs.sideNav.toggle();
-    },
-    _onLeftNavChange(title){
-        this.setState({
-            title: title
-        })
     }
 });
 module.exports = Application;
