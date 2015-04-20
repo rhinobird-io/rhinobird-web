@@ -11,17 +11,11 @@ if(!Object.assign)
 // export routes
 module.exports = (
     <Route>
-        <Route name="login" path="/login" handler={require("react-proxy!./Login")}></Route>
-        <Route name="app" path="/" handler={require("./Application")}>
-            <Route name="some-page" path="/some-page" handler={require("react-proxy!./SomePage")} />
-            <Route name="readme" path="/readme" handler={require("react-proxy!./Readme")} />
-            <Route name="todo" path="/todo" handler={require("./TodoPage")} >
-                <Route name="todolist" path="list/:list" handler={require("./TodoPage/TodoList")} />
-                <Route name="todoitem" path="item/:item" handler={require("./TodoPage/TodoItem")} />
-            </Route>
-            <Route name="home" path="/home" handler={require("./Home")} />
-            <DefaultRoute handler={require("./Home")} />
-            <NotFoundRoute handler={require("./NotFound")} />
+        <Route name="signin" path="/signin" handler={require("react-proxy!./components/Signin")}></Route>
+        <Route name="app" handler={require("./components/Application")}>
+            <Route name="home" path="/" handler={require("./components/Home")} />
+            <DefaultRoute handler={require("./components/Home")} />
+            <NotFoundRoute handler={require("./components/NotFound")} />
         </Route>
     </Route>
 );
