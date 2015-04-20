@@ -24,6 +24,9 @@ var Login = React.createClass({
             password: ''
         }
     },
+    componentWillMount(){
+      this.props.setTitle("RhinoBird");
+    },
     _login(){
         this.setState({
             error: false

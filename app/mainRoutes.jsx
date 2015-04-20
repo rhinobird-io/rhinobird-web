@@ -11,8 +11,8 @@ if(!Object.assign)
 // export routes
 module.exports = (
     <Route>
-        <Route name="signin" path="/signin" handler={require("react-proxy!./components/Signin")}></Route>
         <Route name="app" handler={require("./components/Application")}>
+            <Route name="signin" path="/signin" handler={require("react-proxy!./components/Signin")}></Route>
             <Route name="home" path="/" handler={require("./components/Home")} />
             <DefaultRoute handler={require("./components/Home")} />
             <NotFoundRoute handler={require("./components/NotFound")} />
