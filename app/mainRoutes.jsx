@@ -14,6 +14,11 @@ module.exports = (
         <Route name="app" handler={require("./components/Application")}>
             <Route name="signin" path="/signin" handler={require("react-proxy!./components/Signin")}></Route>
             <Route name="home" path="/" handler={require("./components/Home")} />
+            <Route name="calendar" path="/calendar" handler={require("react-proxy!./components/Calendar")}>
+                <Route name="create-event" path="create-event" handler={require("./components/Calendar/CreateEvent")} />
+                <Route name="event-list" path="event-list" handler={require("./components/Calendar/EventList")} />
+                <DefaultRoute handler={require("./components/Calendar/EventList")} />
+            </Route>
             <DefaultRoute handler={require("./components/Home")} />
             <NotFoundRoute handler={require("./components/NotFound")} />
         </Route>

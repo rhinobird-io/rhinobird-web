@@ -15,7 +15,8 @@ module.exports = React.createClass({
     render: function() {
         var menuItems = [
             {route: 'home', text: 'Home'},
-            {route: 'readme', text: 'Readme'}
+            {route: 'readme', text: 'Readme'},
+            {route: 'calendar', text: 'Calendar'}
         ];
 
         return <LeftNav
