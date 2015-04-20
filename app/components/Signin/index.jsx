@@ -27,7 +27,8 @@ var Login = React.createClass({
     componentWillMount(){
       this.props.setTitle("RhinoBird");
     },
-    _login(){
+    _login(e){
+        e.preventDefault();
         this.setState({
             error: false
         });
@@ -43,15 +44,15 @@ var Login = React.createClass({
     },
     render() {
         return <mui.Paper zDepth={1} className="loginForm">
-            <div className="container">
+            <form className="container" onSubmit={this._login}>
                 <div className="mui-font-style-title">Sign in</div>
-                <mui.TextField hintText='Email' valueLink={this.linkState('email')} />
+                <mui.TextField hintText='Email' valueLink={this.linkState('email')} autofocus/>
                 <mui.TextField hintText='Password' type="password" valueLink={this.linkState('password')}
                     errorText={this.state.error? 'Email or password incorrect.' : undefined}/>
                 <div className="rightButton">
-                    <mui.RaisedButton label="Sign in" primary={true} onClick={this._login}/>
+                    <mui.RaisedButton label="Sign in" primary={true} onClick={this._login} type="submit"/>
                 </div>
-            </div>
+            </form>
         </mui.Paper>;
     }
 });
