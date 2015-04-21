@@ -41,7 +41,7 @@
     "less-loader": "^2.0.0",
     "markdown-loader": "^0.1.2",
     "material-design-icons": "^1.0.1",
-    "material-ui": "^0.7.3",
+    "material-ui": "git://github.com/rhinobird-io/material-ui.git#master",
     "moment": "^2.10.2",
     "null-loader": "^0.1.0",
     "numeral": "^1.5.3",
