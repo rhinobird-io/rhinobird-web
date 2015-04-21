@@ -50,7 +50,7 @@ module.exports = React.createClass({
             }
         ];
         let header = <div className='header'>
-            <Member member={this.state.user} />
+            <Member member={this.state.user}/>
             <DropDownIcon
                 onChange={(e, key, payload)=> {
                     this.refs.leftNav.close();

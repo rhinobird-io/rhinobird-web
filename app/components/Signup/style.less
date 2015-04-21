@@ -1,0 +1,31 @@
+@import "~material-ui/src/less/variables/colors.less";
+
+
+.loginForm {
+  position: absolute;
+  width: 300px;
+  top: 100px;
+  left: 50%;
+  margin-left: -150px;
+  background-color: @grey-50;
+  .container {
+    padding: 1.5em;
+  }
+}
+.rightButton{
+  margin-top: 1em;
+  text-align: right;
+}
+
+.uniqueNameField {
+  position: relative;
+  .mui-text-field-hint, input {
+    padding-left: 1em;
+  }
+
+  span {
+    position:absolute;
+    top: 14px;
+    font-size: 16px;
+  }
+}
