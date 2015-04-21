@@ -2,10 +2,14 @@
 
 var React = require("react");
 var ReactStyle = require("react-style");
-var HighLight = require("highlight");
-var Marked = require('marked');
+var HighLight = require("highlight.js");
+var Marked = require("marked");
 
 export default React.createClass({
+	getInitialState: function() {
+		return {};
+	},
+
 	stripTags(value) {
 		return value.replace(/&/g, "&amp;").replace(/</g, "&lt;");
 	},
@@ -23,9 +27,7 @@ export default React.createClass({
 	},
 
 	_reserve(value, regex, tag) {
-		this.setState({
-			tag: value.match(regex).map(t => t.replace(regex, "$2"))
-		});
+		this.state[tag] = (value.match(regex) || []).map(t => t.replace(regex, "$2"))
 		return value.replace(regex, "$1<" + tag + "></" + tag + ">");
 	},
 
@@ -47,7 +49,7 @@ export default React.createClass({
 	_insert(value, tag, transform) {
 		let root = document.createElement("span");
 		root.innerHTML = value;
-		let list = root.querySelector(tag);
+		let list = root.querySelector(tag) || [];
 		for (let i = 0; i < list.length; i++) {
 			let item = this.state[tag][i];
 			root.replaceChild(transform(item), list[i]);
@@ -60,14 +62,14 @@ export default React.createClass({
 	},
 
 	insertAt(value) {
-		return _insert(value, "at", item => {
+		return this._insert(value, "at", item => {
 			let url = "#/member/" + item.substr(1);
 			return this.linkElement(url, item);
 		});
 	},
 
 	insertSlash(value) {
-		return _insert(value, "slash", item => {
+		return this._insert(value, "slash", item => {
 			let tokens = item.substr(1).split(":");
 			let plugin = tokens[0].toLowerCase();
 			let arg = tokens[1] || "";
@@ -76,7 +78,9 @@ export default React.createClass({
 				let url = "https://46.137.243.49:5151/index.html#" + arg + "@" + user;
 				return this.linkElement(url, item);
 			} else if (plugin === "file") {
-				return <FileDisplay fileId={arg}></FileDisplay>;
+				// TODO
+				// return <FileDisplay fileId={arg}></FileDisplay>;
+				return <span>Not implemented</span>;
 			} else {
 				let url = "/" + plugin + "/cmd/" + arg;
 				return this.linkElement(url, item);
@@ -85,7 +89,7 @@ export default React.createClass({
 	},
 
 	insertEmail(value) {
-		return _insert(value, "email", item => {
+		return this._insert(value, "email", item => {
 			let url = "mailto:" + item;
 			return this.linkElement(url, item);
 		});
@@ -106,6 +110,6 @@ export default React.createClass({
 		for (let i = 0; i < handlers.length; i++) {
 			value = handlers[i](value);
 		}
-		return <span styles={styles.wrapper}>{value}</span>;
+		return <span styles={styles.wrapper} dangerouslySetInnerHTML={{__html: value}}></span>;
 	}
 });
