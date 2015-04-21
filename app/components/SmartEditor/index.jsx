@@ -1,3 +1,7 @@
+require("./style.less");
+
 export default {
-	SmartDisplay: require("./SmartDisplay")
+  SmartEditor: require("./SmartEditor"),
+  SmartDisplay: require("./SmartDisplay"),
+  SmartPreview: require("./SmartPreview")
 };
