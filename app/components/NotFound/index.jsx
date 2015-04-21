@@ -4,6 +4,9 @@ var React = require("react");
 require('./style.less');
 
 module.exports = React.createClass({
+    componentDidMount(){
+      this.props.setTitle("Not Found");
+    },
 	render: function() {
 		return <div className="notFound">
             <div>
