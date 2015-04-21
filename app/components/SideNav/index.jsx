@@ -62,7 +62,6 @@ module.exports = React.createClass({
         </div>;
         var menuItems = [
             {route: 'home', text: 'Home'},
-            {route: 'readme', text: 'Readme'},
             {route: 'calendar', text: 'Calendar'}
         ];
 
