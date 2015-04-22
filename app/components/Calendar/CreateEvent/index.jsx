@@ -1,34 +1,28 @@
 var React        = require("react"),
     mui          = require('material-ui'),
-    Dialog       = mui.Dialog,
     RaisedButton = mui.RaisedButton,
-    TextField    = mui.TextField;
-
-var RepeatedEventModal = React.createClass({
-    render() {
-        return (
-            <Dialog {...this.props} title="Repeated Information">
-
-            </Dialog>
-        );
-    }
-});
+    TextField    = mui.TextField,
+    RepeatedEventModal = require("./RepeatedEventModal.jsx");
 
 module.exports = React.createClass({
     _handleTouchTap() {
         this.refs.repeatedEventModal.show();
     },
-    render: function() {
+
+    render() {
         return (
             <div>
-                <Dialog ref="repeatedEventModal" title="Repeated">
-
-                </Dialog>
-                <RaisedButton label="Open" primary={true} onTouchTap={this._handleTouchTap} />
+                <RepeatedEventModal ref="repeatedEventModal" />
 
                 <TextField
-                    hintText="Hint Text"
-                    floatingLabelText="Floating Label Text" />
+                    hintText="Title"
+                    floatingLabelText="Title" />
+
+                <TextField
+                    hintText="Title"
+                    floatingLabelText="Title" />
+
+                <RaisedButton label="Open" primary={true} onTouchTap={this._handleTouchTap} />
             </div>
         );
     }
