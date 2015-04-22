@@ -1,13 +1,56 @@
 const React = require("react");
 require('./style.less');
-export default React.createClass({
+
+
+let avatar = React.createClass({
+    getDefaultProps() {
+        return {
+            scale: 1.0,
+            link: true
+        }
+    },
     render: function () {
+        let height = 24 * this.props.scale;
         if (this.props.member) {
-            return <div>
-                <img className='avatar' height="36" src="http://www.gravatar.com/avatar/1231263718923123?d=identicon" /> {this.props.member.name}
-            </div>;
+            let display = <img className='avatar' height={height}
+                               src={`http://www.gravatar.com/avatar/${this.props.member.hash}?d=identicon`}/>;
+            if (this.props.link) {
+                return <a href={`/profile/${this.props.member.name}`} target="_blank">
+                    {display}
+                </a>;
+            } else {
+                return display;
+            }
         } else {
             return <div/>;
         }
     }
 });
+
+let name = React.createClass({
+    getDefaultProps() {
+        return {
+            link: true
+        }
+    },
+    render: function () {
+        if (this.props.member) {
+            let display = <span>{this.props.member.realname}</span>;
+            if (this.props.link) {
+                return <a href={`/profile/${this.props.member.name}`} target="_blank">
+                    {display}
+                </a>;
+            } else {
+                return display;
+            }
+        } else {
+            return <div/>;
+        }
+    }
+});
+
+
+export default {
+    Avatar: avatar,
+    Name: name
+}

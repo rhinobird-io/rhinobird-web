@@ -50,7 +50,10 @@ module.exports = React.createClass({
             }
         ];
         let header = <div className='header'>
-            <Member member={this.state.user}/>
+            <div>
+                <Member.Avatar scale={1.5} member={this.state.user} link={false}/>
+                <Member.Name member={this.state.user} link={false}/>
+            </div>
             <DropDownIcon
                 onChange={(e, key, payload)=> {
                     this.refs.leftNav.close();
@@ -61,7 +64,7 @@ module.exports = React.createClass({
                 menuItems={iconMenuItems} />
         </div>;
         var menuItems = [
-            {route: 'home', text: 'Home'},
+            {route: 'dashboard', text: 'Dashboard'},
             {route: 'calendar', text: 'Calendar'}
         ];
 
