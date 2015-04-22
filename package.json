@@ -43,7 +43,7 @@
     "markdown-loader": "^0.1.2",
     "marked": "^0.3.3",
     "material-design-icons": "^1.0.1",
-    "material-ui": "git://github.com/rhinobird-io/material-ui.git#master",
+    "material-ui": "=0.7.3",
     "moment": "^2.10.2",
     "null-loader": "^0.1.0",
     "numeral": "^1.5.3",
