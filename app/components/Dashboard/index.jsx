@@ -8,10 +8,15 @@ module.exports = React.createClass({
     },
 	render: function() {
 		return <div className="dashboard">
+            <hr/>
 			<DashboardRecord/>
+			<hr/>
 			<DashboardRecord/>
+            <hr/>
 			<DashboardRecord/>
+            <hr/>
 			<DashboardRecord/>
+            <hr/>
 		</div>;
 	}
 });
