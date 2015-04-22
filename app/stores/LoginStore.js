@@ -8,12 +8,6 @@ import crypto from 'crypto';
 const Buffer = require('buffer').Buffer;
 let _user;
 
-function fixedEncodeURIComponent (str) {
-  return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
-    return '%' + c.charCodeAt(0).toString(16);
-  });
-}
-
 let LoginStore = assign({}, BaseStore, {
 
   getUser() {
