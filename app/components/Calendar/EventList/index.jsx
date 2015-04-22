@@ -13,11 +13,20 @@ export default React.createClass({
             <div>
                 <Select>
                     <optgroup label="NBA">
-                        <option>Lakers</option>
+                        <label></label>
+                        <option value="Lake">Lakers</option>
                         <option>Celtics</option>
+                        <option>a</option>
+                        <option>b</option>
+                        <option>c</option>
+                        <option>d</option>
+                        <option>e</option>
+                        <option>f</option>
                     </optgroup>
-                    <option selected="selected">China</option>
-                    <option>Japan</option>
+                    <optgroup label="CBA">
+                        <option>China</option>
+                        <option>Japan</option>
+                    </optgroup>
                 </Select>
 
                 <Link to="create-event">
