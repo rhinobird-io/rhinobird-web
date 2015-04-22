@@ -11,6 +11,7 @@ $.ajaxSetup({
     processData: false
 });
 require('jquery-mockjax');
+require('../app/stores/UserStore');
 
 var async = require("async");
 var React = require("react");
@@ -107,3 +108,5 @@ $.get('/api/login').done(function (data) {
     loginLoaded = true;
     render();
 });
+
+
