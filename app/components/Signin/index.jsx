@@ -43,7 +43,7 @@ var Login = React.createClass({
         });
     },
     render() {
-        return <mui.Paper zDepth={1} className="loginForm">
+        return <mui.Paper zDepth={1} className="loginForm" rounded={false}>
             <form className="container" onSubmit={this._login}>
                 <div className="mui-font-style-title">Sign in</div>
                 <mui.TextField hintText='Email' valueLink={this.linkState('email')} autofocus/>
