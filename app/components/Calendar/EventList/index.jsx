@@ -11,23 +11,26 @@ export default React.createClass({
     render: function() {
         return (
             <div>
-                <Select>
+                <br/>
+                <MaterialSelect multiple>
                     <optgroup label="NBA">
                         <label></label>
-                        <option value="Lake">Lakers</option>
-                        <option>Celtics</option>
-                        <option>a</option>
-                        <option>b</option>
-                        <option>c</option>
-                        <option>d</option>
-                        <option>e</option>
-                        <option>f</option>
+                        <option value="Lakers" data="Lakers">Lakers</option>
+                        <option value="Celtics" data="Celtics">Celtics</option>
+                        <option value="Warriors" data="Warriors">Warriors</option>
+                        <option value="Pacers" data="Pacers">Pacers</option>
                     </optgroup>
                     <optgroup label="CBA">
-                        <option>China</option>
-                        <option>Japan</option>
+                        <option value="Guang Dong">Guang Dong</option>
+                        <option value="Shang Hai">Shang Hai</option>
+                        <option value="Bei Jing">Bei Jing</option>
                     </optgroup>
-                </Select>
+                </MaterialSelect>
+
+                <MaterialSelect>
+                    <option value="Guang Dong">Guang Dong</option>
+                    <option value="Shang Hai">Shang Hai</option>
+                </MaterialSelect>
 
                 <Link to="create-event">
                     <FloatingActionButton

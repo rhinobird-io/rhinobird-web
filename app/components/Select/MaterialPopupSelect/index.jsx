@@ -1,5 +1,7 @@
 var React = require('react'),
-    StyleSheet = require('react-style');
+    StyleSheet = require('react-style'),
+    MUI = require('material-ui'),
+    Paper = MUI.Paper;
 
 require('./style.less');
 
@@ -7,7 +9,10 @@ export default React.createClass({
     propTypes: {
         filter: React.PropTypes.bool,
         controller: React.PropTypes.object,
-        onItemSelect: React.PropTypes.func
+        onItemSelect: React.PropTypes.func,
+        onChange: React.PropTypes.func,
+        onAutoComplete: React.PropTypes.func,
+        onFocus: React.PropTypes.func
     },
 
     getInitialState: function() {
@@ -43,26 +48,19 @@ export default React.createClass({
     },
 
     componentWillReceiveProps: function(nextProps) {
-        if (nextProps.controller !== this.props.controller) {
-            var target = nextProps.controller.getDOMNode();
-            target.addEventListener("keydown", this._keyDownListener);
-            target.addEventListener("keyup", this._keyUpListener);
-            target.addEventListener("focus", this._focusListener);
-            target.addEventListener("blur", this._blurListener);
+        if (nextProps.controller) {
+            var target = nextProps.controller;
+            target.props.onBlur = this._blurListener;
+            target.props.onFocus = this._focusListener;
+            target.props.onChange = this._changeListener;
+            target.props.onKeyDown = this._keyDownListener;
         }
     },
 
     componentWillUnmount() {
-        if (this.props.controller) {
-            var target = this.props.controller.getDOMNode();
-            target.removeEventListener("keydown", this._keyDownListener);
-            target.removeEventListener("keyup", this._keyUpListener);
-            target.removeEventListener("focus", this._focusListener);
-            target.removeEventListener("blur", this._blurListener);
-        }
     },
 
-    hide: function() {
+    hide() {
         this.setState({visible: false});
     },
 
@@ -70,7 +68,8 @@ export default React.createClass({
         this.setState({visible: true});
     },
 
-    filter: function(keyword) {
+    filter(keyword) {
+        console.log(keyword);
         let filtered = this.state.list.filter((item) => {
             if (item.type === "group") {
                 let filteredOptions = item.content.filter((option) => {
@@ -97,27 +96,34 @@ export default React.createClass({
                 return newItem;
             }
         });
-        console.log(this.state.list);
-        this.setState({filteredContent: filtered, filteredContentMap: this._getListContentMap(filtered)});
+        let filteredContentMap = this._getListContentMap(filtered);
+        let filteredValues = filteredContentMap.map((item) => item.value);
+        if (this.props.onChange) {
+            this.props.onChange(filteredValues);
+        }
+        this.setState({filteredContent: filtered, filteredContentMap: filteredContentMap});
     },
 
     selectPrevious: function() {
-        if (this.state.selectedIndex > 0) {
-            this.setState({selectedIndex: this.state.selectedIndex - 1});
+        let selectedIndex = this.state.selectedIndex;
+        if (selectedIndex > 0) {
+            selectedIndex = selectedIndex - 1;
         } else {
-            this.setState({selectedIndex: this.state.filteredContentMap.length - 1});
+            selectedIndex = this.state.filteredContentMap.length - 1;
         }
-        this._updateScroll();
+        this.setState({selectedIndex: selectedIndex});
+        this._updateScroll(selectedIndex);
     },
 
     selectNext: function() {
         var selectedIndex = this.state.selectedIndex;
         if (selectedIndex < this.state.filteredContentMap.length - 1) {
-            this.setState({selectedIndex: selectedIndex + 1});
+            selectedIndex = selectedIndex + 1;
         } else {
-            this.setState({selectedIndex: 0});
+            selectedIndex = 0;
         }
-        this._updateScroll();
+        this.setState({selectedIndex: selectedIndex});
+        this._updateScroll(selectedIndex);
     },
 
     select: function(index) {
@@ -133,6 +139,9 @@ export default React.createClass({
         if (this.props.onItemSelect) {
             this.props.onItemSelect(selectedItem.value);
         }
+        console.log(this.props.controller.props.onFocus);
+        let listContent = this.state.list;
+        this.setState({filteredContentMap: this._getListContentMap(listContent), filteredContent: listContent});
     },
 
     _getListContentMap: function(listContent) {
@@ -149,11 +158,12 @@ export default React.createClass({
         return listContentMap;
     },
 
-    _updateScroll: function() {
+    _updateScroll: function(selectedIndex) {
         var popup = this.refs.popup.getDOMNode();
-        var selected = this.refs[this.state.filteredContentMap[this.state.selectedIndex].value].getDOMNode();
+        var selected = this.refs[this.state.filteredContentMap[selectedIndex].value].getDOMNode();
         //var listOffset = this.refs["__list"].getDOMNode().offsetTop;
         //console.log(this.refs["__list"].getDOMNode().offsetParent);
+        console.log(selected.offsetTop);
         if (selected.offsetTop + selected.clientHeight >= popup.clientHeight) {
             popup.scrollTop = selected.offsetTop - popup.clientHeight + selected.clientHeight;
         } else if (selected.offsetTop < popup.clientHeight){
@@ -227,19 +237,27 @@ export default React.createClass({
                 event.preventDefault();
                 this.selectNext();
                 break;
-            case 13:
+            case 13:    // Enter
                 event.preventDefault();
                 this._doSelect();
                 break;
             case 27:
                 event.preventDefault();
                 break;
+            case 9:     // Tab
+                event.preventDefault();
+                let filteredContentMap = this.state.filteredContentMap;
+                let filteredValues = filteredContentMap.map((item) => item.value);
+                if (this.props.onAutoComplete) {
+                    this.props.onAutoComplete(filteredValues);
+                }
+                break;
             default:
                 break;
         }
     },
 
-    _keyUpListener(event) {
+    _changeListener(event) {
         this.filter(event.target.value);
     },
 
@@ -249,13 +267,16 @@ export default React.createClass({
 
     _focusListener() {
         this.show();
+        if (this.props.onFocus) {
+            this.props.onFocus();
+        }
     },
 
     render: function() {
         var styles = {
             popup: {
                 overflowY: "auto",
-                maxHeight: "150px",
+                maxHeight: "500px",
                 display: this.state.visible ? "block" : "none"
             },
             list: {
@@ -265,8 +286,8 @@ export default React.createClass({
             selected: {
                 background: "grey"
             },
-            normal: {
-                background: "transparent"
+            label: {
+                paddingLeft: 10
             }
         };
 
@@ -275,7 +296,7 @@ export default React.createClass({
         var filteredContent = this.state.filteredContent;
 
         if (filteredContent.length === 0) {
-            listContent.push(<strong>No result found.</strong>);
+            listContent.push(<strong styles={styles.label}>No result found.</strong>);
         } else {
             var selected = this.state.filteredContentMap[this.state.selectedIndex];
             var itemCount = 0;
@@ -286,18 +307,33 @@ export default React.createClass({
                     let groupOptions = [];
                     for (let j = 0; j < item.content.length; j++) {
                         let currentIndex = itemCount++;
-                        groupOptions.push(<li ref={item.content[j].value} onMouseDown={() => this._doSelect(currentIndex)} onMouseOver={() => this.select(currentIndex)} styles={selected == item.content[j] ? styles.selected : styles.normal}>{item.content[j].content}</li>);
+                        let className = "mui-menu-item";
+                        if (selected === item.content[j]) {
+                            className += " mui-is-selected";
+                        }
+                        groupOptions.push(
+                            <li
+                                className={className}
+                                ref={item.content[j].value}
+                                onMouseDown={() => this._doSelect(currentIndex)}
+                                onMouseOver={() => this.select(currentIndex)}>
+                                {item.content[j].content}
+                            </li>);
                     }
-                    listContent.push(<ul styles={styles.list}><strong>{label}</strong>{groupOptions}</ul>)
+                    listContent.push(<ul styles={styles.list}><strong styles={styles.label}>{label}</strong>{groupOptions}</ul>)
                 } else if (item.type === "option") {
                     let currentIndex = itemCount++;
-                    listContent.push(<li ref={item.value} onMouseDown={() => this._doSelect(currentIndex)} onMouseOver={() => this.select(currentIndex)}  styles={selected == item ? styles.selected : styles.normal} key={item.value}>{item.content}</li>);
+                    let className = "mui-menu-item";
+                    if (selected === item) {
+                        className += " mui-is-selected";
+                    }
+                    listContent.push(<li className={className} ref={item.value} onMouseDown={() => this._doSelect(currentIndex)} onMouseOver={() => this.select(currentIndex)}  key={item.value}>{item.content}</li>);
                 }
             }
         }
 
         return (
-            <div ref="popup" styles={styles.popup} className="select-popup">
+            <div ref="popup" styles={styles.popup} className="select-popup mui-z-depth-5">
                 <ul ref="__list" styles={styles.list}>
                     {listContent}
                 </ul>
