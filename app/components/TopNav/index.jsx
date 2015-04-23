@@ -2,9 +2,9 @@
 
 var React      = require('react'),
     mui        = require('material-ui'),
-    Paper      = mui.Paper,
-    IconButton = mui.IconButton,
-    FontIcon   = mui.FontIcon;
+    Paper      = mui.Paper;
+
+const Notification = require("../Notification");
 
 require("./style.less");
 module.exports = React.createClass({
@@ -13,9 +13,7 @@ module.exports = React.createClass({
     },
     render: function() {
         let mainPage = (['/signin', '/signup'].indexOf(this.context.router.getCurrentPathname()) === -1);
-        let rightElement = <div className="top-nav-right">
-                <mui.IconButton iconClassName="icon-notifications"></mui.IconButton>
-            </div>;
+        let rightElement = <div className="top-nav-right"><Notification /></div>;
         return <Paper className='topNav' rounded={false}>
             <mui.AppBar
                 onMenuIconButtonTouchTap={this.props.onMenuIconButtonTouchTap}
