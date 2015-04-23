@@ -31,7 +31,8 @@ export default React.createClass({
   },
 
   _getMenuItems(list) {
-    return list.map(item => <div className="mui-menu-item">{item}</div>);
+    let key = 0;
+    return list.map(item => <div key={key += 1} className="mui-menu-item">{item}</div>);
   },
 
   render() {
