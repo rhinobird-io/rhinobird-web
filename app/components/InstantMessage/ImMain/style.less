@@ -1,18 +1,29 @@
-.main {
-  background-color: red;
 
-  display: -webkit-flex;
+.instant-message-container {
   display: flex;
-  flex-direction: column;
+  background-color: #ffff00;
+  flex : auto;
 
-  justify-content: flex-end;
+  .main {
+    flex : 5;
+    background-color: red;
 
-  .history {
-    flex: auto;
+    display: -webkit-flex;
+    display: flex;
+    flex-direction: column;
+
+    justify-content: flex-end;
+
+    .history {
+      flex: auto;
+    }
+
+    .send-box {
+
+    }
   }
 
-  .send-box {
-    min-height: 100px;
+  .sidebar {
+    flex : 1;
   }
-
 }

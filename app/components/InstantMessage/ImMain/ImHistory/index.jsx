@@ -7,6 +7,14 @@ module.exports = React.createClass({
   componentDidMount() {
 
   },
+
+  /**
+   * This method will  be called after dynamic segments changed
+   */
+  componentWillReceiveProps() {
+
+  },
+
   render() {
     return (
       <div className="history">
