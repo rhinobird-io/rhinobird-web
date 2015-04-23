@@ -12,6 +12,7 @@ $.ajaxSetup({
 });
 require('jquery-mockjax');
 require('../app/stores/UserStore');
+const resBundle = require("i18next-resource-store-loader!../app/locales/index.js");
 
 var async = require("async");
 var React = require("react");
@@ -89,7 +90,7 @@ let render = function () {
     }
 }
 i18n.init({
-    preload: ['en-US', 'ja']
+    resStore: resBundle
 }, function (e) {
     let lng = i18n.lng();
     if(lng !== 'en-US' && lng !== 'ja'){
