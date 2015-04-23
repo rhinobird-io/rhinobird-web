@@ -7,7 +7,7 @@ export default React.createClass({
     propTypes: {
         filter: React.PropTypes.boolean,
         controller: React.PropTypes.object,
-        onItemSelected: React.PropTypes.func
+        onItemSelect: React.PropTypes.func
     },
 
     getInitialState: function() {
@@ -94,6 +94,22 @@ export default React.createClass({
         this._updateScroll();
     },
 
+    select: function(index) {
+        console.log(index);
+        if (index < 0 || index >= this.state.filteredContentMap.length) {
+            return;
+        }
+        this.setState({selectedIndex: index});
+    },
+
+    _doSelect: function() {
+        var selectedItem = this.state.filteredContentMap[this.state.selectedIndex];
+        this.hide();
+        if (this.props.onItemSelect) {
+            this.props.onItemSelect(selectedItem.value);
+        }
+    },
+
     _updateScroll: function() {
         var popup = this.refs.popup.getDOMNode();
         var selected = this.refs[this.state.filteredContentMap[this.state.selectedIndex].value].getDOMNode();
@@ -174,6 +190,7 @@ export default React.createClass({
                 break;
             case 13:
                 event.preventDefault();
+                this._doSelect();
                 break;
             case 27:
                 event.preventDefault();
@@ -211,18 +228,20 @@ export default React.createClass({
         var listContent = [];
         var content = this.state.filteredContent;
         var selected = this.state.filteredContentMap[this.state.selectedIndex];
-
+        var itemCount = 0;
         for (var i = 0; i < content.length; i++) {
             var item = content[i];
             if (item.type === "group") {
-                var label = item.label;
-                var groupOptions = [];
-                for (var j = 0; j < item.content.length; j++) {
-                    groupOptions.push(<li ref={item.content[j].value} styles={selected == item.content[j] ? styles.selected : styles.normal}>{item.content[j].content}</li>);
+                let label = item.label;
+                let groupOptions = [];
+                for (let j = 0; j < item.content.length; j++) {
+                    let currentIndex = itemCount++;
+                    groupOptions.push(<li ref={item.content[j].value} onMouseDown={() => this._doSelect(currentIndex)} onMouseOver={() => this.select(currentIndex)} styles={selected == item.content[j] ? styles.selected : styles.normal}>{item.content[j].content}</li>);
                 }
                 listContent.push(<ul styles={styles.list}><strong>{label}</strong>{groupOptions}</ul>)
             } else if (item.type === "option") {
-                listContent.push(<li ref={item.value}  styles={selected == item ? styles.selected : styles.normal} key={item.value}>{item.content}</li>);
+                let currentIndex = itemCount++;
+                listContent.push(<li ref={item.value} onMouseDown={() => this._doSelect(currentIndex)} onMouseOver={() => this.select(currentIndex)}  styles={selected == item ? styles.selected : styles.normal} key={item.value}>{item.content}</li>);
             }
         }
 

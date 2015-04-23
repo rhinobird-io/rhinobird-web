@@ -29,7 +29,7 @@ export default React.createClass({
 
     render: function() {
         var text = <input ref="text" type="text" className="select-text" />;
-        var popupSelect = <PopupSelect ref="popupSelect" controller={this.refs.text}> {this.props.children} </PopupSelect>;
+        var popupSelect = <PopupSelect ref="popupSelect" controller={this.refs.text} onItemSelect={(value) => this.refs.text.getDOMNode().value = value}> {this.props.children} </PopupSelect>;
 
         return (
             <div className="select">
