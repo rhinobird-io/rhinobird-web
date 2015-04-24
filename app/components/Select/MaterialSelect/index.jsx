@@ -9,10 +9,6 @@ require('./style.less');
 
 export default React.createClass({
     propTypes: {
-        dataSource: React.PropTypes.oneOfType([
-            React.PropTypes.array,
-            React.PropTypes.string,
-        ]),
         valueLink: React.PropTypes.shape({
             value: React.PropTypes.array.isRequired,
             requestChange: React.PropTypes.func.isRequired
@@ -35,6 +31,13 @@ export default React.createClass({
         };
     },
 
+    getValueLink(props) {
+        return props.valueLink || {
+            value: props.value,
+            requestChange: props.onChange
+        };
+    },
+
     _delete(index) {
         let selected = this.state.selected;
         if (index < 0 || index >= selected.length) {
@@ -42,7 +45,9 @@ export default React.createClass({
         }
         selected.splice(index, 1);
         this.setState({selected: selected});
+        this.getValueLink(this.props).requestChange(selected);
     },
+
 
     _updateHintPosition() {
         let tokenWrapper = this.refs.tokenWrapper;
@@ -69,6 +74,7 @@ export default React.createClass({
             }
         }
         this.setState({selected: selected});
+        this.getValueLink(this.props).requestChange(selected);
     },
 
     render: function() {

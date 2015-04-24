@@ -2,17 +2,26 @@ var React                = require("react"),
     mui                  = require('material-ui'),
     Link                 = require("react-router").Link,
     FloatingActionButton = mui.FloatingActionButton,
-    Select = require('../../Select').Select,
-    MaterialSelect = require('../../Select').MaterialSelect;
+    Select = require('../../Select').Select;
 
 require("./style.less");
 
 export default React.createClass({
+    mixins: [React.addons.LinkedStateMixin],
+
+    getInitialState() {
+        return {
+            select1: [],
+            select2: []
+        }
+    },
+
     render: function() {
         return (
             <div>
                 <br/>
-                <MaterialSelect multiple>
+                <div>{this.state.select1.toString()}</div>
+                <Select multiple valueLink={this.linkState('select1')}>
                     <optgroup label="NBA">
                         <label></label>
                         <option value="Lakers" data="Lakers">Lakers</option>
@@ -25,12 +34,13 @@ export default React.createClass({
                         <option value="Shang Hai">Shang Hai</option>
                         <option value="Bei Jing">Bei Jing</option>
                     </optgroup>
-                </MaterialSelect>
+                </Select>
 
-                <MaterialSelect>
+                <div>{this.state.select2}</div>
+                <Select valueLink={this.linkState('select2')}>
                     <option value="Guang Dong">Guang Dong</option>
                     <option value="Shang Hai">Shang Hai</option>
-                </MaterialSelect>
+                </Select>
 
                 <Link to="create-event">
                     <FloatingActionButton

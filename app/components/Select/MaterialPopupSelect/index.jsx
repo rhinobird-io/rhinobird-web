@@ -139,7 +139,6 @@ export default React.createClass({
         if (this.props.onItemSelect) {
             this.props.onItemSelect(selectedItem.value);
         }
-        console.log(this.props.controller.props.onFocus);
         let listContent = this.state.list;
         this.setState({filteredContentMap: this._getListContentMap(listContent), filteredContent: listContent});
     },
@@ -262,7 +261,7 @@ export default React.createClass({
     },
 
     _blurListener() {
-        this.hide();
+        //this.hide();
     },
 
     _focusListener() {
@@ -275,16 +274,15 @@ export default React.createClass({
     render: function() {
         var styles = {
             popup: {
+                zIndex: 10,
                 overflowY: "auto",
                 maxHeight: "300px",
+                background: "white",
                 display: this.state.visible ? "block" : "none"
             },
             list: {
                 cursor: "text",
                 listStyle: "none"
-            },
-            selected: {
-                background: "grey"
             },
             label: {
                 paddingLeft: 10
