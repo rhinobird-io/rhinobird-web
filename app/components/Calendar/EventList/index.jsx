@@ -2,7 +2,7 @@ var React                = require("react"),
     MUI                  = require("material-ui"),
     Link                 = require("react-router").Link,
     FloatingActionButton = MUI.FloatingActionButton,
-    SmartTimeDisplay     = require("../../SmartTimeDisplay").SmartTimeDisplay,
+    SmartTimeDisplay     = require("../../SmartTimeDisplay"),
     Select = require("../../Select").Select;
 
 require("./style.less");

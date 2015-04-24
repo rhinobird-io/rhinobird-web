@@ -90,12 +90,11 @@ let render = function () {
     }
 }
 i18n.init({
-    resStore: resBundle
+    resStore: resBundle,
+    lng: "en-US"
 }, function (e) {
     let lng = i18n.lng();
-    if(lng !== 'en-US' && lng !== 'ja'){
-        i18n.setLng('ja');
-    }
+
     setMomentLocale(lng);
     setNumeralLocale(lng);
     i18nLoaded = true;
