@@ -1,6 +1,7 @@
 var React = require("react");
 const mui = require('material-ui');
 const LoginStore = require('../../stores/LoginStore');
+const Member = require('../Member');
 
 require('./style.less');
 
@@ -14,24 +15,29 @@ module.exports = React.createClass({
             'email': user.email,
             'oldPwd': '',
             'newPwd': '',
-            'confirmPwd': ''
+            'confirmPwd': '',
+            user: user
         }
     },
     componentDidMount(){
         this.props.setTitle("Profile");
     },
     _updateUser(){
-        console.log('update');
+        $.post('');
     },
     _changePassword(){
-        console.log('change');
+        console.log('changes');
     },
     render: function () {
         return <div className='profile-page'>
             <div className='paper-outer-container'>
                 <mui.Paper zDepth={1}>
                     <div className='paper-inner-container'>
-                        <h3>User information</h3>
+                        <div className="mui-font-style-headline">User information</div>
+                        <Member.Avatar onMouseOver={()=>{this.setState({showTooltip:true});}}
+                                       onMouseOut={()=>{this.setState({showTooltip:false});}}
+                                       scale={2.5} link={false} member={this.state.user} className='avatar'></Member.Avatar>
+                        <mui.Tooltip className='tooltip' label="You can change your avatar by gravatar.com" show={this.state.showTooltip}/>
                         <mui.TextField floatingLabelText='Email' type='email' valueLink={this.linkState('email')}
                                        disabled={true}/>
                         <div className='uniqueNameField'>
