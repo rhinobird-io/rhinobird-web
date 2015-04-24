@@ -72,13 +72,17 @@ export default React.createClass({
                 styles={styles.time}
                 onMouseOver={() => {
                     this.setState({tipShow: true});
-                    setTimeout(() => {
-                        this.refs.triangle.getDOMNode().style.visibility = "visible";
-                    }, 180);
+                    if (this.props.relative) {
+                        setTimeout(() => {
+                            this.refs.triangle.getDOMNode().style.visibility = "visible";
+                        }, 180);
+                    }
                 }}
                 onMouseOut={() => {
                     this.setState({tipShow: false});
-                    this.refs.triangle.getDOMNode().style.visibility = "hidden";
+                    if (this.props.relative) {
+                        this.refs.triangle.getDOMNode().style.visibility = "hidden";
+                    }
                 }}>
                 {tip}
                 {timeFormat}
