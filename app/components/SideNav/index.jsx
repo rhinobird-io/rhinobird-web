@@ -37,14 +37,14 @@ module.exports = React.createClass({
         let iconMenuItems = [
             {
                 payload: '1', text: 'Profile', iconClassName:'icon-person', action: ()=> {
-                this.context.router.transitionTo('/profile');
+                this.context.router.transitionTo('/platform/profile');
             }
             },
             {
                 payload: '2', text: 'Logout', iconClassName:'icon-exit-to-app', action: ()=> {
                 $.post('/api/logout').then(()=>{
                     LoginAction.updateLogin(undefined);
-                    this.context.router.transitionTo('/signin');
+                    this.context.router.transitionTo('/platform/signin');
                 })
             }
             }
