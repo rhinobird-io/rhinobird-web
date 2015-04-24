@@ -4,9 +4,7 @@ const RouteHandler = require("react-router").RouteHandler;
 const ImChannels = require('./ImChannels');
 
 const LoginStore = require('../../../../stores/LoginStore');
-const ChannelStore = require('../../../../stores/ChannelStore');
-const ChannelAction = require('../../../../actions/ChannelAction');
-
+const UserStore = require('../../../../stores/UserStore');
 
 require('./style.less');
 module.exports = React.createClass({
@@ -29,21 +27,21 @@ module.exports = React.createClass({
   },
 
   componentDidMount() {
-    ChannelStore.addChangeListener(this._onChannelChange);
-    ChannelAction.getAllChannels(this.state.user);
+    UserStore.addChangeListener(this._onUserChange);
   },
 
   componentWillUnmount() {
-    ChannelStore.removeChangeListener(this._onChannelChange);
+    UserStore.removeChangeListener(this._onUserChange);
   },
 
 
-  _onChannelChange() {
-    let {publicGroupChannels,privateGroupChannels, directMessageChannels } = ChannelStore.getAllChannels();
+  _onUserChange() {
+    var _allTeams = UserStore.getTeamsArray();
+    var _allUsers = UserStore.getUsersArray();
     this.setState({
       channels : {
-        publicGroupChannels : publicGroupChannels,
-        directMessageChannels : directMessageChannels
+        publicGroupChannels : _allTeams,
+        directMessageChannels : _allUsers
       }
     })
   },
@@ -51,7 +49,7 @@ module.exports = React.createClass({
   render() {
     return (
       <div className="sidebar">
-        <ImChannels className="instant-message-group-channels" channelGroup="Group Channel" channels={this.state.channels.publicGroupChannels}></ImChannels>
+        <ImChannels className="instant-message-group-channels" channelGroup="Group Channel" isGroup={true} channels={this.state.channels.publicGroupChannels}></ImChannels>
         <ImChannels className="instant-message-direct-message-channels" channelGroup="Direct Message" channels={this.state.channels.directMessageChannels}></ImChannels>
       </div>
     );

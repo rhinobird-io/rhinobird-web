@@ -1,7 +1,8 @@
+'use strict';
+
 const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
 const mui = require("material-ui");
-
 
 const { Menu, FontIcon } = mui;
 
@@ -14,7 +15,8 @@ module.exports = React.createClass({
 
   propTypes : {
     channelGroup : React.PropTypes.string,
-    channels : React.PropTypes.array
+    channels : React.PropTypes.array,
+    isGroup : React.PropTypes.bool
   },
 
   getInitialState() {
@@ -25,10 +27,15 @@ module.exports = React.createClass({
 
   _getMenuItems(channels) {
     var _items = [];
+    /**
+     * Personal Note:
+     * using => will change the this binding to the outside,
+     * using function will make the this does work here
+     */
     channels.forEach((channel, idx) => {
       _items.push({
         text : channel.name,
-        iconClassName : 'icon-social-black icon-social-black-ic_group_black_24dp instant-message-group-icon',
+        iconClassName : this.props.isGroup?'icon-group':'',
         channel : channel
       })
     });
@@ -49,7 +56,7 @@ module.exports = React.createClass({
 
   _onItemTap(e, index, menuItem) {
     let channel = this.state._menuItems[index].channel;
-    this.context.router.transitionTo('/im/talk/' + channel.hash);
+    this.context.router.transitionTo('/platform/im/talk/' + channel.hash);
   },
 
   render() {
@@ -57,7 +64,8 @@ module.exports = React.createClass({
       <div className="instant-message-channels">
         <div className="mui-font-style-subhead-1 instant-message-channel-brand">{this.props.channelGroup}</div>
         <Menu className="instant-message-channel-items" menuItems = { this.state._menuItems } onItemTap={this._onItemTap}
-          onItemClick={this._onItemTap} autoWidth={false} zDepth="-1"></Menu>
+          onItemClick={this._onItemTap} autoWidth={false} zDepth="-1">
+        </Menu>
       </div>
     );
   }

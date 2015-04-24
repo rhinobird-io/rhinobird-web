@@ -80,6 +80,7 @@ let _users = {};
 let _username_users = {};
 
 
+
 let UserStore = assign({}, BaseStore, {
 
     /**
@@ -137,6 +138,7 @@ let UserStore = assign({}, BaseStore, {
      * @returns {*}
      */
         getTeamsUsers() {
+
         return _teams_users;
     },
     getUser(id){
@@ -150,6 +152,7 @@ let UserStore = assign({}, BaseStore, {
         switch (payload.type) {
             case Constants.ActionTypes.LOGIN_UPDATE:
                 $.get('/api/teams_users').then((data)=> {
+
                     let tmp = buildIndex(data);
                     _teams_users = tmp._teams_users;
                     _users_teams = tmp._users_teams;
