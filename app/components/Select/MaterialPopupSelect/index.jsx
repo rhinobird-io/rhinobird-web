@@ -7,7 +7,6 @@ require('./style.less');
 
 export default React.createClass({
     propTypes: {
-        filter: React.PropTypes.bool,
         controller: React.PropTypes.object,
         onItemSelect: React.PropTypes.func,
         onChange: React.PropTypes.func,
@@ -15,7 +14,7 @@ export default React.createClass({
         onFocus: React.PropTypes.func
     },
 
-    getInitialState: function() {
+    getInitialState() {
         var _this = this;
 
         let listContent = [];
@@ -44,10 +43,10 @@ export default React.createClass({
         }
     },
 
-    componentDidMount: function() {
+    componentDidMount() {
     },
 
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (nextProps.controller) {
             var target = nextProps.controller;
             target.props.onBlur = this._blurListener;
@@ -104,7 +103,7 @@ export default React.createClass({
         this.setState({filteredContent: filtered, filteredContentMap: filteredContentMap});
     },
 
-    selectPrevious: function() {
+    selectPrevious() {
         let selectedIndex = this.state.selectedIndex;
         if (selectedIndex > 0) {
             selectedIndex = selectedIndex - 1;
@@ -115,7 +114,7 @@ export default React.createClass({
         this._updateScroll(selectedIndex);
     },
 
-    selectNext: function() {
+    selectNext() {
         var selectedIndex = this.state.selectedIndex;
         if (selectedIndex < this.state.filteredContentMap.length - 1) {
             selectedIndex = selectedIndex + 1;
@@ -126,7 +125,7 @@ export default React.createClass({
         this._updateScroll(selectedIndex);
     },
 
-    select: function(index) {
+    select(index) {
         if (index < 0 || index >= this.state.filteredContentMap.length) {
             return;
         }

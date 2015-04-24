@@ -1,8 +1,9 @@
 var React                = require("react"),
-    mui                  = require('material-ui'),
+    MUI                  = require("material-ui"),
     Link                 = require("react-router").Link,
-    FloatingActionButton = mui.FloatingActionButton,
-    Select = require('../../Select').Select;
+    FloatingActionButton = MUI.FloatingActionButton,
+    SmartTimeDisplay     = require("../../SmartTimeDisplay").SmartTimeDisplay,
+    Select = require("../../Select").Select;
 
 require("./style.less");
 
@@ -19,9 +20,13 @@ export default React.createClass({
     render: function() {
         return (
             <div>
+                <SmartTimeDisplay />
+                <br/>
+                <br/>
+                <br/>
                 <br/>
                 <div>{this.state.select1.toString()}</div>
-                <Select multiple valueLink={this.linkState('select1')}>
+                <Select multiple valueLink={this.linkState("select1")} placeholder="Select a team">
                     <optgroup label="NBA">
                         <label></label>
                         <option value="Lakers" data="Lakers">Lakers</option>
@@ -37,11 +42,10 @@ export default React.createClass({
                 </Select>
 
                 <div>{this.state.select2}</div>
-                <Select valueLink={this.linkState('select2')}>
+                <Select valueLink={this.linkState("select2")}>
                     <option value="Guang Dong">Guang Dong</option>
                     <option value="Shang Hai">Shang Hai</option>
                 </Select>
-
                 <Link to="create-event">
                     <FloatingActionButton
                         className="add-event"

@@ -106,13 +106,12 @@ export default React.createClass({
                 top: 10
             },
             padding: {
-                paddingLeft: this.state.paddingLeft || 2
+                paddingLeft: this.state.paddingLeft || 0
             }
         };
 
-
         let tokens = [];
-        let text = <TextField ref="text" style={styles.padding} type="text" className="select-text" />;
+        let text = <TextField ref="text" style={styles.padding} hintText={this.props.placeholder} type="text" className="select-text" />;
         let popupSelect = <PopupSelect
             ref="popupSelect"
             controller={this.refs.text}
@@ -138,7 +137,8 @@ export default React.createClass({
                 }
             }
             onChange={(values) => {
-                if (values[0] && values[0].indexOf(this.refs.text.getValue()) === 0) {
+                let textValue = this.refs.text.getValue();
+                if (values[0] && textValue.length > 0 && values[0].indexOf(this.refs.text.getValue()) === 0) {
                     this.refs.hint.setValue(values[0]);
                 } else {
                     this.refs.hint.setValue("");
