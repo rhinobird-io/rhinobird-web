@@ -20,7 +20,9 @@ export default React.createClass({
     render: function() {
         return (
             <div>
-                <SmartTimeDisplay />
+                <SmartTimeDisplay start="2017-01-01" end="2017-01-02"/>
+                <SmartTimeDisplay start="2015-04-26" relative/>
+                <SmartTimeDisplay start="2015-04-24" relative/>
                 <br/>
                 <br/>
                 <br/>
