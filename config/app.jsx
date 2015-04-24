@@ -65,7 +65,7 @@ if ($.mockjax) {
     $.mockjax({
         url: '/api/login',
         type: 'GET',
-        responseText: {"email": "tom@cat.pet", "name":"tomcat", hash:"xx", "realname": "Tom Cat", role:'operator'}
+        responseText: {"id" : 1 , "company": "Works Applications", "name":"tomcat", hash:"xx", "realname": "Tom Cat", role:'operator', "email": "tom@cat.pet"}
     });
 
     $.mockjax({

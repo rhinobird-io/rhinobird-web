@@ -1,6 +1,4 @@
-const React = require("react");.history {
-  background-color: palegreen;
-}
+const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
 
 const ImHistory = require('./ImHistory');
@@ -19,19 +17,18 @@ module.exports = React.createClass({
   },
 
   componentDidMount() {
-    this.props.setTitle("Instant Message - " + this.context.router.getCurrentParams().channelHash);
-
+    this.props.setTitle("Instant Message - Talk ");
     this.style = {
       height : $(window).height() - $('.topNav').height()
     };
-
   },
+
   render() {
 
     return (
     <div className="instant-message-container">
       <div className="main" style={this.style}>
-        <ImHistory className="history"></ImHistory>
+        <ImHistory {...this.props} className="history"></ImHistory>
         <ImSendBox className="send-box"></ImSendBox>
       </div>
 

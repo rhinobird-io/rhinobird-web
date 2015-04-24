@@ -4,6 +4,11 @@ const RouteHandler = require("react-router").RouteHandler;
 
 require('./style.less');
 module.exports = React.createClass({
+
+  contextTypes: {
+    router: React.PropTypes.func.isRequired
+  },
+
   componentDidMount() {
 
   },
@@ -18,7 +23,7 @@ module.exports = React.createClass({
   render() {
     return (
       <div className="history">
-        history
+        You are talking to {this.context.router.getCurrentParams().channelHash}
       </div>
     );
   }
