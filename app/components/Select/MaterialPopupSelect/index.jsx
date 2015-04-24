@@ -261,7 +261,7 @@ export default React.createClass({
     },
 
     _blurListener() {
-        //this.hide();
+        this.hide();
     },
 
     _focusListener() {

@@ -1,5 +1,4 @@
 var React       = require('react'),
-    StyleSheet  = require('react-style'),
     MUI         = require('material-ui'),
     Paper       = MUI.Paper,
     TextField   = MUI.TextField,
@@ -95,6 +94,11 @@ export default React.createClass({
                 cursor: "pointer",
                 padding: "2px 8px"
             },
+            tokenDelete: {
+                color: "#777",
+                marginLeft: 4,
+                fontWeight: "bold"
+            },
             tokenWrapper: {
                 position: "absolute",
                 cursor: "text",
@@ -156,10 +160,10 @@ export default React.createClass({
             tokens.push(
                 <Paper ref={"token-" + i} zDepth={1} styles={styles.token}>
                     <a onClick={(e) => e.stopPropagation()}>{this.state.selected[i]}</a>
-                    <span onClick={(e) => {
+                    <span styles={styles.tokenDelete} onClick={(e) => {
                         this._delete(i);
                         e.stopPropagation();
-                    }}>&nbsp;X</span>
+                    }}>x</span>
                 </Paper>
             );
         }
