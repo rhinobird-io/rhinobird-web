@@ -72,21 +72,20 @@ export default React.createClass({
                 styles={styles.time}
                 onMouseOver={() => {
                     this.setState({tipShow: true});
-                    if (this.props.relative) {
-                        setTimeout(() => {
-                            this.refs.triangle.getDOMNode().style.visibility = "visible";
-                        }, 180);
-                    }
+                    //if (this.props.relative) {
+                    //    setTimeout(() => {
+                    //        this.refs.triangle.getDOMNode().style.visibility = "visible";
+                    //    }, 180);
+                    //}
                 }}
                 onMouseOut={() => {
                     this.setState({tipShow: false});
-                    if (this.props.relative) {
-                        this.refs.triangle.getDOMNode().style.visibility = "hidden";
-                    }
+                    //if (this.props.relative) {
+                    //    this.refs.triangle.getDOMNode().style.visibility = "hidden";
+                    //}
                 }}>
                 {tip}
                 {timeFormat}
-                {triangle}
             </span>
         );
     },
@@ -97,20 +96,20 @@ export default React.createClass({
         }
         let tip = this.refs.tip.getDOMNode();
         let wrapper = this.refs.wrapper.getDOMNode();
-        let triangle = this.refs.triangle.getDOMNode();
+        //let triangle = this.refs.triangle.getDOMNode();
 
         let tipWidth = tip.offsetWidth;
         let tipHeight = tip.offsetHeight;
         let wrapperWidth = wrapper.offsetWidth;
         let wrapperHeight = wrapper.offsetHeight;
-        let triangleWidth = triangle.offsetWidth;
+        //let triangleWidth = triangle.offsetWidth;
 
         let tipLeft = (wrapperWidth - tipWidth) / 2;
-        let triangleLeft = (wrapperWidth - triangleWidth) / 2;
+        //let triangleLeft = (wrapperWidth - triangleWidth) / 2;
 
         tip.style.left = tipLeft + "px";
         tip.style.top = "-" + (wrapperHeight + tipHeight + 4) + "px";
-        triangle.style.top = "-4px";
-        triangle.style.left = triangleLeft + "px";
+        //triangle.style.top = "-4px";
+        //triangle.style.left = triangleLeft + "px";
     }
 });
