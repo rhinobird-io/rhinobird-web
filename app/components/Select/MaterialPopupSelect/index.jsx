@@ -18,8 +18,8 @@ export default React.createClass({
     getInitialState: function() {
         var _this = this;
 
-        var listContent = [];
-        var listContentMap = [];
+        let listContent = [];
+        let listContentMap;
 
         this.props.children.forEach(function(child) {
             var _content = null;
@@ -276,11 +276,11 @@ export default React.createClass({
         var styles = {
             popup: {
                 overflowY: "auto",
-                maxHeight: "500px",
+                maxHeight: "300px",
                 display: this.state.visible ? "block" : "none"
             },
             list: {
-                cursor: "pointer",
+                cursor: "text",
                 listStyle: "none"
             },
             selected: {

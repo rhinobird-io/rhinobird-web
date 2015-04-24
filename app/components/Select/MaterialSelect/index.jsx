@@ -21,18 +21,27 @@ export default React.createClass({
         placeholder: React.PropTypes.string
     },
 
-    componentDidMount: function() {
+    componentDidMount() {
 
     },
 
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         this._updateHintPosition();
     },
 
-    getInitialState: function() {
+    getInitialState() {
         return {
             selected: []
         };
+    },
+
+    _delete(index) {
+        let selected = this.state.selected;
+        if (index < 0 || index >= selected.length) {
+            return;
+        }
+        selected.splice(index, 1);
+        this.setState({selected: selected});
     },
 
     _updateHintPosition() {
@@ -67,7 +76,7 @@ export default React.createClass({
             select: {
                 position: "relative",
                 display: "inline-block",
-                cursor: "pointer",
+                cursor: "text",
                 width: 256
             },
             hint: {
@@ -77,10 +86,13 @@ export default React.createClass({
                 float: "left",
                 marginRight: 4,
                 marginBottom: 4,
+                cursor: "pointer",
                 padding: "2px 8px"
             },
             tokenWrapper: {
                 position: "absolute",
+                cursor: "text",
+                zIndex: 2,
                 top: 10
             },
             padding: {
@@ -135,10 +147,25 @@ export default React.createClass({
         </PopupSelect>;
 
         for (let i = 0; i < this.state.selected.length; i++) {
-            tokens.push(<Paper ref={"token-" + i} zDepth={1} styles={styles.token}><a>{this.state.selected[i]}</a></Paper>);
+            tokens.push(
+                <Paper ref={"token-" + i} zDepth={1} styles={styles.token}>
+                    <a onClick={(e) => e.stopPropagation()}>{this.state.selected[i]}</a>
+                    <span onClick={(e) => {
+                        this._delete(i);
+                        e.stopPropagation();
+                    }}>&nbsp;X</span>
+                </Paper>
+            );
         }
 
-        let tokenWrapperDOM = tokens.length > 0 ? <div ref="tokenWrapper" styles={styles.tokenWrapper}>{tokens}</div> : null;
+        let tokenWrapperDOM =
+            tokens.length > 0 ?
+                <div ref="tokenWrapper" styles={styles.tokenWrapper}
+                    onClick={(e) => {
+                        this.refs.text.focus();
+                    }}>
+                    {tokens}
+                </div> : null;
         return (
             <div styles={styles.select}>
                 {tokenWrapperDOM}
