@@ -36,12 +36,12 @@ module.exports = React.createClass({
     render: function () {
         let iconMenuItems = [
             {
-                payload: '1', text: 'Profile', action: ()=> {
+                payload: '1', text: 'Profile', iconClassName:'icon-person', action: ()=> {
                 this.context.router.transitionTo('/profile');
             }
             },
             {
-                payload: '2', text: 'Logout', action: ()=> {
+                payload: '2', text: 'Logout', iconClassName:'icon-exit-to-app', action: ()=> {
                 $.post('/api/logout').then(()=>{
                     LoginAction.updateLogin(undefined);
                     this.context.router.transitionTo('/signin');
@@ -50,9 +50,9 @@ module.exports = React.createClass({
             }
         ];
         let header = <div className='header'>
-            <div>
+            <div className='member-info'>
                 <Member.Avatar scale={1.5} member={this.state.user} link={false}/>
-                <Member.Name member={this.state.user} link={false}/>
+                <Member.Name member={this.state.user} link={false} />
             </div>
             <DropDownIcon
                 onChange={(e, key, payload)=> {
@@ -60,12 +60,12 @@ module.exports = React.createClass({
                     payload.action();
                 }}
                 className="headerDropdown"
-                iconClassName="icon-navigation-white icon-navigation-white-ic_expand_more_white_24dp"
+                iconClassName="icon-expand-more"
                 menuItems={iconMenuItems} />
         </div>;
         var menuItems = [
-            {route: '/platform/dashboard', text: 'Dashboard'},
-            {route: '/platform/calendar', text: 'Calendar'}
+            {route: '/platform/dashboard', iconClassName: 'icon-dashboard', text: 'Dashboard'},
+            {route: '/platform/calendar', iconClassName: 'icon-event-note', text: 'Calendar'}
         ];
 
         return <LeftNav
