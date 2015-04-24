@@ -23,13 +23,15 @@ module.exports = React.createClass({
         this.props.setTitle("Profile");
     },
     _updateUser(){
-        $.post('');
+        this.refs.saveSuccessSnackbar.show();
     },
     _changePassword(){
-        console.log('changes');
+        this.refs.changeSuccessSnackbar.show();
     },
     render: function () {
         return <div className='profile-page'>
+            <mui.Snackbar message='User information has been saved' ref='saveSuccessSnackbar'/>
+            <mui.Snackbar message='Password has been saved' ref='changeSuccessSnackbar'/>
             <div className='paper-outer-container'>
                 <mui.Paper zDepth={1}>
                     <div className='paper-inner-container'>
