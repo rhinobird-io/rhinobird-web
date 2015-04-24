@@ -75,13 +75,13 @@ if ($.mockjax) {
 
 
 let loginLoaded = false, i18nLoaded = false;
-let publicRoutes = ['/signin', '/signup'];
+let publicRoutes = ['/platform/signin', '/platform/signup'];
 let render = function () {
     if (loginLoaded && i18nLoaded) {
         Router.run(routes, Router.HistoryLocation, function (Handler, state) {
             if (publicRoutes.indexOf(state.pathname) === -1) {
                 if (!LoginStore.getUser()) {
-                    this.transitionTo('/signin', {}, {target: state.path});
+                    this.transitionTo('/platform/signin', {}, {target: state.path});
                     return;
                 }
             }

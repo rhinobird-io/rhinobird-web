@@ -3,9 +3,6 @@ import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
 import BaseStore from './BaseStore';
 import assign from 'object-assign';
-import URI from 'URIjs';
-import crypto from 'crypto';
-const Buffer = require('buffer').Buffer;
 let _user;
 
 let LoginStore = assign({}, BaseStore, {
