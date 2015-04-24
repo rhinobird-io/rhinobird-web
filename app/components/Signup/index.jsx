@@ -59,7 +59,7 @@ export default React.createClass({
                 <div className="mui-font-style-title">Sign up</div>
                 <mui.TextField hintText='Email' valueLink={this.linkState('email')} autofocus/>
                 <div className='uniqueNameField'>
-                    <span>@</span>
+                    <span className='mui-font-style-caption'>@</span>
                     <mui.TextField className='textField' hintText='Unique name' valueLink={this.linkState('uniqueName')}/>
                 </div>
                 <mui.TextField hintText='Display name' valueLink={this.linkState('name')}/>
