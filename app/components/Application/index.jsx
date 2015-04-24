@@ -22,11 +22,11 @@ var Application = React.createClass({
     },
     render() {
         return <div>
-            <TopNav onMenuIconButtonTouchTap={this._onMenuIconButtonTouch} title={this.state.title}/>
             <SideNav ref='sideNav' />
             <div className='mainContent'>
                 <RouteHandler setTitle={this._setTitle}/>
             </div>
+            <TopNav onMenuIconButtonTouchTap={this._onMenuIconButtonTouch} title={this.state.title}/>
         </div>;
     },
     _setTitle(title) {
