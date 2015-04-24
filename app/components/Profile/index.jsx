@@ -39,7 +39,7 @@ module.exports = React.createClass({
                         <Member.Avatar onMouseOver={()=>{this.setState({showTooltip:true});}}
                                        onMouseOut={()=>{this.setState({showTooltip:false});}}
                                        scale={2.5} link={false} member={this.state.user} className='avatar'></Member.Avatar>
-                        <mui.Tooltip className='tooltip' label="You can change your avatar by gravatar.com" show={this.state.showTooltip}/>
+                        <mui.Tooltip className='tooltip' label="You can change your avatar on gravatar.com" show={this.state.showTooltip}/>
                         <mui.TextField floatingLabelText='Email' type='email' valueLink={this.linkState('email')}
                                        disabled={true}/>
                         <div className='uniqueNameField'>
