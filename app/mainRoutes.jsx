@@ -13,6 +13,7 @@ if(!Object.assign)
 module.exports = (
     <Route name="app" path="/platform" handler={require("./components/Application")}>
         <Route name="profile" path="profile" handler={require("react-proxy!./components/Profile")} />
+        <Route name="member-profile" path="profile/:name" handler={require("react-proxy!./components/MemberProfile")} />
         <Route name="signin" path="signin" handler={require("react-proxy!./components/Signin")}></Route>
         <Route name="signup" path="signup" handler={require("react-proxy!./components/Signup")}></Route>
         <Route name="dashboard" path="dashboard" handler={require("./components/Dashboard")} />

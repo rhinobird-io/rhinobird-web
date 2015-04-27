@@ -141,6 +141,11 @@ let UserStore = assign({}, BaseStore, {
     getUser(id){
         return _teams_users[id];
     },
+    getUserByName(name){
+        if(_teams_users){
+            return _teams_users['1'];
+        }
+    },
     dispatcherIndex: AppDispatcher.register(function (payload) {
         let action = payload.action;
         switch (action.type) {

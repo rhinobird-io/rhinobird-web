@@ -20,7 +20,7 @@ let avatar = React.createClass({
             let display = <img className='avatar' height={height} {...this.props}
                                src={`http://www.gravatar.com/avatar/${this.props.member.hash}?d=identicon`}/>;
             if (this.props.link) {
-                return <a href={`/profile/${this.props.member.name}`} target="_blank">
+                return <a href={`/platform/profile/${this.props.member.name}`} target="_blank">
                     {display}
                 </a>;
             } else {
@@ -40,9 +40,9 @@ let name = React.createClass({
     },
     render: function () {
         if (this.props.member) {
-            let display = <span>{this.props.member.realname}</span>;
+            let display = <span className={this.props.className}>{this.props.member.realname}</span>;
             if (this.props.link) {
-                return <a href={`/profile/${this.props.member.name}`} target="_blank">
+                return <a href={`/platform/profile/${this.props.member.name}`} target="_blank">
                     {display}
                 </a>;
             } else {
