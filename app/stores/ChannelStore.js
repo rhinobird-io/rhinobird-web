@@ -4,20 +4,13 @@ import Constants from '../constants/AppConstants';
 import BaseStore from './BaseStore';
 import assign from 'object-assign';
 
-let _channels = {
-  publicGroupChannels: [],
-  directMessageChannels: []
-};
+let _currentChannel = {};
 
 
 let ChannelStore = assign({}, BaseStore, {
 
-  getAllChannels() {
-    return _channels;
-  },
-
-  getChannelById(_channelId) {
-    console.log('not implement yet');
+  getCurrentChannel() {
+    return _currentChannel;
   },
 
   dispatcherIndex: AppDispatcher.register(function (payload) {

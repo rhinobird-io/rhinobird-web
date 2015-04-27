@@ -77,7 +77,9 @@ let _teams = {};
 //
 let _users = {};
 
+
 let _username_users = {};
+
 
 
 
@@ -92,6 +94,7 @@ let UserStore = assign({}, BaseStore, {
     },
 
     getTeamsArray() {
+
         var _tmp = {};
         return _.values(_teams).filter(_team => {
             if (_tmp[_team.id]) {
@@ -111,6 +114,7 @@ let UserStore = assign({}, BaseStore, {
     },
 
     getUsersArray() {
+
         var _tmp = {};
         return _.values(_users).filter(_user => {
             if (_tmp[_user.id]) {
@@ -138,7 +142,6 @@ let UserStore = assign({}, BaseStore, {
      * @returns {*}
      */
         getTeamsUsers() {
-
         return _teams_users;
     },
     getUser(id){
@@ -194,6 +197,7 @@ function buildIndex(teams_users) {
         _teams[team.id] = team;
         _teams[team.hash] = team;
     });
+
 
     return {
         _teams_users: _teams_users,

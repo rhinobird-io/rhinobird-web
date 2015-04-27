@@ -49,8 +49,8 @@ module.exports = React.createClass({
   render() {
     return (
       <div className="sidebar">
-        <ImChannels className="instant-message-group-channels" channelGroup="Group Channel" isGroup={true} channels={this.state.channels.publicGroupChannels}></ImChannels>
-        <ImChannels className="instant-message-direct-message-channels" channelGroup="Direct Message" channels={this.state.channels.directMessageChannels}></ImChannels>
+        <ImChannels {...this.props} className="instant-message-group-channels" channelGroup="Group Channel" isGroup={true} channels={this.state.channels.publicGroupChannels}></ImChannels>
+        <ImChannels {...this.props} className="instant-message-direct-message-channels" channelGroup="Direct Message" channels={this.state.channels.directMessageChannels}></ImChannels>
       </div>
     );
   }

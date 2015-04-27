@@ -57,6 +57,7 @@ module.exports = React.createClass({
   _onItemTap(e, index, menuItem) {
     let channel = this.state._menuItems[index].channel;
     this.context.router.transitionTo('/platform/im/talk/' + channel.hash);
+    this.props.setTitle("Instant Message - Talk - " + this.context.router.getCurrentParams().channelHash);
   },
 
   render() {

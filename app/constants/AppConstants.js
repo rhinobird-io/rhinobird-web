@@ -17,6 +17,14 @@ export default {
     RECEIVE_EVENTS: null,
     LOAD_MORE_NEWER_EVENTS: null,
     LOAD_MORE_OLDER_EVENTS: null
+  }),
+
+  ChannelActionTypes : keyMirror({
+    RECEIVE_ALL: null
+  }),
+
+  MessageActionTypes : keyMirror({
+    RECEIVE_MESSAGES: null
   })
 
 };
