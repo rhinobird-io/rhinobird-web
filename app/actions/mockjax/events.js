@@ -50,8 +50,10 @@ export default (() => {
 				"repeated_end_date":null,
 				"repeated_number":56,
 				"participants":[{"id":6}],
-				"team_participants":[]},
-				{"from_time":"2015-03-03T07:52:20.632Z",
+				"team_participants":[]
+			},
+			{
+				"from_time":"2015-03-03T07:52:20.632Z",
 				"repeated":true,
 				"repeated_end_type":0,
 				"repeated_type":"Daily",

@@ -1,5 +1,100 @@
+@import "~material-ui/src/less/scaffolding.less";
+@import "~material-ui/src/less/components.less";
+
 .add-event {
   position: absolute;
   right: 24px;
   bottom: 24px;
+}
+
+.event-wrapper {
+  margin: 20px;
+}
+.event {
+  padding: 2em 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.event::before {
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 22px;
+  width: 6px;
+  z-index: 3;
+  height: 100%;
+  padding: 10px 0 10px 0;
+  background-color: @indigo-100;
+}
+
+.event-icon {
+  border-radius: 50%;
+  padding: 8px;
+  color: white;
+  background-color: @indigo-500;
+}
+
+.event-icon.expired {
+  background-color: grey;
+}
+
+.event-icon span {
+  vertical-align: middle;
+}
+
+.event-icon-wrapper {
+  position: absolute;
+  z-index: 4;
+  border-radius: 50%;
+  padding: 5px;
+  background-color: @indigo-100;
+}
+
+.event-icon-wrapper:hover {
+  padding: 0;
+}
+
+.event-icon-wrapper:hover .event-icon {
+  padding: 13px;
+}
+
+.event-content {
+  height: 50px;
+  line-height: 25px;
+  margin-left: 78px;
+}
+
+.event-title {
+  font-size: 1.2em;
+}
+
+.event-time {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+@media screen and (min-width: 960px) {
+  .event::before {
+    left: 50%;
+    margin-left: -3px;
+  }
+
+  .event-icon-wrapper {
+    left: 50%;
+    margin-left: -25px;
+  }
+
+  .event-content.left {
+    width: 50%;
+    margin-left: 0;
+    text-align: right;
+    padding-right: 78px;
+  }
+
+  .event-content.right {
+    width: 50%;
+    margin-left: 50%;
+    text-align: left;
+    padding-left: 78px;
+  }
 }

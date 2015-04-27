@@ -1,6 +1,6 @@
 const keyMirror = require('react/lib/keyMirror');
 
-module.exports = {
+export default {
 
   ActionTypes: keyMirror({
     LOGIN_UPDATE: null
@@ -8,6 +8,10 @@ module.exports = {
 
   NotificationActionTypes: keyMirror({
     RECEIVE: null
+  }),
+
+  CalendarActionTypes: keyMirror({
+    RECEIVE_EVENTS: null
   }),
 
   ActionSources: keyMirror({

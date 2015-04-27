@@ -56,12 +56,15 @@ export default React.createClass({
                 borderLeft: "6px solid transparent",
                 borderRight: "6px solid transparent",
                 borderTop: "6px solid rgb(117,117,117)"
+            },
+            tooltip: {
+                zIndex: 10
             }
         };
 
         if (relative) {
             timeFormat = Moment(start).fromNow();
-            tip = <Tooltip ref="tip" show={this.state.tipShow} label={time}/>
+            tip = <Tooltip ref="tip" styles={styles.tooltip} show={this.state.tipShow} label={time}/>
         } else {
             timeFormat = time;
         }
