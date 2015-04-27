@@ -4,7 +4,7 @@ var React        = require("react"),
     TextField    = mui.TextField,
     RepeatedEventModal = require("./RepeatedEventModal.jsx");
 
-module.exports = React.createClass({
+export default React.createClass({
     _handleTouchTap() {
         this.refs.repeatedEventModal.show();
     },

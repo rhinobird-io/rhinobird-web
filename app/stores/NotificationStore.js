@@ -23,10 +23,9 @@ let NotificationStore = assign({}, BaseStore, {
   },
 
   dispatcherIndex: AppDispatcher.register(payload => {
-    let action = payload.action;
-    let data = action.data;
+    let data = payload.data;
 
-    switch (action.type) {
+    switch (payload.type) {
       case ActionTypes.RECEIVE:
         if (data.length === undefined) {
           _notifications.push(data);

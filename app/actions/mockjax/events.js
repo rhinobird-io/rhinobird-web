@@ -1,0 +1,14 @@
+export default (() => {
+
+    if (!$.mockjax) return false;
+    const API = "/platform/api";
+
+    $.mockjax({
+        url: API + "/events",
+        type: "GET",
+        responseText: [
+            {
+                "from_time":"2015-03-12T07:18:33.540Z","repeated":false,"id":38,"title":"B","full_day":false,"period":true,"description":null,"created_at":"2015-03-12T07:16:37.068Z","updated_at":"2015-03-12T07:16:37.068Z","creator_id":6,"to_time":"2015-03-12T07:18:33.540Z","repeated_type":null,"repeated_frequency":null,"repeated_on":null,"repeated_by":null,"repeated_times":null,"repeated_end_type":null,"repeated_end_date":null,"repeated_number":1,"participants":[],"team_participants":[{"id":8}]},{"from_time":"2015-04-27T07:52:20.632Z","repeated":true,"repeated_end_type":0,"repeated_type":"Daily","repeated_frequency":1,"id":39,"title":"Repeated Test","full_day":false,"period":true,"description":null,"created_at":"2015-03-12T07:50:23.269Z","updated_at":"2015-03-12T07:50:23.269Z","creator_id":6,"to_time":"2015-05-06T07:52:20.632Z","repeated_on":"[\"Thu\"]","repeated_by":"Month","repeated_times":10,"repeated_end_date":null,"repeated_number":56,"participants":[{"id":6}],"team_participants":[]},{"from_time":"2015-03-03T07:52:20.632Z","repeated":true,"repeated_end_type":0,"repeated_type":"Daily","repeated_frequency":1,"to_time":"2015-03-12T07:52:20.632Z","id":39,"title":"Repeated Test","full_day":false,"period":true,"description":null,"created_at":"2015-03-12T07:50:23.269Z","updated_at":"2015-03-12T07:50:23.269Z","creator_id":6,"repeated_on":"[\"Thu\"]","repeated_by":"Month","repeated_times":10,"repeated_end_date":null,"repeated_number":1,"participants":[{"id":6}],"team_participants":[]},{"from_time":"2015-04-27T02:00:00.000Z","repeated":true,"repeated_end_type":0,"repeated_type":"Daily","repeated_frequency":1,"id":35,"title":"Stand up meeting","full_day":false,"period":true,"description":"ATE Stand up meeting","created_at":"2015-03-12T02:32:44.369Z","updated_at":"2015-03-12T02:32:44.369Z","creator_id":1,"to_time":"2015-04-27T02:15:00.000Z","repeated_on":"[\"Thu\"]","repeated_by":"Week","repeated_times":10,"repeated_end_date":"2015-04-11T02:34:46.789Z","repeated_number":47,"participants":[],"team_participants":[{"id":2}]},{"from_time":"2015-03-12T02:00:00.000Z","repeated":true,"repeated_end_type":0,"repeated_type":"Daily","repeated_frequency":1,"to_time":"2015-03-12T02:15:00.000Z","id":35,"title":"Stand up meeting","full_day":false,"period":true,"description":"ATE Stand up meeting","created_at":"2015-03-12T02:32:44.369Z","updated_at":"2015-03-12T02:32:44.369Z","creator_id":1,"repeated_on":"[\"Thu\"]","repeated_by":"Week","repeated_times":10,"repeated_end_date":"2015-04-11T02:34:46.789Z","repeated_number":1,"participants":[],"team_participants":[{"id":2}]}]
+    });
+
+})();

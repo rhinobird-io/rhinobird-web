@@ -43,8 +43,8 @@ let UserStore = assign({}, BaseStore, {
         return _teams_users[id];
     },
     dispatcherIndex: AppDispatcher.register(function (payload) {
-        let action = payload.action;
-        switch (action.type) {
+        let data = payload.data;
+        switch (payload.type) {
             case Constants.ActionTypes.LOGIN_UPDATE:
                 $.get('/api/teams_users').then((data)=> {
                     _teams_users = data;

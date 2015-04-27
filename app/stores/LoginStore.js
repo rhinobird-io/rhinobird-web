@@ -11,10 +11,10 @@ let LoginStore = assign({}, BaseStore, {
     return _user;
   },
   dispatcherIndex: AppDispatcher.register(function (payload) {
-    let action = payload.action;
-    switch (action.type) {
+    let data = payload.data;
+    switch (payload.type) {
       case Constants.ActionTypes.LOGIN_UPDATE:
-        _user = payload.action.user;
+        _user = data;
         LoginStore.emitChange();
         break;
       default:

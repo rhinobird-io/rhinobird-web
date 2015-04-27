@@ -1,7 +1,7 @@
 var React = require("react");
 var RouteHandler = require("react-router").RouteHandler;
 
-module.exports = React.createClass({
+export default React.createClass({
     componentDidMount() {
         this.props.setTitle("Calendar");
     },

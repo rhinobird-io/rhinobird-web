@@ -5,9 +5,9 @@ import Constants from '../constants/AppConstants';
 export default {
 
   updateLogin(user) {
-    AppDispatcher.handleServerAction({
+    AppDispatcher.dispatch({
       type: Constants.ActionTypes.LOGIN_UPDATE,
-      user: user
+      data: user
     });
   }
 };

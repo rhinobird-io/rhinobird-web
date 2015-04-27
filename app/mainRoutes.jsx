@@ -21,6 +21,7 @@ module.exports = (
             <Route name="event-list" path="event-list" handler={require("./components/Calendar/EventList")} />
             <DefaultRoute handler={require("./components/Calendar/EventList")} />
         </Route>
+        <Route name="demo" path="demo" handler={require("react-proxy!./components/Demo")} />
         <Redirect from="/platform" to="/platform/dashboard" />
         <Redirect from="/platform/" to="/platform/dashboard" />
         <Redirect from="/" to="/platform/dashboard" />

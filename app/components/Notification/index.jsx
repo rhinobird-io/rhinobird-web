@@ -29,6 +29,7 @@ export default React.createClass({
     this.setState({
       notifications: NotificationStore.getAll()
     });
+    console.log(NotificationStore.getAll());
   },
 
   render() {
