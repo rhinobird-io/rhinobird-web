@@ -14,16 +14,12 @@ export default {
    */
   getMessages(channel, oldestMessage) {
     return $.get('/api/channels/' + channel.id + '/messages?beforeId=' + (oldestMessage?oldestMessage.id:-1) + '&limit=20')
-              .done(teams => {
+              .done(messages => {
                 AppDispatcher.handleServerAction({
                   type: Constants.MessageActionTypes.RECEIVE_MESSAGES,
-                  user : {
-                    id : user.id
-                  },
-                  teams : {
-                    publicGroupChannels : teams,
-                    privateGroupChannels : [],
-                    directMessageChannels : []
+                  channel : channel,
+                  oldestMessage : {
+                    id : messages[messages.length - 1]
                   }
                 });
               }).fail(Util.handleError);

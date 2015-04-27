@@ -10,8 +10,7 @@ require('./style.less');
 module.exports = React.createClass({
 
   contextTypes: {
-    router: React.PropTypes.func.isRequired,
-    channelHash: React.PropTypes.string.isRequired
+    router: React.PropTypes.func.isRequired
   },
 
   getInitialState() {
@@ -40,6 +39,7 @@ module.exports = React.createClass({
   componentWillReceiveProps(nextProps) {
     if (nextProps.currentChannel) {
       console.log(nextProps.currentChannel);
+      MessageAction.getMessages(nextProps.currentChannel, {});
     }
   },
 

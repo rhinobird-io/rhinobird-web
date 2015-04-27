@@ -16,9 +16,6 @@ module.exports = React.createClass({
   getInitialState() {
     return {
       user: LoginStore.getUser(), // it must be there... or it will be redirected
-      currentChannel : {
-        hash : this.context.router.getCurrentParams().channelHash
-      },
       channels : {
         publicGroupChannels : [],
         directMessageChannels : []
@@ -27,15 +24,15 @@ module.exports = React.createClass({
   },
 
   componentDidMount() {
-    UserStore.addChangeListener(this._onUserChange);
+    UserStore.addChangeListener(this._onTeamUserChange);
   },
 
   componentWillUnmount() {
-    UserStore.removeChangeListener(this._onUserChange);
+    UserStore.removeChangeListener(this._onTeamUserChange);
   },
 
 
-  _onUserChange() {
+  _onTeamUserChange() {
     var _allTeams = UserStore.getTeamsArray();
     var _allUsers = UserStore.getUsersArray();
     this.setState({
