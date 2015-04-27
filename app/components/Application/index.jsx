@@ -12,19 +12,49 @@ require("./style.less");
 var mui = require('material-ui');
 const TopNav = require('../TopNav');
 const SideNav = require('../SideNav');
+const FloatingContentStore = require('../../stores/FloatingContentStore');
 
+const closeButton = <mui.IconButton iconClassName="icon-close"/>;
 var Application = React.createClass({
 
     getInitialState() {
         return {
-            title: ''
+            title: '',
+            showFloatingContent: false,
+            floatingContent: FloatingContentStore.getFloatingContent()
         }
+    },
+    componentDidMount() {
+        FloatingContentStore.addChangeListener(this._floatingContentChanged);
+    },
+    componentWillUnmount() {
+        FloatingContentStore.removeChangeListener(this._floatingContentChanged);
     },
     render() {
         return <div>
-            <SideNav ref='sideNav' />
-            <div className='mainContent'>
-                <RouteHandler setTitle={this._setTitle}/>
+            <SideNav ref='sideNav'/>
+
+            <div className='mainContainer'>
+                <mui.Paper className={this.state.showFloatingContent? 'floatingContent' : 'floatingContent hide' }
+                           zDepth={1}>
+                    <div>
+                        <div className='rightBar'>
+                            <div className='header'>{this.state.floatingContent.title}</div>
+                            <div className='right'>
+                                <mui.IconButton className='icon-close' onClick={()=>{
+                                    this.setState({
+                                        showFloatingContent: false
+                                    })
+                                }}/>
+                            </div>
+                        </div>
+                        {this.state.floatingContent.elementFactory()}
+                    </div>
+                </mui.Paper>
+                <div className='mainContent'>
+                    <RouteHandler setTitle={this._setTitle} showFloatingContent={this._showFloatingContent}/>
+                </div>
+
             </div>
             <TopNav onMenuIconButtonTouchTap={this._onMenuIconButtonTouch} title={this.state.title}/>
         </div>;
@@ -33,6 +63,13 @@ var Application = React.createClass({
         this.setState({
             title: title
         });
+    },
+    _floatingContentChanged(){
+        let content = FloatingContentStore.getFloatingContent();
+        this.setState({
+            floatingContent: content,
+            showFloatingContent: true
+        })
     },
     _onMenuIconButtonTouch() {
         this.refs.sideNav.toggle();

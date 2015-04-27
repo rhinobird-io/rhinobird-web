@@ -13,19 +13,45 @@ div.topNav {
 
 }
 
-div.mainContent {
+div.mainContainer {
   position: absolute;
   bottom: 0;
   right: 0;
   left: 0;
   top: 64px;
   overflow: auto;
+  display: flex;
+
+  .floatingContent {
+    &.hide{
+      width: 0;
+    }
+    width: 20%;
+    transition: width 0.45s ease-in-out;
+    overflow: auto;
+    height: 100%;
+    .rightBar {
+      display: flex;
+      color: rgba(0,0,0,54%);
+      justify-content: space-between;
+      align-items: center;
+      background-color: @grey-200;
+      padding: 6px 24px;
+      font-size: 20px;
+      line-height: 20px;
+    }
+  }
+  .mainContent {
+    flex: 2;
+    overflow: auto;
+  }
 }
 
 
 a {
   color: @indigo-500;
   text-decoration: none;
+  cursor: pointer;
 }
 a:hover{
   text-decoration: underline;
