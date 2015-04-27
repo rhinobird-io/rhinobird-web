@@ -81,15 +81,14 @@ export default React.createClass({
     },
 
     filter(keyword) {
-        console.log(keyword);
         let filtered = this.state.list.filter((item) => {
             if (item.type === "group") {
                 let filteredOptions = item.content.filter((option) => {
-                    return option.value.indexOf(keyword) >= 0;
+                    return option.data.indexOf(keyword) >= 0;
                 });
                 return filteredOptions.length !== 0;
             } else if (item.type === "option") {
-                return item.value.indexOf(keyword) >= 0;
+                return item.data.indexOf(keyword) >= 0;
             } else {
                 return false;
             }
@@ -99,7 +98,7 @@ export default React.createClass({
                 return item;
             } else if (item.type === "group") {
                 let options = item.content.filter((option) => {
-                    return option.value.indexOf(keyword) >= 0
+                    return option.data.indexOf(keyword) >= 0
                 });
                 var newItem = {};
                 newItem.type = item.type;
@@ -113,7 +112,7 @@ export default React.createClass({
         if (this.props.onFilter) {
             this.props.onFilter(filteredValues);
         }
-        this.setState({filteredContent: filtered, filteredContentMap: filteredContentMap});
+        this.setState({filteredContent: filtered, filteredContentMap: filteredContentMap, selectedIndex: 0});
     },
 
     selectPrevious() {
@@ -211,6 +210,7 @@ export default React.createClass({
     _getOption: function(child) {
         return {
             type: "option",
+            data: child.props.data || child.props.value || "",
             value: child.props.value || child.props.children,
             content: child.props.children
         };
