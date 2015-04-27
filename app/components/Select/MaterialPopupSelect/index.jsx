@@ -81,14 +81,15 @@ export default React.createClass({
     },
 
     filter(keyword) {
+        let lowerCaseKeyword = keyword.toLowerCase();
         let filtered = this.state.list.filter((item) => {
             if (item.type === "group") {
                 let filteredOptions = item.content.filter((option) => {
-                    return option.data.indexOf(keyword) >= 0;
+                    return option.data.toLowerCase().indexOf(lowerCaseKeyword) >= 0;
                 });
                 return filteredOptions.length !== 0;
             } else if (item.type === "option") {
-                return item.data.indexOf(keyword) >= 0;
+                return item.data.toLowerCase().indexOf(lowerCaseKeyword) >= 0;
             } else {
                 return false;
             }
@@ -98,7 +99,7 @@ export default React.createClass({
                 return item;
             } else if (item.type === "group") {
                 let options = item.content.filter((option) => {
-                    return option.data.indexOf(keyword) >= 0
+                    return option.data.toLowerCase().indexOf(lowerCaseKeyword) >= 0
                 });
                 var newItem = {};
                 newItem.type = item.type;
