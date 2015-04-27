@@ -15,8 +15,7 @@ export default React.createClass({
             requestChange: React.PropTypes.func.isRequired
         }),
         multiple: React.PropTypes.bool,
-        placeholder: React.PropTypes.string,
-        floatingLabelText: React.PropTypes.string
+        placeholder: React.PropTypes.string
     },
 
     focused: false,
@@ -62,7 +61,7 @@ export default React.createClass({
 
     _updateLayout(focused) {
         this.focused = focused;
-        let selected = selected || this.state.selected;
+        let selected = this.state.selected;
         let marginTop = 0;
         let paddingLeft = 0;
         let tokenWrapper = this.refs.tokenWrapper;
@@ -76,6 +75,7 @@ export default React.createClass({
                 marginTop = tokenWrapper.getDOMNode().clientHeight;
             }
             this.refs.text.getDOMNode().style.marginTop = marginTop + "px";
+            console.log(marginTop)
         }
         this.refs.hint.getDOMNode().style.top = this.refs.text.getDOMNode().offsetTop + 'px';
         this.refs.hint.getDOMNode().style.left = this.refs.text.getDOMNode().offsetLeft + 'px';
@@ -152,7 +152,8 @@ export default React.createClass({
             }
             onShow={() => this._updateLayout(true)}
             onHide={() => this._updateLayout(false)}
-            onChange={(values) => {
+            onChange={() => this.refs.popupSelect.filter(this.refs.text.getValue())}
+            onFilter={(values) => {
                 let textValue = this.refs.text.getValue();
                 let hintValue = "";
                 if (values[0] && textValue.length > 0 && values[0].indexOf(this.refs.text.getValue()) === 0) {

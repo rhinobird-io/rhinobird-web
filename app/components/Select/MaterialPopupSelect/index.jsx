@@ -14,7 +14,9 @@ export default React.createClass({
         onChange: React.PropTypes.func,
         onAutoComplete: React.PropTypes.func,
         onShow: React.PropTypes.func,
-        onHide: React.PropTypes.func
+        onHide: React.PropTypes.func,
+        onFocus: React.PropTypes.func,
+        onFilter: React.PropTypes.func
     },
 
     getInitialState() {
@@ -54,10 +56,10 @@ export default React.createClass({
         // TODO: this following event binding is not recommended
         if (nextProps.controller) {
             var target = nextProps.controller;
-            target.props.onBlur = this._blurListener;
-            target.props.onFocus = this._focusListener;
-            target.props.onChange = this._changeListener;
-            target.props.onKeyDown = this._keyDownListener;
+            target.props.onBlur = nextProps.onBlur || this._blurListener;
+            target.props.onFocus = nextProps.onFocus || this._focusListener;
+            target.props.onChange = nextProps.onChange || this._changeListener;
+            target.props.onKeyDown = nextProps.onKeyDown || this._keyDownListener;
         }
     },
 
@@ -108,8 +110,8 @@ export default React.createClass({
         });
         let filteredContentMap = this._getListContentMap(filtered);
         let filteredValues = filteredContentMap.map((item) => item.value);
-        if (this.props.onChange) {
-            this.props.onChange(filteredValues);
+        if (this.props.onFilter) {
+            this.props.onFilter(filteredValues);
         }
         this.setState({filteredContent: filtered, filteredContentMap: filteredContentMap});
     },
@@ -345,7 +347,7 @@ export default React.createClass({
         }
 
         return (
-            <div ref="popup" styles={styles.popup} className="select-popup mui-z-depth-5">
+            <div ref="popup" styles={styles.popup} className="select-popup mui-z-depth-5" {...this.props}>
                 <ul ref="__list" styles={styles.list}>
                     {listContent}
                 </ul>
