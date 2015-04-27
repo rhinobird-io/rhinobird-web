@@ -11,7 +11,7 @@ module.exports = React.createClass({
     },
     getInitialState(){
         return {
-            member: null
+            member: UserStore.getUserByName(this.context.router.getCurrentParams().name)
         }
     },
     _userChanged(){
