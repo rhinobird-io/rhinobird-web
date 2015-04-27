@@ -180,6 +180,7 @@ function buildIndex(teams_users) {
         team.users.forEach(user => {
             _users_teams[user.id] = _users_teams[user.id] || [];
             _users_teams[user.id].push(team);
+            user = _users[user.id] || user;
             user.teams = user.teams || [];
             user.teams.push(team);
             _users[user.id] = user;
