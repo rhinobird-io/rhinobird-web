@@ -65,7 +65,8 @@ module.exports = React.createClass({
         </div>;
         var menuItems = [
             {route: '/platform/dashboard', iconClassName: 'icon-dashboard', text: 'Dashboard'},
-            {route: '/platform/calendar', iconClassName: 'icon-event-note', text: 'Calendar'}
+            {route: '/platform/calendar', iconClassName: 'icon-event-note', text: 'Calendar'},
+            {route: '/platform/teams', iconClassName: 'icon-group', text: 'Team'}
         ];
 
         return <LeftNav

@@ -1,0 +1,51 @@
+.profile-page {
+  padding: 24px;
+  margin: 0 auto;
+
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  .paper-outer-container {
+    width: 600px;
+    margin: 24px;
+  }
+
+  .paper-inner-container {
+    position: relative;
+    padding: 24px;
+    .mui-text-field {
+      width: 100%;
+    }
+  }
+
+  .rightButton{
+    margin-top: 1em;
+    text-align: right;
+  }
+
+  .uniqueNameField {
+    position: relative;
+    .mui-text-field.mui-has-floating-labels:not(.mui-is-focused):not(.mui-has-value) .mui-text-field-floating-label, input {
+      padding-left: 1em;
+    }
+
+    span {
+      position:absolute;
+      top: 33px;
+      font-size: 16px !important;
+    }
+  }
+
+  .avatar {
+    position:absolute;
+    right: 24px;
+    top: 24px;
+  }
+
+  .tooltip {
+    right: 24px;
+    top: 70px;
+
+  }
+}

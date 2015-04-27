@@ -27,6 +27,12 @@ import moment from 'moment';
 moment.locale('ja', require('moment/locale/ja'));
 import i18n from 'i18next-client';
 
+const tForm = require('tcomb-form/lib'); // tcomb-form without templates!
+const en = require('tcomb-form/lib/i18n/en');
+const materialSkin = require('../app/tcombskin');
+tForm.form.Form.i18n = en;
+tForm.form.Form.templates = materialSkin;
+
 const languages = [
     {
         key: 'ja',
@@ -63,7 +69,7 @@ if ($.mockjax) {
     $.mockjax({
         url: '/api/login',
         type: 'GET',
-        responseText: {"company": "Works Applications", "name":"tomcat", hash:"xx", "realname": "Tom Cat", role:'operator'}
+        responseText: {"email": "tom@cat.pet", "name":"tomcat", hash:"xx", "realname": "Tom Cat", role:'operator'}
     });
 
     $.mockjax({
