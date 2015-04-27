@@ -34,12 +34,12 @@ var Application = React.createClass({
         return <div>
             <SideNav ref='sideNav'/>
 
-            <div className='mainContainer'>
-                <mui.Paper className={this.state.showFloatingContent? 'floatingContent' : 'floatingContent hide' }
+            <div className={this.state.showFloatingContent? 'mainContainer floating' : 'mainContainer'}>
+                <mui.Paper className='floatingContent'
                            zDepth={1}>
                     <div>
-                        <div className='rightBar'>
-                            <div className='header'>{this.state.floatingContent.title}</div>
+                        <div className='header'>
+                            <div className='title'>{this.state.floatingContent.title}</div>
                             <div className='right'>
                                 <mui.IconButton className='icon-close' onClick={()=>{
                                     this.setState({
@@ -48,13 +48,12 @@ var Application = React.createClass({
                                 }}/>
                             </div>
                         </div>
-                        {this.state.floatingContent.elementFactory()}
+                        {this.state.floatingContent.element}
                     </div>
                 </mui.Paper>
                 <div className='mainContent'>
                     <RouteHandler setTitle={this._setTitle} showFloatingContent={this._showFloatingContent}/>
                 </div>
-
             </div>
             <TopNav onMenuIconButtonTouchTap={this._onMenuIconButtonTouch} title={this.state.title}/>
         </div>;

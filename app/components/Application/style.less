@@ -20,17 +20,19 @@ div.mainContainer {
   left: 0;
   top: 64px;
   overflow: auto;
-  display: flex;
 
+  &.floating .floatingContent {
+    left: 0;
+  }
   .floatingContent {
-    &.hide{
-      width: 0;
-    }
+    position: absolute;
+    transition: left 0.45s ease-in-out;
+    left: -20%;
     width: 20%;
-    transition: width 0.45s ease-in-out;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     height: 100%;
-    .rightBar {
+    .header {
       display: flex;
       color: rgba(0,0,0,54%);
       justify-content: space-between;
@@ -41,8 +43,14 @@ div.mainContainer {
       line-height: 20px;
     }
   }
+  &.floating .mainContent {
+    left: 20%;
+  }
   .mainContent {
-    flex: 2;
+    transition: left 0.45s ease-in-out;
+    position: absolute;
+    left: 0;
+    right: 0;
     overflow: auto;
   }
 }

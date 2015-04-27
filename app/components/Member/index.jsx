@@ -1,8 +1,23 @@
 const React = require("react");
 require('./style.less');
+const FloatingContentAction = require('../../actions/FloatingContentAction');
 
+function Member() {
 
-let avatar = React.createClass({
+}
+
+module.exports = Member;
+
+const MemberProfile = require('../MemberProfile');
+function _showMemberProfile(){
+    var self=this;
+    FloatingContentAction.updateFloatingContent({
+        title: 'Member',
+        element:  <MemberProfile userId={self.props.member.id}/>
+    });
+}
+
+Member.Avatar = React.createClass({
     propTypes() {
         return {
             member: React.prototype.object.isRequired
@@ -20,7 +35,7 @@ let avatar = React.createClass({
             let display = <img className='avatar' height={height} {...this.props}
                                src={`http://www.gravatar.com/avatar/${this.props.member.hash}?d=identicon`}/>;
             if (this.props.link) {
-                return <a href={`/platform/profile/${this.props.member.name}`} target="_blank">
+                return <a onClick={_showMemberProfile.bind(this)}>
                     {display}
                 </a>;
             } else {
@@ -32,7 +47,7 @@ let avatar = React.createClass({
     }
 });
 
-let name = React.createClass({
+Member.Name = React.createClass({
     getDefaultProps() {
         return {
             link: true
@@ -42,7 +57,7 @@ let name = React.createClass({
         if (this.props.member) {
             let display = <span className={this.props.className}>{this.props.member.realname}</span>;
             if (this.props.link) {
-                return <a href={`/platform/profile/${this.props.member.name}`} target="_blank">
+                return <a onClick={_showMemberProfile.bind(this)}>
                     {display}
                 </a>;
             } else {
@@ -55,7 +70,3 @@ let name = React.createClass({
 });
 
 
-export default {
-    Avatar: avatar,
-    Name: name
-}

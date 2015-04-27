@@ -11,16 +11,15 @@ module.exports = React.createClass({
     },
     getInitialState(){
         return {
-            member: UserStore.getUserByName(this.context.router.getCurrentParams().name)
+            member: UserStore.getUser(this.props.userId)
         }
     },
     _userChanged(){
         this.setState({
-            member: UserStore.getUserByName(this.context.router.getCurrentParams().name)
+            member: UserStore.getUser(this.props.userId)
         });
     },
     componentDidMount(){
-        this.props.setTitle("Member");
         UserStore.addChangeListener(this._userChanged);
     },
     componentWillUnmount(){
