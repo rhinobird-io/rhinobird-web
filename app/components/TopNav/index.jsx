@@ -12,7 +12,7 @@ module.exports = React.createClass({
         router: React.PropTypes.func.isRequired
     },
     render: function() {
-        let mainPage = (['/signin', '/signup'].indexOf(this.context.router.getCurrentPathname()) === -1);
+        let mainPage = (['/platform/signin', '/platform/signup'].indexOf(this.context.router.getCurrentPathname()) === -1);
         let rightElement = <div className="top-nav-right"><Notification /></div>;
         return <Paper className='topNav' rounded={false}>
             <mui.AppBar
