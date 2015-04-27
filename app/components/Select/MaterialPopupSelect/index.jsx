@@ -6,12 +6,15 @@ var React = require('react'),
 require('./style.less');
 
 export default React.createClass({
+    mixins: [React.addons.LinkedStateMixin],
+
     propTypes: {
         controller: React.PropTypes.object,
         onItemSelect: React.PropTypes.func,
         onChange: React.PropTypes.func,
         onAutoComplete: React.PropTypes.func,
-        onFocus: React.PropTypes.func
+        onShow: React.PropTypes.func,
+        onHide: React.PropTypes.func
     },
 
     getInitialState() {
@@ -44,9 +47,11 @@ export default React.createClass({
     },
 
     componentDidMount() {
+
     },
 
     componentWillReceiveProps(nextProps) {
+        // TODO: this following event binding is not recommended
         if (nextProps.controller) {
             var target = nextProps.controller;
             target.props.onBlur = this._blurListener;
@@ -61,10 +66,16 @@ export default React.createClass({
 
     hide() {
         this.setState({visible: false});
+        if (this.props.onHide) {
+            this.props.onHide();
+        }
     },
 
     show: function() {
         this.setState({visible: true});
+        if (this.props.onShow) {
+            this.props.onShow();
+        }
     },
 
     filter(keyword) {
@@ -134,12 +145,16 @@ export default React.createClass({
 
     _doSelect: function() {
         var selectedItem = this.state.filteredContentMap[this.state.selectedIndex];
-        this.hide();
         if (this.props.onItemSelect) {
             this.props.onItemSelect(selectedItem.value);
         }
         let listContent = this.state.list;
         this.setState({filteredContentMap: this._getListContentMap(listContent), filteredContent: listContent});
+    },
+
+    _doSelectAndHide() {
+        this._doSelect();
+        this.hide();
     },
 
     _getListContentMap: function(listContent) {
@@ -239,8 +254,11 @@ export default React.createClass({
                 event.preventDefault();
                 this._doSelect();
                 break;
-            case 27:
+            case 27:    // Escape
                 event.preventDefault();
+                if (event.target.blur) {
+                    event.target.blur();
+                }
                 break;
             case 9:     // Tab
                 event.preventDefault();
@@ -265,9 +283,6 @@ export default React.createClass({
 
     _focusListener() {
         this.show();
-        if (this.props.onFocus) {
-            this.props.onFocus();
-        }
     },
 
     render: function() {
@@ -312,7 +327,7 @@ export default React.createClass({
                             <li
                                 className={className}
                                 ref={item.content[j].value}
-                                onMouseDown={() => this._doSelect(currentIndex)}
+                                onMouseDown={() => this._doSelectAndHide()}
                                 onMouseOver={() => this.select(currentIndex)}>
                                 {item.content[j].content}
                             </li>);
@@ -324,7 +339,7 @@ export default React.createClass({
                     if (selected === item) {
                         className += " mui-is-selected";
                     }
-                    listContent.push(<li className={className} ref={item.value} onMouseDown={() => this._doSelect(currentIndex)} onMouseOver={() => this.select(currentIndex)}  key={item.value}>{item.content}</li>);
+                    listContent.push(<li className={className} ref={item.value} onMouseDown={() => this._doSelectAndHide()} onMouseOver={() => this.select(currentIndex)}  key={item.value}>{item.content}</li>);
                 }
             }
         }

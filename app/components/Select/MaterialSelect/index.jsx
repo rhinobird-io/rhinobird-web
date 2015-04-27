@@ -1,31 +1,43 @@
-var React       = require('react'),
-    MUI         = require('material-ui'),
-    Paper       = MUI.Paper,
-    TextField   = MUI.TextField,
-    PopupSelect = require('../MaterialPopupSelect');
+const React       = require('react'),
+      MUI         = require('material-ui'),
+      Paper       = MUI.Paper,
+      TextField   = MUI.TextField,
+      PopupSelect = require('../MaterialPopupSelect');
 
 require('./style.less');
 
 export default React.createClass({
+    mixins: [React.addons.LinkedStateMixin],
+
     propTypes: {
         valueLink: React.PropTypes.shape({
             value: React.PropTypes.array.isRequired,
             requestChange: React.PropTypes.func.isRequired
         }),
         multiple: React.PropTypes.bool,
-        placeholder: React.PropTypes.string
+        placeholder: React.PropTypes.string,
+        floatingLabelText: React.PropTypes.string
     },
 
-    componentDidMount() {
+    focused: false,
+    layoutUpdated: false,
 
+    componentDidMount() {
+        this._updateLayout(this.focused);
     },
 
     componentDidUpdate() {
-        this._updateHintPosition();
+        if (!this.layoutUpdated) {
+            this.layoutUpdated = true;
+            this._updateLayout(this.focused);
+        } else {
+            this.layoutUpdated = false;
+        }
     },
 
     getInitialState() {
         return {
+            hint: this.props.placeholder,
             selected: []
         };
     },
@@ -43,20 +55,31 @@ export default React.createClass({
             return;
         }
         selected.splice(index, 1);
-        this.setState({selected: selected});
+        this._updateLayout(false, selected);
+        this.setState({selected: selected, hint: selected.length === 0 ? this.props.placeholder : ""});
         this.getValueLink(this.props).requestChange(selected);
     },
 
-
-    _updateHintPosition() {
+    _updateLayout(focused) {
+        this.focused = focused;
+        let selected = selected || this.state.selected;
+        let marginTop = 0;
+        let paddingLeft = 0;
         let tokenWrapper = this.refs.tokenWrapper;
-
+        let containerWidth = this.getDOMNode().clientWidth;
         if (tokenWrapper) {
             let lastToken = this.refs["token-" + (tokenWrapper.props.children.length - 1)];
-            this.refs.text.getDOMNode().style.marginTop = lastToken.getDOMNode().offsetTop + "px";
+            paddingLeft = lastToken.getDOMNode().offsetLeft + lastToken.getDOMNode().clientWidth + 4;
+            marginTop = lastToken.getDOMNode().offsetTop;
+            if (containerWidth - paddingLeft < 100 && focused) {
+                paddingLeft = 0;
+                marginTop = tokenWrapper.getDOMNode().clientHeight;
+            }
+            this.refs.text.getDOMNode().style.marginTop = marginTop + "px";
         }
         this.refs.hint.getDOMNode().style.top = this.refs.text.getDOMNode().offsetTop + 'px';
         this.refs.hint.getDOMNode().style.left = this.refs.text.getDOMNode().offsetLeft + 'px';
+        this.setState({paddingLeft: paddingLeft});
     },
 
     _addSelectedOption(value) {
@@ -73,10 +96,12 @@ export default React.createClass({
             }
         }
         this.setState({selected: selected});
+        this._updateLayout(true, selected);
         this.getValueLink(this.props).requestChange(selected);
     },
 
-    render: function() {
+    render() {
+        let multiple = this.props.multiple || false;
         let styles = {
             select: {
                 position: "relative",
@@ -88,22 +113,26 @@ export default React.createClass({
                 color: "#999"
             },
             token: {
-                float: "left",
+                float: multiple ? "left" : "none",
                 marginRight: 4,
                 marginBottom: 4,
                 cursor: "pointer",
-                padding: "2px 8px"
+                padding: "2px 8px",
+                display: "block"
             },
             tokenDelete: {
                 color: "#777",
                 marginLeft: 4,
+                float: "right",
                 fontWeight: "bold"
             },
             tokenWrapper: {
                 position: "absolute",
                 cursor: "text",
                 zIndex: 2,
-                top: 10
+                top: 10,
+                left: 0,
+                right: 0
             },
             padding: {
                 paddingLeft: this.state.paddingLeft || 0
@@ -111,46 +140,39 @@ export default React.createClass({
         };
 
         let tokens = [];
-        let text = <TextField ref="text" style={styles.padding} hintText={this.props.placeholder} type="text" className="select-text" />;
+        let text = <TextField ref="text" style={styles.padding} type="text" className="select-text"/>;
         let popupSelect = <PopupSelect
             ref="popupSelect"
             controller={this.refs.text}
             onItemSelect={(value) => {
                     this._addSelectedOption(value);
                     this.refs.text.setValue("");
-                    this.refs.hint.setValue("");
-                    this.refs.text.blur();
+                    this.setState({hint: ""});
                 }
             }
-            onFocus={() => {
-                    let tokenWrapper = this.refs.tokenWrapper;
-                    let paddingLeft = 0;
-
-                    if (tokenWrapper) {
-                        let lastToken = this.refs["token-" + (tokenWrapper.props.children.length - 1)];
-                        paddingLeft = lastToken.getDOMNode().offsetLeft + lastToken.getDOMNode().clientWidth + 4;
-                        this.refs.text.getDOMNode().style.marginTop = lastToken.getDOMNode().offsetTop + "px";
-                    } else {
-                        paddingLeft = 2;
-                    }
-                    this.setState({paddingLeft: paddingLeft});
-                }
-            }
+            onShow={() => this._updateLayout(true)}
+            onHide={() => this._updateLayout(false)}
             onChange={(values) => {
                 let textValue = this.refs.text.getValue();
+                let hintValue = "";
                 if (values[0] && textValue.length > 0 && values[0].indexOf(this.refs.text.getValue()) === 0) {
-                    this.refs.hint.setValue(values[0]);
+                    hintValue = values[0];
                 } else {
-                    this.refs.hint.setValue("");
+                    if (textValue.length === 0) {
+                        hintValue = this.props.placeholder;
+                    } else {
+                        hintValue = "";
+                    }
                 }
+                this.setState({hint: hintValue});
             }}
             onAutoComplete={(values) =>
                 {
+                    let textValue = "";
                     if (values[0] && values[0].indexOf(this.refs.text.getValue()) === 0) {
-                        this.refs.text.setValue(values[0]);
-                    } else {
-                        this.refs.text.setValue("");
+                        textValue = values[0];
                     }
+                    this.refs.text.setValue(textValue);
                 }
             }>
             {this.props.children}
@@ -181,7 +203,7 @@ export default React.createClass({
                 {tokenWrapperDOM}
                 {text}
                 {popupSelect}
-                <TextField styles={[styles.hint, styles.padding]} ref="hint" type="text" className="select-hint" />
+                <TextField styles={[styles.hint, styles.padding]} valueLink={this.linkState("hint")} ref="hint" type="text" className="select-hint" />
             </div>
         );
     }
