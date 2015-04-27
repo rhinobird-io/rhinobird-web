@@ -25,7 +25,7 @@ module.exports = React.createClass({
     };
     return (
       <div className="instant-message-message-item">
-      {this.props.Message.text}
+        {this.props.Message.text}
       </div>
     );
   }

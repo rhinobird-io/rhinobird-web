@@ -4,6 +4,8 @@ const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
 const mui = require("material-ui");
 
+import ChannelAction from '../../../../../actions/ChannelAction';
+
 const { Menu, FontIcon } = mui;
 
 require('./style.less');
@@ -16,7 +18,8 @@ module.exports = React.createClass({
   propTypes : {
     channelGroup : React.PropTypes.string,
     channels : React.PropTypes.array,
-    isGroup : React.PropTypes.bool
+    isGroup : React.PropTypes.bool,
+    onChannelChange : React.PropTypes.func.isRequired
   },
 
   getInitialState() {
@@ -56,8 +59,7 @@ module.exports = React.createClass({
 
   _onItemTap(e, index, menuItem) {
     let channel = this.state._menuItems[index].channel;
-    this.context.router.transitionTo('/platform/im/talk/' + channel.hash);
-    this.props.setTitle("Instant Message - Talk - " + this.context.router.getCurrentParams().channelHash);
+    ChannelAction.changeChannel(channel.hash);
   },
 
   render() {

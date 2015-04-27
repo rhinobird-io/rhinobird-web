@@ -9,6 +9,7 @@ const LoginAction = require('../../../actions/LoginAction');
 
 const LoginStore = require('../../../stores/LoginStore');
 const UserStore = require('../../../stores/UserStore');
+const ChannelStore = require('../../../stores/ChannelStore');
 
 
 require('./style.less');
@@ -30,6 +31,7 @@ module.exports = React.createClass({
 
   componentDidMount() {
     UserStore.addChangeListener(this._onTeamUserChange);
+    ChannelStore.addChangeListener(this._onChannelChange);
 
     this.props.setTitle("Instant Message - Talk - " + this.context.router.getCurrentParams().channelHash);
 
@@ -40,11 +42,23 @@ module.exports = React.createClass({
 
   componentWillUnmount() {
     UserStore.removeChangeListener(this._onTeamUserChange);
+    ChannelStore.removeChangeListener(this._onChannelChange);
   },
 
   _onTeamUserChange() {
     this.setState({
       currentChannel : UserStore.getChannelFromHash(this.state.channelHash)
+    });
+  },
+
+  _onChannelChange() {
+    var currentChannel = ChannelStore.getCurrentChannel();
+    this.context.router.transitionTo('/platform/im/talk/' + currentChannel.hash);
+
+    this.props.setTitle("Instant Message - Talk - " + currentChannel.hash);
+    this.setState({
+      channelHash : currentChannel.hash,
+      currentChannel : currentChannel
     });
   },
 
@@ -56,11 +70,11 @@ module.exports = React.createClass({
     return (
     <div className="instant-message-container">
       <div className="main" style={style}>
-        <ImHistory {...this.props} className="history" currentChannel={this.state.currentChannel}></ImHistory>
-        <ImSendBox {...this.props} className="send-box" currentChannel={this.state.currentChannel}></ImSendBox>
+        <ImHistory {...this.props} className="history" ></ImHistory>
+        <ImSendBox {...this.props} className="send-box" ></ImSendBox>
       </div>
 
-      <ImSideNav {...this.props} className="sidebar" currentChannel={this.state.currentChannel}></ImSideNav>
+      <ImSideNav {...this.props} className="sidebar"></ImSideNav>
     </div>
     );
   }

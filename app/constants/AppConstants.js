@@ -21,7 +21,8 @@ export default {
 
   ChannelActionTypes : keyMirror({
     RECEIVE_ALL: null,
-    RECEIVE_CURRENT_CHANNEL : null
+    RECEIVE_CURRENT_CHANNEL : null,
+    CHANGE_CHANNEL : null
   }),
 
   MessageActionTypes : keyMirror({

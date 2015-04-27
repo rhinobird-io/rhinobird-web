@@ -4,6 +4,7 @@ const ImMessage = require('./ImMessage');
 
 import MessageAction from '../../../../actions/MessageAction.js';
 import MessageStore from '../../../../stores/MessageStore.js';
+import ChannelStore from '../../../../stores/ChannelStore.js';
 
 
 require('./style.less');
@@ -21,26 +22,29 @@ module.exports = React.createClass({
 
   componentDidMount() {
     MessageStore.addChangeListener(this._onMessageChange);
+    ChannelStore.addChangeListener(this._onChannelChange);
   },
 
   componentWillUnmount() {
     MessageStore.removeChangeListener(this._onMessageChange);
+    ChannelStore.removeChangeListener(this._onChannelChange);
   },
 
   _onMessageChange() {
+    let messages = MessageStore.getMessages(this.state.currentChannel);
     this.setState({
-      _messages : MessageStore.getMessages()
-    })
+      messages : messages
+    });
   },
 
-  /**
-   * This method will  be called after dynamic segments changed
-   */
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.currentChannel) {
-      console.log(nextProps.currentChannel);
-      MessageAction.getMessages(nextProps.currentChannel, {});
-    }
+  _onChannelChange() {
+    let currentChannel = ChannelStore.getCurrentChannel();
+    this.setState({
+      channelHash : currentChannel.hash,
+      currentChannel : currentChannel,
+      messages : []
+    });
+    MessageAction.getMessages(currentChannel);
   },
 
   render() {
@@ -51,9 +55,5 @@ module.exports = React.createClass({
         }
       </div>
     );
-  },
-
-  _getMessageItems() {
-
   }
 });
