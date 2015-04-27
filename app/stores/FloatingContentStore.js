@@ -5,6 +5,10 @@ import BaseStore from './BaseStore';
 import assign from 'object-assign';
 
 let _floatingContent = {
+    title: '',
+    elementFactory: function(){
+        return null;
+    }
 };
 
 let FloatingContentStore = assign({}, BaseStore, {

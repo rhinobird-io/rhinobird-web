@@ -19,6 +19,11 @@ module.exports = React.createClass({
             member: UserStore.getUser(this.props.userId)
         });
     },
+    componentWillReceiveProps(nextProps){
+        this.setState({
+            member: UserStore.getUser(nextProps.userId)
+        });
+    },
     componentDidMount(){
         UserStore.addChangeListener(this._userChanged);
     },

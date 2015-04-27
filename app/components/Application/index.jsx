@@ -48,7 +48,7 @@ var Application = React.createClass({
                                 }}/>
                             </div>
                         </div>
-                        {this.state.floatingContent.element}
+                        {this.state.floatingContent.elementFactory()}
                     </div>
                 </mui.Paper>
                 <div className='mainContent'>
