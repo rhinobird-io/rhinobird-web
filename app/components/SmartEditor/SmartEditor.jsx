@@ -15,6 +15,10 @@ export default React.createClass({
     users: React.PropTypes.array
   },
 
+  getValue() {
+    return this.refs.textfield.getValue();
+  },
+
   _onKeyDown() {
 
   },
@@ -22,7 +26,7 @@ export default React.createClass({
   render() {
     return (
       <div className="smart-editor">
-        <TextField {...this.props} onKeyDown={this._onKeyDown} />
+        <TextField {...this.props} ref="textfield" onKeyDown={this._onKeyDown} />
       </div>
     );
   }

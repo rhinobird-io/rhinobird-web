@@ -4,6 +4,8 @@ let React = require("react");
 let HighLight = require("highlight.js");
 let Marked = require("marked");
 
+require("../../../node_modules/highlight.js/styles/default.css");
+
 export default React.createClass({
   getInitialState: function() {
     return {};
