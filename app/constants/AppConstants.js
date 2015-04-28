@@ -13,11 +13,6 @@ export default {
 
   CalendarActionTypes: keyMirror({
     RECEIVE_EVENTS: null
-  }),
-
-  ActionSources: keyMirror({
-    SERVER_ACTION: null,
-    VIEW_ACTION: null
   })
 
 };
