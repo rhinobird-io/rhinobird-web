@@ -49,10 +49,19 @@ export default React.createClass({
             );
             dayEvents.push(events.map((event) => {
                 let contentClass = "cal-event-content " + direction;
+                let eventIconClass = "cal-event-icon";
+                let now = new Date();
+                let fromTime = new Date(event.from_time);
+                let toTime = new Date(event.to_time);
+                if (toTime < now) {
+                    eventIconClass += " expired";
+                } else if (now > fromTime && now < toTime) {
+                    eventIconClass += " active";
+                }
                 return (
                     <div className="cal-event">
                         <div className="cal-event-icon-wrapper">
-                            <div className="cal-event-icon">
+                            <div className={eventIconClass}>
                                 <FontIcon className="icon-event"/>
                             </div>
                         </div>

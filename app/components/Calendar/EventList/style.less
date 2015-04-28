@@ -5,11 +5,13 @@
   position: absolute;
   right: 24px;
   bottom: 24px;
+  z-index: 100;
 }
 
 .cal-event-wrapper {
   margin: 20px;
 }
+
 .cal-event {
   padding: 2em 0;
   cursor: pointer;
@@ -70,6 +72,10 @@
 
 .cal-event-icon.expired {
   background-color: grey;
+}
+
+.cal-event-icon.active {
+  background-color: @pink-500;
 }
 
 .cal-event-icon span {
