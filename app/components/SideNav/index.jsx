@@ -8,7 +8,8 @@ const React = require('react'),
     LoginAction = require('../../actions/LoginAction'),
     FontIcon = mui.FontIcon,
     DropDownIcon = mui.DropDownIcon,
-    Member = require('../Member');
+    Member = require('../Member'),
+    Flex = require('../Flex');
 
 require('./style.less');
 
@@ -49,7 +50,7 @@ module.exports = React.createClass({
             }
             }
         ];
-        let header = <div className='header'>
+        let header = <Flex.Layout center justified className='header'>
             <div className='member-info'>
                 <Member.Avatar scale={1.5} member={this.state.user} link={false}/>
                 <Member.Name member={this.state.user} link={false} />
@@ -62,7 +63,7 @@ module.exports = React.createClass({
                 className="headerDropdown"
                 iconClassName="icon-expand-more"
                 menuItems={iconMenuItems} />
-        </div>;
+        </Flex.Layout>;
         var menuItems = [
             {route: '/platform/dashboard', iconClassName: 'icon-dashboard', text: 'Dashboard'},
             {route: '/platform/calendar', iconClassName: 'icon-event-note', text: 'Calendar'},

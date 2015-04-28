@@ -2,6 +2,7 @@ var React = require("react");
 const mui = require('material-ui');
 const LoginStore = require('../../stores/LoginStore');
 const Member = require('../Member');
+const Flex = require('../Flex');
 
 require('./style.less');
 
@@ -102,7 +103,7 @@ module.exports = React.createClass({
         }
     },
     render: function () {
-        return <div className='profile-page'>
+        return <Flex.Layout centerJustified wrap className='profile-page'>
             <mui.Snackbar message='User information has been saved' ref='saveSuccessSnackbar'/>
             <mui.Snackbar message='Password has been saved' ref='changeSuccessSnackbar'/>
             <div className='paper-outer-container'>
@@ -147,6 +148,6 @@ module.exports = React.createClass({
                     </div>
                 </mui.Paper>
             </div>
-        </div>;
+        </Flex.Layout>;
     }
 });

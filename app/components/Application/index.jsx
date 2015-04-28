@@ -1,6 +1,7 @@
 var React = require("react");
 var RouteHandler = require("react-router").RouteHandler;
 var injectTapEventPlugin = require("react-tap-event-plugin");
+const Flex = require('../Flex');
 //Needed for onTouchTap
 //Can go away when react 1.0 release
 //Check this repo:
@@ -37,7 +38,7 @@ var Application = React.createClass({
                 <mui.Paper className='floatingContent'
                            zDepth={1}>
                     <div>
-                        <div className='header'>
+                        <Flex.Layout className='header' justified center>
                             <div className='title'>{this.state.floatingContent.title}</div>
                             <div className='right'>
                                 <mui.IconButton className='icon-close' onClick={()=>{
@@ -46,7 +47,7 @@ var Application = React.createClass({
                                     })
                                 }}/>
                             </div>
-                        </div>
+                        </Flex.Layout>
                         {this.state.floatingContent.elementFactory()}
                     </div>
                 </mui.Paper>
