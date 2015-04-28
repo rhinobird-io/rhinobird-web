@@ -7,8 +7,14 @@ let React  = require("react"),
 
 export default React.createClass({
     propTypes: {
-        end: React.PropTypes.object,
-        start: React.PropTypes.object,
+        end: React.PropTypes.oneOfType([
+            React.PropTypes.object,
+            React.PropTypes.string
+        ]),
+        start: React.PropTypes.oneOfType([
+            React.PropTypes.object,
+            React.PropTypes.string
+        ]),
         format: React.PropTypes.string,
         relative: React.PropTypes.bool
     },
@@ -24,7 +30,7 @@ export default React.createClass({
         this.timerId = setInterval(()=>{this.forceUpdate()}, 30000);
     },
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate() {
         this._setTooltipPos();
     },
     componentWillUnmount(){
@@ -62,7 +68,7 @@ export default React.createClass({
                 borderTop: "6px solid rgb(117,117,117)"
             },
             tooltip: {
-                zIndex: 10
+                zIndex: this.state.tipShow ? 10 : -1
             }
         };
 

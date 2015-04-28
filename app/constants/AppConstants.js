@@ -12,7 +12,11 @@ export default {
   }),
 
   CalendarActionTypes: keyMirror({
-    RECEIVE_EVENTS: null
+    CREATE_EVENT: null,
+    RECEIVE_EVENT: null,
+    RECEIVE_EVENTS: null,
+    LOAD_MORE_NEWER_EVENTS: null,
+    LOAD_MORE_OLDER_EVENTS: null
   })
 
 };

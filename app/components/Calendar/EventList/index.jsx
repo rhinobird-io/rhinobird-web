@@ -5,7 +5,8 @@ const React                = require("react"),
       SmartTimeDisplay     = require("../../SmartTimeDisplay"),
       FontIcon             = MUI.FontIcon,
       CalendarStore        = require("../../../stores/CalendarStore"),
-      CalendarActions      = require("../../../actions/CalendarActions");
+      CalendarActions      = require("../../../actions/CalendarActions"),
+      InfiniteScroll       = require('../../InfiniteScroll');
 
 require("./style.less");
 
@@ -33,8 +34,16 @@ export default React.createClass({
         });
     },
 
+    _loadMoreNewerEvents() {
+        CalendarActions.loadMoreNewerEvents();
+    },
+
+    _loadMoreOlderEvents() {
+        CalendarActions.loadMoreOlderEvents();
+    },
+
     render: function() {
-        let eventsDOM = Object.keys(this.state.events).map((key, index) => {
+        let eventsDOM = Object.keys(this.state.events).sort().map((key, index) => {
             let direction = index % 2 === 0 ? "left" : "right";
             let dayEvents = [];
             let events = this.state.events[key];
@@ -56,7 +65,7 @@ export default React.createClass({
                 if (toTime < now) {
                     eventIconClass += " expired";
                 } else if (now > fromTime && now < toTime) {
-                    eventIconClass += " active";
+                    eventIconClass += " <active></active>";
                 }
                 return (
                     <div className="cal-event">
@@ -77,6 +86,12 @@ export default React.createClass({
         return (
             <div>
                 <div className="cal-event-wrapper">
+                    <InfiniteScroll
+                        lowerThreshold={10}
+                        upperThreshold={10}
+                        onUpperTrigger={() => this._loadMoreOlderEvents()}
+                        onLowerTrigger={() => this._loadMoreNewerEvents()}
+                        scrollTarget={() => this.getDOMNode().parentNode} />
                     {eventsDOM}
                 </div>
                 <Link to="create-event">

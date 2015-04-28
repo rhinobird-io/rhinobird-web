@@ -6,6 +6,24 @@ const BaseStore = require("./BaseStore");
 const assign = require("object-assign");
 
 let _events = {};
+let _eventRange = {};
+let _hasMoreNewerEvents = false;
+let _hasMoreOlderEvents = false;
+
+
+function _addEvent(event) {
+    let dateFormat = _formatDate(event.from_time);
+    if (!_events[dateFormat]) {
+        _events[dateFormat] = [];
+    }
+    _events[dateFormat].push(event);
+}
+
+function _addEvents(events) {
+    for (let i = 0; i < events.length; i++) {
+        _addEvent(events[i]);
+    }
+}
 
 function _formatDate(date) {
     let d = new Date(date);
@@ -15,6 +33,13 @@ function _formatDate(date) {
     return yyyy + "-" + (mm[1] ? mm : "0" + mm[0]) + "-" + (dd[1] ? dd : "0" + dd[0]);
 }
 
+function _sortByFromTime(e1, e2) {
+    let e1FromTime = new Date(e1.from_time);
+    let e2FromTime = new Date(e2.from_time);
+    if (e1FromTime > e2FromTime) return 1;
+    else if (e1FromTime < e2FromTime) return -1;
+    return 0;
+}
 
 let CalendarStore = assign({}, BaseStore, {
 
@@ -22,23 +47,40 @@ let CalendarStore = assign({}, BaseStore, {
         return _events;
     },
 
+    getEventTimeRage() {
+        return _eventRange;
+    },
+
+    hasMoreNewerEvents() {
+        return _hasMoreNewerEvents;
+    },
+
+    hasMoreOlderEvents() {
+        return _hasMoreOlderEvents;
+    },
 
     dispatcherIndex: AppDispatcher.register(payload => {
         let type = payload.type;
         let data = payload.data;
 
-        console.log(type)
         switch (type) {
             case ActionTypes.RECEIVE_EVENTS:
-                for (let i = 0; i < data.length; i++) {
-                    let dateFormat = _formatDate(data[i].from_time);
-                    if (!_events[dateFormat]) {
-                        _events[dateFormat] = [];
-                    }
-                    _events[dateFormat].push(data[i]);
+                _events = {};
+                _addEvents(data);
+                let keys = Object.keys(_events);
+                if (keys.length === 0) {
+                    _hasMoreNewerEvents = false;
+                    _hasMoreOlderEvents = false;
+                } else {
+
                 }
                 break;
-
+            case ActionTypes.LOAD_MORE_NEWER_EVENTS:
+                _addEvents(data);
+                break;
+            case ActionTypes.LOAD_MORE_OLDER_EVENTS:
+                _addEvents(data);
+                break;
             default:
                 break;
         }
