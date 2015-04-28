@@ -1,6 +1,10 @@
 'use strict';
 import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
+import Util from '../util.jsx';
+import async from 'async';
+
+const IM_HOST = 'http://localhost:3000/';
 
 export default {
 
@@ -22,6 +26,7 @@ export default {
  * User : user_$minId_$maxId
  *
  * @param backEndChannelId
+ * @param currentUser
  */
 function parseBackEndChannelId(backEndChannelId, currentUser) {
   var flags = backEndChannelId.split('_');
@@ -39,4 +44,3 @@ function parseBackEndChannelId(backEndChannelId, currentUser) {
     }
   }
 }
-

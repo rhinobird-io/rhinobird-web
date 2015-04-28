@@ -25,6 +25,10 @@ export default {
     CHANGE_CHANNEL : null
   }),
 
+  SocketActionTypes : keyMirror({
+    SOCKET_INIT: null
+  }),
+
   MessageActionTypes : keyMirror({
     RECEIVE_MESSAGES: null
   })
