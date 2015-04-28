@@ -2,7 +2,8 @@
 
 var React      = require('react'),
     mui        = require('material-ui'),
-    Paper      = mui.Paper;
+    Paper      = mui.Paper,
+    Flex       = require('../Flex');
 
 const Notification = require("../Notification");
 
@@ -13,7 +14,7 @@ module.exports = React.createClass({
     },
     render: function() {
         let mainPage = (['/platform/signin', '/platform/signup'].indexOf(this.context.router.getCurrentPathname()) === -1);
-        let rightElement = <div className="top-nav-right"><Notification /></div>;
+        let rightElement = <Flex.Layout reverse className="top-nav-right"><Notification /></Flex.Layout>;
         return <Paper className='topNav' rounded={false}>
             <mui.AppBar
                 onMenuIconButtonTouchTap={this.props.onMenuIconButtonTouchTap}

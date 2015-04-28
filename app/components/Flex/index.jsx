@@ -95,7 +95,7 @@ let Item = React.createClass({
       styles.display = "none";
     }
     return (
-      <div styles={styles}>{props.children}</div>
+      <div {...this.props} styles={styles}>{props.children}</div>
     );
   }
 });

@@ -30,6 +30,7 @@ import i18n from 'i18next-client';
 const tForm = require('tcomb-form/lib'); // tcomb-form without templates!
 const en = require('tcomb-form/lib/i18n/en');
 const materialSkin = require('../app/tcombskin');
+const FloatingContentAction = require('../app/actions/FloatingContentAction');
 tForm.form.Form.i18n = en;
 tForm.form.Form.templates = materialSkin;
 
@@ -85,6 +86,13 @@ let publicRoutes = ['/platform/signin', '/platform/signup'];
 let render = function () {
     if (loginLoaded && i18nLoaded) {
         Router.run(routes, Router.HistoryLocation, function (Handler, state) {
+            FloatingContentAction.updateFloatingContent({
+                title: '',
+                elementFactory: function(){
+                    return null;
+                },
+                showFloatingContent: false
+            })
             if (publicRoutes.indexOf(state.pathname) === -1) {
                 if (!LoginStore.getUser()) {
                     this.transitionTo('/platform/signin', {}, {target: state.path});
