@@ -5,6 +5,7 @@ const RouteHandler = require("react-router").RouteHandler;
 const mui = require("material-ui");
 
 import ChannelAction from '../../../../../actions/ChannelAction';
+import LoginStore from '../../../../../stores/LoginStore';
 
 const { Menu, FontIcon } = mui;
 
@@ -18,8 +19,7 @@ module.exports = React.createClass({
   propTypes : {
     channelGroup : React.PropTypes.string,
     channels : React.PropTypes.array,
-    isGroup : React.PropTypes.bool,
-    onChannelChange : React.PropTypes.func.isRequired
+    isGroup : React.PropTypes.bool
   },
 
   getInitialState() {
@@ -39,10 +39,20 @@ module.exports = React.createClass({
       _items.push({
         text : channel.name,
         iconClassName : this.props.isGroup?'icon-group':'',
-        channel : channel
+        channel : channel,
+        backEndChannelId : this.buildBackEndChannelId(this.props.isGroup, channel)
       })
     });
     return _items;
+  },
+
+  buildBackEndChannelId(isGroup, channel) {
+    if (isGroup) {
+      return 'team_' + channel.id;
+    } else {
+      var user = LoginStore.getUser();
+      return '' + Math.min(user.id, channel.id) + '_' + Math.max(user.id, channel.id);
+    }
   },
 
   componentDidMount() {
@@ -58,8 +68,8 @@ module.exports = React.createClass({
   },
 
   _onItemTap(e, index, menuItem) {
-    let channel = this.state._menuItems[index].channel;
-    ChannelAction.changeChannel(channel.hash);
+    let item = this.state._menuItems[index];
+    ChannelAction.changeChannel(this.props.isGroup, item.channel, item.backEndChannelId);
   },
 
   render() {

@@ -3,7 +3,7 @@ import uuid from 'node-uuid';
 export default (() => {
 
   if (!$.mockjax) return false;
-  const API = "/platform/api";
+  const API = "/im/api/";
   var first = 60;
   $.mockjax({
     url: '/api/channels/1/messages?beforeId=-1&limit=20',

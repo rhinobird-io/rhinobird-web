@@ -15,10 +15,14 @@ let ChannelStore = assign({}, BaseStore, {
   },
 
   dispatcherIndex: AppDispatcher.register(function (payload) {
-    let action = payload.action;
-    switch (action.type) {
+    switch (payload.type) {
       case Constants.ChannelActionTypes.CHANGE_CHANNEL:
-        _currentChannel = UserStore.getChannelFromHash(action.channelHash);
+
+        _currentChannel = {
+          isGroup : payload.isGroup,
+          backEndChannelId : payload.backEndChannelId,
+          channel :  payload.channel
+        };
         ChannelStore.emitChange();
         break;
       default:

@@ -25,7 +25,7 @@ module.exports = React.createClass({
 
   getInitialState() {
     return  {
-      channelHash : this.context.router.getCurrentParams().channelHash
+      backEndChannelId : this.context.router.getCurrentParams().backEndChannelId
     }
   },
 
@@ -46,18 +46,15 @@ module.exports = React.createClass({
   },
 
   _onTeamUserChange() {
-    this.setState({
-      currentChannel : UserStore.getChannelFromHash(this.state.channelHash)
-    });
+
   },
 
   _onChannelChange() {
     var currentChannel = ChannelStore.getCurrentChannel();
-    this.context.router.transitionTo('/platform/im/talk/' + currentChannel.hash);
+    this.context.router.transitionTo('/platform/im/talk/' + currentChannel.backEndChannelId);
 
-    this.props.setTitle("Instant Message - Talk - " + currentChannel.hash);
+    this.props.setTitle("Instant Message - Talk - " + currentChannel.backEndChannelId);
     this.setState({
-      channelHash : currentChannel.hash,
       currentChannel : currentChannel
     });
   },

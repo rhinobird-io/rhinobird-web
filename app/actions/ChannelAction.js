@@ -1,10 +1,6 @@
 'use strict';
 import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
-import Util from '../util.jsx';
-import async from 'async';
-
-require('./mockjax/messages');
 
 export default {
   /**
@@ -13,10 +9,12 @@ export default {
    * @param oldestMessage
    * @returns {*}
    */
-  changeChannel(channelHash) {
-    AppDispatcher.handleServerAction({
+  changeChannel(isGroup, channel, backEndChannelId) {
+    AppDispatcher.dispatch({
       type: Constants.ChannelActionTypes.CHANGE_CHANNEL,
-      channelHash: channelHash
+      channel : channel,
+      isGroup : isGroup,
+      backEndChannelId : backEndChannelId
     });
   }
 };

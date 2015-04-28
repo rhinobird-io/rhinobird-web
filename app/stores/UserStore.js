@@ -77,11 +77,7 @@ let _teams = {};
 //
 let _users = {};
 
-
 let _username_users = {};
-
-
-
 
 let UserStore = assign({}, BaseStore, {
 
@@ -133,8 +129,8 @@ let UserStore = assign({}, BaseStore, {
         return _users_teams[userId] ? _users_teams[userId] : [];
     },
 
-    getChannelFromHash(channelHash) {
-        return _teams[channelHash];
+    getTeam(id) {
+        return _teams[id];
     },
 
     /**
@@ -151,11 +147,10 @@ let UserStore = assign({}, BaseStore, {
         return _username_users[name];
     },
     dispatcherIndex: AppDispatcher.register(function (payload) {
-        let data = payload.data;
+        let action = payload.action;
         switch (payload.type) {
             case Constants.ActionTypes.LOGIN_UPDATE:
                 $.get('/api/teams_users').then((data)=> {
-
                     let tmp = buildIndex(data);
                     _teams_users = tmp._teams_users;
                     _users_teams = tmp._users_teams;

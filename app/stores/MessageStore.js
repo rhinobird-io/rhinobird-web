@@ -71,7 +71,7 @@ let MessageStore = assign({}, BaseStore, {
 
     dispatcherIndex: AppDispatcher.register(function (payload) {
         let action = payload.action;
-        switch (action.type) {
+        switch (payload.type) {
             case Constants.MessageActionTypes.RECEIVE_MESSAGES:
                 let channel = action.channel;
                 let messages = action.messages;
