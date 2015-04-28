@@ -8,16 +8,20 @@ if ($.mockjax) {
         type: 'GET',
         responseText: [{
             creator: '1',
-            content: 'I like apple'
+            content: 'I like apple',
+            createdAt: new Date()
         }, {
             creator: '2',
-            content: 'I like orange'
+            content: 'I like orange',
+            createdAt: new Date()
         }, {
             creator: '3',
-            content: 'I like banana'
+            content: 'I like banana',
+            createdAt: new Date()
         }, {
             creator: '4',
-            content: "I don't like fruits"
+            content: "I don't like fruits",
+            createdAt: new Date()
         }]
     });
 }
@@ -54,17 +58,17 @@ module.exports = React.createClass({
             <hr />
             {this.state.dashboardRecords.map((record, index)=> {
                 return <div key={index}>
-                    <DashboardRecord creator={record.creator} content={record.content}/>
+                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt}/>
                     <hr/>
-                    <DashboardRecord creator={record.creator} content={record.content}/>
+                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt}/>
                     <hr/>
-                    <DashboardRecord creator={record.creator} content={record.content}/>
+                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt}/>
                     <hr/>
-                    <DashboardRecord creator={record.creator} content={record.content}/>
+                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt}/>
                     <hr/>
-                    <DashboardRecord creator={record.creator} content={record.content}/>
+                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt} />
                     <hr/>
-                    <DashboardRecord creator={record.creator} content={record.content}/>
+                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt}/>
                     <hr/>
                 </div>
             })}
