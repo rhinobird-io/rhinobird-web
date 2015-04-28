@@ -21,9 +21,9 @@ export default {
 
     },
 
-    sendMessage(msg, currentChannel) {
+    sendMessage(msg) {
         AppDispatcher.dispatch({
-            type: Constants.SocketActionTypes.SEND_MSG,
+            type: Constants.SocketActionTypes.SOCKET_SEND_MESSAGE,
             message : msg
         });
     }

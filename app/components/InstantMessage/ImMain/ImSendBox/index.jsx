@@ -16,8 +16,6 @@ const {FlatButton} = mui;
 require('./style.less');
 module.exports = React.createClass({
 
-
-
   getInitialState() {
     return  {
       ready : false
@@ -54,17 +52,18 @@ module.exports = React.createClass({
       channelId: this.state.currentChannel.backEndChannelId,
       text: 'test content',
       guid: uuid.v4(),
-      messageStatus: 'unsend',
+      messageStatus: -1, // -1 represent is was unconfirmed
       hideMemberElement: true,
-      displayPreview: 'previewHidden'
+      displayPreview: 'previewHidden',
+      createdAt : Date.now()
     };
-    SocketAction.sendMessage(msg, this.state.currentChannel);
+    SocketAction.sendMessage(msg);
   },
 
   render() {
     return (
       <div className="send-box">
-        <SmartEditor ref="sEditor" className=""></SmartEditor>
+        <SmartEditor ref="sEditor"></SmartEditor>
         <FlatButton label="Send" primary={true} onClick={this.sendMessage} disabled={!this.state.ready}></FlatButton>
       </div>
     );

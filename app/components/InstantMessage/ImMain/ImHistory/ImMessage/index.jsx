@@ -1,6 +1,8 @@
 const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
 
+import _ from 'lodash';
+
 require('./style.less');
 module.exports = React.createClass({
 
@@ -20,11 +22,14 @@ module.exports = React.createClass({
   },
 
   render() {
-    var  style = {
-      "background-color": "red"
+
+    var classNames = {
+      'instant-message-message-item' : true,
+      'instant-message-message-item-unconfirmed' : this.props.Message.messageStatus && this.props.Message.messageStatus === -1
     };
+
     return (
-      <div className="instant-message-message-item">
+      <div className={_.keys(classNames).filter(cl=>{return classNames[cl];}).join(' ')}>
         {this.props.Message.id} - {this.props.Message.createdAt} -
         {this.props.Message.text}
       </div>

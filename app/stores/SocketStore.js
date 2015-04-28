@@ -3,6 +3,7 @@ import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
 import BaseStore from './BaseStore';
 import LoginStore from './LoginStore';
+import MessageStore from './MessageStore';
 import assign from 'object-assign';
 import _ from 'lodash';
 
@@ -20,10 +21,11 @@ let SocketStore = assign({}, BaseStore, {
                 SocketStore.initSocket(_socket);
                 SocketStore.emitChange();
                 break;
-            case Constants.SocketActionTypes.SEND_MSG:
+            case Constants.SocketActionTypes.SOCKET_SEND_MESSAGE:
+                MessageStore.sendMessage(payload.message);
                 _socket.emit('message:send', payload.message, function (message) {
                     console.log('message was sended');
-                    console.log(message);
+                    MessageStore.confirmMessageSended(message);
                 });
                 break;
             default:
