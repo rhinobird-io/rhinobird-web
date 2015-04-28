@@ -19,7 +19,8 @@ module.exports = React.createClass({
   propTypes : {
     channelGroup : React.PropTypes.string,
     channels : React.PropTypes.array,
-    isGroup : React.PropTypes.bool
+    isGroup : React.PropTypes.bool,
+    buildBackEndChannelId : React.PropTypes.func.isRequired
   },
 
   getInitialState() {
@@ -40,19 +41,10 @@ module.exports = React.createClass({
         text : channel.name,
         iconClassName : this.props.isGroup?'icon-group':'',
         channel : channel,
-        backEndChannelId : this.buildBackEndChannelId(this.props.isGroup, channel)
+        backEndChannelId : this.props.buildBackEndChannelId(this.props.isGroup, channel)
       })
     });
     return _items;
-  },
-
-  buildBackEndChannelId(isGroup, channel) {
-    if (isGroup) {
-      return 'team_' + channel.id;
-    } else {
-      var user = LoginStore.getUser();
-      return 'user_' + Math.min(user.id, channel.id) + '_' + Math.max(user.id, channel.id);
-    }
   },
 
   componentDidMount() {

@@ -9,12 +9,13 @@ const IM_HOST = 'http://localhost:3000/';
 
 export default {
 
-    initSocket() {
+    initSocket(channels) {
         $.getScript(IM_HOST + 'socket.io/socket.io.js').done(function () {
             var socket = io(IM_HOST, {path: '/socket.io'}).connect();
             AppDispatcher.dispatch({
                 type: Constants.SocketActionTypes.SOCKET_INIT,
-                socket : socket
+                socket : socket,
+                channels : channels
             });
 
         }).fail(Util.handleError);

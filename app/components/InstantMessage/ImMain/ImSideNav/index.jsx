@@ -3,9 +3,13 @@ const RouteHandler = require("react-router").RouteHandler;
 
 const ImChannels = require('./ImChannels');
 
+const SocketAction = require('../../../../actions/SocketAction');
+const SocketStore = require('../../../../stores/SocketStore');
+
 const LoginStore = require('../../../../stores/LoginStore');
 const UserStore = require('../../../../stores/UserStore');
 
+import _ from 'lodash';
 require('./style.less');
 module.exports = React.createClass({
 
@@ -25,10 +29,12 @@ module.exports = React.createClass({
 
   componentDidMount() {
     UserStore.addChangeListener(this._onTeamUserChange);
+    SocketStore.addChangeListener(this._onSocketReady);
   },
 
   componentWillUnmount() {
     UserStore.removeChangeListener(this._onTeamUserChange);
+    SocketStore.removeChangeListener(this._onSocketReady);
   },
 
 
@@ -40,10 +46,36 @@ module.exports = React.createClass({
         publicGroupChannels : _allTeams,
         directMessageChannels : _allUsers.filter(user => { return '' + user.id !== '' + LoginStore.getUser().id; })
       }
-    })
+    });
+
+    var self = this;
+    SocketAction.initSocket({
+      publicGroupChannels : _allTeams.map(team=>{ return {
+        id : self._buildBackEndChannelId(true, team.id)
+      }}),
+      directMessageChannels : _allUsers.filter(user => { return '' + user.id !== '' + LoginStore.getUser().id;}).map( user => {
+        return {
+          id : self._buildBackEndChannelId(false, user)
+        }
+      })
+    });
+  },
+
+  _buildBackEndChannelId(isGroup, channel) {
+    if (isGroup) {
+      return 'team_' + channel.id;
+    } else {
+      var user = LoginStore.getUser();
+      return 'user_' + Math.min(user.id, channel.id) + '_' + Math.max(user.id, channel.id);
+    }
+  },
+
+  _onSocketReady() {
+
   },
 
   render() {
+    this.props.buildBackEndChannelId = this._buildBackEndChannelId;
     return (
       <div className="sidebar">
         <ImChannels {...this.props} className="instant-message-group-channels" channelGroup="Group Channel" isGroup={true} channels={this.state.channels.publicGroupChannels}></ImChannels>

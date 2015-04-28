@@ -18,7 +18,7 @@ let SocketStore = assign({}, BaseStore, {
             case Constants.SocketActionTypes.SOCKET_INIT:
                 let socket = payload.socket;
                 _socket = socket;
-                SocketStore.initSocket(_socket);
+                SocketStore.initSocket(payload.channels);
                 SocketStore.emitChange();
                 break;
             case Constants.SocketActionTypes.SOCKET_SEND_MESSAGE:
@@ -33,7 +33,7 @@ let SocketStore = assign({}, BaseStore, {
         }
     }),
 
-    initSocket : function() {
+    initSocket : function(channels) {
         let self = this;
         _socket.removeAllListeners();
         window.onbeforeunload = function (e) {
@@ -43,10 +43,7 @@ let SocketStore = assign({}, BaseStore, {
         };
 
         _socket.on('message:send', function (message) {
-            self.$.imChannels.receiveMessage(message);
-            if (message.channelId === self.$.imChannels.channel.id) {
-                self.$.imHistory.receiveMyMessage(message);
-            }
+            console.log('receive message :' + message);
         });
 
         _socket.on('channel:created', function (channel) {
@@ -73,15 +70,15 @@ let SocketStore = assign({}, BaseStore, {
 
         _socket.on('user:join', function (data) {
             if (data.channelId === 'default') {
-                self.$.globals.values.im.onlineList = self.$.globals.values.im.onlineList || {};
-                self.$.globals.values.im.onlineList[data.userId] = 1;
-                self.fire('core-signal', {
-                    name : 'user-join',
-                    data : {
-                        user : data,
-                        onlineList:self.$.globals.values.im.onlineList
-                    }
-                });
+                //self.$.globals.values.im.onlineList = self.$.globals.values.im.onlineList || {};
+                //self.$.globals.values.im.onlineList[data.userId] = 1;
+                //self.fire('core-signal', {
+                //    name : 'user-join',
+                //    data : {
+                //        user : data,
+                //        onlineList:self.$.globals.values.im.onlineList
+                //    }
+                //});
                 return;
             }
             if (data.channelId !== self.channel.id) {
@@ -125,14 +122,20 @@ let SocketStore = assign({}, BaseStore, {
             self.$.connectingDialog.open();
             self.connectinStatus = "connected";
         });
+
+        let currentUser = LoginStore.getUser();
+
+        _socket.emit('init', {
+            userId: currentUser.id,
+            publicChannels: channels.publicGroupChannels,
+            privateChannels: [],
+            teamMemberChannels: channels.directMessageChannels
+        }, function (onlineList) {
+            console.log('online list');
+            console.log(onlineList);
+        });
     }
 
 });
-
-function initSocket(socket) {
-
-}
-
-
 
 export default SocketStore;

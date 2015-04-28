@@ -40,7 +40,6 @@ module.exports = React.createClass({
     // It was fixed, so write here is OK, others cannot
     this.props.user = LoginStore.getUser(); // it must be there... or it will be redirected
     LoginAction.updateLogin(this.props.user);
-    SocketAction.initSocket();
   },
 
   componentWillUnmount() {
