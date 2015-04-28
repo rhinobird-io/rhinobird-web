@@ -13,7 +13,8 @@ function _showMemberProfile(){
     var self=this;
     FloatingContentAction.updateFloatingContent({
         title: 'Member',
-        elementFactory: ()=>{ return <MemberProfile userId={self.props.member.id}/>}
+        elementFactory: ()=>{ return <MemberProfile userId={self.props.member.id}/>},
+        showFloatingContent: true
     });
 }
 

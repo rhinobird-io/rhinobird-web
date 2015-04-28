@@ -16,7 +16,6 @@ const FloatingContentStore = require('../../stores/FloatingContentStore');
 
 const closeButton = <mui.IconButton iconClassName="icon-close"/>;
 var Application = React.createClass({
-
     getInitialState() {
         return {
             title: '',
@@ -67,7 +66,7 @@ var Application = React.createClass({
         let content = FloatingContentStore.getFloatingContent();
         this.setState({
             floatingContent: content,
-            showFloatingContent: true
+            showFloatingContent: content.showFloatingContent
         })
     },
     _onMenuIconButtonTouch() {
