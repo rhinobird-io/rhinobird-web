@@ -7,16 +7,49 @@
   bottom: 24px;
 }
 
-.event-wrapper {
+.cal-event-wrapper {
   margin: 20px;
 }
-.event {
+.cal-event {
   padding: 2em 0;
   cursor: pointer;
   position: relative;
 }
 
-.event::before {
+.cal-day-divider {
+  z-index: 2;
+  width: 100%;
+  font-size: 1.2em;
+  position: relative;
+}
+
+.cal-day-divider-label {
+  position: relative;
+  text-align: left;
+  padding-left: 78px;
+  color: #555459;
+  font-width: 900;
+}
+
+.cal-day-divider-label hr {
+  position: absolute;
+  top: 50%;
+  left: 25px;
+  right: 0px;
+  border: 0;
+  margin-top: -2px;
+  border-top: 2px solid #bbb;
+  z-index: 1;
+}
+
+.cal-day-divider-label-content {
+  z-index: 2;
+  position: relative;
+  background-color: white;
+}
+
+.cal-event::before,
+.cal-day-divider::before{
   position: absolute;
   content: '';
   top: 0;
@@ -28,22 +61,22 @@
   background-color: @indigo-100;
 }
 
-.event-icon {
+.cal-event-icon {
   border-radius: 50%;
   padding: 8px;
   color: white;
   background-color: @indigo-500;
 }
 
-.event-icon.expired {
+.cal-event-icon.expired {
   background-color: grey;
 }
 
-.event-icon span {
+.cal-event-icon span {
   vertical-align: middle;
 }
 
-.event-icon-wrapper {
+.cal-event-icon-wrapper {
   position: absolute;
   z-index: 4;
   border-radius: 50%;
@@ -51,47 +84,55 @@
   background-color: @indigo-100;
 }
 
-.event-icon-wrapper:hover {
+.cal-event-icon-wrapper:hover {
   padding: 0;
 }
 
-.event-icon-wrapper:hover .event-icon {
+.cal-event-icon-wrapper:hover .cal-event-icon {
   padding: 13px;
 }
 
-.event-content {
+.cal-event-content {
   height: 50px;
   line-height: 25px;
   margin-left: 78px;
 }
 
-.event-title {
+.cal-event-title {
   font-size: 1.2em;
 }
 
-.event-time {
+.cal-event-time {
   color: rgba(0, 0, 0, 0.54);
 }
 
 @media screen and (min-width: 960px) {
-  .event::before {
+  .cal-event::before,
+  .cal-day-divider::before {
     left: 50%;
     margin-left: -3px;
   }
 
-  .event-icon-wrapper {
+  .cal-event-icon-wrapper {
     left: 50%;
     margin-left: -25px;
   }
 
-  .event-content.left {
+  .cal-event-content.left,
+  .cal-day-divider-label.left {
     width: 50%;
     margin-left: 0;
+    padding-left: 0;
     text-align: right;
     padding-right: 78px;
   }
 
-  .event-content.right {
+  .cal-day-divider-label hr {
+    left: 0;
+  }
+
+  .cal-event-content.right,
+  .cal-day-divider-label.right {
     width: 50%;
     margin-left: 50%;
     text-align: left;
