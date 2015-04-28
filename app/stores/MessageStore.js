@@ -66,17 +66,17 @@ let _limit = 20;
 let MessageStore = assign({}, BaseStore, {
 
     getMessages(channel) {
-      return channel?channel.id?_messages[channel.id].getMessagesArray(-1, _limit):[]:[];
+      return channel?channel.backEndChannelId?_messages[channel.backEndChannelId].getMessagesArray(-1, _limit):[]:[];
     },
 
     dispatcherIndex: AppDispatcher.register(function (payload) {
-        let action = payload.action;
         switch (payload.type) {
             case Constants.MessageActionTypes.RECEIVE_MESSAGES:
-                let channel = action.channel;
-                let messages = action.messages;
-                let oldestMessage = action.oldestMessage;
-                _messages[channel.id] = new MessagesWrapper(messages);
+                let channel = payload.channel;
+                let messages = payload.messages;
+                let oldestMessage = payload.oldestMessage;
+                let newestMessage = payload.newestMessage;
+                _messages[channel.backEndChannelId] = new MessagesWrapper(messages);
                 MessageStore.emitChange();
                 break;
             default:

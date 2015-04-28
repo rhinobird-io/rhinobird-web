@@ -25,6 +25,7 @@ module.exports = React.createClass({
     };
     return (
       <div className="instant-message-message-item">
+        {this.props.Message.id} - {this.props.Message.createdAt} -
         {this.props.Message.text}
       </div>
     );

@@ -40,7 +40,6 @@ module.exports = React.createClass({
   _onChannelChange() {
     let currentChannel = ChannelStore.getCurrentChannel();
     this.setState({
-      channelHash : currentChannel.hash,
       currentChannel : currentChannel,
       messages : []
     });

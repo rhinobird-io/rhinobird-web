@@ -33,11 +33,11 @@ module.exports = React.createClass({
     UserStore.addChangeListener(this._onTeamUserChange);
     ChannelStore.addChangeListener(this._onChannelChange);
 
-    this.props.setTitle("Instant Message - Talk - " + this.context.router.getCurrentParams().channelHash);
-
     // It was fixed, so write here is OK, others cannot
     this.props.user = LoginStore.getUser(); // it must be there... or it will be redirected
     LoginAction.updateLogin(this.props.user);
+
+    // this.props.setTitle("Instant Message - Talk - " + currentChannel.backEndChannelId);
   },
 
   componentWillUnmount() {
