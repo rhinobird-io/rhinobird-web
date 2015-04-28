@@ -49,7 +49,7 @@ module.exports = React.createClass({
                 </Flex.Layout>
                 <hr/>
                 <div className="mui-font-style-title">Teams</div>
-                <mui.Menu zDepth={0} menuItems={teamItems} />
+                <mui.Menu autoWidth={false} zDepth={0} menuItems={teamItems} />
                 {/*<div className="mui-font-style-title">Recent activities</div>*/}
             </div>;
         } else {

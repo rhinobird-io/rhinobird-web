@@ -14,6 +14,7 @@ var mui = require('material-ui');
 const TopNav = require('../TopNav');
 const SideNav = require('../SideNav');
 const FloatingContentStore = require('../../stores/FloatingContentStore');
+const PerfectScroll = require('../PerfectScroll');
 
 const closeButton = <mui.IconButton iconClassName="icon-close"/>;
 var Application = React.createClass({
@@ -37,19 +38,19 @@ var Application = React.createClass({
             <div className={this.state.showFloatingContent? 'mainContainer floating' : 'mainContainer'}>
                 <mui.Paper className='floatingContent'
                            zDepth={1}>
-                    <div>
-                        <Flex.Layout className='header' justified center>
-                            <div className='title'>{this.state.floatingContent.title}</div>
-                            <div className='right'>
-                                <mui.IconButton className='icon-close' onClick={()=>{
-                                    this.setState({
-                                        showFloatingContent: false
-                                    })
-                                }}/>
-                            </div>
-                        </Flex.Layout>
-                        {this.state.floatingContent.elementFactory()}
-                    </div>
+                    <Flex.Layout className='header' justified center>
+                        <div className='title'>{this.state.floatingContent.title}</div>
+                        <div className='right'>
+                            <mui.IconButton className='icon-close' onClick={()=>{
+                                this.setState({
+                                    showFloatingContent: false
+                                })
+                            }}/>
+                        </div>
+                    </Flex.Layout>
+                    <PerfectScroll styles={{position:'absolute', top:60, bottom:0, right:0, left: 0}}>
+                    {this.state.floatingContent.elementFactory()}
+                    </PerfectScroll>
                 </mui.Paper>
                 <div className='mainContent'>
                     <RouteHandler setTitle={this._setTitle} showFloatingContent={this._showFloatingContent}/>
