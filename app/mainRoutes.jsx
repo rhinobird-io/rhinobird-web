@@ -14,6 +14,7 @@ module.exports = (
     <Route name="app" path="/platform" handler={require("./components/Application")}>
         <Route name="profile" path="profile" handler={require("react-proxy!./components/Profile")} />
         <Route name="signin" path="signin" handler={require("react-proxy!./components/Signin")}></Route>
+        <Route name="team" path="team" handler={require("react-proxy!./components/Team")}></Route>
         <Route name="signup" path="signup" handler={require("react-proxy!./components/Signup")}></Route>
         <Route name="dashboard" path="dashboard" handler={require("./components/Dashboard")} />
         <Route name="calendar" path="calendar" handler={require("react-proxy!./components/Calendar")}>

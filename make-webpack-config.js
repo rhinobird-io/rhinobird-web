@@ -11,7 +11,7 @@ module.exports = function(options) {
 	};
 	var loaders = {
 		"coffee": "coffee-redux-loader",
-		"jsx": options.hotComponents ? ["react-hot-loader", "babel-loader"] : "babel-loader",
+		"jsx": options.hotComponents ? ["react-hot-loader", "babel-loader?optional=es7.objectRestSpread"] : [ "babel-loader?optional=es7.objectRestSpread"],
 		"json": "json-loader",
 		"js": {
 			loader: "babel-loader",

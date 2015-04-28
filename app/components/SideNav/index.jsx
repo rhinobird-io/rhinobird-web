@@ -67,7 +67,7 @@ module.exports = React.createClass({
         var menuItems = [
             {route: '/platform/dashboard', iconClassName: 'icon-dashboard', text: 'Dashboard'},
             {route: '/platform/calendar', iconClassName: 'icon-event-note', text: 'Calendar'},
-            {route: '/platform/teams', iconClassName: 'icon-group', text: 'Team'},
+            {route: '/platform/team', iconClassName: 'icon-group', text: 'Team'},
             {route: '/platform/demo', iconClassName: 'icon-group', text: 'Demo'}
         ];
 

@@ -49,6 +49,7 @@
     "null-loader": "^0.1.0",
     "numeral": "^1.5.3",
     "object-assign": "^2.0.0",
+    "perfect-scrollbar": "^0.6.1",
     "react": "^0.13.2",
     "react-hot-loader": "^1.0.0",
     "react-proxy-loader": "^0.3.1",

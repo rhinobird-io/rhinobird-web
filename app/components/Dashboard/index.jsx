@@ -1,6 +1,7 @@
 const React = require("react");
 const DashboardRecord = require('./DashboardRecord');
 const InfiniteScroll = require('../InfiniteScroll');
+const PerfectScroll = require('../PerfectScroll');
 
 if ($.mockjax) {
     $.mockjax({
@@ -44,7 +45,7 @@ module.exports = React.createClass({
         this.props.setTitle("Dashboard");
     },
     render: function () {
-        return <div className="dashboard">
+        return <PerfectScroll className="dashboard">
             <InfiniteScroll lowerThreshold={300} onLowerTrigger={()=>{
                 this.setState({
                     dashboardRecords: this.state.dashboardRecords.concat([{
@@ -53,7 +54,7 @@ module.exports = React.createClass({
         }])
                 })
             }} scrollTarget={()=>{
-                return this.getDOMNode().parentNode;
+                return this.getDOMNode();
             }}/>
             <hr />
             {this.state.dashboardRecords.map((record, index)=> {
@@ -72,6 +73,6 @@ module.exports = React.createClass({
                     <hr/>
                 </div>
             })}
-        </div>;
+        </PerfectScroll>;
     }
 });
