@@ -6,6 +6,7 @@ const ImSendBox = require('./ImSendBox');
 const ImSideNav = require('./ImSideNav');
 
 const LoginAction = require('../../../actions/LoginAction');
+const ChannelAction = require('../../../actions/ChannelAction');
 
 const LoginStore = require('../../../stores/LoginStore');
 const UserStore = require('../../../stores/UserStore');
@@ -36,8 +37,6 @@ module.exports = React.createClass({
     // It was fixed, so write here is OK, others cannot
     this.props.user = LoginStore.getUser(); // it must be there... or it will be redirected
     LoginAction.updateLogin(this.props.user);
-
-    // this.props.setTitle("Instant Message - Talk - " + currentChannel.backEndChannelId);
   },
 
   componentWillUnmount() {
@@ -46,7 +45,7 @@ module.exports = React.createClass({
   },
 
   _onTeamUserChange() {
-
+    ChannelAction.changeChannel(this.state.backEndChannelId, LoginStore.getUser());
   },
 
   _onChannelChange() {

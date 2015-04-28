@@ -21,7 +21,7 @@ let ChannelStore = assign({}, BaseStore, {
         _currentChannel = {
           isGroup : payload.isGroup,
           backEndChannelId : payload.backEndChannelId,
-          channel :  payload.channel
+          channel :  payload.isGroup? UserStore.getTeam(payload.channelId) : UserStore.getUser(payload.channelId)
         };
         ChannelStore.emitChange();
         break;

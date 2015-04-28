@@ -8,6 +8,7 @@
 
 const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
+const SmartEditor = require('../../../SmartEditor/SmartEditor.jsx');
 
 require('./style.less');
 module.exports = React.createClass({
@@ -17,7 +18,7 @@ module.exports = React.createClass({
   render() {
     return (
       <div className="send-box">
-        This is send box
+        <SmartEditor className=""></SmartEditor>
       </div>
     );
   }

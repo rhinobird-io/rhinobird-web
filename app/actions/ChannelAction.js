@@ -3,19 +3,40 @@ import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
 
 export default {
-  /**
-   * get messages from oldest one, limit to 20, in the specified channel
-   * @param channel
-   * @param oldestMessage
-   * @returns {*}
-   */
-  changeChannel(isGroup, channel, backEndChannelId) {
+
+  changeChannel(backEndChannelId, currentUser) {
+    let parsedBackEndChannelId = parseBackEndChannelId(backEndChannelId, currentUser);
     AppDispatcher.dispatch({
       type: Constants.ChannelActionTypes.CHANGE_CHANNEL,
-      channel : channel,
-      isGroup : isGroup,
+      channelId : parsedBackEndChannelId.channelId,
+      isGroup : parsedBackEndChannelId.isGroup,
       backEndChannelId : backEndChannelId
     });
   }
 };
+
+/**
+ *
+ * Team : team_$tid
+ *
+ * User : user_$minId_$maxId
+ *
+ * @param backEndChannelId
+ */
+function parseBackEndChannelId(backEndChannelId, currentUser) {
+  var flags = backEndChannelId.split('_');
+  if (flags[0] === 'team') {
+    return {
+      channelId : flags[1],
+      isGroup : true,
+      backEndChannelId : backEndChannelId
+    }
+  } else if (flags[0] === 'user'){
+    return {
+      channelId : flags[1] === currentUser.id ? flags[2] : flags[1],
+      isGroup : true,
+      backEndChannelId : backEndChannelId
+    }
+  }
+}
 

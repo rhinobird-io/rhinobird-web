@@ -51,7 +51,7 @@ module.exports = React.createClass({
       return 'team_' + channel.id;
     } else {
       var user = LoginStore.getUser();
-      return '' + Math.min(user.id, channel.id) + '_' + Math.max(user.id, channel.id);
+      return 'user_' + Math.min(user.id, channel.id) + '_' + Math.max(user.id, channel.id);
     }
   },
 
@@ -69,7 +69,7 @@ module.exports = React.createClass({
 
   _onItemTap(e, index, menuItem) {
     let item = this.state._menuItems[index];
-    ChannelAction.changeChannel(this.props.isGroup, item.channel, item.backEndChannelId);
+    ChannelAction.changeChannel(item.backEndChannelId, LoginStore.getUser());
   },
 
   render() {

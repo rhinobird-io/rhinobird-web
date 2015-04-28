@@ -2,6 +2,7 @@
 import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
 import BaseStore from './BaseStore';
+import LoginStore from './LoginStore';
 import assign from 'object-assign';
 import _ from 'lodash';
 
