@@ -38,7 +38,7 @@ module.exports = React.createClass({
     this.setState({
       channels : {
         publicGroupChannels : _allTeams,
-        directMessageChannels : _allUsers
+        directMessageChannels : _allUsers.filter(user => { return '' + user.id !== '' + LoginStore.getUser().id; })
       }
     })
   },

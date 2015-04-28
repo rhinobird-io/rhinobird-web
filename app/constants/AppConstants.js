@@ -31,8 +31,7 @@ export default {
   }),
 
   MessageActionTypes : keyMirror({
-    RECEIVE_MESSAGES: null,
-    SEND_MESSAGE : null
+    RECEIVE_MESSAGES: null
   })
 
 };

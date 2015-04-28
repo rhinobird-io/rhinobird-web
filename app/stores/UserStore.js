@@ -8,7 +8,7 @@ import _ from 'lodash';
 
 if ($.mockjax) {
     $.mockjax({
-        url: '/api/teams_users',
+        url: '/platform/api/teams_users',
         type: 'GET',
         responseText: [
             {
@@ -151,7 +151,7 @@ let UserStore = assign({}, BaseStore, {
         let action = payload.action;
         switch (payload.type) {
             case Constants.ActionTypes.LOGIN_UPDATE:
-                $.get('/api/teams_users').then((data)=> {
+                $.get('/platform/api/teams_users').then((data)=> {
                     let tmp = buildIndex(data);
                     _teams_users = tmp._teams_users;
                     _users_teams = tmp._users_teams;

@@ -50,13 +50,14 @@ module.exports = React.createClass({
     var msg = {
       userId: LoginStore.getUser().id,
       channelId: this.state.currentChannel.backEndChannelId,
-      text: 'test content',
+      text: this.refs.sEditor.getValue(),
       guid: uuid.v4(),
       messageStatus: -1, // -1 represent is was unconfirmed
       hideMemberElement: true,
       displayPreview: 'previewHidden',
       createdAt : Date.now()
     };
+    this.refs.sEditor.setValue && this.refs.sEditor.setValue('');
     SocketAction.sendMessage(msg);
   },
 

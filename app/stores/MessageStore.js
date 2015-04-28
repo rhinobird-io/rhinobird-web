@@ -48,7 +48,7 @@ class MessagesWrapper {
 
     sendMessage(message) {
         this.addMoreMessages([_.merge(message, {
-            id : this.messages[0].id + 1000
+            id : this.messages.length > 0 ? this.messages[0].id + 1000 : 1000
         })]);
     }
 
@@ -56,7 +56,6 @@ class MessagesWrapper {
         let idx = _.findIndex(this.messages, msg => {
             return msg.uuid === message.uuid;
         });
-        debugger;
         this.messages[idx] = message;
     }
 
@@ -89,7 +88,7 @@ let _limit = 20;
 let MessageStore = assign({}, BaseStore, {
 
     getMessages(channel) {
-        return channel ? channel.backEndChannelId ? _messages[channel.backEndChannelId].getMessagesArray(-1, _limit) : [] : [];
+        return channel ? channel.backEndChannelId ? _messages[channel.backEndChannelId].getMessages() : [] : [];
     },
 
     sendMessage(message) {
