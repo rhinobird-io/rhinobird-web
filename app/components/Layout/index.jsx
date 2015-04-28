@@ -2,10 +2,13 @@
 
 const React = require("react");
 
-export default React.createClass({
+let Item = React.createClass({
   // See Polymer layout attributes
   propTypes: {
-    flex: React.PropTypes.bool,
+    flex: React.PropTypes.oneOf([
+      React.PropTypes.bool,
+      React.PropTypes.number
+    ]),
     wrap: React.PropTypes.bool,
     reverse: React.PropTypes.bool,
     horizontal: React.PropTypes.bool,
@@ -25,14 +28,17 @@ export default React.createClass({
     selfStretch: React.PropTypes.bool,
     relative: React.PropTypes.bool,
     fit: React.PropTypes.bool,
-    hidden: React.PropTypes.bool
+    hidden: React.PropTypes.bool,
+    layout: React.PropTypes.bool
   },
 
   render() {
     let props = this.props;
-    let styles = { display: "flex" };
+    let styles = props.layout ? {display: "flex"} : {};
     // flex
-    if (props.flex) {
+    if (typeof(props.flex) === "number") {
+      styles.flexGrow = props.flex;
+    } else if (props.flex) {
       styles.flex = "1 1 1e-9px";
     }
     // flex-wrap
@@ -93,3 +99,16 @@ export default React.createClass({
     );
   }
 });
+
+let Layout = React.createClass({
+  render() {
+    return (
+      <Item layout {...this.props}>{this.props.children}</Item>
+    );
+  }
+});
+
+export default {
+  Layout: Layout,
+  Item: Item
+};

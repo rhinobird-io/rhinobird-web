@@ -8,11 +8,6 @@
     height: auto !important;
     width: 400px;
     padding: 8px 24px !important;
-    word-wrap: break-word;
-    white-space: pre-line;
-  }
-  .avatar {
-    border-radius: 2px;
   }
   .avatar-wrapper {
     padding-top: 0.5em;
@@ -20,6 +15,9 @@
   }
   .name {
     font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
   }
   .time {
     margin-left: 0.5em;

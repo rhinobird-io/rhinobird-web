@@ -7,7 +7,7 @@ const mui = require("material-ui"),
 const DropDownAny = require("../DropDownAny");
 const Avatar = require("../Member").Avatar;
 const Name = require("../Member").Name;
-const Layout = require("../Layout");
+const Layout = require("../Layout").Layout;
 const NotificationActions = require("../../actions/NotificationActions");
 const NotificationStore = require("../../stores/NotificationStore");
 const SmartTimeDisplay = require("../SmartTimeDisplay");
@@ -23,12 +23,12 @@ let NotifiItem = React.createClass({
 
   render() {
     return (
-      <Layout horizontal start>
+      <Layout horizontal>
         <div className="avatar-wrapper">
           <Avatar scale={1.6} member={this.props.sender} />
         </div>
         <Layout vertical>
-          <Layout horizontal>
+          <Layout horizontal justified>
             <div className="name"><Name member={this.props.sender} /></div>
             <div className="time"><SmartTimeDisplay start={this.props.time} relative /></div>
           </Layout>
