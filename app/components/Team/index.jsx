@@ -21,12 +21,14 @@ let TeamDisplay = React.createClass({
                             <mui.FontIcon className='icon-group'/>
                             <div styles={{marginLeft: 8}}>{this.props.team.name}</div>
                         </Flex.Layout>
+                        <Flex.Layout wrap>
                         {this.props.team.users.map((user)=>{
-                            return <div styles={{margin: '12px 0'}}>
+                            return <div styles={{margin: 6}}>
                                 <Member.Avatar member={user} />
-                                <Member.Name styles={{marginLeft: 8}} member={user}/>
+                                <Member.Name styles={{marginLeft: 4}} member={user}/>
                             </div>;
                         })}
+                        </Flex.Layout>
                     </div>
                 </Paper>
                 </div>
