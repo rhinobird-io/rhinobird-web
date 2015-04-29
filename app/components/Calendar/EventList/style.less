@@ -1,9 +1,11 @@
 @import "~material-ui/src/less/scaffolding.less";
 @import "~material-ui/src/less/components.less";
 
-@calEventBg: rgb(229, 229, 229);
-@arrowBg: #d7d7d7;
+@calEventBg: white;
+@arrowBg: white;
 @arrowZIndex: 1;
+@eventBg: white;
+@triangleSize: 6px;
 
 .add-event {
   position: fixed;
@@ -34,6 +36,7 @@
   text-align: left;
   padding-left: 78px;
   color: #555459;
+  z-index: 0;
   font-width: 900;
 }
 
@@ -61,6 +64,7 @@
   top: 0;
   left: 22px;
   width: 6px;
+  z-index: 1;
   height: 100%;
   padding: 10px 0 10px 0;
   background-color: @indigo-100;
@@ -109,15 +113,15 @@
   cursor: pointer;
   margin-right: 20%;
   position: relative;
-  box-shadow: 1px 0px 3px rgba(0, 0, 0, .3);
-  background-color: #ddd;
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, .3);
+  background-color: @eventBg;
 }
 
 .cal-event-content-inner:hover {
 }
 
 .cal-event-title {
-  padding: 6px 8px;
+  padding: 6px 10px;
   font-size: 1.2em;
   position: relative;
 }
@@ -129,7 +133,7 @@
 
 .cal-event-detail {
   color: #333;
-  padding: 0px 8px 6px 8px;
+  padding: 0px 10px 6px 10px;
 }
 
 .cal-event-time {
@@ -137,31 +141,26 @@
   color: rgba(0, 0, 0, 0.54);
 }
 
-.arrow-left {
-  position: absolute;
-  width: 0;
-  height: 0;
-  left: -8px;
-  top: 50%;
-  z-index: @arrowZIndex;
-  margin-top: -10px;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  border-right: 8px solid @arrowBg;
-}
-
 @media screen and (max-width: 960px) {
-  .arrow-right {
-    position: absolute;
-    width: 0;
-    height: 0;
-    left: -8px;
-    top: 50%;
-    z-index: @arrowZIndex;
-    margin-top: -10px;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
-    border-right: 8px solid @arrowBg;
+  .cal-event-content .cal-event-title {
+    &::before {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      left: -@triangleSize;
+      margin-top: -@triangleSize;
+      top: 50%;
+      box-sizing: border-box;
+
+      border: @triangleSize solid black;
+      border-color: transparent white white transparent;
+
+      transform-origin: 50% 50%;
+      transform: rotate(135deg);
+
+      box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.4);
+    }
   }
 }
 
@@ -201,23 +200,53 @@
   .cal-event-content.left .cal-event-content-inner {
     margin-right: 0;
     margin-left: 20%;
-    box-shadow: -1px 0px 3px rgba(0, 0, 0, .3);
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, .3);
+
+  }
+
+  .cal-event-content.left .cal-event-title {
+    &::before {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      right: -@triangleSize;
+      margin-top: -@triangleSize;
+      top: 50%;
+      box-sizing: border-box;
+
+      border: @triangleSize solid black;
+      border-color: transparent white white transparent;
+
+      transform-origin: 50% 50%;
+      transform: rotate(-45deg);
+
+      box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.4);
+    }
   }
 
   .cal-event-content.right .cal-event-content-inner {
     margin-right: 20%;
   }
 
-  .arrow-right {
-    position: absolute;
-    width: 0;
-    height: 0;
-    right: -8px;
-    top: 50%;
-    z-index: @arrowZIndex;
-    margin-top: -10px;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
-    border-left: 8px solid @arrowBg;
+  .cal-event-content.right .cal-event-title {
+    &::before {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      left: -@triangleSize;
+      margin-top: -@triangleSize;
+      top: 50%;
+      box-sizing: border-box;
+
+      border: @triangleSize solid black;
+      border-color: transparent white white transparent;
+
+      transform-origin: 50% 50%;
+      transform: rotate(135deg);
+
+      box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.4);
+    }
   }
 }
