@@ -17,7 +17,6 @@ let ChannelStore = assign({}, BaseStore, {
   dispatcherIndex: AppDispatcher.register(function (payload) {
     switch (payload.type) {
       case Constants.ChannelActionTypes.CHANGE_CHANNEL:
-
         _currentChannel = {
           isGroup : payload.isGroup,
           backEndChannelId : payload.backEndChannelId,

@@ -62,6 +62,7 @@ module.exports = React.createClass({
   _onItemTap(e, index, menuItem) {
     let item = this.state._menuItems[index];
     ChannelAction.changeChannel(item.backEndChannelId, LoginStore.getUser());
+    this.context.router.transitionTo('/platform/im/talk/' + item.backEndChannelId);
   },
 
   render() {
@@ -69,7 +70,7 @@ module.exports = React.createClass({
       <div className="instant-message-channels">
         <div className="mui-font-style-subhead-1 instant-message-channel-brand">{this.props.channelGroup}</div>
         <Menu className="instant-message-channel-items" menuItems = { this.state._menuItems } onItemTap={this._onItemTap}
-          onItemClick={this._onItemTap} autoWidth={false} zDepth="-1">
+          autoWidth={false} zDepth="-1">
         </Menu>
       </div>
     );

@@ -55,7 +55,6 @@ module.exports = React.createClass({
 
   _onChannelChange() {
     var currentChannel = ChannelStore.getCurrentChannel();
-    this.context.router.transitionTo('/platform/im/talk/' + currentChannel.backEndChannelId);
     this.props.setTitle("Instant Message - Talk - " + currentChannel.backEndChannelId);
     this.setState({
       currentChannel : currentChannel
