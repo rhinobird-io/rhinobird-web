@@ -1,6 +1,7 @@
 @import "~material-ui/src/less/scaffolding.less";
 @import "~material-ui/src/less/components.less";
 @import "../../icons/style.css";
+@import "~perfect-scrollbar/dist/css/perfect-scrollbar.css";
 
 div.topNav {
 
@@ -28,9 +29,8 @@ div.mainContainer {
     transition: left 0.45s ease-in-out;
     left: -320px;
     width: 320px;
-    overflow-y: auto;
-    overflow-x: hidden;
     height: 100%;
+    overflow-x: hidden;
     .header {
       color: rgba(0,0,0,54%);
       background-color: @grey-200;
@@ -49,7 +49,6 @@ div.mainContainer {
     right: 0;
     top:0;
     bottom: 0;
-    overflow: auto;
   }
 }
 

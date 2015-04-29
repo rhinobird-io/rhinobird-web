@@ -1,6 +1,7 @@
 const React = require("react");
 const DashboardRecord = require('./DashboardRecord');
 const InfiniteScroll = require('../InfiniteScroll');
+const PerfectScroll = require('../PerfectScroll');
 
 if ($.mockjax) {
     $.mockjax({
@@ -8,16 +9,20 @@ if ($.mockjax) {
         type: 'GET',
         responseText: [{
             creator: '1',
-            content: 'I like apple'
+            content: 'I like apple',
+            createdAt: new Date()
         }, {
             creator: '2',
-            content: 'I like orange'
+            content: 'I like orange',
+            createdAt: new Date()
         }, {
             creator: '3',
-            content: 'I like banana'
+            content: 'I like banana',
+            createdAt: new Date()
         }, {
             creator: '4',
-            content: "I don't like fruits"
+            content: "I don't like fruits",
+            createdAt: new Date()
         }]
     });
 }
@@ -40,34 +45,35 @@ module.exports = React.createClass({
         this.props.setTitle("Dashboard");
     },
     render: function () {
-        return <div className="dashboard">
+        return <PerfectScroll className="dashboard">
             <InfiniteScroll lowerThreshold={300} onLowerTrigger={()=>{
                 this.setState({
                     dashboardRecords: this.state.dashboardRecords.concat([{
-            creator: '1',
-            content: 'I like apple'
-        }])
+                        creator: '1',
+                        content: 'I like apple',
+                        createdAt: new Date()
+                    }])
                 })
             }} scrollTarget={()=>{
-                return this.getDOMNode().parentNode;
+                return this.getDOMNode();
             }}/>
             <hr />
             {this.state.dashboardRecords.map((record, index)=> {
                 return <div key={index}>
-                    <DashboardRecord creator={record.creator} content={record.content}/>
+                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt}/>
                     <hr/>
-                    <DashboardRecord creator={record.creator} content={record.content}/>
+                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt}/>
                     <hr/>
-                    <DashboardRecord creator={record.creator} content={record.content}/>
+                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt}/>
                     <hr/>
-                    <DashboardRecord creator={record.creator} content={record.content}/>
+                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt}/>
                     <hr/>
-                    <DashboardRecord creator={record.creator} content={record.content}/>
+                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt} />
                     <hr/>
-                    <DashboardRecord creator={record.creator} content={record.content}/>
+                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt}/>
                     <hr/>
                 </div>
             })}
-        </div>;
+        </PerfectScroll>;
     }
 });
