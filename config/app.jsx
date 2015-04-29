@@ -10,7 +10,7 @@ $.ajaxSetup({
     },
     processData: false
 });
-// require('jquery-mockjax');
+require('jquery-mockjax');
 require('../app/stores/UserStore');
 const resBundle = require("i18next-resource-store-loader!../app/locales/index.js");
 

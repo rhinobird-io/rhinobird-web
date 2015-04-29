@@ -2,7 +2,6 @@
 import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
 import BaseStore from './BaseStore';
-import LoginStore from './LoginStore';
 import assign from 'object-assign';
 import _ from 'lodash';
 
@@ -148,7 +147,6 @@ let UserStore = assign({}, BaseStore, {
         return _username_users[name];
     },
     dispatcherIndex: AppDispatcher.register(function (payload) {
-        let action = payload.action;
         switch (payload.type) {
             case Constants.ActionTypes.LOGIN_UPDATE:
                 $.get('/platform/api/teams_users').then((data)=> {
