@@ -27,12 +27,7 @@ import moment from 'moment';
 moment.locale('ja', require('moment/locale/ja'));
 import i18n from 'i18next-client';
 
-const tForm = require('tcomb-form/lib'); // tcomb-form without templates!
-const en = require('tcomb-form/lib/i18n/en');
-const materialSkin = require('../app/tcombskin');
 const FloatingContentAction = require('../app/actions/FloatingContentAction');
-tForm.form.Form.i18n = en;
-tForm.form.Form.templates = materialSkin;
 
 const languages = [
     {

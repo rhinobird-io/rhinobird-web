@@ -49,9 +49,10 @@ module.exports = React.createClass({
             <InfiniteScroll lowerThreshold={300} onLowerTrigger={()=>{
                 this.setState({
                     dashboardRecords: this.state.dashboardRecords.concat([{
-            creator: '1',
-            content: 'I like apple'
-        }])
+                        creator: '1',
+                        content: 'I like apple',
+                        createdAt: new Date()
+                    }])
                 })
             }} scrollTarget={()=>{
                 return this.getDOMNode();
