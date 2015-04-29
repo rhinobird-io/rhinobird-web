@@ -71,6 +71,6 @@ export default React.createClass({
       };
       return <NotifiItem sender={sender} time={new Date()} message={"Hello long long long long long long long long long long"} />;
     });
-    return <DropDownAny control={control} menu={menu} menuClasses="notification-menu" />
+    return <DropDownAny top={12} right={12} control={control} menu={menu} menuClasses="notification-menu" />
   }
 });

@@ -48,7 +48,7 @@ var Application = React.createClass({
                             }}/>
                         </div>
                     </Flex.Layout>
-                    <PerfectScroll styles={{position:'absolute', top:60, bottom:0, right:0, left: 0}}>
+                    <PerfectScroll style={{position:'absolute', top:60, bottom:0, right:0, left: 0}}>
                     {this.state.floatingContent.elementFactory()}
                     </PerfectScroll>
                 </mui.Paper>
