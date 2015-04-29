@@ -69,9 +69,11 @@ module.exports = React.createClass({
     return (
       <div className="instant-message-channels">
         <div className="mui-font-style-subhead-1 instant-message-channel-brand">{this.props.channelGroup}</div>
-        <Menu className="instant-message-channel-items" menuItems = { this.state._menuItems } onItemTap={this._onItemTap}
-          autoWidth={false} zDepth="-1">
-        </Menu>
+        <div className="instant-message-channel-items" >
+          <Menu menuItems = { this.state._menuItems } onItemTap={this._onItemTap}
+            autoWidth={false} zDepth="-1">
+          </Menu>
+        </div>
       </div>
     );
   }

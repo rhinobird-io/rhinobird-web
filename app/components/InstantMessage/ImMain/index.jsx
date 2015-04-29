@@ -77,7 +77,9 @@ module.exports = React.createClass({
         <ImHistory {...this.props} className="history" ></ImHistory>
         <ImSendBox {...this.props} className="send-box" ></ImSendBox>
       </div>
-      <ImSideNav {...this.props} className="sidebar"></ImSideNav>
+      <div className="sidebar" style={style}>
+        <ImSideNav {...this.props} ></ImSideNav>
+      </div>
     </div>
     );
   }
