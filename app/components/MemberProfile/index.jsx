@@ -37,6 +37,10 @@ module.exports = React.createClass({
                 return {payload: index, text: team.name, iconClassName:'icon-group'};
             });
 
+            let info = [
+                { payload: '1', text: 'Email', data: this.state.member.email}
+            ]
+
             return <div className='member-profile'>
                 <Flex.Layout className='name'>
                     <Member.Avatar link={false} member={this.state.member} scale={3.0}/>
@@ -48,6 +52,8 @@ module.exports = React.createClass({
                     </Flex.Layout>
                 </Flex.Layout>
                 <hr/>
+                <div className="mui-font-style-title">Person</div>
+                <mui.Menu autoWidth={false} zDepth={0} menuItems={info} />
                 <div className="mui-font-style-title">Teams</div>
                 <mui.Menu autoWidth={false} zDepth={0} menuItems={teamItems} />
                 {/*<div className="mui-font-style-title">Recent activities</div>*/}

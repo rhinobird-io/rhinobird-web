@@ -20,21 +20,25 @@ if ($.mockjax) {
                     {
                         id: '1',
                         name: 'tomcat',
+                        email: 'tom@cat.pet',
                         realname: 'Tom Cat',
                         hash: 'a'
                     }, {
                         id: '2',
                         name: 'atomcat',
+                        email: 'tom@cat.pet',
                         realname: 'Jerry Kitty',
                         hash: 'b'
                     }, {
                         id: '3',
                         name: 'xtomcat',
+                        email: 'tom@cat.pet',
                         realname: 'Some Body',
                         hash: 'c'
                     }, {
                         id: '4',
                         name: 'btomcat',
+                        email: 'tom@cat.pet',
                         realname: '无名',
                         hash: 'd'
                     }]
@@ -49,15 +53,18 @@ if ($.mockjax) {
                     {
                         id: '1',
                         name: 'tomcat',
+                        email: 'tom@cat.pet',
                         realname: 'Tom Cat',
                         hash: 'a'
                     }, {
                         id: '2',
                         name: 'atomcat',
+                        email: 'tom@cat.pet',
                         realname: 'Jerry Kitty',
                         hash: 'b'
                     }, {
                         id: '3',
+                        email: 'tom@cat.pet',
                         name: 'xtomcat',
                         realname: 'Some Body',
                         hash: 'c'
