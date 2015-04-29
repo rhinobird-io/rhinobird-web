@@ -46,6 +46,7 @@
     "marked": "^0.3.3",
     "material-ui": "=0.7.3",
     "moment": "^2.10.2",
+    "node-uuid": "^1.4.3",
     "null-loader": "^0.1.0",
     "numeral": "^1.5.3",
     "object-assign": "^2.0.0",

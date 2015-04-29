@@ -3,6 +3,7 @@ import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
 import BaseStore from './BaseStore';
 import assign from 'object-assign';
+
 let _user;
 
 let LoginStore = assign({}, BaseStore, {

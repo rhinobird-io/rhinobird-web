@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 if ($.mockjax) {
     $.mockjax({
-        url: '/api/teams_users',
+        url: '/platform/api/teams_users',
         type: 'GET',
         responseText: [
             {
@@ -79,7 +79,6 @@ let _users = {};
 
 let _username_users = {};
 
-
 let UserStore = assign({}, BaseStore, {
 
     /**
@@ -91,6 +90,7 @@ let UserStore = assign({}, BaseStore, {
     },
 
     getTeamsArray() {
+
         var _tmp = {};
         return _.values(_teams).filter(_team => {
             if (_tmp[_team.id]) {
@@ -110,6 +110,7 @@ let UserStore = assign({}, BaseStore, {
     },
 
     getUsersArray() {
+
         var _tmp = {};
         return _.values(_users).filter(_user => {
             if (_tmp[_user.id]) {
@@ -128,8 +129,8 @@ let UserStore = assign({}, BaseStore, {
         return _users_teams[userId] ? _users_teams[userId] : [];
     },
 
-    getChannelFromHash(channelHash) {
-        return _teams[channelHash];
+    getTeam(id) {
+        return _teams[id];
     },
 
     /**
@@ -146,10 +147,9 @@ let UserStore = assign({}, BaseStore, {
         return _username_users[name];
     },
     dispatcherIndex: AppDispatcher.register(function (payload) {
-        let data = payload.data;
         switch (payload.type) {
             case Constants.ActionTypes.LOGIN_UPDATE:
-                $.get('/api/teams_users').then((data)=> {
+                $.get('/platform/api/teams_users').then((data)=> {
                     let tmp = buildIndex(data);
                     _teams_users = tmp._teams_users;
                     _users_teams = tmp._users_teams;
@@ -191,6 +191,7 @@ function buildIndex(teams_users) {
         _teams[team.id] = team;
         _teams[team.hash] = team;
     });
+
 
     return {
         _teams_users: _teams_users,

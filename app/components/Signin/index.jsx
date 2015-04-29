@@ -7,7 +7,7 @@ const LoginAction = require('../../actions/LoginAction');
 
 if ($.mockjax) {
     $.mockjax({
-        url: '/api/login',
+        url: '/platform/api/login',
         type: 'POST',
         responseText: {"company": "Works Applications", "name": "Admin", role:'operator'}
     });
@@ -32,7 +32,7 @@ var Login = React.createClass({
         this.setState({
             error: false
         });
-        $.post('/api/login',{email:this.state.email, password:this.state.password}).then((data)=>{
+        $.post('/platform/api/login',{email:this.state.email, password:this.state.password}).then((data)=>{
             LoginAction.updateLogin(data);
             this.context.router.transitionTo(this.context.router.getCurrentQuery().target || "/");
         }).fail(()=>{

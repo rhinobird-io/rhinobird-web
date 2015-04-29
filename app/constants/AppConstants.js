@@ -17,6 +17,22 @@ export default {
     RECEIVE_EVENTS: null,
     LOAD_MORE_NEWER_EVENTS: null,
     LOAD_MORE_OLDER_EVENTS: null
+  }),
+
+  ChannelActionTypes : keyMirror({
+    RECEIVE_ALL: null,
+    RECEIVE_CURRENT_CHANNEL : null,
+    CHANGE_CHANNEL : null
+  }),
+
+  SocketActionTypes : keyMirror({
+    SOCKET_INIT: null
+  }),
+
+  MessageActionTypes : keyMirror({
+    RECEIVE_MESSAGES: null,
+    SEND_MESSAGE : null,
+    CONFIRM_SEEN : null
   })
 
 };

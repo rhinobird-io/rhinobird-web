@@ -63,13 +63,13 @@ function setMomentLocale(lng){
 
 if ($.mockjax) {
     $.mockjax({
-        url: '/api/login',
+        url: '/platform/api/login',
         type: 'GET',
-        responseText: {"email": "tom@cat.pet", "name":"tomcat", hash:"xx", "realname": "Tom Cat", role:'operator'}
+        responseText: {"id" : 1 , "company": "Works Applications", "name":"tomcat", hash:"xx", "realname": "Tom Cat", role:'operator', "email": "tom@cat.pet"}
     });
 
     $.mockjax({
-        url: '/api/logout',
+        url: '/platform/api/logout',
         type: 'POST',
         responseText: {}
     });
@@ -111,7 +111,7 @@ i18n.init({
 });
 
 
-$.get('/api/login').done(function (data) {
+$.get('/platform/api/login').done(function (data) {
     LoginAction.updateLogin(data);
 }).always(function () {
     loginLoaded = true;
