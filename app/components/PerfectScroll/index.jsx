@@ -13,11 +13,11 @@ module.exports = React.createClass({
         Ps.destroy(this.refs.container.getDOMNode());
     },
     render: function() {
-        let styles = {position:'relative'};
+        let style = {position:'relative'};
         if(this.props.fit){
-            styles = {position:'absolute', top:0, bottom:0, left:0, right:0};
+            style = {position:'absolute', top:0, bottom:0, left:0, right:0};
         }
-        return <div ref='container' styles={styles} {...this.props}>
+        return <div ref='container' style={style} {...this.props}>
             {this.props.children}
             </div>;
     }
