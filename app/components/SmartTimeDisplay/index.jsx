@@ -126,10 +126,6 @@ export default React.createClass({
         let tipLeft = (wrapperWidth - tipWidth) / 2;
         //let triangleLeft = (wrapperWidth - triangleWidth) / 2;
 
-        tip.style.left = tipLeft + "px";
-
-        tip.style.top = "-" + (wrapperHeight + tipHeight + 15) + "px";
-
         let selfPos = this._getViewportPos(self);
 
         if (selfPos.y <= 2 * tip.offsetHeight) {
@@ -153,13 +149,9 @@ export default React.createClass({
                 parent = parent.offsetParent;
             }
 
-            let pageOffsetX = window.pageXOffset;
-            let pageOffsetY = window.pageYOffset;
-
-            console.log(pageOffsetY);
             return {
-                x: offsetX - pageOffsetX,
-                y: offsetY - pageOffsetY
+                x: offsetX,
+                y: offsetY
             }
         }
         return {
