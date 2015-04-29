@@ -53,7 +53,7 @@ module.exports = React.createClass({
     render: function () {
         let loginUser = LoginStore.getUser();
         let teams = UserStore.getTeamsByUserId(loginUser.id);
-        return <Flex.Layout fit centerJustified wrap className='teamPage'>
+        return <Flex.Layout perfectScroll fit centerJustified wrap className='teamPage'>
             {teams.map((t)=> {
                 return <TeamDisplay team={t}/>
             })}
