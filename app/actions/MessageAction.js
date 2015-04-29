@@ -37,5 +37,27 @@ export default {
                     newesetMessage: messages[messages.length - 1]
                 });
             }).fail(Util.handleError);
+    },
+
+    confirmMessageSeen(currentUser, channel, message) {
+        //var lsName = 'seenMessage';
+        //let seenMessage = localStorage[lsName] || {};
+        //seenMessage[currentUser] = seenMessage[currentUser] || {};
+        //seenMessage[currentUser][channel.backEndChannelId] = message.id;
+        //localStorage.setItem(lsName, seenMessage);
+
+        AppDispatcher.dispatch({
+            type: Constants.MessageActionTypes.CONFIRM_SEEN,
+            currentUser : currentUser,
+            channel : channel,
+            message : message
+        });
+    },
+
+    sendMessage(msg) {
+        AppDispatcher.dispatch({
+            type: Constants.MessageActionTypes.SEND_MESSAGE,
+            message : msg
+        });
     }
 };

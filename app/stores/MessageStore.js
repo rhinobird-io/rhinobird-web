@@ -3,6 +3,7 @@ import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
 import BaseStore from './BaseStore';
 import ChannelStore from './ChannelStore';
+import SocketStore from './SocketStore';
 import assign from 'object-assign';
 import _ from 'lodash';
 
@@ -13,6 +14,7 @@ class MessagesWrapper {
             throw new Error('' + messages + ' is not a array');
         }
         this.messages = messages;
+        this.hasUnread = [];
     }
 
     /**
@@ -53,8 +55,9 @@ class MessagesWrapper {
         })]);
     }
 
-    receiveMessage(message) {
+    receiveMessage(message, imCurrentChannelMessageWrapper) {
         this.addMoreMessages([message,]);
+        this.hasUnread = !imCurrentChannelMessageWrapper;
     }
 
     confirmMessageSended(message) {
@@ -93,24 +96,35 @@ let _limit = 20;
 let MessageStore = assign({}, BaseStore, {
 
     getMessages(channel) {
+        _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper([]);
         return channel ? channel.backEndChannelId ? _messages[channel.backEndChannelId].getMessages() : [] : [];
+    },
+
+    getNewestMessagesId(channel){
+        _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper([]);
+        if (!channel.backEndChannelId) {
+            throw new Error('backEndChannelId should be provided');
+        }
+        var messages = _messages[channel.backEndChannelId].getMessages();
+        if (messages.length === 0) {
+            return -1;
+        }
+        return messages[0].id;
     },
 
     sendMessage(message) {
         _messages[message.channelId] = _messages[message.channelId] || new MessagesWrapper([]);
         _messages[message.channelId].sendMessage(message);
-        MessageStore.emitChange();
     },
 
     confirmMessageSended(message) {
         _messages[message.channelId].confirmMessageSended(message);
-        MessageStore.emitChange();
     },
 
     receiveMessage(message) {
+        var currentChannel = ChannelStore.getCurrentChannel();
         _messages[message.channelId] = _messages[message.channelId] || new MessagesWrapper([]);
-        _messages[message.channelId].receiveMessage(message);
-        MessageStore.emitChange();
+        _messages[message.channelId].receiveMessage(message, currentChannel.backEndChannelId !== message.channelId);
     },
 
     dispatcherIndex: AppDispatcher.register(function (payload) {
@@ -122,6 +136,20 @@ let MessageStore = assign({}, BaseStore, {
                 let newestMessage = payload.newestMessage;
                 _messages[channel.backEndChannelId] = new MessagesWrapper(messages);
                 MessageStore.emitChange();
+                break;
+            case Constants.MessageActionTypes.SEND_MESSAGE:
+                MessageStore.sendMessage(payload.message);
+                SocketStore.getSocket().emit('message:send', payload.message, function (message) {
+                    MessageStore.confirmMessageSended(message);
+                    MessageStore.emitChange();
+                });
+                break;
+            case Constants.MessageActionTypes.CONFIRM_SEEN:
+                SocketStore.getSocket().emit('message:seen', {
+                    userId: payload.currentUser.id,
+                    messageId: payload.message.id,
+                    channelId: payload.channel.backEndChannelId
+                });
                 break;
             default:
                 break;

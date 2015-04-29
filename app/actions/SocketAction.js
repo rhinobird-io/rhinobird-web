@@ -20,13 +20,5 @@ export default {
 
         }).fail(Util.handleError);
 
-    },
-
-    sendMessage(msg) {
-        AppDispatcher.dispatch({
-            type: Constants.SocketActionTypes.SOCKET_SEND_MESSAGE,
-            message : msg
-        });
     }
-
 }

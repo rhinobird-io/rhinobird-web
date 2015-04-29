@@ -5,6 +5,7 @@ const ImMessage = require('./ImMessage');
 import MessageAction from '../../../../actions/MessageAction.js';
 import MessageStore from '../../../../stores/MessageStore.js';
 import ChannelStore from '../../../../stores/ChannelStore.js';
+import LoginStore from '../../../../stores/LoginStore.js';
 
 
 require('./style.less');
@@ -35,6 +36,7 @@ module.exports = React.createClass({
     this.setState({
       messages : messages
     });
+    MessageAction.confirmMessageSeen(LoginStore.getUser(), this.state.currentChannel, messages[0]);
   },
 
   _onChannelChange() {

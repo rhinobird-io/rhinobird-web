@@ -6,8 +6,11 @@ const mui = require("material-ui");
 
 import ChannelAction from '../../../../../actions/ChannelAction';
 import LoginStore from '../../../../../stores/LoginStore';
+import OnlineStore from '../../../../../stores/OnlineStore';
 
-const { Menu, FontIcon } = mui;
+import ImChannel from './ImChannel.jsx';
+
+const { Menu, FontIcon, FlatButton } = mui;
 
 require('./style.less');
 module.exports = React.createClass({
@@ -25,7 +28,8 @@ module.exports = React.createClass({
 
   getInitialState() {
     return {
-      _menuItems : []
+      _menuItems : [],
+      _onlineStatus : {}
     };
   },
 
@@ -39,6 +43,8 @@ module.exports = React.createClass({
     channels.forEach((channel, idx) => {
       _items.push({
         text : channel.name,
+        isGroup : this.props.isGroup,
+        isDirect : !this.props.isGroup,
         iconClassName : this.props.isGroup?'icon-group':'',
         channel : channel,
         backEndChannelId : this.props.buildBackEndChannelId(this.props.isGroup, channel)
@@ -48,9 +54,14 @@ module.exports = React.createClass({
   },
 
   componentDidMount() {
+    OnlineStore.addChangeListener(this._onlineStatusChange);
     this.setState({
       _menuItems : this._getMenuItems(this.props.channels)
     });
+  },
+
+  componentWillUnmount() {
+    OnlineStore.addChangeListener(this._onlineStatusChange);
   },
 
   componentWillReceiveProps(nextProps) {
@@ -59,20 +70,32 @@ module.exports = React.createClass({
     });
   },
 
-  _onItemTap(e, index, menuItem) {
-    let item = this.state._menuItems[index];
-    ChannelAction.changeChannel(item.backEndChannelId, LoginStore.getUser());
-    this.context.router.transitionTo('/platform/im/talk/' + item.backEndChannelId);
+  _onlineStatusChange() {
+    let _onlineStatus = OnlineStore.getOnlineList();
+    this.setState({
+      _onlineStatus : _onlineStatus
+    })
   },
 
   render() {
+    let self = this;
+
+    if (this.props.isGroup) {
+      this.state._menuItems.sort((item1, item2) => {
+        let _onlineList = self.state._onlineStatus;
+        let onlineOffset = _onlineList[item1.channel.id]?_onlineList[item1.channel.id]:0 - _onlineList[item2.channel.id]?_onlineList[item2.channel.id]:0;
+        onlineOffset = onlineOffset * 1<<10;
+        return onlineOffset + (item1.channel.id - item2.channel.id);
+      });
+    }
+
     return (
       <div className="instant-message-channels">
         <div className="mui-font-style-subhead-1 instant-message-channel-brand">{this.props.channelGroup}</div>
         <div className="instant-message-channel-items" >
-          <Menu menuItems = { this.state._menuItems } onItemTap={this._onItemTap}
-            autoWidth={false} zDepth="-1">
-          </Menu>
+          {
+            this.state._menuItems.map((item) => { return  <ImChannel Channel={item}></ImChannel>  })
+          }
         </div>
       </div>
     );

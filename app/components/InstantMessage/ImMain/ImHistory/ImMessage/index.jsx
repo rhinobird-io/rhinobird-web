@@ -30,7 +30,7 @@ module.exports = React.createClass({
 
     return (
       <div className={_.keys(classNames).filter(cl=>{return classNames[cl];}).join(' ')}>
-        {this.props.Message.id} - {this.props.Message.createdAt} -
+        {this.props.Message.id} - {this.props.Message.createdAt} - {this.props.Message.userId} -
         {this.props.Message.text}
       </div>
     );

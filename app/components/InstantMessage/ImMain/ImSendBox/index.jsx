@@ -6,6 +6,7 @@ import LoginStore from '../../../../stores/LoginStore';
 import ChannelStore from '../../../../stores/ChannelStore';
 import SocketStore from '../../../../stores/SocketStore';
 import SocketAction from '../../../../actions/SocketAction';
+import MessageAction from '../../../../actions/MessageAction';
 
 
 import uuid from 'node-uuid';
@@ -58,7 +59,7 @@ module.exports = React.createClass({
       createdAt : Date.now()
     };
     this.refs.sEditor.setValue && this.refs.sEditor.setValue('');
-    SocketAction.sendMessage(msg);
+    MessageAction.sendMessage(msg);
   },
 
   render() {

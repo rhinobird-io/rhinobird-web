@@ -4,6 +4,7 @@ import Constants from '../constants/AppConstants';
 import BaseStore from './BaseStore';
 import LoginStore from './LoginStore';
 import MessageStore from './MessageStore';
+import OnlineStore from './OnlineStore';
 import assign from 'object-assign';
 import _ from 'lodash';
 
@@ -11,7 +12,7 @@ let _socket;
 
 let SocketStore = assign({}, BaseStore, {
 
-    getSocket : ()=>{return _socket},
+    getSocket : ()=>{return _socket; },
 
     dispatcherIndex: AppDispatcher.register(function (payload) {
         switch (payload.type) {
@@ -20,13 +21,6 @@ let SocketStore = assign({}, BaseStore, {
                 _socket = socket;
                 SocketStore.initSocket(payload.channels);
                 SocketStore.emitChange();
-                break;
-            case Constants.SocketActionTypes.SOCKET_SEND_MESSAGE:
-                MessageStore.sendMessage(payload.message);
-                _socket.emit('message:send', payload.message, function (message) {
-                    console.log('message was sended');
-                    MessageStore.confirmMessageSended(message);
-                });
                 break;
             default:
                 break;
@@ -69,45 +63,11 @@ let SocketStore = assign({}, BaseStore, {
         });
 
         _socket.on('user:join', function (data) {
-            //if (data.channelId === 'default') {
-            //    //self.$.globals.values.im.onlineList = self.$.globals.values.im.onlineList || {};
-            //    //self.$.globals.values.im.onlineList[data.userId] = 1;
-            //    //self.fire('core-signal', {
-            //    //    name : 'user-join',
-            //    //    data : {
-            //    //        user : data,
-            //    //        onlineList:self.$.globals.values.im.onlineList
-            //    //    }
-            //    //});
-            //    return;
-            //}
-            //if (data.channelId !== ChannelStore.getCurrentChannel().backEndChannelId) {
-            //    // other channel message
-            //    return;
-            //}
-            // do some other things
-            console.log('user join');
-            console.log(data);
+            OnlineStore.userJoin(data);
         });
 
         _socket.on('user:left', function (data) {
-            //if (data.channelId === 'default' && self.$.globals.values.im.onlineList) {
-            //    delete self.$.globals.values.im.onlineList[data.userId];
-            //    self.fire('core-signal', {
-            //        name : 'user-left',
-            //        data : {
-            //            user : data,
-            //            onlineList:self.$.globals.values.im.onlineList
-            //        }
-            //    });
-            //    return;
-            //}
-            //if (data.channelId !== self.channel.id) {
-            //    // other channel message
-            //    return;
-            //}
-            console.log('user left');
-            console.log(data);
+            OnlineStore.userLeft(data);
         });
         _socket.on('disconnect', function () {
             self.$.connectingDialog.open();
@@ -135,8 +95,7 @@ let SocketStore = assign({}, BaseStore, {
             privateChannels: [],
             teamMemberChannels: channels.directMessageChannels
         }, function (onlineList) {
-            console.log('online list');
-            console.log(onlineList);
+            OnlineStore.setOnlineList(onlineList);
         });
     }
 

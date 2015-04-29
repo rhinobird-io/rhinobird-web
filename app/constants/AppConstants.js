@@ -26,12 +26,13 @@ export default {
   }),
 
   SocketActionTypes : keyMirror({
-    SOCKET_INIT: null,
-    SOCKET_SEND_MESSAGE : null
+    SOCKET_INIT: null
   }),
 
   MessageActionTypes : keyMirror({
-    RECEIVE_MESSAGES: null
+    RECEIVE_MESSAGES: null,
+    SEND_MESSAGE : null,
+    CONFIRM_SEEN : null
   })
 
 };
