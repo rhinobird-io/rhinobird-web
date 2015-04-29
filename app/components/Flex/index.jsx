@@ -1,6 +1,7 @@
 "use strict";
 
 const React = require("react");
+const PerfectScroll = require('../PerfectScroll');
 
 let Item = React.createClass({
   // See Polymer layout attributes
@@ -95,7 +96,7 @@ let Item = React.createClass({
       styles.display = "none";
     }
     return (
-      <div {...this.props} style={styles}>{props.children}</div>
+      <PerfectScroll {...this.props} style={styles}>{props.children}</PerfectScroll>
     );
   }
 });
