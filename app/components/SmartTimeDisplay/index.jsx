@@ -21,10 +21,14 @@ export default React.createClass({
 
     componentDidMount() {
         this._setTooltipPos();
+        this.timerId = setInterval(()=>{this.forceUpdate()}, 30000);
     },
 
-    componentDidUpdate: function(prevProps, prevState) {
+    componentDidUpdate(prevProps, prevState) {
         this._setTooltipPos();
+    },
+    componentWillUnmount(){
+        clearInterval(this.timerId);
     },
 
     render() {
