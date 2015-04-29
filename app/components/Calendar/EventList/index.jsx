@@ -45,10 +45,7 @@ export default React.createClass({
     render: function() {
         let eventsDOM = Object.keys(this.state.events).sort().map((key, index) => {
             let direction = index % 2 === 0 ? "left" : "right";
-            let arrowClass = "arrow-left";
-            if (index % 2 === 0) {
-                arrowClass = "arrow-right";
-            }
+
             let dayEvents = [];
             let events = this.state.events[key];
             let dayDividerLabelClassName = "cal-day-divider-label " + direction;
@@ -89,7 +86,6 @@ export default React.createClass({
                                     <div className="cal-event-time">
                                         <SmartTimeDisplay start={event.from_time} end={event.to_time} relative />
                                     </div>
-                                    <div className={arrowClass}></div>
                                 </div>
                                 <div className="cal-event-detail">
                                     {event.description}
