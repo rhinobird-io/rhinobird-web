@@ -11,6 +11,8 @@ let _socket;
 
 let SocketStore = assign({}, BaseStore, {
 
+    getOnlineList: () => { return _onlineList;},
+
     getSocket : ()=>{return _socket; },
 
     dispatcherIndex: AppDispatcher.register(function (payload) {
@@ -19,7 +21,6 @@ let SocketStore = assign({}, BaseStore, {
                 let socket = payload.socket;
                 _socket = socket;
                 SocketStore.initSocket(payload.channels);
-                SocketStore.emitChange();
                 break;
             default:
                 break;

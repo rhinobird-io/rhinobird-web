@@ -30,11 +30,13 @@ module.exports = React.createClass({
     componentDidMount() {
         ChannelStore.addChangeListener(this._onChannelChange);
         MessageStore.addChangeListener(this._onMessageChange);
+        OnlineStore.addChangeListener(this._onlineListChange);
     },
 
     componentWillUnmount() {
         ChannelStore.removeChangeListener(this._onChannelChange);
         MessageStore.removeChangeListener(this._onMessageChange);
+        OnlineStore.removeChangeListener(this._onlineListChange);
     },
 
     _onChannelChange() {
@@ -50,6 +52,12 @@ module.exports = React.createClass({
     _onMessageChange() {
         this.setState({
             _hasUnread : MessageStore.hasUnread(this.props.Channel)
+        });
+    },
+
+    _onlineListChange() {
+        this.setState({
+            _onlineStatus : OnlineStore.getOnlineList()
         });
     },
 
