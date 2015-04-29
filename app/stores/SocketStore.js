@@ -3,7 +3,6 @@ import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
 import BaseStore from './BaseStore';
 import LoginStore from './LoginStore';
-import MessageStore from './MessageStore';
 import OnlineStore from './OnlineStore';
 import assign from 'object-assign';
 import _ from 'lodash';
@@ -37,6 +36,7 @@ let SocketStore = assign({}, BaseStore, {
         };
 
         _socket.on('message:send', function (message) {
+            const MessageStore = require('./MessageStore');
             MessageStore.receiveMessage(message);
         });
 
