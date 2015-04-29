@@ -32,7 +32,7 @@ export default {
   MessageActionTypes : keyMirror({
     RECEIVE_MESSAGES: null,
     SEND_MESSAGE : null,
-    CONFIRM_SEEN : null
+    CLEAR_UNREAD : null
   })
 
 };

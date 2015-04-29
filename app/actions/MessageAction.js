@@ -39,7 +39,7 @@ export default {
             }).fail(Util.handleError);
     },
 
-    confirmMessageSeen(currentUser, channel, message) {
+    clearUnread(currentUser, channel) {
         //var lsName = 'seenMessage';
         //let seenMessage = localStorage[lsName] || {};
         //seenMessage[currentUser] = seenMessage[currentUser] || {};
@@ -47,10 +47,9 @@ export default {
         //localStorage.setItem(lsName, seenMessage);
 
         AppDispatcher.dispatch({
-            type: Constants.MessageActionTypes.CONFIRM_SEEN,
+            type: Constants.MessageActionTypes.CLEAR_UNREAD,
             currentUser : currentUser,
-            channel : channel,
-            message : message
+            channel : channel
         });
     },
 
