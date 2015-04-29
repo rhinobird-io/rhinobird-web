@@ -147,7 +147,7 @@ export default React.createClass({
             let offsetY = 0;
             while (parent) {
                 if (!isNaN(parent.offsetLeft))
-                    offsetX += (parent.offsetLeft - parent.scrollTop);
+                    offsetX += (parent.offsetLeft - parent.scrollLeft);
                 if (!isNaN(parent.offsetTop))
                     offsetY += (parent.offsetTop - parent.scrollTop);
                 parent = parent.offsetParent;
