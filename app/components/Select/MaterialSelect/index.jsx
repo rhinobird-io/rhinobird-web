@@ -1,4 +1,5 @@
 const React       = require('react'),
+      StyleSheet  = require('react-style'),
       MUI         = require('material-ui'),
       Paper       = MUI.Paper,
       TextField   = MUI.TextField,
@@ -181,9 +182,9 @@ export default React.createClass({
 
         for (let i = 0; i < this.state.selected.length; i++) {
             tokens.push(
-                <Paper ref={"token-" + i} zDepth={1} styles={styles.token}>
+                <Paper ref={"token-" + i} zDepth={1} style={styles.token}>
                     <a onClick={(e) => e.stopPropagation()}>{this.state.selected[i]}</a>
-                    <span styles={styles.tokenDelete} onClick={(e) => {
+                    <span style={styles.tokenDelete} onClick={(e) => {
                         this._delete(i);
                         e.stopPropagation();
                     }}>x</span>
@@ -193,14 +194,14 @@ export default React.createClass({
 
         let tokenWrapperDOM =
             tokens.length > 0 ?
-                <div ref="tokenWrapper" styles={styles.tokenWrapper}
+                <div ref="tokenWrapper" style={styles.tokenWrapper}
                     onClick={(e) => {
                         this.refs.text.focus();
                     }}>
                     {tokens}
                 </div> : null;
         return (
-            <div styles={styles.select}>
+            <div style={styles.select}>
                 {tokenWrapperDOM}
                 {text}
                 {popupSelect}

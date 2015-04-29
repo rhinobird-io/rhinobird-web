@@ -1,12 +1,15 @@
-var React        = require("react"),
-    mui          = require('material-ui'),
-    RaisedButton = mui.RaisedButton,
-    TextField    = mui.TextField,
-    RepeatedEventModal = require("./RepeatedEventModal.jsx");
+const React        = require("react"),
+      MUI          = require('material-ui'),
+      Layout       = require("../../Flex").Layout,
+      RepeatedEventModal = require("./RepeatedEventModal.jsx");
+
+require("./style.less");
 
 export default React.createClass({
     _handleTouchTap() {
-        this.refs.repeatedEventModal.show();
+    },
+
+    componentDidMount() {
     },
 
     render() {
@@ -14,16 +17,45 @@ export default React.createClass({
             <div>
                 <RepeatedEventModal ref="repeatedEventModal" />
 
-                <TextField
-                    hintText="Title"
-                    floatingLabelText="Title" />
+                <div className="cal-create-event">
+                    <div className="cal-create-event-title">
+                        <h3>Create Event</h3>
+                    </div>
 
-                <TextField
-                    hintText="Title"
-                    floatingLabelText="Title" />
+                    <MUI.TextField
+                        ref="eventTitle"
+                        className="cal-create-event-textfield"
+                        hintText="Event Title"
+                        floatingLabelText="Event Title"/>
 
-                <RaisedButton label="Open" primary={true} onTouchTap={this._handleTouchTap} />
+                    <MUI.TextField
+                        multiLine={true}
+                        ref="eventDescription"
+                        hintText="Description"
+                        className="cal-create-event-textfield"
+                        floatingLabelText="Description" />
+
+                    <MUI.Toggle
+                        label="Full Day" />
+
+                    <Layout horizontal justified>
+                        <MUI.DatePicker hintText="Portrait Dialog" />
+                        <MUI.DatePicker hintText="Portrait Dialog" />
+                    </Layout>
+
+                    <MUI.Toggle
+                        onToggle={this._onRepeatToggled}
+                        label="Repeated" />
+                </div>
             </div>
         );
+    },
+
+    _onRepeatToggled(e, isInputChecked) {
+        if (isInputChecked) {
+            this.refs.repeatedEventModal.show();
+        } else {
+
+        }
     }
 });

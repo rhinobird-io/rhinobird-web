@@ -1,6 +1,10 @@
 @import "~material-ui/src/less/scaffolding.less";
 @import "~material-ui/src/less/components.less";
 
+@calEventBg: rgb(229, 229, 229);
+@arrowBg: #d7d7d7;
+@arrowZIndex: 1;
+
 .add-event {
   position: fixed;
   right: 24px;
@@ -8,14 +12,14 @@
   z-index: 100;
 }
 
-.cal-event-wrapper {
-  margin: 20px;
-}
-
 .cal-event {
   padding: 2em 0;
-  cursor: pointer;
   position: relative;
+}
+
+.cal-event-wrapper {
+  padding: 20px;
+  background-color: @calEventBg;
 }
 
 .cal-day-divider {
@@ -47,7 +51,7 @@
 .cal-day-divider-label-content {
   z-index: 2;
   position: relative;
-  background-color: white;
+  background-color: @calEventBg;
 }
 
 .cal-event::before,
@@ -57,7 +61,6 @@
   top: 0;
   left: 22px;
   width: 6px;
-  z-index: 3;
   height: 100%;
   padding: 10px 0 10px 0;
   background-color: @indigo-100;
@@ -99,17 +102,67 @@
 }
 
 .cal-event-content {
-  height: 50px;
-  line-height: 25px;
   margin-left: 78px;
 }
 
+.cal-event-content-inner {
+  cursor: pointer;
+  margin-right: 20%;
+  position: relative;
+  box-shadow: 1px 0px 3px rgba(0, 0, 0, .3);
+  background-color: #ddd;
+}
+
+.cal-event-content-inner:hover {
+}
+
 .cal-event-title {
+  padding: 6px 8px;
+  font-size: 1.2em;
+  position: relative;
+}
+
+.cal-event-member {
+  color: #555;
   font-size: 1.2em;
 }
 
+.cal-event-detail {
+  color: #333;
+  padding: 0px 8px 6px 8px;
+}
+
 .cal-event-time {
+  font-size: 0.8em;
   color: rgba(0, 0, 0, 0.54);
+}
+
+.arrow-left {
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: -8px;
+  top: 50%;
+  z-index: @arrowZIndex;
+  margin-top: -10px;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 8px solid @arrowBg;
+}
+
+@media screen and (max-width: 960px) {
+  .arrow-right {
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: -8px;
+    top: 50%;
+    z-index: @arrowZIndex;
+    margin-top: -10px;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 8px solid @arrowBg;
+  }
 }
 
 @media screen and (min-width: 960px) {
@@ -143,5 +196,28 @@
     margin-left: 50%;
     text-align: left;
     padding-left: 78px;
+  }
+
+  .cal-event-content.left .cal-event-content-inner {
+    margin-right: 0;
+    margin-left: 20%;
+    box-shadow: -1px 0px 3px rgba(0, 0, 0, .3);
+  }
+
+  .cal-event-content.right .cal-event-content-inner {
+    margin-right: 20%;
+  }
+
+  .arrow-right {
+    position: absolute;
+    width: 0;
+    height: 0;
+    right: -8px;
+    top: 50%;
+    z-index: @arrowZIndex;
+    margin-top: -10px;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 8px solid @arrowBg;
   }
 }

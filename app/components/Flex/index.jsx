@@ -47,9 +47,9 @@ let Item = React.createClass({
     }
     // flex-direction
     if (props.vertical) {
-      styles.flexDirection = styles.webkitFlexDirection = "column";
+      styles.flexDirection = styles.WebkitFlexDirection = "column";
     } else {
-      styles.flexDirection = styles.webkitFlexDirection =
+      styles.flexDirection = styles.WebkitFlexDirection =
           props.reverse ? "row-reverse" : "row";
     }
     // align-items
@@ -95,7 +95,7 @@ let Item = React.createClass({
       styles.display = "none";
     }
     return (
-      <div {...this.props} styles={styles}>{props.children}</div>
+      <div {...this.props} style={styles}>{props.children}</div>
     );
   }
 });

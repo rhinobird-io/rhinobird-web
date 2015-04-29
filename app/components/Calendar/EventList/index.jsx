@@ -1,9 +1,9 @@
 const React                = require("react"),
       MUI                  = require("material-ui"),
+      Layout               = require("../../Flex").Layout,
       Link                 = require("react-router").Link,
       Select               = require("../../Select").Select,
       SmartTimeDisplay     = require("../../SmartTimeDisplay"),
-      FontIcon             = MUI.FontIcon,
       CalendarStore        = require("../../../stores/CalendarStore"),
       CalendarActions      = require("../../../actions/CalendarActions"),
       InfiniteScroll       = require('../../InfiniteScroll');
@@ -45,6 +45,10 @@ export default React.createClass({
     render: function() {
         let eventsDOM = Object.keys(this.state.events).sort().map((key, index) => {
             let direction = index % 2 === 0 ? "left" : "right";
+            let arrowClass = "arrow-left";
+            if (index % 2 === 0) {
+                arrowClass = "arrow-right";
+            }
             let dayEvents = [];
             let events = this.state.events[key];
             let dayDividerLabelClassName = "cal-day-divider-label " + direction;
@@ -67,16 +71,30 @@ export default React.createClass({
                 } else if (now > fromTime && now < toTime) {
                     eventIconClass += " <active></active>";
                 }
+
                 return (
                     <div className="cal-event">
                         <div className="cal-event-icon-wrapper">
                             <div className={eventIconClass}>
-                                <FontIcon className="icon-event"/>
+                                <MUI.FontIcon className="icon-event"/>
                             </div>
                         </div>
                         <div className={contentClass}>
-                            <div className="cal-event-title">{event.title}</div>
-                            <div className="cal-event-time"><SmartTimeDisplay start={event.from_time} end={event.to_time} relative /></div>
+                            <div className="cal-event-content-inner">
+                                <div className="cal-event-title">
+                                    <Layout horizontal justified>
+                                        <span>{event.title}</span>
+                                        <span title="Event Members" className="cal-event-member icon-group"></span>
+                                    </Layout>
+                                    <div className="cal-event-time">
+                                        <SmartTimeDisplay start={event.from_time} end={event.to_time} relative />
+                                    </div>
+                                    <div className={arrowClass}></div>
+                                </div>
+                                <div className="cal-event-detail">
+                                    {event.description}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 );

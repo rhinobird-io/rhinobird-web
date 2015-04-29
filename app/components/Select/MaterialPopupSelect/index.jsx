@@ -1,5 +1,4 @@
 var React = require('react'),
-    StyleSheet = require('react-style'),
     MUI = require('material-ui'),
     Paper = MUI.Paper;
 
@@ -311,7 +310,7 @@ export default React.createClass({
         var filteredContent = this.state.filteredContent;
 
         if (filteredContent.length === 0) {
-            listContent.push(<strong styles={styles.label}>No result found.</strong>);
+            listContent.push(<strong style={styles.label}>No result found.</strong>);
         } else {
             var selected = this.state.filteredContentMap[this.state.selectedIndex];
             var itemCount = 0;
@@ -335,7 +334,7 @@ export default React.createClass({
                                 {item.content[j].content}
                             </li>);
                     }
-                    listContent.push(<ul styles={styles.list}><strong styles={styles.label}>{label}</strong>{groupOptions}</ul>)
+                    listContent.push(<ul style={styles.list}><strong style={styles.label}>{label}</strong>{groupOptions}</ul>)
                 } else if (item.type === "option") {
                     let currentIndex = itemCount++;
                     let className = "mui-menu-item";
@@ -348,8 +347,8 @@ export default React.createClass({
         }
 
         return (
-            <div ref="popup" styles={styles.popup} className="select-popup mui-z-depth-5" {...this.props}>
-                <ul ref="__list" styles={styles.list}>
+            <div ref="popup" style={styles.popup} className="select-popup mui-z-depth-5" {...this.props}>
+                <ul ref="__list" style={styles.list}>
                     {listContent}
                 </ul>
             </div>
