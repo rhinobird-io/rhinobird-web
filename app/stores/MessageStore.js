@@ -2,6 +2,7 @@
 import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
 import BaseStore from './BaseStore';
+import ChannelStore from './ChannelStore';
 import assign from 'object-assign';
 import _ from 'lodash';
 
@@ -52,6 +53,10 @@ class MessagesWrapper {
         })]);
     }
 
+    receiveMessage(message) {
+        this.addMoreMessages([message,]);
+    }
+
     confirmMessageSended(message) {
         let idx = _.findIndex(this.messages, msg => {
             return msg.uuid === message.uuid;
@@ -92,12 +97,19 @@ let MessageStore = assign({}, BaseStore, {
     },
 
     sendMessage(message) {
+        _messages[message.channelId] = _messages[message.channelId] || new MessagesWrapper([]);
         _messages[message.channelId].sendMessage(message);
         MessageStore.emitChange();
     },
 
     confirmMessageSended(message) {
         _messages[message.channelId].confirmMessageSended(message);
+        MessageStore.emitChange();
+    },
+
+    receiveMessage(message) {
+        _messages[message.channelId] = _messages[message.channelId] || new MessagesWrapper([]);
+        _messages[message.channelId].receiveMessage(message);
         MessageStore.emitChange();
     },
 

@@ -51,7 +51,7 @@ module.exports = React.createClass({
     var self = this;
     SocketAction.initSocket({
       publicGroupChannels : _allTeams.map(team=>{ return {
-        id : self._buildBackEndChannelId(true, team.id)
+        id : self._buildBackEndChannelId(true, team)
       }}),
       directMessageChannels : _allUsers.filter(user => { return '' + user.id !== '' + LoginStore.getUser().id;}).map( user => {
         return {
@@ -75,11 +75,10 @@ module.exports = React.createClass({
   },
 
   render() {
-    this.props.buildBackEndChannelId = this._buildBackEndChannelId;
     return (
       <div className="sidebar">
-        <ImChannels {...this.props} className="instant-message-group-channels" channelGroup="Group Channel" isGroup={true} channels={this.state.channels.publicGroupChannels}></ImChannels>
-        <ImChannels {...this.props} className="instant-message-direct-message-channels" channelGroup="Direct Message" channels={this.state.channels.directMessageChannels}></ImChannels>
+        <ImChannels {...this.props} buildBackEndChannelId={this._buildBackEndChannelId} className="instant-message-group-channels" channelGroup="Group Channel" isGroup={true} channels={this.state.channels.publicGroupChannels}></ImChannels>
+        <ImChannels {...this.props} buildBackEndChannelId={this._buildBackEndChannelId} className="instant-message-direct-message-channels" channelGroup="Direct Message" channels={this.state.channels.directMessageChannels}></ImChannels>
       </div>
     );
   }

@@ -43,7 +43,7 @@ let SocketStore = assign({}, BaseStore, {
         };
 
         _socket.on('message:send', function (message) {
-            console.log('receive message :' + message);
+            MessageStore.receiveMessage(message);
         });
 
         _socket.on('channel:created', function (channel) {
@@ -69,41 +69,45 @@ let SocketStore = assign({}, BaseStore, {
         });
 
         _socket.on('user:join', function (data) {
-            if (data.channelId === 'default') {
-                //self.$.globals.values.im.onlineList = self.$.globals.values.im.onlineList || {};
-                //self.$.globals.values.im.onlineList[data.userId] = 1;
-                //self.fire('core-signal', {
-                //    name : 'user-join',
-                //    data : {
-                //        user : data,
-                //        onlineList:self.$.globals.values.im.onlineList
-                //    }
-                //});
-                return;
-            }
-            if (data.channelId !== self.channel.id) {
-                // other channel message
-                return;
-            }
+            //if (data.channelId === 'default') {
+            //    //self.$.globals.values.im.onlineList = self.$.globals.values.im.onlineList || {};
+            //    //self.$.globals.values.im.onlineList[data.userId] = 1;
+            //    //self.fire('core-signal', {
+            //    //    name : 'user-join',
+            //    //    data : {
+            //    //        user : data,
+            //    //        onlineList:self.$.globals.values.im.onlineList
+            //    //    }
+            //    //});
+            //    return;
+            //}
+            //if (data.channelId !== ChannelStore.getCurrentChannel().backEndChannelId) {
+            //    // other channel message
+            //    return;
+            //}
             // do some other things
+            console.log('user join');
+            console.log(data);
         });
 
         _socket.on('user:left', function (data) {
-            if (data.channelId === 'default' && self.$.globals.values.im.onlineList) {
-                delete self.$.globals.values.im.onlineList[data.userId];
-                self.fire('core-signal', {
-                    name : 'user-left',
-                    data : {
-                        user : data,
-                        onlineList:self.$.globals.values.im.onlineList
-                    }
-                });
-                return;
-            }
-            if (data.channelId !== self.channel.id) {
-                // other channel message
-                return;
-            }
+            //if (data.channelId === 'default' && self.$.globals.values.im.onlineList) {
+            //    delete self.$.globals.values.im.onlineList[data.userId];
+            //    self.fire('core-signal', {
+            //        name : 'user-left',
+            //        data : {
+            //            user : data,
+            //            onlineList:self.$.globals.values.im.onlineList
+            //        }
+            //    });
+            //    return;
+            //}
+            //if (data.channelId !== self.channel.id) {
+            //    // other channel message
+            //    return;
+            //}
+            console.log('user left');
+            console.log(data);
         });
         _socket.on('disconnect', function () {
             self.$.connectingDialog.open();
