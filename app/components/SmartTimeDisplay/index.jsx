@@ -16,7 +16,8 @@ export default React.createClass({
             React.PropTypes.string
         ]),
         format: React.PropTypes.string,
-        relative: React.PropTypes.bool
+        relative: React.PropTypes.bool,
+        container: React.PropTypes.object
     },
 
     getInitialState() {
@@ -68,7 +69,8 @@ export default React.createClass({
                 borderTop: "6px solid rgb(117,117,117)"
             },
             tooltip: {
-                zIndex: this.state.tipShow ? 10 : -1
+                position: "fixed",
+                zIndex: this.state.tipShow ? 12 : -1
             }
         };
 
@@ -79,7 +81,9 @@ export default React.createClass({
             timeFormat = time;
         }
 
-        let triangle = <div ref="triangle" styles={styles.triangleDown}></div>
+        // TODO: to have a triangle arrow, however, currently not fit the origin animation.
+        // let triangle = <div ref="triangle" styles={styles.triangleDown}></div>;
+
         return (
             <span ref="wrapper"
                 styles={styles.time}
@@ -107,6 +111,8 @@ export default React.createClass({
         if (!this.refs.tip) {
             return;
         }
+
+        let self = this.getDOMNode();
         let tip = this.refs.tip.getDOMNode();
         let wrapper = this.refs.wrapper.getDOMNode();
         //let triangle = this.refs.triangle.getDOMNode();
@@ -121,8 +127,44 @@ export default React.createClass({
         //let triangleLeft = (wrapperWidth - triangleWidth) / 2;
 
         tip.style.left = tipLeft + "px";
-        tip.style.top = "-" + (wrapperHeight + tipHeight + 4) + "px";
-        //triangle.style.top = "-4px";
-        //triangle.style.left = triangleLeft + "px";
+
+        tip.style.top = "-" + (wrapperHeight + tipHeight + 15) + "px";
+
+        let selfPos = this._getViewportPos(self);
+
+        if (selfPos.y <= 2 * tip.offsetHeight) {
+            tip.style.top = (selfPos.y + tip.offsetHeight / 2) + "px";
+        } else {
+            tip.style.top = (selfPos.y - self.offsetHeight - tip.offsetHeight * 3 / 2) + "px";
+        }
+        tip.style.left = selfPos.x + (self.offsetWidth - tip.offsetWidth) / 2 + "px";
+    },
+
+    _getViewportPos(ele) {
+        if (ele) {
+            let parent = ele;
+            let offsetX = 0;
+            let offsetY = 0;
+            while (parent) {
+                if (!isNaN(parent.offsetLeft))
+                    offsetX += (parent.offsetLeft - parent.scrollTop);
+                if (!isNaN(parent.offsetTop))
+                    offsetY += (parent.offsetTop - parent.scrollTop);
+                parent = parent.offsetParent;
+            }
+
+            let pageOffsetX = window.pageXOffset;
+            let pageOffsetY = window.pageYOffset;
+
+            console.log(pageOffsetY);
+            return {
+                x: offsetX - pageOffsetX,
+                y: offsetY - pageOffsetY
+            }
+        }
+        return {
+            x: 0,
+            y: 0
+        }
     }
 });
