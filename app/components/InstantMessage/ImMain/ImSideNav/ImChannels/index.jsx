@@ -12,6 +12,8 @@ import ImChannel from './ImChannel.jsx';
 
 const { Menu, FontIcon, FlatButton } = mui;
 
+const Flex = require('../../../../Flex');
+const PerfectScroll = require('../../../../PerfectScroll');
 require('./style.less');
 module.exports = React.createClass({
 
@@ -90,14 +92,14 @@ module.exports = React.createClass({
     }
 
     return (
-      <div className="instant-message-channels">
+      <Flex.Layout vertical className="instant-message-channels">
         <div className="mui-font-style-subhead-1 instant-message-channel-brand">{this.props.channelGroup}</div>
-        <div className="instant-message-channel-items" >
+        <Flex.Item flex={1} perfectScroll className="instant-message-channel-items" >
           {
             this.state._menuItems.map((item) => { return  <ImChannel Channel={item}></ImChannel>  })
           }
-        </div>
-      </div>
+        </Flex.Item>
+      </Flex.Layout>
     );
   }
 });

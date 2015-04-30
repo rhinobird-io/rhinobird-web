@@ -8,6 +8,7 @@ const SocketStore = require('../../../../stores/SocketStore');
 
 const LoginStore = require('../../../../stores/LoginStore');
 const UserStore = require('../../../../stores/UserStore');
+const Flex = require('../../../Flex');
 
 import _ from 'lodash';
 require('./style.less');
@@ -75,16 +76,17 @@ module.exports = React.createClass({
   },
 
   render() {
+    let channels = this.state.channels.directMessageChannels.concat(this.state.channels.directMessageChannels).concat(this.state.channels.directMessageChannels);
     return (
-      <div className="sidebar">
+      <Flex.Layout selfStretch vertical flex={1}>
         <div className="instant-message-group-channels">
           <ImChannels {...this.props} buildBackEndChannelId={this._buildBackEndChannelId}  channelGroup="Group Channel" isGroup={true} channels={this.state.channels.publicGroupChannels}></ImChannels>
         </div>
         <div className="instant-message-direct-message-channels">
-          <ImChannels {...this.props} buildBackEndChannelId={this._buildBackEndChannelId}  channelGroup="Direct Message" channels={this.state.channels.directMessageChannels}></ImChannels>
+          <ImChannels {...this.props} buildBackEndChannelId={this._buildBackEndChannelId}  channelGroup="Direct Message" channels={channels}></ImChannels>
         </div>
 
-      </div>
+      </Flex.Layout>
     );
   }
 });
