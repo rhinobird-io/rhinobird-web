@@ -12,15 +12,12 @@ export default React.createClass({
   mixins: [React.addons.LinkedStateMixin],
 
   getInitialState() {
-    return {
-      value: "",
-      display: ""
-    };
+    return { value: null };
   },
 
   _preview(tab) {
-    if (tab.props.label === "PREVIEW") {
-      this.setState({display: this.state.value});
+    if (tab.props.label === "PREVIEW" && !tab.props.selected) {
+      this.setState({value: this.refs.editor.getValue()});
     }
   },
 
@@ -28,10 +25,10 @@ export default React.createClass({
     return (
       <Tabs>
         <Tab label="EDIT">
-          <SmartEditor valueLink={this.linkState('value')} multiLine={true} />
+          <SmartEditor ref="editor" defaultValue={this.state.value || ""} multiLine={true} />
         </Tab>
         <Tab label="PREVIEW" onActive={this._preview}>
-          <SmartDisplay value={this.state.display} />
+          <SmartDisplay value={this.state.value} />
         </Tab>
       </Tabs>
     );

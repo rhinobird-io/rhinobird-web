@@ -18,6 +18,14 @@ function _showMemberProfile(){
     });
 }
 
+Member.showMemberProfile = (id) => {
+    FloatingContentAction.updateFloatingContent({
+        title: 'Member',
+        elementFactory: () => <MemberProfile userId={id} />,
+        showFloatingContent: true
+    });
+}
+
 Member.Avatar = React.createClass({
     propTypes() {
         return {
