@@ -21,9 +21,8 @@ export default React.createClass({
     getDefaultProps: function() {
         return {
             valueAttr: "name",
-            selectedStyle: {
-                fontWeight: "bold"
-            }
+            selectedStyle: {},
+            selectedClass: "selected"
         };
     },
 
@@ -42,10 +41,6 @@ export default React.createClass({
         };
     },
 
-    selectPrevious() {
-
-    },
-
     select(id) {
         let selected = this.state.selected;
         let selectedValue;
@@ -62,7 +57,9 @@ export default React.createClass({
             selectedValue = this.state.children[id].value;
         }
         this.setState({selected: selected});
-        this.getValueLink(this.props).requestChange(selectedValue);
+        if (this.props.valueLink || this.props.value) {
+            this.getValueLink(this.props).requestChange(selected);
+        }
         if (this.props.onSelectChange) {
             this.props.onSelectChange(selectedValue);
         }
@@ -93,11 +90,11 @@ export default React.createClass({
             let count = index.toString();
             return React.cloneElement(child.element, {
                 key: count,
-                style: selected[count] ? styles.selected : undefined,
-                onClick: () => this.select(index)
+                onClick: () => this.select(index),
+                className: child.element.props.className + (selected[count] ? " " + this.props.selectedClass : ""),
+                style: selected[count] ? styles.selected : undefined
             });
         });
-
 
         return (
             <div>{children}</div>
