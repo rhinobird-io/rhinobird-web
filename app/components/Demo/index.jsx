@@ -1,6 +1,7 @@
 var React                = require("react"),
     SmartTimeDisplay     = require("../SmartTimeDisplay"),
-    Select = require("../Select").Select;
+    Select = require("../Select").Select,
+    Selector = require("../Select").Selector;
 
 export default React.createClass({
     mixins: [React.addons.LinkedStateMixin],
@@ -12,7 +13,8 @@ export default React.createClass({
     getInitialState() {
         return {
             select1: [],
-            select2: []
+            select2: [],
+            repeatedType: []
         }
     },
 
@@ -46,6 +48,16 @@ export default React.createClass({
                     <option value="Guang Dong">Guang Dong</option>
                     <option value="Shang Hai">Shang Hai</option>
                 </Select>
+
+                <br/>
+
+                {this.state.repeatedType}
+                <Selector valueLink={this.linkState("repeatedType")} selectedStyle={{color: "white", backgroundColor: "#3F51B5"}}>
+                    <span className="cal-event-repeated-item" name="Daily">Daily</span>
+                    <span className="cal-event-repeated-item" name="Weekly">Weekly</span>
+                    <span className="cal-event-repeated-item" name="Monthly">Monthly</span>
+                    <span className="cal-event-repeated-item" name="Yearly">Yearly</span>
+                </Selector>
             </div>
         );
     }
