@@ -9,21 +9,21 @@ import _ from 'lodash';
 
 let _onlineList;
 
-let SocketStore = assign({}, BaseStore, {
+let OnlineStore = assign({}, BaseStore, {
 
     setOnlineList : (onlineList)=> {
         _onlineList = onlineList;
-        SocketStore.emitChange();
+        OnlineStore.emitChange();
     },
 
     userJoin : (userStatus) => {
         _onlineList[userStatus.userId] = userStatus.channelId;
-        SocketStore.emitChange();
+        OnlineStore.emitChange();
     },
 
     userLeft : (userStatus) => {
         delete _onlineList[userStatus.userId];
-        SocketStore.emitChange();
+        OnlineStore.emitChange();
     },
 
     getOnlineList : ()=> { return _onlineList; },
@@ -37,4 +37,4 @@ let SocketStore = assign({}, BaseStore, {
 
 });
 
-export default SocketStore;
+export default OnlineStore;

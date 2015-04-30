@@ -93,6 +93,15 @@ class MessagesWrapper {
             return msg.id
         });
     }
+
+    getNewestMessage() {
+        if (this.messages.length === 0) {
+            return {
+                id : -1
+            };
+        }
+        return this.messages[0];
+    }
 }
 
 // key channelid, value, messages array
@@ -102,20 +111,26 @@ let _limit = 20;
 let MessageStore = assign({}, BaseStore, {
 
     getMessages(channel) {
+        if (!channel.backEndChannelId) {
+            throw new Error('backEndChannelId should be provided');
+        }
         _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper([]);
         return channel ? channel.backEndChannelId ? _messages[channel.backEndChannelId].getMessages() : [] : [];
     },
 
     hasUnread(channel) {
+        if (!channel.backEndChannelId) {
+            throw new Error('backEndChannelId should be provided');
+        }
         _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper([]);
         return _messages[channel.backEndChannelId].unread.length !== 0;
     },
 
     getNewestMessagesId(channel){
-        _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper([]);
         if (!channel.backEndChannelId) {
             throw new Error('backEndChannelId should be provided');
         }
+        _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper([]);
         var messages = _messages[channel.backEndChannelId].getMessages();
         if (messages.length === 0) {
             return -1;
@@ -150,14 +165,17 @@ let MessageStore = assign({}, BaseStore, {
                     MessageStore.emitChange();
                 });
                 break;
-            case Constants.MessageActionTypes.CONFIRM_SEEN:
-                SocketStore.getSocket().emit('message:seen', {
-                    userId: payload.currentUser.id,
-                    messageId: payload.message.id,
-                    channelId: payload.channel.backEndChannelId
-                });
+            case Constants.MessageActionTypes.CLEAR_UNREAD:
                 _messages[payload.channel.backEndChannelId] = _messages[payload.channel.backEndChannelId] || new MessagesWrapper(messages);
                 _messages[payload.channel.backEndChannelId].clearUnread();
+
+                // TODO this one should have callback
+                SocketStore.getSocket().emit('message:seen', {
+                    userId: payload.currentUser.id,
+                    messageId: _messages[payload.channel.backEndChannelId].id,
+                    channelId: payload.channel.backEndChannelId
+                });
+
                 MessageStore.emitChange();
                 break;
             default:

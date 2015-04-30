@@ -13,6 +13,7 @@ const LoginStore = require('../../../stores/LoginStore');
 const UserStore = require('../../../stores/UserStore');
 const ChannelStore = require('../../../stores/ChannelStore');
 const SocketStore = require('../../../stores/SocketStore');
+const Flex = require('../../Flex');
 
 
 require('./style.less');
@@ -67,20 +68,15 @@ module.exports = React.createClass({
   },
 
   render() {
-    var style = {
-      height : $(window).height() - $('.topNav').height()
-    };
 
     return (
-    <div className="instant-message-container">
-      <div className="main" style={style}>
+    <Flex.Layout fit className="instant-message-container">
+      <Flex.Layout selfStretch flex={5} vertical reverse className="main" >
         <ImHistory {...this.props} className="history" ></ImHistory>
         <ImSendBox {...this.props} className="send-box" ></ImSendBox>
-      </div>
-      <div className="sidebar" style={style}>
-        <ImSideNav {...this.props} ></ImSideNav>
-      </div>
-    </div>
+      </Flex.Layout>
+      <ImSideNav {...this.props} ></ImSideNav>
+    </Flex.Layout>
     );
   }
 });

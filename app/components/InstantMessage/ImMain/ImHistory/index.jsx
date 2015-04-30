@@ -36,7 +36,6 @@ module.exports = React.createClass({
     this.setState({
       messages : messages
     });
-    MessageAction.confirmMessageSeen(LoginStore.getUser(), this.state.currentChannel, messages[0]);
   },
 
   _onChannelChange() {
@@ -46,6 +45,7 @@ module.exports = React.createClass({
       messages : []
     });
     MessageAction.getMessages(currentChannel);
+    // MessageAction.confirmMessageSeen(LoginStore.getUser(), currentChannel);
   },
 
   render() {

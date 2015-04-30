@@ -8,6 +8,7 @@ const SocketStore = require('../../../../stores/SocketStore');
 
 const LoginStore = require('../../../../stores/LoginStore');
 const UserStore = require('../../../../stores/UserStore');
+const Flex = require('../../../Flex');
 
 import _ from 'lodash';
 require('./style.less');
@@ -41,12 +42,15 @@ module.exports = React.createClass({
   _onTeamUserChange() {
     var _allTeams = UserStore.getTeamsArray();
     var _allUsers = UserStore.getUsersArray();
-    this.setState({
-      channels : {
-        publicGroupChannels : _allTeams,
-        directMessageChannels : _allUsers.filter(user => { return '' + user.id !== '' + LoginStore.getUser().id; })
-      }
-    });
+    //this.setState({
+    //  channels : {
+    //    publicGroupChannels : _allTeams,
+    //    directMessageChannels : _allUsers.filter(user => { return '' + user.id !== '' + LoginStore.getUser().id; })
+    //  }
+    //});
+
+    this.refs.groupChannels.updateChannels(_allTeams);
+    this.refs.directChannels.updateChannels(_allUsers.filter(user => { return '' + user.id !== '' + LoginStore.getUser().id; }));
 
     var self = this;
     SocketAction.initSocket({
@@ -76,15 +80,10 @@ module.exports = React.createClass({
 
   render() {
     return (
-      <div className="sidebar">
-        <div className="instant-message-group-channels">
-          <ImChannels {...this.props} buildBackEndChannelId={this._buildBackEndChannelId}  channelGroup="Group Channel" isGroup={true} channels={this.state.channels.publicGroupChannels}></ImChannels>
-        </div>
-        <div className="instant-message-direct-message-channels">
-          <ImChannels {...this.props} buildBackEndChannelId={this._buildBackEndChannelId}  channelGroup="Direct Message" channels={this.state.channels.directMessageChannels}></ImChannels>
-        </div>
-
-      </div>
+      <Flex.Layout selfStretch vertical flex={1}>
+        <ImChannels ref="groupChannels" {...this.props} className="instant-message-group-channels" buildBackEndChannelId={this._buildBackEndChannelId}  channelGroup="Group Channel" isGroup={true}></ImChannels>
+        <ImChannels ref="directChannels" {...this.props} className='instant-message-direct-message-channels' buildBackEndChannelId={this._buildBackEndChannelId}  channelGroup="Direct Message" ></ImChannels>
+      </Flex.Layout>
     );
   }
 });
