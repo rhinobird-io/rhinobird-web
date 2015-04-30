@@ -1,6 +1,8 @@
 const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
 const SmartEditor = require('../../../SmartEditor/SmartEditor.jsx');
+const SmartPreview = require('../../../SmartEditor/SmartPreview.jsx');
+const Layout = require("../../../Flex").Layout;
 
 import LoginStore from '../../../../stores/LoginStore';
 import ChannelStore from '../../../../stores/ChannelStore';
@@ -17,9 +19,12 @@ const {FlatButton} = mui;
 require('./style.less');
 module.exports = React.createClass({
 
+  mixins: [React.addons.LinkedStateMixin],
+
   getInitialState() {
     return  {
-      ready : false
+      ready : false,
+      messageValue : ''
     }
   },
 
@@ -51,22 +56,26 @@ module.exports = React.createClass({
     var msg = {
       userId: LoginStore.getUser().id,
       channelId: this.state.currentChannel.backEndChannelId,
-      text: this.refs.sEditor.getValue(),
+      text: this.state.messageValue,
       guid: uuid.v4(),
       messageStatus: -1, // -1 represent is was unconfirmed
       hideMemberElement: true,
       displayPreview: 'previewHidden',
       createdAt : Date.now()
     };
-    this.refs.sEditor.setValue && this.refs.sEditor.setValue('');
+    this.setState({
+      messageValue: ''
+    });
     MessageAction.sendMessage(msg);
   },
 
   render() {
     return (
       <div className="send-box">
-        <SmartEditor ref="sEditor"></SmartEditor>
-        <FlatButton label="Send" primary={true} onClick={this.sendMessage} disabled={!this.state.ready}></FlatButton>
+        <Layout>
+          <SmartEditor ref="sEditor" multiLine valueLink={this.linkState('messageValue')} className="instant-message-smart-editor"></SmartEditor>
+          <FlatButton label="Send" primary={true} onClick={this.sendMessage} disabled={!this.state.ready}></FlatButton>
+        </Layout>
       </div>
     );
   }

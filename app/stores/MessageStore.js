@@ -50,9 +50,7 @@ class MessagesWrapper {
     }
 
     sendMessage(message) {
-        this.addMoreMessages([_.merge(message, {
-            id : this.messages.length > 0 ? this.messages[0].id + 1000 : 1000
-        })]);
+        this.messages = [message, ].concat(this.messages);
     }
 
     receiveMessage(message, imCurrentChannelMessageWrapper) {

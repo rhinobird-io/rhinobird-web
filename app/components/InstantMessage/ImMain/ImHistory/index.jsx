@@ -64,7 +64,7 @@ module.exports = React.createClass({
             <Flex.Layout vertical perfectScroll className="history">
                 <div style={{flex: 1}}></div>
                 {
-                    this.state.messages.map((msg, idx) => <ImMessage key={msg.id} Message={msg}></ImMessage>)
+                    this.state.messages.map((msg, idx) => <ImMessage key={msg.id} Message={msg}></ImMessage>).reverse()
                 }
             </Flex.Layout>
         );
