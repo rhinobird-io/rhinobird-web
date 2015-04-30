@@ -14,7 +14,7 @@ export default React.createClass({
         return {
             select1: [],
             select2: [],
-            repeatedType: []
+            repeatedType: null
         }
     },
 
@@ -52,7 +52,10 @@ export default React.createClass({
                 <br/>
 
                 {this.state.repeatedType}
-                <Selector valueLink={this.linkState("repeatedType")} selectedStyle={{color: "white", backgroundColor: "#3F51B5"}}>
+                <Selector
+                    onSelectChange={() => console.log("Selector is changed.")}
+                    valueLink={this.linkState("repeatedType")}
+                    selectedStyle={{color: "white", backgroundColor: "#3F51B5"}}>
                     <span className="cal-event-repeated-item" name="Daily">Daily</span>
                     <span className="cal-event-repeated-item" name="Weekly">Weekly</span>
                     <span className="cal-event-repeated-item" name="Monthly">Monthly</span>
