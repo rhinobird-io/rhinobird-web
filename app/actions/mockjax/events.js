@@ -245,4 +245,11 @@ export default (() => {
 		type: "GET",
 		responseText: []
 	});
+
+	// Create event
+	$.mockjax({
+		url: API + "/events",
+		type: "POST",
+		responseText: []
+	});
 })();
