@@ -53,6 +53,13 @@ export default {
         });
     },
 
+    initLastseenMessages(channels) {
+        AppDispatcher.dispatch({
+            type: Constants.MessageActionTypes.INIT_LAST_SEEN,
+            channels : channels
+        });
+    },
+
     sendMessage(msg) {
         AppDispatcher.dispatch({
             type: Constants.MessageActionTypes.SEND_MESSAGE,
