@@ -81,8 +81,8 @@ module.exports = React.createClass({
 
     _onMessageChange() {
         if(this.state._imCurrentChannel) {
-            var messages = MessageStore.getMessages(this.props.Channel);
-            this._setLastseenMessageId(messages.length > 0 ? messages[0].id : 0);
+            var msgId = MessageStore.getNewestMessagesId(this.props.Channel);
+            this._setLastseenMessageId(msgId);
         }
 
         this.setState({

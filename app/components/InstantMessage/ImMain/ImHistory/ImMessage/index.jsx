@@ -5,6 +5,7 @@ const Member = require("../../../../Member");
 const {Avatar, Name} = Member;
 const Layout = require("../../../../Flex").Layout;
 const SmartTimeDisplay = require("../../../../SmartTimeDisplay");
+const SmartDisplay = require("../../../../SmartEditor/SmartDisplay");
 
 import UserStore from '../../../../../stores/UserStore';
 import _ from 'lodash';
