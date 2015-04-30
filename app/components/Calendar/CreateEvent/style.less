@@ -6,8 +6,9 @@
 }
 
 .cal-create-event {
+  padding: 0px;
   width: 600px;
-  margin: 0 auto;
+  margin: 20px auto;
 }
 
 .cal-create-event-title {
@@ -24,12 +25,30 @@
   width: 100% !important;
 }
 
+.cal-create-event-tab {
+  margin-top: 20px;
+}
+
 .cal-create-event .mui-checkbox,
 .cal-create-event .mui-toggle {
   font-size: 1.1em;
   margin-top: 24px;
+  margin-bottom: 24px;
 }
 
 .cal-event-repeated-every {
   width: 40px !important;
+}
+
+.cal-event-repeated-item {
+  cursor: pointer;
+  padding: 6px 8px;
+  vertical-align: middle;
+  box-sizing: border-box;
+  background-color: @indigo-100;
+}
+
+.cal-event-repeated-item.selected {
+  color: white;
+  background-color: @indigo-500;
 }

@@ -57,7 +57,9 @@ export default React.createClass({
         selected.splice(index, 1);
         this._updateLayout(false, selected);
         this.setState({selected: selected, hint: selected.length === 0 ? this.props.placeholder : ""});
-        this.getValueLink(this.props).requestChange(selected);
+        if (this.props.valueLink || this.props.value) {
+            this.getValueLink(this.props).requestChange(selected);
+        }
     },
 
     _updateLayout(focused) {

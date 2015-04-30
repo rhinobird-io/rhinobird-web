@@ -57,9 +57,11 @@ export default React.createClass({
             selectedValue = this.state.children[id].value;
         }
         this.setState({selected: selected});
-        if (this.props.valueLink || this.props.value) {
-            this.getValueLink(this.props).requestChange(selected);
+
+        if (this.getValueLink(this.props).requestChange) {
+            this.getValueLink(this.props).requestChange(selectedValue);
         }
+
         if (this.props.onSelectChange) {
             this.props.onSelectChange(selectedValue);
         }
@@ -68,15 +70,25 @@ export default React.createClass({
     componentWillReceiveProps(nextProps) {
         if (nextProps.children !== this.props.children) {
             let children = nextProps.children;
+            let selectedValue = nextProps.value || nextProps.valueLink.value;
+            let selected = {};
+
             children = children.map((child, index) => {
                 let count = index.toString();
+                let value = child.props[nextProps.valueAttr] || count;
+
+                if ((typeof selectedValue === "string" && selectedValue === value) ||
+                    (typeof selectedValue === "array" && selectedValue.indexOf(value) >= 0)) {
+                    selected[count] = true;
+                }
+
                 return {
                     id: count,
-                    value: child.props[nextProps.valueAttr] || count,
+                    value: value,
                     element: child
                 };
             });
-            this.setState({children: children});
+            this.setState({selected: selected, children: children});
         }
     },
 
