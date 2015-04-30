@@ -10,13 +10,14 @@
   }
 
   .instant-message-channel-items {
-    max-height: 500px;
-    overflow-y: auto;
-
     .instant-message-channel-container {
       width: 100%;
       display: flex;
       align-items: center;
+
+      .instant-message-channel-item-selected {
+        background: green;
+      }
 
       .instant-message-channel-item {
         text-align: left;

@@ -111,20 +111,26 @@ let _limit = 20;
 let MessageStore = assign({}, BaseStore, {
 
     getMessages(channel) {
+        if (!channel.backEndChannelId) {
+            throw new Error('backEndChannelId should be provided');
+        }
         _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper([]);
         return channel ? channel.backEndChannelId ? _messages[channel.backEndChannelId].getMessages() : [] : [];
     },
 
     hasUnread(channel) {
+        if (!channel.backEndChannelId) {
+            throw new Error('backEndChannelId should be provided');
+        }
         _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper([]);
         return _messages[channel.backEndChannelId].unread.length !== 0;
     },
 
     getNewestMessagesId(channel){
-        _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper([]);
         if (!channel.backEndChannelId) {
             throw new Error('backEndChannelId should be provided');
         }
+        _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper([]);
         var messages = _messages[channel.backEndChannelId].getMessages();
         if (messages.length === 0) {
             return -1;
