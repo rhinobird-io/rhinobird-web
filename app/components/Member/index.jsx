@@ -39,10 +39,10 @@ Member.Avatar = React.createClass({
         }
     },
     render: function () {
-        let height = 24 * this.props.scale;
+        let size = 24 * this.props.scale;
         if (this.props.member) {
-            let display = <img className='avatar' height={height} {...this.props}
-                               src={`http://www.gravatar.com/avatar/${this.props.member.hash}?d=identicon`}/>;
+            let display = <img className='avatar' width={size} height={size} {...this.props}
+                               src={`http://www.gravatar.com/avatar/${this.props.member.emailMd5}?d=identicon`}/>;
             if (this.props.link) {
                 return <a onClick={_showMemberProfile.bind(this)}>
                     {display}

@@ -173,6 +173,7 @@ let UserStore = assign({}, BaseStore, {
 
 });
 
+const md5 = require('blueimp-md5');
 function buildIndex(teams_users) {
     var _teams_users = {};
     var _users_teams = {};
@@ -180,19 +181,24 @@ function buildIndex(teams_users) {
     var _users = {};
     var _username_users = {};
     teams_users.forEach(team => {
-        // build _teams_users
-        _teams_users[team.id] = team.users;
-
+        let linkedUsers = [];
         // build _users_teams and _users
         team.users.forEach(user => {
             _users_teams[user.id] = _users_teams[user.id] || [];
             _users_teams[user.id].push(team);
             user = _users[user.id] || user;
+            user.emailMd5 = user.emailMd5 || md5(user.email);
+
+            //Avoid duplicated user
+            linkedUsers.push(user);
+
             user.teams = user.teams || [];
             user.teams.push(team);
             _users[user.id] = user;
             _username_users[user.name] = user;
         });
+        //Avoid duplicated user
+        team.users = linkedUsers;
 
         // build teams
         _teams[team.id] = team;
