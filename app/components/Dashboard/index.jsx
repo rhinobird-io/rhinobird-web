@@ -31,7 +31,8 @@ require('./style.less');
 module.exports = React.createClass({
     getInitialState(){
         return {
-            dashboardRecords: []
+            dashboardRecords: [],
+            noMore: false
         }
     },
     componentWillMount(){
@@ -47,14 +48,20 @@ module.exports = React.createClass({
     },
     render: function () {
         return <PerfectScroll className="dashboard">
-            <InfiniteScroll lowerThreshold={300} onLowerTrigger={()=>{
-                this.setState({
-                    dashboardRecords: this.state.dashboardRecords.concat([{
-                        from_user_id: '1',
-                        content: 'I like apple',
-                        created_at: new Date()
-                    }])
-                })
+            <InfiniteScroll lowerThreshold={this.state.noMore? undefined : 300} onLowerTrigger={()=>{
+                let userId = LoginStore.getUser().id;
+                let lastId = this.state.dashboardRecords[this.state.dashboardRecords.length - 1].id;
+                $.get(`/platform/api/users/${userId}/dashboard_records?before=${lastId}`).then((data)=> {
+                    if(data.length === 0) {
+                        this.setState({
+                            noMore: true
+                        })
+                    } else {
+                        this.setState({
+                            dashboardRecords: this.state.dashboardRecords.concat(data)
+                        });
+                    }
+                });
             }} scrollTarget={()=>{
                 return this.getDOMNode();
             }}/>
@@ -65,6 +72,7 @@ module.exports = React.createClass({
                     <hr/>
                 </div>
             })}
+            {this.state.noMore? <div style={{textAlign:'center'}}>No more dashboard records</div>: undefined}
         </PerfectScroll>;
     }
 });
