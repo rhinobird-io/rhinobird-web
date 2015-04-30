@@ -1,5 +1,6 @@
 "use strict";
 
+require("../../../node_modules/github-markdown-css/github-markdown.css");
 require("../../../node_modules/highlight.js/styles/default.css");
 
 let React = require("react");
@@ -21,8 +22,14 @@ function _plugin(state, regex, trans) {
   } else {
     let start = text.search(/\S/), token;
     if (start > 0) {
+      // skip leading whitespaces
       token = state.push("text", "", 0);
       token.content = text.substr(0, start);
+    } else if (start === 0) {
+      // then the previous character must be whitespace
+      if (state.pos > 0 && state.src.charAt(state.pos - 1).search(/\S/) === 0) {
+        return false;
+      }
     }
     let match = text.substr(start).match(regex)[0];
     trans(state, match);
@@ -67,6 +74,7 @@ export default React.createClass({
 
   _onClick(e) {
     let target = e.target, text = target.innerHTML;
+    // A link Element without `href` attribute, like <a>@someone</a>
     if (text && target.tagName.toLowerCase() === "a" && !target.href) {
       let match = text.match(AT_REGEX);
       if (match && match[0] === text) {
@@ -119,12 +127,18 @@ export default React.createClass({
     }
     return root.innerHTML;
   },
+
+  removeNewline(value) {
+    return value.replace(/\n?(<(p|pre|blockquote|ol|ul|li|(h\d))\n?>)/g, "$1")
+        .replace(/\n?(<\/(blockquote|ol|ul)>)/g, "$1");
+  },
   
   render() {
     let value = this.markdown(this.props.value);
     value = this.renderIconLink(value);
+    value = this.removeNewline(value);
     return (
-      <div className="smart-display">
+      <div className="smart-display markdown-body">
         <span dangerouslySetInnerHTML={{__html: value}}></span>
       </div>
     );
