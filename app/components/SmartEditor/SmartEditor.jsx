@@ -37,14 +37,13 @@ export default React.createClass({
   },
 
   _onChange(e) {
-    console.log(e)
     this._setPopupPosition(this.refs.textfield.refs.input.getInputNode());
   },
 
   _setPopupPosition(textarea) {
     let text = textarea.value;
     let selectionEnd = textarea.selectionEnd;
-    console.log(text.charAt(selectionEnd - 1));
+    //console.log(text.charAt(selectionEnd - 1));
   },
 
   render() {
@@ -60,8 +59,13 @@ export default React.createClass({
     return (
       <div className="smart-editor">
         <TextField {...this.props} ref="textfield" />
+      </div>
+    );
+    return (
+      <div className="smart-editor">
+        <TextField {...this.props} ref="textfield" />
         <PopupSelect styles={popupStyle}
-            controller={this.refs.textfield} 
+            controller={this.refs.textfield}
             onKeyDown={() => 0}
             onChange={this._onChange}>
           {this._getOptions()}
