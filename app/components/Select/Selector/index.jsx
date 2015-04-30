@@ -6,10 +6,14 @@ export default React.createClass({
     propTypes: {
         multiple: React.PropTypes.bool,
         valueLink: React.PropTypes.shape({
-            value: React.PropTypes.array.isRequired,
+            value: React.PropTypes.oneOfType([
+                React.PropTypes.array,
+                React.PropTypes.string
+            ]).isRequired,
             requestChange: React.PropTypes.func.isRequired
         }),
         valueAttr: React.PropTypes.string,
+        onSelectChange: React.PropTypes.func,
         selectedStyle: React.PropTypes.object,
         selectedClass: React.PropTypes.string
     },
@@ -44,19 +48,24 @@ export default React.createClass({
 
     select(id) {
         let selected = this.state.selected;
+        let selectedValue;
         if (this.props.multiple) {
             if (!selected[id]) {
                 selected[id] = true;
             }
+            selectedValue = Object.keys(selected).map((select) => this.state.children[select].value);
         } else {
             for (let key in selected) {
                 delete selected[key];
             }
             selected[id] = true;
+            selectedValue = this.state.children[id].value;
         }
         this.setState({selected: selected});
-        let selectedValues = Object.keys(selected).map((select) => this.state.children[select].value);
-        this.getValueLink(this.props).requestChange(selectedValues);
+        this.getValueLink(this.props).requestChange(selectedValue);
+        if (this.props.onSelectChange) {
+            this.props.onSelectChange(selectedValue);
+        }
     },
 
     componentWillReceiveProps(nextProps) {
