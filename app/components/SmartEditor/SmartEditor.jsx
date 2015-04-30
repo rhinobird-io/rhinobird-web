@@ -1,8 +1,12 @@
 "use strict";
 
-let React = require("react");
-let mui = require("material-ui"),
-    TextField = mui.TextField;
+const React = require("react");
+const mui = require("material-ui"),
+      TextField = mui.TextField;
+
+const CaretPosition = require("textarea-caret-position");
+
+const PopupSelect = require("../Select").PopupSelect;
 
 const commands = [
   {name: "vity", manual: ":room_name"},
@@ -15,18 +19,53 @@ export default React.createClass({
     users: React.PropTypes.array
   },
 
+  getInitialState() {
+    return {
+      hidePopup: true,
+      popupPosition: {}
+    };
+  },
+
   getValue() {
     return this.refs.textfield.getValue();
   },
 
-  _onKeyDown() {
+  _getOptions() {
+    return [1,2,4,5,6,9].map(x =>
+      <option value={x}><span>{x}</span></option>
+    );
+  },
 
+  _onChange(e) {
+    console.log(e)
+    this._setPopupPosition(this.refs.textfield.refs.input.getInputNode());
+  },
+
+  _setPopupPosition(textarea) {
+    let text = textarea.value;
+    let selectionEnd = textarea.selectionEnd;
+    console.log(text.charAt(selectionEnd - 1));
   },
 
   render() {
+    let _this = this;
+    let popupStyle = {
+      width: 240,
+      maxHeight: 280,
+      overflow: "auto"
+    };
+    for (let k in this.state.popupPosition) {
+      popupStyle[k] = this.state.popupPosition[k];
+    }
     return (
       <div className="smart-editor">
-        <TextField {...this.props} ref="textfield" onKeyDown={this._onKeyDown} />
+        <TextField {...this.props} ref="textfield" />
+        <PopupSelect styles={popupStyle}
+            controller={this.refs.textfield} 
+            onKeyDown={() => 0}
+            onChange={this._onChange}>
+          {this._getOptions()}
+        </PopupSelect>
       </div>
     );
   }
