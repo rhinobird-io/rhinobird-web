@@ -69,11 +69,13 @@ module.exports = React.createClass({
     render() {
         let self = this;
         return (
-            <FlatButton className="instant-message-channel-item"  onClick={self._onItemTap.bind(self, this.props.Channel)}>
-                <span className={ this.props.Channel.iconClassName}></span>
-                <span className={(this.props.Channel.isDirect && !self.state._onlineStatus[ this.props.Channel.channel.id])?'instant-message-channel-item-offline':''}>{ this.props.Channel.text}</span>
-                <span className={ this.state._hasUnread?'instant-message-channel-item-unread':''}>+</span>
-            </FlatButton>
+            <div className="instant-message-channel-container">
+                <FlatButton className="instant-message-channel-item"  onClick={self._onItemTap.bind(self, this.props.Channel)}>
+                    <span className={ this.props.Channel.iconClassName}></span>
+                    <span className={(this.props.Channel.isDirect && !self.state._onlineStatus[ this.props.Channel.channel.id])?'instant-message-channel-item-offline':''}>{ this.props.Channel.text}</span>
+                </FlatButton>
+                <span className={ this.state._hasUnread?'instant-message-channel-item-unread icon-message':''}></span>
+            </div>
         );
     }
 });

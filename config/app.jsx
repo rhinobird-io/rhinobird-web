@@ -117,5 +117,3 @@ $.get('/platform/api/login').done(function (data) {
     loginLoaded = true;
     render();
 });
-
-

@@ -97,6 +97,7 @@ let SocketStore = assign({}, BaseStore, {
             teamMemberChannels: channels.directMessageChannels
         }, function (onlineList) {
             OnlineStore.setOnlineList(onlineList);
+            SocketStore.emitChange();
         });
     }
 

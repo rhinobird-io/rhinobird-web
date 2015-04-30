@@ -13,25 +13,32 @@
     max-height: 500px;
     overflow-y: auto;
 
-    .instant-message-channel-item {
+    .instant-message-channel-container {
       width: 100%;
-      text-align: left;
-      padding: 5px;
-      float : left;
+      display: flex;
+      align-items: center;
 
-      span {
+      .instant-message-channel-item {
+        text-align: left;
         padding: 5px;
-      }
+        float : left;
+        flex: 5;
 
-      .instant-message-channel-item-online {
+        span {
+          padding: 5px;
+        }
 
-      }
+        .instant-message-channel-item-online {
 
-      .instant-message-channel-item-offline {
-        opacity: 0.5;
+        }
+
+        .instant-message-channel-item-offline {
+          opacity: 0.5;
+        }
       }
 
       .instant-message-channel-item-unread {
+        flex: 1;
         color : red;
       }
     }
