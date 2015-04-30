@@ -79,12 +79,9 @@ module.exports = React.createClass({
     let channels = this.state.channels.directMessageChannels.concat(this.state.channels.directMessageChannels).concat(this.state.channels.directMessageChannels);
     return (
       <Flex.Layout selfStretch vertical flex={1}>
-        <div className="instant-message-group-channels">
-          <ImChannels {...this.props} buildBackEndChannelId={this._buildBackEndChannelId}  channelGroup="Group Channel" isGroup={true} channels={this.state.channels.publicGroupChannels}></ImChannels>
-        </div>
-        <div className="instant-message-direct-message-channels">
-          <ImChannels {...this.props} buildBackEndChannelId={this._buildBackEndChannelId}  channelGroup="Direct Message" channels={channels}></ImChannels>
-        </div>
+        <ImChannels {...this.props} className="instant-message-group-channels" buildBackEndChannelId={this._buildBackEndChannelId}  channelGroup="Group Channel" isGroup={true} channels={this.state.channels.publicGroupChannels}></ImChannels>
+        <ImChannels className='instant-message-direct-message-channels' {...this.props} buildBackEndChannelId={this._buildBackEndChannelId}  channelGroup="Direct Message" channels={channels}></ImChannels>
+
 
       </Flex.Layout>
     );
