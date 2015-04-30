@@ -2,10 +2,10 @@ const React = require("react");
 const DashboardRecord = require('./DashboardRecord');
 const InfiniteScroll = require('../InfiniteScroll');
 const PerfectScroll = require('../PerfectScroll');
-
+const LoginStore = require('../../stores/LoginStore');
 if ($.mockjax) {
     $.mockjax({
-        url: '/api/dashboard_records',
+        url: '/platform/api/users/*/dashboard_records',
         type: 'GET',
         responseText: [{
             creator: '1',
@@ -35,7 +35,8 @@ module.exports = React.createClass({
         }
     },
     componentWillMount(){
-        $.get('/api/dashboard_records').then((data)=> {
+        let userId = LoginStore.getUser().id;
+        $.get(`/platform/api/users/${userId}/dashboard_records`).then((data)=> {
             this.setState({
                 dashboardRecords: data
             })
@@ -60,16 +61,6 @@ module.exports = React.createClass({
             <hr />
             {this.state.dashboardRecords.map((record, index)=> {
                 return <div key={index}>
-                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt}/>
-                    <hr/>
-                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt}/>
-                    <hr/>
-                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt}/>
-                    <hr/>
-                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt}/>
-                    <hr/>
-                    <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt} />
-                    <hr/>
                     <DashboardRecord creator={record.creator} content={record.content} createdAt={record.createdAt}/>
                     <hr/>
                 </div>

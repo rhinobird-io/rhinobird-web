@@ -49,7 +49,7 @@ let Item = React.createClass({
     }
     // flex-direction
     if (props.vertical) {
-      styles.flexDirection = styles.WebkitFlexDirection = "column";
+      styles.flexDirection = styles.WebkitFlexDirection = props.reverse ? "column-reverse" : "column";
     } else {
       styles.flexDirection = styles.WebkitFlexDirection =
           props.reverse ? "row-reverse" : "row";
