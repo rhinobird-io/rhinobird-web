@@ -2,6 +2,7 @@ const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
 const SmartEditor = require('../../../SmartEditor/SmartEditor.jsx');
 const SmartPreview = require('../../../SmartEditor/SmartPreview.jsx');
+const Layout = require("../../../Flex").Layout;
 
 import LoginStore from '../../../../stores/LoginStore';
 import ChannelStore from '../../../../stores/ChannelStore';
@@ -71,8 +72,10 @@ module.exports = React.createClass({
   render() {
     return (
       <div className="send-box">
-        <SmartEditor ref="sEditor" multiLine valueLink={this.linkState('messageValue')}></SmartEditor>
-        <FlatButton label="Send" primary={true} onClick={this.sendMessage} disabled={!this.state.ready}></FlatButton>
+        <Layout>
+          <SmartEditor ref="sEditor" multiLine valueLink={this.linkState('messageValue')} className="instant-message-smart-editor"></SmartEditor>
+          <FlatButton label="Send" primary={true} onClick={this.sendMessage} disabled={!this.state.ready}></FlatButton>
+        </Layout>
       </div>
     );
   }
