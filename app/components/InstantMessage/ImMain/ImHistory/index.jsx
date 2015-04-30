@@ -6,55 +6,59 @@ import MessageAction from '../../../../actions/MessageAction.js';
 import MessageStore from '../../../../stores/MessageStore.js';
 import ChannelStore from '../../../../stores/ChannelStore.js';
 import LoginStore from '../../../../stores/LoginStore.js';
+import PerfectScroll from '../../../PerfectScroll';
+import Flex from '../../../Flex';
 
 
 require('./style.less');
 module.exports = React.createClass({
 
-  contextTypes: {
-    router: React.PropTypes.func.isRequired
-  },
+    contextTypes: {
+        router: React.PropTypes.func.isRequired
+    },
 
-  getInitialState() {
-    return {
-      messages : []
-    }
-  },
-
-  componentDidMount() {
-    MessageStore.addChangeListener(this._onMessageChange);
-    ChannelStore.addChangeListener(this._onChannelChange);
-  },
-
-  componentWillUnmount() {
-    MessageStore.removeChangeListener(this._onMessageChange);
-    ChannelStore.removeChangeListener(this._onChannelChange);
-  },
-
-  _onMessageChange() {
-    let messages = MessageStore.getMessages(this.state.currentChannel);
-    this.setState({
-      messages : messages
-    });
-  },
-
-  _onChannelChange() {
-    let currentChannel = ChannelStore.getCurrentChannel();
-    this.setState({
-      currentChannel : currentChannel,
-      messages : []
-    });
-    MessageAction.getMessages(currentChannel);
-    // MessageAction.confirmMessageSeen(LoginStore.getUser(), currentChannel);
-  },
-
-  render() {
-    return (
-      <div className="history">
-      {
-        this.state.messages.map((msg, idx) => <ImMessage key={msg.id} Message={msg}></ImMessage>)
+    getInitialState() {
+        return {
+            messages: []
         }
-      </div>
-    );
-  }
+    },
+
+    componentDidMount() {
+        MessageStore.addChangeListener(this._onMessageChange);
+        ChannelStore.addChangeListener(this._onChannelChange);
+    },
+
+    componentWillUnmount() {
+        MessageStore.removeChangeListener(this._onMessageChange);
+        ChannelStore.removeChangeListener(this._onChannelChange);
+    },
+
+    _onMessageChange() {
+        let messages = MessageStore.getMessages(this.state.currentChannel);
+        this.setState({
+            messages: messages
+        });
+    },
+
+    _onChannelChange() {
+        let currentChannel = ChannelStore.getCurrentChannel();
+        this.setState({
+            currentChannel: currentChannel,
+            messages: []
+        });
+        MessageAction.getMessages(currentChannel);
+        // MessageAction.confirmMessageSeen(LoginStore.getUser(), currentChannel);
+    },
+
+    render() {
+        return (
+            <PerfectScroll className={this.props.className}>
+                <Flex.Layout vertical reverse className="history">
+                    {
+                        this.state.messages.map((msg, idx) => <ImMessage key={msg.id} Message={msg}></ImMessage>)
+                    }
+                </Flex.Layout>
+            </PerfectScroll>
+        );
+    }
 });
