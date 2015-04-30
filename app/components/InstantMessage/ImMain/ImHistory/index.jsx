@@ -32,7 +32,16 @@ module.exports = React.createClass({
         MessageStore.removeChangeListener(this._onMessageChange);
         ChannelStore.removeChangeListener(this._onChannelChange);
     },
-
+    componentWillUpdate: function() {
+        var node = this.getDOMNode();
+        this.shouldScrollBottom = node.scrollTop + node.clientHeight > node.scrollHeight - 1;
+    },
+    componentDidUpdate: function() {
+        if (this.shouldScrollBottom) {
+            var node = this.getDOMNode();
+            node.scrollTop = node.scrollHeight - node.clientHeight;
+        }
+    },
     _onMessageChange() {
         let messages = MessageStore.getMessages(this.state.currentChannel);
         this.setState({
