@@ -68,7 +68,7 @@ module.exports = React.createClass({
             <hr />
             {this.state.dashboardRecords.map((record, index)=> {
                 return <div key={index}>
-                    <DashboardRecord creator={record.from_user_id} content={record.content} createdAt={record.created_at}/>
+                    <DashboardRecord record={record}/>
                     <hr/>
                 </div>
             })}
