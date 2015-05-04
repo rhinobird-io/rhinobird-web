@@ -3,6 +3,7 @@ const mui = require('material-ui');
 const LoginStore = require('../../stores/LoginStore');
 const Member = require('../Member');
 const Flex = require('../Flex');
+const LoginAction = require('../../actions/LoginAction');
 
 require('./style.less');
 
@@ -24,15 +25,47 @@ module.exports = React.createClass({
         this.props.setTitle("Profile");
     },
     _updateUser(){
-        this.refs.saveSuccessSnackbar.show();
+        $.post('/platform/api/user/info', {realname: this.state.displayName}).then((data)=>{
+            LoginAction.updateLogin(data);
+            this.refs.saveSuccessSnackbar.show();
+        }).fail(()=>{
+            this.refs.saveFailSnackbar.show();
+        });
     },
     _changePassword(){
-        this.refs.changeSuccessSnackbar.show();
+        this.setState({
+            passwordError: undefined,
+            passwordIncorrect: undefined
+        });
+        if(this.state.confirmPwd !== this.state.newPwd){
+            this.setState({
+                passwordError: 'Password do not match'
+            });
+            return;
+        }
+        $.post('/platform/api/user/password', {password: this.state.oldPwd, newPassword: this.state.newPwd}).then(()=>{
+            this.setState({
+                'oldPwd': '',
+                'newPwd': '',
+                'confirmPwd': ''
+            });
+            this.refs.changeSuccessSnackbar.show();
+        }).fail((response)=>{
+            if(response.status === 401){
+                this.setState({
+                    passwordIncorrect: 'Old password incorrect'
+                });
+            } else{
+                this.refs.changeFailSnackbar.show();
+            }
+        });
     },
     render: function () {
         return <Flex.Layout centerJustified wrap className='profile-page'>
             <mui.Snackbar message='User information has been saved' ref='saveSuccessSnackbar'/>
+            <mui.Snackbar message='Failed to update user information' ref='saveFailSnackbar'/>
             <mui.Snackbar message='Password has been saved' ref='changeSuccessSnackbar'/>
+            <mui.Snackbar message='Failed to change password' ref='changeFailSnackbar'/>
             <div className='paper-outer-container'>
                 <mui.Paper zDepth={1}>
                     <div className='paper-inner-container'>
@@ -60,9 +93,11 @@ module.exports = React.createClass({
                 <mui.Paper zDepth={1}>
                     <div className='paper-inner-container'>
                         <h3>Change password</h3>
-                        <mui.TextField floatingLabelText='Old password' type='password' valueLink={this.linkState('oldPwd')} />
+                        <mui.TextField floatingLabelText='Old password' type='password' valueLink={this.linkState('oldPwd')}
+                                       errorText={this.state.passwordIncorrect}/>
                         <mui.TextField floatingLabelText='New password' type='password' valueLink={this.linkState('newPwd')} />
-                        <mui.TextField floatingLabelText='Confirm new password' type='password' valueLink={this.linkState('confirmPwd')} />
+                        <mui.TextField floatingLabelText='Confirm new password' type='password' valueLink={this.linkState('confirmPwd')}
+                            errorText={this.state.passwordError}/>
                         <div className="rightButton">
                             <mui.RaisedButton primary={true} label='Reset' onClick={this._changePassword}></mui.RaisedButton>
                         </div>
