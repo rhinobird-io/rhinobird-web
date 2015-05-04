@@ -12,7 +12,7 @@ let Member = require("../Member");
 let UserStore = require("../../stores/UserStore");
 
 const AT_REGEX = /^\s*(@\w+)/;
-const SLASH_REGEX = /^\s*(#[\w\.-]+(:\S+)?)/;
+const SLASH_REGEX = /^\s*(#\w+(:\S+)?)/;
 
 function _plugin(state, regex, trans) {
   let text = state.src.substr(state.pos);

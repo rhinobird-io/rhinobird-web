@@ -29,46 +29,65 @@ export default React.createClass({
 
   getInitialState() {
     return {
-      options: this._getOptions(),
+      options: [],
       showPopup: false,
       popupPosition: {}
     };
   },
 
-  componentDidMount() {
-    UserStore.addChangeListener(this._onChange);
+  _setOptions(keyword) {
+    let options = [];
+    if (!keyword || keyword.length < 2) {
+      options = [];
+    } else if (keyword.charAt(0) === "@") {
+      options = UserStore.getUsersArray().filter(u =>
+        u.name.indexOf(keyword.substr(1)) >= 0
+      ).map(u =>
+        <option key={u.id} value={u.id}>
+          <span style={{fontWeight: 500}}>{u.name}</span>
+        </option>
+      );
+    } else if (keyword.charAt(0) === "#") {
+      options = COMMANDS.filter(c =>
+        c.name.indexOf(keyword.substr(1)) >= 0
+      ).map(c =>
+        <option key={c.name} value={c.name}>
+          <span style={{fontWeight: 500}}>{c.name}</span>
+          <span>{c.manual}</span>
+        </option>
+      );
+    } else {
+      options = [];
+    }
+    this.setState({
+      showPopup: options.length > 0,
+      options: options
+    });
   },
 
-  componentWillUnmount() {
-    UserStore.removeChangeListener(this._onChange);
-  },
-
-  _onChange() {
-    this.setState({options: this._getOptions()});
-  },
-
-  _getOptions() {
-    return UserStore.getUsersArray().map(u =>
-      <option key={u.id} value={u.id} data={"@" + u.name}>
-        <span style={{fontWeight: 500}}>{u.name}</span>
-      </option>
-    ).concat(COMMANDS.map(c =>
-      <option key={c.name} value={c.name} data={"#" + c.name}>
-        <span style={{fontWeight: 500}}>{c.name}</span>
-        <span>{c.manual}</span>
-      </option>
-    ));
+  _setPopupPosition(textarea, pos) {
+    let caretPos = CaretPosition(textarea, pos);
+    console.log(caretPos);
   },
 
   _onInputChange(e) {
-    this.refs.popup.filter(this.getValue());
-    this._setPopupPosition(this.refs.textfield.refs.input.getInputNode());
-  },
-
-  _setPopupPosition(textarea) {
-    let text = textarea.value;
-    let selectionEnd = textarea.selectionEnd;
-    console.log(text.charAt(selectionEnd - 1));
+    let textarea = this.refs.textfield.refs.input.getInputNode();
+    let text = textarea.value, triggerPos = -1;
+    for (let i = textarea.selectionEnd - 1; i >= 0; i--) {
+      let ch = text.charAt(i);
+      if (ch.search(/\w/) >= 0) {
+        continue;
+      } else if ("@#".search(ch) >= 0) {
+        triggerPos = i;
+        break;
+      } else {
+        break;
+      }
+    }
+    if (triggerPos >= 0) {
+      this._setOptions(text.substring(triggerPos, textarea.selectionEnd));
+      this._setPopupPosition(textarea, triggerPos);
+    }
   },
 
   getValue() {
@@ -93,25 +112,25 @@ export default React.createClass({
     let popupStyle = {
       width: this.props.popupWidth,
       maxHeight: this.props.popupMaxHeight,
-      overflow: "auto"
+      overflow: "auto",
+      background: "#fff",
+      display: this.state.showPopup ? "block" : "none"
     };
     for (let k in this.state.popupPosition) {
       popupStyle[k] = this.state.popupPosition[k];
     }
 
-    let popup = <PopupSelect ref="popup"
+    // Apply `style` to TextField seems no effect, so just apply to Item
+    return (
+      <Item flex style={style} className="smart-editor">
+        <TextField {...this.props} ref="textfield" />
+        <PopupSelect
             style={popupStyle}
             controller={this.refs.textfield}
             onKeyDown={() => 0}
             onChange={this._onInputChange}>
           {this.state.options}
         </PopupSelect>
-
-    // Apply `style` to TextField seems no effect, so just apply to Item
-    return (
-      <Item flex style={style} className="smart-editor">
-        <TextField {...this.props} ref="textfield" />
-        {popup}
       </Item>
     );
   }
