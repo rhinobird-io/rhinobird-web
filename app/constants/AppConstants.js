@@ -33,7 +33,7 @@ export default {
     RECEIVE_MESSAGES: null,
     SEND_MESSAGE : null,
     CLEAR_UNREAD : null,
-    INIT_LAST_SEEN : null
+    INIT_UNREAD : null
   })
 
 };

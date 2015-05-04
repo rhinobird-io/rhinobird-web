@@ -3,18 +3,25 @@ import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
 import BaseStore from './BaseStore';
 import ChannelStore from './ChannelStore';
+import LoginStore from './LoginStore';
 import SocketStore from './SocketStore';
 import assign from 'object-assign';
 import _ from 'lodash';
 
 class MessagesWrapper {
 
+
+
     constructor(messages) {
         if (!(messages instanceof Array)) {
             throw new Error('' + messages + ' is not a array');
         }
         this.messages = messages;
+        this.hasUnread = false;
         this.unread = [];
+        this.latestMessageId = 1<<30;
+        this.lastSeenMessageId = 1 << 30;
+        this._msgExistsMap = {};
     }
 
     /**
@@ -43,7 +50,12 @@ class MessagesWrapper {
         if (!(messages instanceof Array)) {
             throw new Error('' + messages + ' is not a array');
         }
-        this.messages = this.messages.concat(messages);
+        messages.forEach(msg => {
+            if (!this._msgExistsMap[msg.id]) {
+                this.messages.push(msg);
+                this._msgExistsMap[msg.id] = true;
+            }
+        });
         this.messages.sort((msg1, msg2) => {
             return msg2.id - msg1.id;
         });
@@ -57,6 +69,7 @@ class MessagesWrapper {
         this.addMoreMessages([message,]);
         if (!imCurrentChannelMessageWrapper) {
             this.unread.push(message);
+            this.hasUnread = true;
         }
     }
 
@@ -64,11 +77,30 @@ class MessagesWrapper {
         let idx = _.findIndex(this.messages, msg => {
             return msg.uuid === message.uuid;
         });
+        this._msgExistsMap[message.id] = true;
         this.messages[idx] = message;
     }
 
     clearUnread() {
         this.unread = [];
+        this.hasUnread = false;
+    }
+
+    setUnread() {
+        this.hasUnread = true;
+        return this;
+    }
+
+    setLatestMessageId(msgId) {
+        this.latestMessageId = msgId;
+        this.hasUnread = (this.latestMessageId > this.lastSeenMessageId);
+        return this;
+    }
+
+    setLastSeenMessageId(msgId) {
+        this.lastSeenMessageId = msgId;
+        this.hasUnread = (this.latestMessageId > this.lastSeenMessageId);
+        return this;
     }
 
 
@@ -121,7 +153,7 @@ let MessageStore = assign({}, BaseStore, {
             throw new Error('backEndChannelId should be provided');
         }
         _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper([]);
-        return _messages[channel.backEndChannelId].unread.length !== 0;
+        return _messages[channel.backEndChannelId].hasUnread;
     },
 
     getNewestMessagesId(channel){
@@ -149,9 +181,8 @@ let MessageStore = assign({}, BaseStore, {
             case Constants.MessageActionTypes.RECEIVE_MESSAGES:
                 let channel = payload.channel;
                 let messages = payload.messages;
-                let oldestMessage = payload.oldestMessage;
-                let newestMessage = payload.newestMessage;
-                _messages[channel.backEndChannelId] = new MessagesWrapper(messages);
+                _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper(messages);
+                _messages[channel.backEndChannelId].addMoreMessages(messages);
                 MessageStore.emitChange();
                 break;
             case Constants.MessageActionTypes.SEND_MESSAGE:
@@ -164,16 +195,20 @@ let MessageStore = assign({}, BaseStore, {
                 });
                 break;
             case Constants.MessageActionTypes.CLEAR_UNREAD:
-                _messages[payload.channel.backEndChannelId] = _messages[payload.channel.backEndChannelId] || new MessagesWrapper(messages);
-                _messages[payload.channel.backEndChannelId].clearUnread();
-
+                _messages[payload.backEndChannelId].clearUnread();
                 // TODO this one should have callback
                 SocketStore.getSocket().emit('message:seen', {
-                    userId: payload.currentUser.id,
-                    messageId: _messages[payload.channel.backEndChannelId].id,
-                    channelId: payload.channel.backEndChannelId
+                    userId: LoginStore.getUser().id,
+                    messageId: _messages[payload.backEndChannelId].getMaxMessageId(),
+                    channelId: payload.backEndChannelId
                 });
-
+                MessageStore.emitChange();
+                break;
+            case Constants.MessageActionTypes.INIT_UNREAD:
+                let latestAndLastSeen = payload.latestAndLastSeen;
+                Object.keys(latestAndLastSeen).forEach(backEndChannelId => {
+                    _messages[backEndChannelId].setLatestMessageId(latestAndLastSeen[backEndChannelId].latestMessageId).setLastSeenMessageId(latestAndLastSeen[backEndChannelId].lastSeenMessageId);
+                });
                 MessageStore.emitChange();
                 break;
             default:
@@ -182,6 +217,5 @@ let MessageStore = assign({}, BaseStore, {
     })
 
 });
-
 
 export default MessageStore;

@@ -7,6 +7,7 @@ import MessageStore from '../../../../stores/MessageStore.js';
 import ChannelStore from '../../../../stores/ChannelStore.js';
 import LoginStore from '../../../../stores/LoginStore.js';
 import PerfectScroll from '../../../PerfectScroll';
+import InfiniteScroll from '../../../InfiniteScroll';
 import Flex from '../../../Flex';
 
 
@@ -55,13 +56,17 @@ module.exports = React.createClass({
             currentChannel: currentChannel,
             messages: []
         });
-        MessageAction.getMessages(currentChannel);
-        // MessageAction.confirmMessageSeen(LoginStore.getUser(), currentChannel);
+        // MessageAction.getMessages(currentChannel);
     },
 
     render() {
         return (
             <Flex.Layout vertical perfectScroll className="history">
+                <InfiniteScroll upperThreshold={300} onUpperTrigger={()=>{
+                    MessageAction.getMessages(ChannelStore.getCurrentChannel(), this.state.messages[this.state.messages.length-1]);
+                }} scrollTarget={()=>{
+                    return this.getDOMNode();
+                }}/>
                 <div style={{flex: 1}}></div>
                 {
                     this.state.messages.map((msg, idx) => <ImMessage key={msg.id} Message={msg}></ImMessage>).reverse()

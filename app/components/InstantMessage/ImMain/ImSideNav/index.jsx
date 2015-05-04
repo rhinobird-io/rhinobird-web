@@ -3,6 +3,7 @@ const RouteHandler = require("react-router").RouteHandler;
 
 const ImChannels = require('./ImChannels');
 
+const MessageAction = require('../../../../actions/MessageAction');
 const SocketAction = require('../../../../actions/SocketAction');
 const SocketStore = require('../../../../stores/SocketStore');
 
@@ -42,27 +43,27 @@ module.exports = React.createClass({
   _onTeamUserChange() {
     var _allTeams = UserStore.getTeamsArray();
     var _allUsers = UserStore.getUsersArray();
-    //this.setState({
-    //  channels : {
-    //    publicGroupChannels : _allTeams,
-    //    directMessageChannels : _allUsers.filter(user => { return '' + user.id !== '' + LoginStore.getUser().id; })
-    //  }
-    //});
 
     this.refs.groupChannels.updateChannels(_allTeams);
     this.refs.directChannels.updateChannels(_allUsers.filter(user => { return '' + user.id !== '' + LoginStore.getUser().id; }));
 
     var self = this;
-    SocketAction.initSocket({
-      publicGroupChannels : _allTeams.map(team=>{ return {
-        id : self._buildBackEndChannelId(true, team)
-      }}),
-      directMessageChannels : _allUsers.filter(user => { return '' + user.id !== '' + LoginStore.getUser().id;}).map( user => {
+    var channels = {
+      publicGroupChannels: _allTeams.map(team=> {
         return {
-          id : self._buildBackEndChannelId(false, user)
+          id: self._buildBackEndChannelId(true, team)
         }
-      })
-    });
+      }),
+      directMessageChannels: _allUsers.filter(user => {
+        return '' + user.id !== '' + LoginStore.getUser().id;
+      }).map(user => {
+        return {
+          id: self._buildBackEndChannelId(false, user)
+              }
+          })
+      };
+    // SocketAction.initSocket(channels);
+    // MessageAction.initUnread(channels, LoginStore.getUser());
   },
 
   _buildBackEndChannelId(isGroup, channel) {

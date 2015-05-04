@@ -4,6 +4,7 @@ const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
 const mui = require("material-ui");
 
+import MessageAction from '../../../../../actions/MessageAction';
 import ChannelAction from '../../../../../actions/ChannelAction';
 import LoginStore from '../../../../../stores/LoginStore';
 import ChannelStore from '../../../../../stores/ChannelStore';
@@ -31,41 +32,12 @@ module.exports = React.createClass({
         ChannelStore.addChangeListener(this._onChannelChange);
         MessageStore.addChangeListener(this._onMessageChange);
         OnlineStore.addChangeListener(this._onlineListChange);
-
-        this._initLastseenMessageId();
     },
 
     componentWillUnmount() {
         ChannelStore.removeChangeListener(this._onChannelChange);
         MessageStore.removeChangeListener(this._onMessageChange);
         OnlineStore.removeChangeListener(this._onlineListChange);
-    },
-
-    _initLastseenMessageId() {
-        let currentUser = LoginStore.getUser();
-        // this is the first time this user login
-        if (!localStorage.getItem(currentUser.id)) {
-            localStorage.setItem(currentUser.id, JSON.stringify({}));
-        }
-        let tmp = JSON.parse(localStorage.getItem(currentUser.id));
-        if (!tmp[this.props.Channel.backEndChannelId]) {
-            tmp[this.props.Channel.backEndChannelId] = 1 << 30;
-            localStorage.setItem(currentUser.id, JSON.stringify(tmp));
-        }
-    },
-
-    /**
-     * get last seen message id from local storage
-     */
-    _getLastseenMessageId() {
-        return localStorage.getItem(currentUser.id)[this.props.Channel.backEndChannelId];
-    },
-
-    _setLastseenMessageId(msgId) {
-        let currentUser = LoginStore.getUser();
-        let tmp = JSON.parse(localStorage.getItem(currentUser.id) || '{}');
-        tmp[this.props.Channel.backEndChannelId] = msgId;
-        localStorage.setItem(currentUser.id, JSON.stringify(tmp));
     },
 
     _onChannelChange() {
@@ -76,15 +48,10 @@ module.exports = React.createClass({
             _imCurrentChannel : imCurrentChannel,
             _hasUnread : MessageStore.hasUnread(this.props.Channel)
         });
-
     },
 
     _onMessageChange() {
-        if(this.state._imCurrentChannel) {
-            var msgId = MessageStore.getNewestMessagesId(this.props.Channel);
-            this._setLastseenMessageId(msgId);
-        }
-
+        let hasUnread = this.state._hasUnread;
         this.setState({
             _hasUnread : MessageStore.hasUnread(this.props.Channel)
         });

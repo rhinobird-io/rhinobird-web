@@ -5,6 +5,8 @@ const RouteHandler = require("react-router").RouteHandler;
 const mui = require("material-ui");
 
 import ChannelAction from '../../../../../actions/ChannelAction';
+import MessageAction from '../../../../../actions/MessageAction';
+
 import LoginStore from '../../../../../stores/LoginStore';
 import OnlineStore from '../../../../../stores/OnlineStore';
 import MessageStore from '../../../../../stores/MessageStore';
@@ -68,8 +70,9 @@ module.exports = React.createClass({
     },
 
     updateChannels(channels) {
+        var menuItems = this._getMenuItems(channels);
         this.setState({
-            _menuItems: this._getMenuItems(channels)
+            _menuItems: menuItems
         });
     },
 
