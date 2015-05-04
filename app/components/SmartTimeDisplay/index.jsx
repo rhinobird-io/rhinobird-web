@@ -34,6 +34,7 @@ export default React.createClass({
     componentDidUpdate() {
         this._setTooltipPos();
     },
+
     componentWillUnmount(){
         clearInterval(this.timerId);
     },

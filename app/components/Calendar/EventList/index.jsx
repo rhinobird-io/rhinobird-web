@@ -63,11 +63,11 @@ export default React.createClass({
                 let eventIconClass = "cal-event-icon";
                 let now = new Date();
                 let fromTime = new Date(event.from_time);
-                let toTime = new Date(event.to_time);
+                let toTime = event.to_time ? new Date(event.to_time) : fromTime;
                 if (toTime < now) {
                     eventIconClass += " expired";
                 } else if (now > fromTime && now < toTime) {
-                    eventIconClass += " <active></active>";
+                    eventIconClass += " active";
                 }
 
                 return (
