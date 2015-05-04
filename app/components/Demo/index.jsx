@@ -14,7 +14,8 @@ export default React.createClass({
         return {
             select1: [],
             select2: [],
-            repeatedType: null
+            repeatedType: null,
+            daysInWeek: []
         }
     },
 
@@ -60,6 +61,22 @@ export default React.createClass({
                     <span className="cal-event-repeated-item" name="Weekly">Weekly</span>
                     <span className="cal-event-repeated-item" name="Monthly">Monthly</span>
                     <span className="cal-event-repeated-item" name="Yearly">Yearly</span>
+                </Selector>
+
+                <br/>
+
+                {this.state.daysInWeek.toString()}
+                <Selector
+                    multiple
+                    valueLink={this.linkState("daysInWeek")}
+                    selectedStyle={{color: "white", backgroundColor: "#3F51B5"}}>
+                    <span className="cal-event-repeated-item" name="Sunday">Sun</span>
+                    <span className="cal-event-repeated-item" name="Monday">Mon</span>
+                    <span className="cal-event-repeated-item" name="Tuesday">Tue</span>
+                    <span className="cal-event-repeated-item" name="Wednesday">Wed</span>
+                    <span className="cal-event-repeated-item" name="Thursday">Thu</span>
+                    <span className="cal-event-repeated-item" name="Friday">Fri</span>
+                    <span className="cal-event-repeated-item" name="Saturday">Sat</span>
                 </Selector>
             </div>
         );

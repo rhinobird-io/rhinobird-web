@@ -12,10 +12,16 @@ export default React.createClass({
     componentDidMount() {
     },
 
+    getInitialState() {
+        return {
+            fromTime: new Date()
+        };
+    },
+
     render() {
         return (
             <div>
-                <RepeatedEventModal ref="repeatedEventModal" />
+                <RepeatedEventModal ref="repeatedEventModal" event={this.state} />
                 <MUI.Paper zDepth={2} className="cal-create-event">
                     <div style={{padding: 20}}>
                         <h3><span style={{textDecoration: "underline"}}>C</span>reate Event</h3>

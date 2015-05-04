@@ -42,11 +42,17 @@ export default React.createClass({
     },
 
     select(id) {
-        let selected = this.state.selected;
-        let selectedValue;
+        let selected = {};
+        for (let key in this.state.selected) {
+            selected[key] = true;
+        }
+
+        let selectedValue = null;
         if (this.props.multiple) {
             if (!selected[id]) {
                 selected[id] = true;
+            } else {
+                delete selected[id];
             }
             selectedValue = Object.keys(selected).map((select) => this.state.children[select].value);
         } else {
@@ -56,6 +62,8 @@ export default React.createClass({
             selected[id] = true;
             selectedValue = this.state.children[id].value;
         }
+        console.log(selectedValue);
+
         this.setState({selected: selected});
 
         if (this.getValueLink(this.props).requestChange) {
@@ -78,7 +86,7 @@ export default React.createClass({
                 let value = child.props[nextProps.valueAttr] || count;
 
                 if ((typeof selectedValue === "string" && selectedValue === value) ||
-                    (typeof selectedValue === "array" && selectedValue.indexOf(value) >= 0)) {
+                    (Array.isArray(selectedValue) && selectedValue.indexOf(value) >= 0)) {
                     selected[count] = true;
                 }
 
@@ -102,7 +110,7 @@ export default React.createClass({
             let count = index.toString();
             return React.cloneElement(child.element, {
                 key: count,
-                onClick: () => this.select(index),
+                onClick: () => this.select(count),
                 className: child.element.props.className + (selected[count] ? " " + this.props.selectedClass : ""),
                 style: selected[count] ? styles.selected : undefined
             });
