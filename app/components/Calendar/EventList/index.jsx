@@ -6,6 +6,7 @@ const React                = require("react"),
       SmartTimeDisplay     = require("../../SmartTimeDisplay"),
       CalendarStore        = require("../../../stores/CalendarStore"),
       CalendarActions      = require("../../../actions/CalendarActions"),
+      PerfectScroll        = require('../../PerfectScroll'),
       InfiniteScroll       = require('../../InfiniteScroll');
 
 require("./style.less");
@@ -98,7 +99,7 @@ export default React.createClass({
             return dayEvents;
         });
         return (
-            <div>
+            <PerfectScroll className="cal-event-list">
                 <div className="cal-event-wrapper">
                     <InfiniteScroll
                         lowerThreshold={10}
@@ -113,7 +114,7 @@ export default React.createClass({
                         className="add-event"
                         iconClassName="icon-add"/>
                 </Link>
-            </div>
+            </PerfectScroll>
         );
     }
 });
