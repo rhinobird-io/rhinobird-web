@@ -6,6 +6,7 @@ const React                = require("react"),
       SmartTimeDisplay     = require("../../SmartTimeDisplay"),
       CalendarStore        = require("../../../stores/CalendarStore"),
       CalendarActions      = require("../../../actions/CalendarActions"),
+      PerfectScroll        = require('../../PerfectScroll'),
       InfiniteScroll       = require('../../InfiniteScroll');
 
 require("./style.less");
@@ -45,10 +46,7 @@ export default React.createClass({
     render: function() {
         let eventsDOM = Object.keys(this.state.events).sort().map((key, index) => {
             let direction = index % 2 === 0 ? "left" : "right";
-            let arrowClass = "arrow-left";
-            if (index % 2 === 0) {
-                arrowClass = "arrow-right";
-            }
+
             let dayEvents = [];
             let events = this.state.events[key];
             let dayDividerLabelClassName = "cal-day-divider-label " + direction;
@@ -65,11 +63,11 @@ export default React.createClass({
                 let eventIconClass = "cal-event-icon";
                 let now = new Date();
                 let fromTime = new Date(event.from_time);
-                let toTime = new Date(event.to_time);
+                let toTime = event.to_time ? new Date(event.to_time) : fromTime;
                 if (toTime < now) {
                     eventIconClass += " expired";
                 } else if (now > fromTime && now < toTime) {
-                    eventIconClass += " <active></active>";
+                    eventIconClass += " active";
                 }
 
                 return (
@@ -89,7 +87,6 @@ export default React.createClass({
                                     <div className="cal-event-time">
                                         <SmartTimeDisplay start={event.from_time} end={event.to_time} relative />
                                     </div>
-                                    <div className={arrowClass}></div>
                                 </div>
                                 <div className="cal-event-detail">
                                     {event.description}
@@ -102,7 +99,7 @@ export default React.createClass({
             return dayEvents;
         });
         return (
-            <div>
+            <PerfectScroll className="cal-event-list">
                 <div className="cal-event-wrapper">
                     <InfiniteScroll
                         lowerThreshold={10}
@@ -117,7 +114,7 @@ export default React.createClass({
                         className="add-event"
                         iconClassName="icon-add"/>
                 </Link>
-            </div>
+            </PerfectScroll>
         );
     }
 });

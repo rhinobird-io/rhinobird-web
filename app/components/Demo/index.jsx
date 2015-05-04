@@ -1,6 +1,7 @@
 var React                = require("react"),
     SmartTimeDisplay     = require("../SmartTimeDisplay"),
-    Select = require("../Select").Select;
+    Select = require("../Select").Select,
+    Selector = require("../Select").Selector;
 
 export default React.createClass({
     mixins: [React.addons.LinkedStateMixin],
@@ -12,7 +13,9 @@ export default React.createClass({
     getInitialState() {
         return {
             select1: [],
-            select2: []
+            select2: [],
+            repeatedType: null,
+            daysInWeek: []
         }
     },
 
@@ -46,6 +49,35 @@ export default React.createClass({
                     <option value="Guang Dong">Guang Dong</option>
                     <option value="Shang Hai">Shang Hai</option>
                 </Select>
+
+                <br/>
+
+                {this.state.repeatedType}
+                <Selector
+                    onSelectChange={() => console.log("Selector is changed.")}
+                    valueLink={this.linkState("repeatedType")}
+                    selectedStyle={{color: "white", backgroundColor: "#3F51B5"}}>
+                    <span className="cal-event-repeated-item" name="Daily">Daily</span>
+                    <span className="cal-event-repeated-item" name="Weekly">Weekly</span>
+                    <span className="cal-event-repeated-item" name="Monthly">Monthly</span>
+                    <span className="cal-event-repeated-item" name="Yearly">Yearly</span>
+                </Selector>
+
+                <br/>
+
+                {this.state.daysInWeek.toString()}
+                <Selector
+                    multiple
+                    valueLink={this.linkState("daysInWeek")}
+                    selectedStyle={{color: "white", backgroundColor: "#3F51B5"}}>
+                    <span className="cal-event-repeated-item" name="Sunday">Sun</span>
+                    <span className="cal-event-repeated-item" name="Monday">Mon</span>
+                    <span className="cal-event-repeated-item" name="Tuesday">Tue</span>
+                    <span className="cal-event-repeated-item" name="Wednesday">Wed</span>
+                    <span className="cal-event-repeated-item" name="Thursday">Thu</span>
+                    <span className="cal-event-repeated-item" name="Friday">Fri</span>
+                    <span className="cal-event-repeated-item" name="Saturday">Sat</span>
+                </Selector>
             </div>
         );
     }

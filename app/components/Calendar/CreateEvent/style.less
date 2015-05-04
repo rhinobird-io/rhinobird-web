@@ -1,13 +1,13 @@
 @import "~material-ui/src/less/scaffolding.less";
 @import "~material-ui/src/less/components.less";
 
-.repeated-event-modal .mui-dialog-window-contents {
+.repeated-event-modal > .mui-dialog-window-contents {
   width: 500px !important;
 }
 
 .cal-create-event {
-  width: 600px;
-  margin: 0 auto;
+  padding: 0px;
+  margin: 20px;
 }
 
 .cal-create-event-title {
@@ -24,12 +24,39 @@
   width: 100% !important;
 }
 
+.cal-create-event-tab {
+  margin-top: 20px;
+}
+
 .cal-create-event .mui-checkbox,
 .cal-create-event .mui-toggle {
   font-size: 1.1em;
   margin-top: 24px;
+  margin-bottom: 24px;
 }
 
 .cal-event-repeated-every {
   width: 40px !important;
+}
+
+.cal-event-repeated-item {
+  cursor: pointer;
+  padding: 6px 8px;
+  vertical-align: middle;
+  box-sizing: border-box;
+  background-color: @indigo-100;
+}
+
+.cal-event-repeated-item.selected {
+  color: white;
+  background-color: @indigo-500;
+}
+
+.cal-event-repeated-end-date {
+  padding-left: 10px;
+  overflow: hidden;
+  width: 100px;
+  input {
+    font-size: .9em;
+  }
 }
