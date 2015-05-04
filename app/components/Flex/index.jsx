@@ -34,87 +34,82 @@ let Item = React.createClass({
         perfectScroll: React.PropTypes.bool
     },
 
-    render() {
-        let props = this.props;
-        let styles = props.layout ? {display: "flex"} : {};
-        // flex
-        if (typeof(props.flex) === "number") {
-            styles.flexGrow = props.flex;
-        } else if (props.flex) {
-            styles.flex = "1 1 1e-9px";
-        }
-        // flex-wrap
-        if (props.wrap) {
-            styles.flexWrap = "wrap";
-        }
-        // flex-direction
-        if (props.vertical) {
-            styles.flexDirection = styles.WebkitFlexDirection = props.reverse ? "column-reverse" : "column";
-        } else {
-            styles.flexDirection = styles.WebkitFlexDirection =
-                props.reverse ? "row-reverse" : "row";
-        }
-        // align-items
-        if (props.center) {
-            styles.alignItems = "center";
-        } else if (props.start) {
-            styles.alignItems = "flex-start";
-        } else if (props.end) {
-            styles.alignItems = "flex-end";
-        } else if (props.stretch) {
-            styles.alignItems = "stretch";
-        }
-        // justify-content
-        if (props.startJustified) {
-            styles.justifyContent = "flex-start";
-        } else if (props.centerJustified) {
-            styles.justifyContent = "center";
-        } else if (props.endJustified) {
-            styles.justifyContent = "flex-end";
-        } else if (props.justified) {
-            styles.justifyContent = "space-between";
-        } else if (props.aroundJustified) {
-            styles.justifyContent = "space-around";
-        }
-        // align-self
-        if (props.selfStart) {
-            styles.alignSelf = "flex-start";
-        } else if (props.selfCenter) {
-            styles.alignSelf = "center";
-        } else if (props.selfEnd) {
-            styles.alignSelf = "flex-end";
-        } else if (props.selfStretch) {
-            styles.alignSelf = "stretch";
-        }
-        // other
-        if (props.relative) {
-            styles.position = "relative";
-        } else if (props.fit) {
-            styles.position = "absolute";
-            styles.top = styles.bottom = styles.left = styles.right = 0;
-        }
-        if (props.hidden) {
-            styles.display = "none";
-        }
-        if (this.props.perfectScroll) {
-            styles.position = styles.position || 'relative';
-            return (
-                <PerfectScroll {...this.props} style={styles}>{props.children}</PerfectScroll>
-            );
-        } else {
-            return (
-                <div {...this.props} style={styles}>{props.children}</div>
-            );
-        }
+  render() {
+    let props = this.props;
+    let style = props.layout ? {display: "flex"} : {};
+    // flex
+    if (typeof(props.flex) === "number") {
+      style.flexGrow = props.flex;
+    } else if (props.flex) {
+      style.flex = "1 1 1e-9px";
     }
+    // flex-wrap
+    if (props.wrap) {
+      style.flexWrap = "wrap";
+    }
+    // flex-direction
+    if (props.vertical) {
+      style.flexDirection = style.WebkitFlexDirection = props.reverse ? "column-reverse" : "column";
+    } else {
+      style.flexDirection = style.WebkitFlexDirection = props.reverse ? "row-reverse" : "row";
+    }
+    // align-items
+    if (props.center) {
+      style.alignItems = "center";
+    } else if (props.start) {
+      style.alignItems = "flex-start";
+    } else if (props.end) {
+      style.alignItems = "flex-end";
+    } else if (props.stretch) {
+      style.alignItems = "stretch";
+    }
+    // justify-content
+    if (props.startJustified) {
+      style.justifyContent = "flex-start";
+    } else if (props.centerJustified) {
+      style.justifyContent = "center";
+    } else if (props.endJustified) {
+      style.justifyContent = "flex-end";
+    } else if (props.justified) {
+      style.justifyContent = "space-between";
+    } else if (props.aroundJustified) {
+      style.justifyContent = "space-around";
+    }
+    // align-self
+    if (props.selfStart) {
+      style.alignSelf = "flex-start";
+    } else if (props.selfCenter) {
+      style.alignSelf = "center";
+    } else if (props.selfEnd) {
+      style.alignSelf = "flex-end";
+    } else if (props.selfStretch) {
+      style.alignSelf = "stretch";
+    }
+    // other
+    if (props.relative) {
+      style.position = "relative";
+    } else if (props.fit) {
+      style.position = "absolute";
+      style.top = style.bottom = style.left = style.right = 0;
+    }
+    if (props.hidden) {
+      style.display = "none";
+    }
+    // inherit
+    Object.assign(style, props.style);
+    if (props.perfectScroll) {
+      style.position = style.position || 'relative';
+      return <PerfectScroll {...props} style={style}>{props.children}</PerfectScroll>;
+    } else {
+      return <div {...props} style={style}>{props.children}</div>;
+    }
+  }
 });
 
 let Layout = React.createClass({
-    render() {
-        return (
-            <Item layout {...this.props}>{this.props.children}</Item>
-        );
-    }
+  render() {
+    return <Item layout {...this.props}>{this.props.children}</Item>;
+  }
 });
 
 export default {

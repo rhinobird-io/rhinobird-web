@@ -6,6 +6,7 @@ const mui = require("material-ui"),
 
 const CaretPosition = require("textarea-caret-position");
 
+const Item = require("../Flex").Item;
 const PopupSelect = require("../Select").PopupSelect;
 
 const commands = [
@@ -56,11 +57,19 @@ export default React.createClass({
     for (let k in this.state.popupPosition) {
       popupStyle[k] = this.state.popupPosition[k];
     }
+
+    let style = {
+      padding: "0 0.5em 0.5em",
+      boxSizing: "border-box"
+    };
+    Object.assign(style, this.props.style);
+    // `style` property for TextField seems useless
     return (
-      <div className="smart-editor">
+      <Item flex style={style} className="smart-editor">
         <TextField {...this.props} ref="textfield" />
-      </div>
+      </Item>
     );
+
     return (
       <div className="smart-editor">
         <TextField {...this.props} ref="textfield" />
