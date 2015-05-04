@@ -39,24 +39,58 @@ export default {
             }).fail(Util.handleError);
     },
 
-    clearUnread(currentUser, channel) {
-        //var lsName = 'seenMessage';
-        //let seenMessage = localStorage[lsName] || {};
-        //seenMessage[currentUser] = seenMessage[currentUser] || {};
-        //seenMessage[currentUser][channel.backEndChannelId] = message.id;
-        //localStorage.setItem(lsName, seenMessage);
+    initUnread(channels, currentUser) {
+        var channelIds = _.pluck(channels.publicGroupChannels, 'id').concat(_.pluck(channels.directMessageChannels, 'id'));
+        // key channelId, value latestMessageId and lastSeenMessageId
+        let latestAndLastSeen = {};
+        async.series([
+            function(cb) {
+                $.ajax(
+                    {
+                        url: IM_HOST + 'api/messages/latest',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data : JSON.stringify({
+                            channelIds: channelIds
+                        })
+                    }).done(function (res) {
+                        cb(null, res);
+                    }).fail(cb);
+            },
 
-        AppDispatcher.dispatch({
-            type: Constants.MessageActionTypes.CLEAR_UNREAD,
-            currentUser : currentUser,
-            channel : channel
-        });
-    },
+            function(cb) {
+                $.ajax(
+                    {
+                        url: IM_HOST + 'api/messages/lastSeen',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data : JSON.stringify({
+                            userId : currentUser.id
+                        })
+                    }).done(function (res) {
+                        cb(null, res);
+                    }).fail(cb);
+            }
+        ], function(err, results) {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            let latestMessageIds = results[0];
+            let lastSeenMessage = results[1];
+            latestMessageIds.forEach(latestMessage => {
+                latestAndLastSeen[latestMessage.channelId] = latestAndLastSeen[latestMessage.channelId] || {};
+                latestAndLastSeen[latestMessage.channelId].latestMessageId = latestMessage.messageId;
+            });
 
-    initLastseenMessages(channels) {
-        AppDispatcher.dispatch({
-            type: Constants.MessageActionTypes.INIT_LAST_SEEN,
-            channels : channels
+            lastSeenMessage.forEach(lastSeenMessage => {
+                latestAndLastSeen[lastSeenMessage.channelId] = latestAndLastSeen[lastSeenMessage.channelId] || {};
+                latestAndLastSeen[lastSeenMessage.channelId].lastSeenMessageId = lastSeenMessage.messageId;
+            });
+            AppDispatcher.dispatch({
+                type: Constants.MessageActionTypes.INIT_UNREAD,
+                latestAndLastSeen : latestAndLastSeen
+            });
         });
     },
 

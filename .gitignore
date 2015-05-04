@@ -3,3 +3,4 @@
 .vagrant
 .idea/
 npm-debug.log
+start.sh
