@@ -19,30 +19,11 @@ export default React.createClass({
     },
 
     getInitialState() {
-        var _this = this;
-
-        let listContent = [];
-        let listContentMap;
-
-        this.props.children.forEach(function(child) {
-            var _content = null;
-            if (child instanceof Array) {
-                _content = _this._parseChildren(child);
-            } else if (child instanceof Object) {
-                _content = _this._parseChild(child);
-            }
-            if (_content !== null) {
-                listContent = listContent.concat(_content);
-            }
-        });
-
-        listContentMap = this._getListContentMap(listContent);
-
         return {
             visible: false,
-            list: listContent,
-            filteredContent: listContent,
-            filteredContentMap: listContentMap,
+            list: [],
+            filteredContent: [],
+            filteredContentMap: {},
             selectedIndex: 0
         }
     },
@@ -60,6 +41,32 @@ export default React.createClass({
             target.props.onChange = nextProps.onChange || this._changeListener;
             target.props.onKeyDown = nextProps.onKeyDown || this._keyDownListener;
         }
+
+        var _this = this;
+        let listContent = [];
+        let listContentMap;
+
+        nextProps.children.forEach(function(child) {
+            var _content = null;
+            if (child instanceof Array) {
+                _content = _this._parseChildren(child);
+            } else if (child instanceof Object) {
+                _content = _this._parseChild(child);
+            }
+            if (_content !== null) {
+                listContent = listContent.concat(_content);
+            }
+        });
+
+        listContentMap = this._getListContentMap(listContent);
+
+        this.setState({
+            visible: false,
+            list: listContent,
+            filteredContent: listContent,
+            filteredContentMap: listContentMap,
+            selectedIndex: 0
+        });
     },
 
     componentWillUnmount() {

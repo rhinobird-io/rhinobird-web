@@ -61,7 +61,7 @@
     "react-tap-event-plugin": "^0.1.6",
     "style-loader": "^0.8.2",
     "superagent": "^0.21.0",
-    "textarea-caret-position": "^0.1.1",
+    "textarea-caret-position": "component/textarea-caret-position",
     "url-loader": "^0.5.5",
     "uuid": "^2.0.1",
     "webpack": "^1.7.3",
