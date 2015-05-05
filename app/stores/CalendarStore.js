@@ -7,9 +7,8 @@ const assign = require("object-assign");
 
 let _events = {};
 let _eventRange = {};
-let _hasMoreNewerEvents = false;
-let _hasMoreOlderEvents = false;
-
+let _hasMoreNewerEvents = true;
+let _hasMoreOlderEvents = true;
 
 function _addEvent(event) {
     let dateFormat = _formatDate(event.from_time);
@@ -17,6 +16,20 @@ function _addEvent(event) {
         _events[dateFormat] = [];
     }
     _events[dateFormat].push(event);
+
+    if (_eventRange.min === undefined) {
+        _eventRange.min = event.from_time;
+    } else if (event.from_time < _eventRange.min) {
+        _eventRange.min = event.from_time;
+    }
+
+    if (_eventRange.max === undefined) {
+        _eventRange.max = event.from_time;
+    } else if (event.from_time > _eventRange.max) {
+        _eventRange.max = event.from_time;
+    }
+
+    console.log(_eventRange);
 }
 
 function _addEvents(events) {
@@ -77,9 +90,15 @@ let CalendarStore = assign({}, BaseStore, {
                 break;
             case ActionTypes.LOAD_MORE_NEWER_EVENTS:
                 _addEvents(data);
+                if (data.length === 0) {
+                    _hasMoreNewerEvents = false;
+                }
                 break;
             case ActionTypes.LOAD_MORE_OLDER_EVENTS:
                 _addEvents(data);
+                if (data.length === 0) {
+                    _hasMoreOlderEvents = false;
+                }
                 break;
             default:
                 break;
