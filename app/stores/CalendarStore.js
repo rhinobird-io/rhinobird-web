@@ -9,6 +9,7 @@ let _events = {};
 let _eventRange = {};
 let _hasMoreNewerEvents = true;
 let _hasMoreOlderEvents = true;
+let _hasReceived = false;
 
 function _addEvent(event) {
     let dateFormat = _formatDate(event.from_time);
@@ -16,7 +17,7 @@ function _addEvent(event) {
         _events[dateFormat] = [];
     }
     _events[dateFormat].push(event);
-
+    console.log(_events);
     if (_eventRange.min === undefined) {
         _eventRange.min = event.from_time;
     } else if (event.from_time < _eventRange.min) {
@@ -72,11 +73,18 @@ let CalendarStore = assign({}, BaseStore, {
         return _hasMoreOlderEvents;
     },
 
+    hasReceived() {
+        return _hasReceived;
+    },
+
     dispatcherIndex: AppDispatcher.register(payload => {
         let type = payload.type;
         let data = payload.data;
 
         switch (type) {
+            case ActionTypes.CREATE_EVENT:
+                _addEvent(data);
+                break;
             case ActionTypes.RECEIVE_EVENTS:
                 _events = {};
                 _addEvents(data);
@@ -87,6 +95,7 @@ let CalendarStore = assign({}, BaseStore, {
                 } else {
 
                 }
+                _hasReceived = true;
                 break;
             case ActionTypes.LOAD_MORE_NEWER_EVENTS:
                 _addEvents(data);

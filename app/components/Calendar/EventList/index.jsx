@@ -17,16 +17,19 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            events: {},
-            eventRange: {},
-            hasMoreNewerEvents: true,
-            hasMoreOlderEvents: true
+            events: CalendarStore.getAllEvents() || {},
+            eventRange: CalendarStore.getEventimeRange,
+            hasReceived: CalendarStore.hasReceived(),
+            hasMoreNewerEvents: CalendarStore.hasMoreNewerEvents(),
+            hasMoreOlderEvents: CalendarStore.hasMoreOlderEvents()
         }
     },
 
     componentDidMount() {
         CalendarStore.addChangeListener(this._onChange);
-        CalendarActions.receive();
+        if (!this.state.hasReceived) {
+            CalendarActions.receive();
+        }
     },
 
     componentWillUnmount() {
@@ -34,9 +37,11 @@ export default React.createClass({
     },
 
     _onChange() {
+        console.log(CalendarStore.getAllEvents());
         this.setState({
             events: CalendarStore.getAllEvents(),
             eventRange: CalendarStore.getEventTimeRage(),
+            hasReceived: CalendarStore.hasReceived(),
             hasMoreNewerEvents: CalendarStore.hasMoreNewerEvents(),
             hasMoreOlderEvents: CalendarStore.hasMoreOlderEvents()
         });
@@ -133,8 +138,8 @@ export default React.createClass({
         return (
             <PerfectScroll className="cal-event-list">
                 <InfiniteScroll
-                    lowerThreshold={100}
-                    upperThreshold={100}
+                    lowerThreshold={5}
+                    upperThreshold={5}
                     onUpperTrigger={() => this._loadMoreOlderEvents()}
                     onLowerTrigger={() => this._loadMoreNewerEvents()}
                     scrollTarget={() => this.getDOMNode()} />
