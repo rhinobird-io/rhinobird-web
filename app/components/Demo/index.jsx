@@ -1,6 +1,7 @@
 var React                = require("react"),
     SmartTimeDisplay     = require("../SmartTimeDisplay"),
     Select = require("../Select").Select,
+    SmartPreview = require("../SmartEditor").SmartPreview,
     Selector = require("../Select").Selector;
 
 export default React.createClass({
@@ -78,6 +79,9 @@ export default React.createClass({
                     <span className="cal-event-repeated-item" name="Friday">Fri</span>
                     <span className="cal-event-repeated-item" name="Saturday">Sat</span>
                 </Selector>
+
+                <br/>
+                <SmartPreview/>
             </div>
         );
     }
