@@ -1,11 +1,11 @@
 'use strict';
 import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
+import IMConstants from '../constants/IMConstants';
 import async from 'async';
 import Util from '../util.jsx';
 
-
-const IM_HOST = 'http://localhost:3000/';
+const {IM_HOST, IM_API} = IMConstants;
 
 export default {
 

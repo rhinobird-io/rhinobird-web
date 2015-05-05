@@ -1,15 +1,13 @@
 'use strict';
 import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
+import IMConstants from '../constants/IMConstants';
 import Util from '../util.jsx';
 import async from 'async';
 import $ from 'jquery';
 import SocketAction from './SocketAction';
-import SocketStore from '../stores/SocketStore'
 
-const IM_HOST = 'http://localhost:3000/';
-const IM_API = IM_HOST + 'api/';
-
+const {IM_HOST, IM_API} = IMConstants;
 export default {
 
     changeChannel(backEndChannelId, currentUser) {
