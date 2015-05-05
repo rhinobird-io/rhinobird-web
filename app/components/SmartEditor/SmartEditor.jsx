@@ -17,13 +17,17 @@ export default React.createClass({
   propTypes: {
     disabled: React.PropTypes.bool,
     popupWidth: React.PropTypes.number,
-    popupMaxHeight: React.PropTypes.number
+    popupMaxHeight: React.PropTypes.number,
+    popupMarginTop: React.PropTypes.string,
+    popupMinusTop: React.PropTypes.string
   },
 
   getDefaultProps() {
     return {
       popupWidth: 240,
-      popupMaxHeight: 280
+      popupMaxHeight: 280,
+      popupMarginTop: "1.8em",
+      popupMinusTop: "-0.3em"
     };
   },
 
@@ -31,10 +35,12 @@ export default React.createClass({
     return {
       options: [],
       showPopup: false,
-      popupPosition: {}
+      popupPosition: {},
+      popupJustified: false
     };
   },
 
+  // Filter menu options in current component rather than PopupSelect
   _setOptions(keyword) {
     let options = [];
     if (!keyword || keyword.length < 2) {
@@ -67,7 +73,19 @@ export default React.createClass({
 
   _setPopupPosition(textarea, pos) {
     let caretPos = CaretPosition(textarea, pos);
-    console.log(caretPos);
+    let textareaRect = textarea.getBoundingClientRect();
+    let top = textareaRect.top + caretPos.top - textarea.scrollTop;
+    let left = textareaRect.left + caretPos.left - textarea.scrollLeft;
+    let popupPosition = {
+      position: "fixed",
+      top: top,
+      left: left,
+      marginTop: this.props.popupMarginTop
+    };
+    this.setState({
+      popupPosition: popupPosition,
+      popupJustified: false
+    });
   },
 
   _onInputChange(e) {
@@ -114,17 +132,42 @@ export default React.createClass({
       maxHeight: this.props.popupMaxHeight,
       overflow: "auto",
       background: "#fff",
-      display: this.state.showPopup ? "block" : "none"
+      display: this.state.showPopup ? "block" : "none",
+      zIndex: 20
     };
     for (let k in this.state.popupPosition) {
       popupStyle[k] = this.state.popupPosition[k];
     }
 
+    setTimeout(() => {
+      if (this.state.popupJustified) return;
+      let rect = this.refs.popup.getDOMNode().getBoundingClientRect();
+      let popupPosition = {position: "fixed"};
+      let newTop = this.state.popupPosition.top - rect.height;
+      if (rect.bottom > window.innerHeight && newTop > 0) {
+        popupPosition.top = newTop;
+        popupPosition.marginTop = this.props.popupMinusTop;
+      } else {
+        popupPosition.top = this.state.popupPosition.top;
+        popupPosition.marginTop = this.props.popupMarginTop;
+      }
+      if (rect.right > window.innerWidth && rect.width < window.innerWidth) {
+        popupPosition.left = "auto";
+        popupPosition.right = 0;
+      } else {
+        popupPosition.left = this.state.popupPosition.left;
+      }
+      this.setState({
+        popupPosition: popupPosition,
+        popupJustified: true
+      });
+    }, 0);
+
     // Apply `style` to TextField seems no effect, so just apply to Item
     return (
       <Item flex style={style} className="smart-editor">
         <TextField {...this.props} ref="textfield" />
-        <PopupSelect
+        <PopupSelect ref="popup"
             style={popupStyle}
             controller={this.refs.textfield}
             onKeyDown={() => 0}
