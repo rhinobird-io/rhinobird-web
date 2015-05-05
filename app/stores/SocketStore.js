@@ -71,20 +71,16 @@ let SocketStore = assign({}, BaseStore, {
             OnlineStore.userLeft(data);
         });
         _socket.on('disconnect', function () {
-            self.$.connectingDialog.open();
             self.connectinStatus = "disconnected.";
         });
 
         _socket.on('reconnecting', function (number) {
-            self.$.connectingDialog.open();
             self.connectinStatus = "reconnecting... (" + number + ")";
         });
         _socket.on('reconnecting_failed', function () {
-            self.$.connectingDialog.open();
             self.connectinStatus = "reconnecting failed.";
         });
         _socket.on('reconnect', function () {
-            self.$.connectingDialog.open();
             self.connectinStatus = "connected";
         });
 

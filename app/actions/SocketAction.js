@@ -17,6 +17,8 @@ export default {
                 socket : socket,
                 channels : channels
             });
-        }).fail(Util.handleError);
+        }).fail(function(err) {
+            console.log(err);
+        });
     }
 }
