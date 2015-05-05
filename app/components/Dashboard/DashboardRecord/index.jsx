@@ -14,7 +14,7 @@ const DashboardRecord = React.createClass({
 		return <Flex.Layout className='dashboard-record'>
 			<div className='avatar'><Member.Avatar scale={1.5} member={member}/></div>
             <div className='text'>
-                <Member.Name member={member}/><span className="time mui-font-style-caption"><SmartTimeDisplay relative start={record.created_at}></SmartTimeDisplay></span>
+                <Member.Name member={member}/><span className="time mui-font-style-caption"><SmartTimeDisplay relative start={record.get('created_at')}></SmartTimeDisplay></span>
                 <div>
                     <span>{record.get('content')} </span>
                     {record.get('hasLink')? <a href={record.get('link_url')}>{record.get('link_title')}</a>: undefined}
