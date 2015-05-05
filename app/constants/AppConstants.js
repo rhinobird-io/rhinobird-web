@@ -30,7 +30,8 @@ export default {
   }),
 
   MessageActionTypes : keyMirror({
-    RECEIVE_MESSAGES: null,
+    RECEIVE_NEWER_MESSAGES: null,
+    RECEIVE_OLDER_MESSAGES : null,
     SEND_MESSAGE : null,
     CLEAR_UNREAD : null,
     INIT_UNREAD : null

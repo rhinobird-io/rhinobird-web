@@ -61,13 +61,14 @@ module.exports = React.createClass({
 
     _onChannelChange() {
         let currentChannel = ChannelStore.getCurrentChannel();
-        this.setState({
-            currentChannel: currentChannel
-        });
+        //this.setState({
+        //    currentChannel: currentChannel
+        //});
         localStorage[IMConstant.LOCALSTORAGE_CHANNEL] = currentChannel.backEndChannelId;
     },
 
     render() {
+        console.log('render im history');
         return (
             <Flex.Layout vertical perfectScroll className="history" style={this.props.style}>
                 <InfiniteScroll upperThreshold={this.state.upperThreshold} onUpperTrigger={()=>{
@@ -77,7 +78,7 @@ module.exports = React.createClass({
                 }}/>
                 <div style={{flex: 1}}>
                     {
-                        this.state.messages.map((msg, idx) => <ImMessage key={idx} Message={msg}></ImMessage>).reverse()
+                        this.state.messages.map((msg, idx) => <ImMessage key={idx} Message={msg}></ImMessage>)
                     }
                 </div>
 

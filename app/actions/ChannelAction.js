@@ -25,18 +25,18 @@ export default {
                 dataType: 'json'
             }).done(messages => {
                 AppDispatcher.dispatch({
-                    type: Constants.MessageActionTypes.RECEIVE_MESSAGES,
+                    type: Constants.MessageActionTypes.RECEIVE_NEWER_MESSAGES,
                     channel: {
                         backEndChannelId: backEndChannelId
                     },
-                    messages: messages.reverse()
+                    messages: messages // from oldest to newest
                 });
 
                 if (messages.length > 0) {
                     AppDispatcher.dispatch({
                         type: Constants.MessageActionTypes.CLEAR_UNREAD,
                         backEndChannelId : backEndChannelId,
-                        lastSeenMessageId : messages[0].id
+                        lastSeenMessageId : messages[messages.length - 1].id
                     });
                 }
 

@@ -30,9 +30,9 @@ export default {
                 dataType: 'json'
             }).done(messages => {
                 AppDispatcher.dispatch({
-                    type: Constants.MessageActionTypes.RECEIVE_MESSAGES,
+                    type: Constants.MessageActionTypes.RECEIVE_OLDER_MESSAGES,
                     channel: channel,
-                    messages: messages.reverse()
+                    messages: messages // from oldest to newest
                 });
             }).fail(Util.handleError);
     },

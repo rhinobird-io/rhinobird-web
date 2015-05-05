@@ -14,7 +14,6 @@ class MessagesWrapper {
         this.messages = [];
         this.hasUnread = false;
         this.unread = [];
-        this._msgExistsMap = {};
         this.noMore = false;
     }
 
@@ -40,7 +39,7 @@ class MessagesWrapper {
      * add more messages into the wrapper
      * @param messages
      */
-    addMoreMessages(messages) {
+    addMoreMessages(messages, isOld) {
         if (!(messages instanceof Array)) {
             throw new Error('' + messages + ' is not a array');
         }
@@ -48,69 +47,46 @@ class MessagesWrapper {
             this.noMore = true;
             return;
         }
-        messages.forEach(msg => {
-            if (!this._msgExistsMap[msg.id]) {
-                this.messages.push(msg);
-                this._msgExistsMap[msg.id] = true;
-            }
-        });
-        // newest in the front
-        this.messages.sort((msg1, msg2) => {
-            return msg2.id - msg1.id;
-        });
+        //messages.forEach(msg => {
+        //    if (!this._msgExistsMap[msg.id]) {
+        //        this.messages.push(msg);
+        //        this._msgExistsMap[msg.id] = true;
+        //    }
+        //});
+        //// newest in the front
+        //this.messages.sort((msg1, msg2) => {
+        //    return msg2.id - msg1.id;
+        //});
+        if (!isOld) {
+            this.messages = this.messages.concat(messages);
+        } else {
+            this.messages = messages.concat(this.messages);
+        }
+
     }
 
     sendMessage(message) {
-        this.messages = [message, ].concat(this.messages);
+        this.messages = this.messages.concat([message, ]);
     }
 
-    receiveMessage(message, imCurrentChannelMessageWrapper) {
-        this.addMoreMessages([message,]);
-        if (!imCurrentChannelMessageWrapper) {
-            this.unread.push(message);
-            this.hasUnread = true;
-        }
+    receiveNewMessage(message, imCurrentChannelMessageWrapper) {
+        let isold = false;
+        this.addMoreMessages([message,], isold);
     }
 
     confirmMessageSended(message) {
         let idx = _.findIndex(this.messages, msg => {
-            return msg.uuid === message.uuid;
+            return msg.guid === message.guid;
         });
-        this._msgExistsMap[message.id] = true;
         this.messages[idx] = message;
     }
-
-    clearUnread() {
-        this.unread = [];
-        this.hasUnread = false;
-    }
-
-    setUnread() {
-        this.hasUnread = true;
-        return this;
-    }
-
-    setLatestMessageId(msgId) {
-        this.latestMessageId = msgId;
-        this.hasUnread = (this.latestMessageId > this.lastSeenMessageId);
-        return this;
-    }
-
-    setLastSeenMessageId(msgId) {
-        this.lastSeenMessageId = msgId;
-        this.hasUnread = (this.latestMessageId > this.lastSeenMessageId);
-        return this;
-    }
-
 
     /**
      * min message id
      * @returns {number|*}
      */
     getMinMessageId() {
-        return _.min(this.messages, msg => {
-            return msg.id
-        });
+        return this.messages && this.messages.length > 0 &&this.messages[0].id;
     }
 
     /**
@@ -118,18 +94,7 @@ class MessagesWrapper {
      * @returns {number|*}
      */
     getMaxMessageId() {
-        return _.max(this.messages, msg => {
-            return msg.id
-        });
-    }
-
-    getNewestMessage() {
-        if (this.messages.length === 0) {
-            return {
-                id : -1
-            };
-        }
-        return this.messages[0];
+        return this.messages && this.messages.length > 0 &&this.messages[this.messages.length-1].id;
     }
 }
 
@@ -151,7 +116,7 @@ let MessageStore = assign({}, BaseStore, {
     receiveMessage(message) {
         var currentChannel = ChannelStore.getCurrentChannel();
         _messages[message.channelId] = _messages[message.channelId] || new MessagesWrapper([]);
-        _messages[message.channelId].receiveMessage(message, currentChannel.backEndChannelId === message.channelId);
+        _messages[message.channelId].receiveNewMessage(message, currentChannel.backEndChannelId === message.channelId);
         MessageStore.emitChange();
     },
 
@@ -166,12 +131,15 @@ let MessageStore = assign({}, BaseStore, {
 
     dispatcherIndex: AppDispatcher.register(function (payload) {
         switch (payload.type) {
-            case Constants.MessageActionTypes.RECEIVE_MESSAGES:
+            case Constants.MessageActionTypes.RECEIVE_NEWER_MESSAGES:
                 let channel = payload.channel;
-                let messages = payload.messages;
+                let messages = payload.messages; // from older to newer
                 _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper();
                 _messages[channel.backEndChannelId].addMoreMessages(messages);
                 MessageStore.emitChange();
+                break;
+            case Constants.MessageActionTypes.RECEIVE_OLDER_MESSAGES:
+
                 break;
             case Constants.MessageActionTypes.SEND_MESSAGE:
                 let message = payload.message;
