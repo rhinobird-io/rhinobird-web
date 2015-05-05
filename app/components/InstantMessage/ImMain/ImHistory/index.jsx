@@ -56,7 +56,6 @@ module.exports = React.createClass({
             currentChannel: currentChannel,
             messages: []
         });
-        // MessageAction.getMessages(currentChannel);
     },
 
     render() {
@@ -67,10 +66,12 @@ module.exports = React.createClass({
                 }} scrollTarget={()=>{
                     return this.getDOMNode();
                 }}/>
-                <div style={{flex: 1}}></div>
-                {
-                    this.state.messages.map((msg, idx) => <ImMessage key={msg.id} Message={msg}></ImMessage>).reverse()
-                }
+                <div style={{flex: 1}}>
+                    {
+                        this.state.messages.map((msg, idx) => <ImMessage key={idx} Message={msg}></ImMessage>).reverse()
+                    }
+                </div>
+
             </Flex.Layout>
         );
     }

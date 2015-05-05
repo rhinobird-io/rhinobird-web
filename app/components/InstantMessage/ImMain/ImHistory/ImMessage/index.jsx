@@ -41,7 +41,7 @@ module.exports = React.createClass({
           <div className="avatar-wrapper">
             <Avatar scale={1.6} member={UserStore.getUser(this.props.Message.userId)} />
           </div>
-          <Layout vertical>
+          <Layout vertical flex={1}>
             <Layout horizontal justified>
               <div className="name"><Name member={UserStore.getUser(this.props.Message.userId)} /></div>
               <div className="time"><SmartTimeDisplay start={this.props.Message.createdAt} relative /></div>

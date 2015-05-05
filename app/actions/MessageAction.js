@@ -32,66 +32,9 @@ export default {
                 AppDispatcher.dispatch({
                     type: Constants.MessageActionTypes.RECEIVE_MESSAGES,
                     channel: channel,
-                    messages: messages.reverse(),
-                    oldestMessage: messages[0],
-                    newesetMessage: messages[messages.length - 1]
+                    messages: messages.reverse()
                 });
             }).fail(Util.handleError);
-    },
-
-    initUnread(channels, currentUser) {
-        var channelIds = _.pluck(channels.publicGroupChannels, 'id').concat(_.pluck(channels.directMessageChannels, 'id'));
-        // key channelId, value latestMessageId and lastSeenMessageId
-        let latestAndLastSeen = {};
-        async.series([
-            function(cb) {
-                $.ajax(
-                    {
-                        url: IM_HOST + 'api/messages/latest',
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data : JSON.stringify({
-                            channelIds: channelIds
-                        })
-                    }).done(function (res) {
-                        cb(null, res);
-                    }).fail(cb);
-            },
-
-            function(cb) {
-                $.ajax(
-                    {
-                        url: IM_HOST + 'api/messages/lastSeen',
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data : JSON.stringify({
-                            userId : currentUser.id
-                        })
-                    }).done(function (res) {
-                        cb(null, res);
-                    }).fail(cb);
-            }
-        ], function(err, results) {
-            if (err) {
-                console.log(err);
-                throw err;
-            }
-            let latestMessageIds = results[0];
-            let lastSeenMessage = results[1];
-            latestMessageIds.forEach(latestMessage => {
-                latestAndLastSeen[latestMessage.channelId] = latestAndLastSeen[latestMessage.channelId] || {};
-                latestAndLastSeen[latestMessage.channelId].latestMessageId = latestMessage.messageId;
-            });
-
-            lastSeenMessage.forEach(lastSeenMessage => {
-                latestAndLastSeen[lastSeenMessage.channelId] = latestAndLastSeen[lastSeenMessage.channelId] || {};
-                latestAndLastSeen[lastSeenMessage.channelId].lastSeenMessageId = lastSeenMessage.messageId;
-            });
-            AppDispatcher.dispatch({
-                type: Constants.MessageActionTypes.INIT_UNREAD,
-                latestAndLastSeen : latestAndLastSeen
-            });
-        });
     },
 
     sendMessage(msg) {
