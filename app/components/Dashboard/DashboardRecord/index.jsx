@@ -6,7 +6,7 @@ const SmartTimeDisplay = require('../../SmartTimeDisplay');
 require('./style.less');
 
 const UserStore = require('../../../stores/UserStore');
-export default React.createClass({
+const DashboardRecord = React.createClass({
     mixins: [React.addons.PureRenderMixin],
 	render: function() {
         let record = this.props.record;
@@ -23,3 +23,5 @@ export default React.createClass({
 		</Flex.Layout>;
 	}
 });
+
+export default DashboardRecord;
