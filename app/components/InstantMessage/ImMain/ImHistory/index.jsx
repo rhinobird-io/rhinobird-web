@@ -20,7 +20,8 @@ module.exports = React.createClass({
 
     getInitialState() {
         return {
-            messages: []
+            messages: [],
+            upperThreshold: 100
         }
     },
 
@@ -36,11 +37,15 @@ module.exports = React.createClass({
     componentWillUpdate: function() {
         var node = this.getDOMNode();
         this.shouldScrollBottom = node.scrollTop + node.clientHeight > node.scrollHeight - 1;
+        this.scrollHeight = node.scrollHeight;
+        this.scrollTop = node.scrollTop;
     },
     componentDidUpdate: function() {
+        var node = this.getDOMNode();
         if (this.shouldScrollBottom) {
-            var node = this.getDOMNode();
-            node.scrollTop = node.scrollHeight - node.clientHeight;
+            node.scrollTop = node.scrollHeight
+        } else {
+            node.scrollTop = this.scrollTop + (node.scrollHeight - this.scrollHeight);
         }
     },
     _onMessageChange() {
@@ -48,6 +53,12 @@ module.exports = React.createClass({
         this.setState({
             messages: messages
         });
+        let noMore = MessageStore.noMoreMessages(this.state.currentChannel);
+        if(noMore){
+            this.setState({
+                upperThreshold: undefined
+            });
+        }
     },
 
     _onChannelChange() {
@@ -61,7 +72,7 @@ module.exports = React.createClass({
     render() {
         return (
             <Flex.Layout vertical perfectScroll className="history">
-                <InfiniteScroll upperThreshold={300} onUpperTrigger={()=>{
+                <InfiniteScroll upperThreshold={this.state.upperThreshold} onUpperTrigger={()=>{
                     MessageAction.getMessages(ChannelStore.getCurrentChannel(), this.state.messages[this.state.messages.length-1]);
                 }} scrollTarget={()=>{
                     return this.getDOMNode();

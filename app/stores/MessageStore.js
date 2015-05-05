@@ -15,6 +15,7 @@ class MessagesWrapper {
         this.hasUnread = false;
         this.unread = [];
         this._msgExistsMap = {};
+        this.noMore = false;
     }
 
     /**
@@ -42,6 +43,10 @@ class MessagesWrapper {
     addMoreMessages(messages) {
         if (!(messages instanceof Array)) {
             throw new Error('' + messages + ' is not a array');
+        }
+        if(messages.length === 0){
+            this.noMore = true;
+            return;
         }
         messages.forEach(msg => {
             if (!this._msgExistsMap[msg.id]) {
@@ -148,6 +153,15 @@ let MessageStore = assign({}, BaseStore, {
         _messages[message.channelId] = _messages[message.channelId] || new MessagesWrapper([]);
         _messages[message.channelId].receiveMessage(message, currentChannel.backEndChannelId === message.channelId);
         MessageStore.emitChange();
+    },
+
+    noMoreMessages(channel){
+        if (!channel.backEndChannelId) {
+            throw new Error('backEndChannelId should be provided');
+        }
+        if (_messages[channel.backEndChannelId]){
+            return _messages[channel.backEndChannelId].noMore;
+        }
     },
 
     dispatcherIndex: AppDispatcher.register(function (payload) {
