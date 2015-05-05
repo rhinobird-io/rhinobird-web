@@ -54,11 +54,9 @@ module.exports = React.createClass({
             messages: messages
         });
         let noMore = MessageStore.noMoreMessages(this.state.currentChannel);
-        if(noMore){
-            this.setState({
-                upperThreshold: undefined
-            });
-        }
+        this.setState({
+            upperThreshold: noMore? undefined: 100
+        });
     },
 
     _onChannelChange() {
