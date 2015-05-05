@@ -9,6 +9,7 @@ let MarkdownIt = require("markdown-it");
 
 let IconLink = require("../IconLink");
 let Member = require("../Member");
+let LoginStore = require("../../stores/LoginStore");
 let UserStore = require("../../stores/UserStore");
 
 const AT_REGEX = /^\s*(@\w+)/;
@@ -101,8 +102,8 @@ export default React.createClass({
       let item = list[i], iconLink;
       let [plugin, arg] = item.getAttribute("value").substr(1).split(":");
       switch (plugin) {
-        case "vity":  // TODO
-          iconLink = <IconLink type="vity" args={{room: arg, user: "guest"}} />;
+        case "vity":
+          iconLink = <IconLink type="vity" args={{room: arg, user: LoginStore.getUser().name}} />;
           break;
         case "file":  // TODO
           iconLink = <IconLink type="file" args={{id: arg, name: arg}} />;
