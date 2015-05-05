@@ -1,7 +1,8 @@
 var React                = require("react"),
     SmartTimeDisplay     = require("../SmartTimeDisplay"),
-    Select = require("../Select").Select,
+    SmartEditor = require("../SmartEditor").SmartEditor,
     SmartPreview = require("../SmartEditor").SmartPreview,
+    Select = require("../Select").Select,
     Selector = require("../Select").Selector;
 
 export default React.createClass({
@@ -81,7 +82,11 @@ export default React.createClass({
                 </Selector>
 
                 <br/>
-                <SmartPreview/>
+                <SmartEditor />
+                <SmartEditor nohr hintText="I have no underline" />
+                <SmartEditor floatingLabelText="I have a Label" />
+                <br/>
+                <SmartPreview />
             </div>
         );
     }
