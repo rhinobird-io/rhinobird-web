@@ -1,9 +1,10 @@
-const React        = require("react"),
-      MUI          = require('material-ui'),
-      Moment       = require("moment"),
-      Flex         = require("../../Flex"),
-      Link         = require("react-router").Link,
-      Selector     = require("../../Select").Selector;
+const React           = require("react"),
+      MUI             = require('material-ui'),
+      Moment          = require("moment"),
+      Flex            = require("../../Flex"),
+      Link            = require("react-router").Link,
+      Selector        = require("../../Select").Selector,
+      CalendarActions = require("../../../actions/CalendarActions");
 
 require("./style.less");
 
@@ -44,7 +45,9 @@ export default React.createClass({
         'Sat': 'Saturday'
     },
 
-    _handleTouchTap() {
+    errorMsg: {
+        titleRequired: "Event title is required.",
+        descriptionRequired: "Event description is required."
     },
 
     componentDidMount() {
@@ -53,7 +56,12 @@ export default React.createClass({
 
     getInitialState() {
         return {
+            title: "",
+            titleError: "",
+            description: "",
+            fullDay: false,
             fromTime: new Date(),
+            toTime: new Date(),
             editRepeated: false,
             repeated: false,
             repeatedType: "Daily",
@@ -79,22 +87,27 @@ export default React.createClass({
         };
         return (
             <Flex.Layout horizontal centerJustified wrap>
+                <form onSubmit={this._handleSubmit}>
                 <MUI.Paper zDepth={3} className="cal-create-event">
                     <div style={{padding: 20}}>
                         <h3>Create Event</h3>
 
                         <MUI.TextField
                             ref="eventTitle"
-                            className="cal-create-event-textfield"
                             hintText="Event Title"
-                            floatingLabelText="Event Title"/>
+                            errorText={this.state.titleError}
+                            floatingLabelText="Event Title"
+                            valueLink={this.linkState("title")}
+                            className="cal-create-event-textfield" />
 
                         <MUI.TextField
                             multiLine={true}
                             ref="eventDescription"
                             hintText="Description"
+                            errorText={this.state.descriptionError}
+                            floatingLabelText="Description"
                             className="cal-create-event-textfield"
-                            floatingLabelText="Description" />
+                            valueLink={this.linkState("description")} />
 
                         <MUI.Toggle
                             label="Full Day" />
@@ -108,7 +121,7 @@ export default React.createClass({
                                     </Flex.Layout>
                                 </div>
                             </MUI.Tab>
-                            <MUI.Tab label="Content" >
+                            <MUI.Tab label="Point" >
                                 <div className="tab-template-container">
                                     <Flex.Layout horizontal justified>
                                         <MUI.DatePicker hintText="From Date" />
@@ -123,14 +136,24 @@ export default React.createClass({
                             label="Repeated"
                             onToggle={this._onRepeatToggled} />
 
+                        <MUI.TextField
+                            ref="eventParticipant"
+                            hintText="Participants"
+                            floatingLabelText="Participants"
+                            className="cal-create-event-textfield" />
+
+                        <br/>
+
                         <Flex.Layout horizontal justified>
                             <Link to="event-list">
                                 <MUI.RaisedButton label="Cancel" />
                             </Link>
                             <MUI.RaisedButton label="Create Event" primary={true} />
                         </Flex.Layout>
+
                     </div>
                 </MUI.Paper>
+                </form>
                 <MUI.Paper zDepth={2} style={styles.repeated} className="cal-create-event">
                     <div style={{padding: 20}}>
                         <Flex.Layout horizontal>
@@ -141,6 +164,27 @@ export default React.createClass({
                 </MUI.Paper>
             </Flex.Layout>
         );
+    },
+
+    _handleSubmit(e) {
+        e.preventDefault();
+        let errorMsg = this.errorMsg;
+
+        if (this.state.title.length === 0) {
+            this.setState({titleError: errorMsg.titleRequired});
+            return;
+        } else {
+            this.setState({titleError: ""});
+        }
+
+        if (this.state.description.length === 0) {
+            this.setState({descriptionError: errorMsg.descriptionRequired});
+            return;
+        } else {
+            this.setState({descriptionError: ""});
+        }
+
+        CalendarActions.create(this.state, () => window.location.href = "/platform/calendar");
     },
 
     _getRepeatedInfoContent() {
@@ -227,6 +271,7 @@ export default React.createClass({
                         <span className="cal-event-repeated-item" name="Yearly">Yearly</span>
                     </Selector>
                 </Flex.Layout>
+
                 <Flex.Layout horizontal justified style={styles.row}>
                     <Flex.Layout vertical selfCenter>
                         <label>Repeated Every:</label>
@@ -241,8 +286,11 @@ export default React.createClass({
                         {this.repeatedEvery[this.state.repeatedType]}
                     </div>
                 </Flex.Layout>
+
                 {weeklyRepeatOn}
+
                 {monthlyRepeatBy}
+
                 <Flex.Layout horizontal justified style={styles.row}>
                     <label>Ends Way:</label>
                     <Selector
@@ -254,12 +302,16 @@ export default React.createClass({
                         <span className="cal-event-repeated-item" name="Date">Date</span>
                     </Selector>
                 </Flex.Layout>
+
                 {occurrence}
+
                 {endDate}
+
                 <Flex.Layout horizonal justified style={styles.row}>
                     <label>Repeat Summary:</label>
                     <label>{this._getSummary()}</label>
                 </Flex.Layout>
+
                 <Flex.Layout horizontal justified>
                     <MUI.RaisedButton label="Cancel" onClick={this._cancelRepeatedInfo} />
                     <MUI.RaisedButton label="Confirm" secondary={true} onClick={this._confirmRepeatedInfo} />

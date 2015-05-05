@@ -15,7 +15,14 @@ export default React.createClass({
         onShow: React.PropTypes.func,
         onHide: React.PropTypes.func,
         onFocus: React.PropTypes.func,
-        onFilter: React.PropTypes.func
+        onFilter: React.PropTypes.func,
+        valueAttr: React.PropTypes.string
+    },
+
+    getDefaultProps: function() {
+        return {
+            valueAttr: "name"
+        };
     },
 
     getInitialState() {
@@ -45,10 +52,6 @@ export default React.createClass({
             filteredContentMap: listContentMap,
             selectedIndex: 0
         }
-    },
-
-    componentDidMount() {
-
     },
 
     componentWillReceiveProps(nextProps) {
