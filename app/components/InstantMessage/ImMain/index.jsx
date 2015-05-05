@@ -95,7 +95,6 @@ module.exports = React.createClass({
 
   willTransitionTo: function(transition) {
     console.log('ccc');
-    debugger;
   },
 
   _buildBackEndChannelId(isGroup, channel) {
@@ -109,15 +108,11 @@ module.exports = React.createClass({
 
   render() {
     return (
-    <Flex.Layout fit className="instant-message-container">
-      {
-        this.state.currentChannel?(<Flex.Layout selfStretch flex={5} vertical className="main" >
-          <ImHistory {...this.props} className="history" ></ImHistory>
-          <ImSendBox {...this.props} className="send-box" ></ImSendBox>
-        </Flex.Layout>):(<Flex.Layout selfCenter flex={5} vertical className="main" >
-          <div className="default">Choose Channel from the right</div>
-        </Flex.Layout>)
-      }
+        <Flex.Layout fit className="instant-message-container">
+          <Flex.Layout selfStretch flex={5} vertical className="main" >
+            <ImHistory {...this.props} className="history" ></ImHistory>
+            <ImSendBox {...this.props} className="send-box" ></ImSendBox>
+        </Flex.Layout>
       <ImSideNav {...this.props} buildBackEndChannelId={this._buildBackEndChannelId} ></ImSideNav>
     </Flex.Layout>
     );

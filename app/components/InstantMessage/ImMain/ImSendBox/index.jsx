@@ -7,7 +7,6 @@ const Layout = require("../../../Flex").Layout;
 import LoginStore from '../../../../stores/LoginStore';
 import ChannelStore from '../../../../stores/ChannelStore';
 import SocketStore from '../../../../stores/SocketStore';
-import SocketAction from '../../../../actions/SocketAction';
 import MessageAction from '../../../../actions/MessageAction';
 
 
