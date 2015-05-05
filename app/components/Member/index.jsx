@@ -1,4 +1,4 @@
-const React = require("react");
+const React = require("react/addons");
 require('./style.less');
 const FloatingContentAction = require('../../actions/FloatingContentAction');
 
@@ -27,6 +27,7 @@ Member.showMemberProfile = (id) => {
 }
 
 Member.Avatar = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     propTypes() {
         return {
             member: React.prototype.object.isRequired
@@ -57,6 +58,7 @@ Member.Avatar = React.createClass({
 });
 
 Member.Name = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     getDefaultProps() {
         return {
             link: true

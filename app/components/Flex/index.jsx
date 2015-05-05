@@ -1,9 +1,10 @@
 "use strict";
 
-const React = require("react");
+const React = require("react/addons");
 const PerfectScroll = require('../PerfectScroll');
 
 let Item = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     // See Polymer layout attributes
     propTypes: {
         flex: React.PropTypes.oneOf([
@@ -107,6 +108,7 @@ let Item = React.createClass({
 });
 
 let Layout = React.createClass({
+  mixins: [React.addons.PureRenderMixin],
   render() {
     return <Item layout {...this.props}>{this.props.children}</Item>;
   }

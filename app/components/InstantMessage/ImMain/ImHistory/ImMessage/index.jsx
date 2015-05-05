@@ -1,4 +1,4 @@
-const React = require("react");
+const React = require("react/addons");
 const RouteHandler = require("react-router").RouteHandler;
 
 const Member = require("../../../../Member");
@@ -13,6 +13,7 @@ import _ from 'lodash';
 require('./style.less');
 module.exports = React.createClass({
 
+  mixins: [React.addons.PureRenderMixin],
   contextTypes: {
     router: React.PropTypes.func.isRequired
   },

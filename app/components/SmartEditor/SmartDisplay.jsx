@@ -3,7 +3,7 @@
 require("./markdown.css");
 require("../../../node_modules/highlight.js/styles/default.css");
 
-let React = require("react");
+let React = require("react/addons");
 let HighLight = require("highlight.js");
 let MarkdownIt = require("markdown-it");
 
@@ -56,6 +56,7 @@ function slashPlugin(state) {
 }
 
 export default React.createClass({
+  mixins: [React.addons.PureRenderMixin],
   componentDidMount: function() {
     window.addEventListener('click', this._onClick);
   },

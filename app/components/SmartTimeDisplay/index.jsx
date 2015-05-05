@@ -1,11 +1,12 @@
 "use strict";
 
-let React  = require("react"),
+let React  = require("react/addons"),
     Moment = require("moment"),
     MUI    = require("material-ui"),
     Tooltip = MUI.Tooltip;
 
 export default React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     propTypes: {
         end: React.PropTypes.oneOfType([
             React.PropTypes.object,
