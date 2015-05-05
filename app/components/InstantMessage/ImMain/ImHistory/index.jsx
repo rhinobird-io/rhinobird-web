@@ -69,7 +69,7 @@ module.exports = React.createClass({
 
     render() {
         return (
-            <Flex.Layout vertical perfectScroll className="history">
+            <Flex.Layout vertical perfectScroll className="history" style={this.props.style}>
                 <InfiniteScroll upperThreshold={this.state.upperThreshold} onUpperTrigger={()=>{
                     MessageAction.getMessages(ChannelStore.getCurrentChannel(), this.state.messages[this.state.messages.length-1]);
                 }} scrollTarget={()=>{

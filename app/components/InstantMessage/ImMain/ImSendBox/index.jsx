@@ -28,26 +28,18 @@ module.exports = React.createClass({
   },
 
   componentDidMount() {
-    SocketStore.addChangeListener(this._onSocketReady);
     ChannelStore.addChangeListener(this._onChannelChange);
   },
 
   componentWillUnmount() {
-    SocketStore.removeChangeListener(this._onSocketReady);
     ChannelStore.removeChangeListener(this._onChannelChange);
   },
 
   _onChannelChange() {
     this.setState({
-      currentChannel : ChannelStore.getCurrentChannel(),
-      ready : !!this.state.socket
-    })
-  },
-
-  _onSocketReady() {
-    this.setState({
       socket : SocketStore.getSocket(),
-      ready : !!this.state.currentChannel
+      currentChannel : ChannelStore.getCurrentChannel(),
+      ready : true
     })
   },
 
@@ -69,8 +61,9 @@ module.exports = React.createClass({
   },
 
   render() {
+    console.log(this.props.style);
     return (
-      <div className="send-box">
+      <div className="send-box" style={this.props.style}>
         <Layout>
           <SmartEditor ref="sEditor" multiLine valueLink={this.linkState('messageValue')} className="instant-message-smart-editor"></SmartEditor>
           <FlatButton label="Send" primary={true} onClick={this.sendMessage} disabled={!this.state.ready}></FlatButton>

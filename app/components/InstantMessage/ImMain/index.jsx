@@ -107,14 +107,18 @@ module.exports = React.createClass({
   },
 
   render() {
+    var hideStyle = {
+        display : 'none'
+    };
+
     return (
         <Flex.Layout fit className="instant-message-container">
           <Flex.Layout selfStretch flex={5} vertical className="main" >
             <ImHistory {...this.props} className="history" ></ImHistory>
             <ImSendBox {...this.props} className="send-box" ></ImSendBox>
+          </Flex.Layout>
+          <ImSideNav {...this.props} buildBackEndChannelId={this._buildBackEndChannelId} ></ImSideNav>
         </Flex.Layout>
-      <ImSideNav {...this.props} buildBackEndChannelId={this._buildBackEndChannelId} ></ImSideNav>
-    </Flex.Layout>
     );
   }
 });

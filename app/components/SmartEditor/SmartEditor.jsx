@@ -9,6 +9,8 @@ const Item = require("../Flex").Item;
 const PopupSelect = require("../Select").PopupSelect;
 const UserStore = require("../../stores/UserStore");
 
+import _ from 'lodash';
+
 const COMMANDS = [
   {name: "vity", manual: ":room_name"},
   {name: "file", manual: ":file_id"}
