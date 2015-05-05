@@ -22,22 +22,10 @@ module.exports = React.createClass({
 
   },
 
-  /**
-   * This method will  be called after dynamic segments changed
-   */
-  componentWillReceiveProps() {
-
-  },
-
   render() {
 
-    var classNames = {
-      'instant-message-message-item' : true,
-      'instant-message-message-item-unconfirmed' : this.props.Message.messageStatus && this.props.Message.messageStatus === -1
-    };
-
     return (
-      <div className={_.keys(classNames).filter(cl=>{return classNames[cl];}).join(' ')}>
+      <div className={this.props.Message.messageStatus && this.props.Message.messageStatus === -1 ?'instant-message-message-item unconfirmed':'instant-message-message-item'}>
         <Layout horizontal>
           <div className="avatar-wrapper">
             <Avatar scale={1.6} member={UserStore.getUser(this.props.Message.userId)} />

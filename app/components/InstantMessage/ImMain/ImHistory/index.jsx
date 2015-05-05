@@ -26,6 +26,10 @@ module.exports = React.createClass({
         }
     },
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return !this.state.currentChannel || this.state.currentChannel.backEndChannelId !== nextState.currentChannel.backEndChannelId
+    },
+
     componentDidMount() {
         MessageStore.addChangeListener(this._onMessageChange);
         ChannelStore.addChangeListener(this._onChannelChange);
@@ -55,15 +59,13 @@ module.exports = React.createClass({
         let noMore = MessageStore.noMoreMessages(currentChannel);
         this.setState({
             messages: messages,
-            upperThreshold: noMore? undefined: 100
+            upperThreshold: noMore? undefined: 100,
+            currentChannel: currentChannel
         });
     },
 
     _onChannelChange() {
         let currentChannel = ChannelStore.getCurrentChannel();
-        //this.setState({
-        //    currentChannel: currentChannel
-        //});
         localStorage[IMConstant.LOCALSTORAGE_CHANNEL] = currentChannel.backEndChannelId;
     },
 

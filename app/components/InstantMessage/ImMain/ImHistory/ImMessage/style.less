@@ -1,28 +1,29 @@
 .instant-message-message-item {
   min-height: 50px;
   flex-shrink: 0;
+
+  &.unconfirmed {
+    opacity: 0.5;
+  }
+
+  .avatar-wrapper {
+    padding-top: 0.5em;
+    padding-right: 16px;
+  }
+  .name {
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+  }
+  .time {
+    margin-left: 0.5em;
+    color: #888;
+  }
+  .message {
+    line-height: 1.2em;
+    word-wrap: break-word;
+    white-space: pre-line;
+  }
 }
 
-.avatar-wrapper {
-  padding-top: 0.5em;
-  padding-right: 16px;
-}
-.name {
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 150px;
-}
-.time {
-  margin-left: 0.5em;
-  color: #888;
-}
-.message {
-  line-height: 1.2em;
-  word-wrap: break-word;
-  white-space: pre-line;
-}
-
-.instant-message-message-item-unconfirmed {
-  opacity: 0.5;
-}

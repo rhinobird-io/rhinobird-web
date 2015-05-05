@@ -61,7 +61,6 @@ module.exports = React.createClass({
   },
 
   render() {
-    console.log(this.props.style);
     return (
       <div className="send-box" style={this.props.style}>
         <Layout>

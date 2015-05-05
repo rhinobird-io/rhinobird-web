@@ -16,6 +16,7 @@ const { Menu, FontIcon, FlatButton } = mui;
 
 require('./style.less');
 module.exports = React.createClass({
+
     contextTypes: {
         router: React.PropTypes.func.isRequired
     },
@@ -27,6 +28,12 @@ module.exports = React.createClass({
             _imCurrentChannel : false,
             _hasUnread : false
         }
+    },
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return (this.state._currentChannel.backEndChannelId !== nextState._currentChannel.backEndChannelId && this.state._imCurrentChannel !== nextState._imCurrentChannel)
+            || this.state._onlineStatus[this.props.Channel.backEndChannelId] !== nextState._onlineStatus[this.props.Channel.backEndChannelId]
+            || this.state._hasUnread[this.props.Channel.backEndChannelId] !== nextState._hasUnread[this.props.Channel.backEndChannelId]
     },
 
     componentDidMount() {
@@ -61,7 +68,6 @@ module.exports = React.createClass({
         this.setState({
             _hasUnread : hasUnread
         });
-
     },
 
     _onItemTap(item, e) {
