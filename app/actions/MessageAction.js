@@ -1,14 +1,14 @@
 'use strict';
 import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
+import IMConstants from '../constants/IMConstants';
 import Util from '../util.jsx';
 import async from 'async';
 import $ from 'jquery';
 
 require('./mockjax/messages');
 
-const IM_HOST = 'http://localhost:3000/';
-const IM_API = 'http://localhost:3000/api/';
+const {IM_HOST, IM_API} = IMConstants;
 
 /**
  * build back end channel id from the given channel
@@ -32,32 +32,9 @@ export default {
                 AppDispatcher.dispatch({
                     type: Constants.MessageActionTypes.RECEIVE_MESSAGES,
                     channel: channel,
-                    messages: messages.reverse(),
-                    oldestMessage: messages[0],
-                    newesetMessage: messages[messages.length - 1]
+                    messages: messages.reverse()
                 });
             }).fail(Util.handleError);
-    },
-
-    clearUnread(currentUser, channel) {
-        //var lsName = 'seenMessage';
-        //let seenMessage = localStorage[lsName] || {};
-        //seenMessage[currentUser] = seenMessage[currentUser] || {};
-        //seenMessage[currentUser][channel.backEndChannelId] = message.id;
-        //localStorage.setItem(lsName, seenMessage);
-
-        AppDispatcher.dispatch({
-            type: Constants.MessageActionTypes.CLEAR_UNREAD,
-            currentUser : currentUser,
-            channel : channel
-        });
-    },
-
-    initLastseenMessages(channels) {
-        AppDispatcher.dispatch({
-            type: Constants.MessageActionTypes.INIT_LAST_SEEN,
-            channels : channels
-        });
     },
 
     sendMessage(msg) {

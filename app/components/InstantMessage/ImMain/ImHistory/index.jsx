@@ -7,7 +7,9 @@ import MessageStore from '../../../../stores/MessageStore.js';
 import ChannelStore from '../../../../stores/ChannelStore.js';
 import LoginStore from '../../../../stores/LoginStore.js';
 import PerfectScroll from '../../../PerfectScroll';
+import InfiniteScroll from '../../../InfiniteScroll';
 import Flex from '../../../Flex';
+import IMConstant from '../../../../constants/IMConstants';
 
 
 require('./style.less');
@@ -19,7 +21,8 @@ module.exports = React.createClass({
 
     getInitialState() {
         return {
-            messages: []
+            messages: [],
+            upperThreshold: 100
         }
     },
 
@@ -35,37 +38,49 @@ module.exports = React.createClass({
     componentWillUpdate: function() {
         var node = this.getDOMNode();
         this.shouldScrollBottom = node.scrollTop + node.clientHeight > node.scrollHeight - 1;
+        this.scrollHeight = node.scrollHeight;
+        this.scrollTop = node.scrollTop;
     },
     componentDidUpdate: function() {
+        var node = this.getDOMNode();
         if (this.shouldScrollBottom) {
-            var node = this.getDOMNode();
-            node.scrollTop = node.scrollHeight - node.clientHeight;
+            node.scrollTop = node.scrollHeight
+        } else {
+            node.scrollTop = this.scrollTop + (node.scrollHeight - this.scrollHeight);
         }
     },
     _onMessageChange() {
-        let messages = MessageStore.getMessages(this.state.currentChannel);
+        let currentChannel = ChannelStore.getCurrentChannel();
+        let messages = MessageStore.getMessages(currentChannel);
+        let noMore = MessageStore.noMoreMessages(currentChannel);
         this.setState({
-            messages: messages
+            messages: messages,
+            upperThreshold: noMore? undefined: 100
         });
     },
 
     _onChannelChange() {
         let currentChannel = ChannelStore.getCurrentChannel();
         this.setState({
-            currentChannel: currentChannel,
-            messages: []
+            currentChannel: currentChannel
         });
-        MessageAction.getMessages(currentChannel);
-        // MessageAction.confirmMessageSeen(LoginStore.getUser(), currentChannel);
+        localStorage[IMConstant.LOCALSTORAGE_CHANNEL] = currentChannel.backEndChannelId;
     },
 
     render() {
         return (
             <Flex.Layout vertical perfectScroll className="history">
-                <div style={{flex: 1}}></div>
-                {
-                    this.state.messages.map((msg, idx) => <ImMessage key={msg.id} Message={msg}></ImMessage>).reverse()
-                }
+                <InfiniteScroll upperThreshold={this.state.upperThreshold} onUpperTrigger={()=>{
+                    MessageAction.getMessages(ChannelStore.getCurrentChannel(), this.state.messages[this.state.messages.length-1]);
+                }} scrollTarget={()=>{
+                    return this.getDOMNode();
+                }}/>
+                <div style={{flex: 1}}>
+                    {
+                        this.state.messages.map((msg, idx) => <ImMessage key={idx} Message={msg}></ImMessage>).reverse()
+                    }
+                </div>
+
             </Flex.Layout>
         );
     }

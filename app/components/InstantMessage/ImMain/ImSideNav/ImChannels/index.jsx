@@ -5,11 +5,15 @@ const RouteHandler = require("react-router").RouteHandler;
 const mui = require("material-ui");
 
 import ChannelAction from '../../../../../actions/ChannelAction';
+import MessageAction from '../../../../../actions/MessageAction';
+
 import LoginStore from '../../../../../stores/LoginStore';
 import OnlineStore from '../../../../../stores/OnlineStore';
 import MessageStore from '../../../../../stores/MessageStore';
+import UnreadStore from '../../../../../stores/MessageUnreadStore';
 
 import ImChannel from './ImChannel.jsx';
+import DropDownAny from '../../../../DropDownAny';
 
 const { Menu, FontIcon, FlatButton } = mui;
 
@@ -59,17 +63,18 @@ module.exports = React.createClass({
 
     componentDidMount() {
         OnlineStore.addChangeListener(this._onlineStatusChange);
-        MessageStore.addChangeListener(this._onMessageChange);
+        UnreadStore.addChangeListener(this._onUnreadChange)
     },
 
     componentWillUnmount() {
         OnlineStore.removeChangeListener(this._onlineStatusChange);
-        MessageStore.removeChangeListener(this._onMessageChange);
+        UnreadStore.removeChangeListener(this._onUnreadChange)
     },
 
     updateChannels(channels) {
+        var menuItems = this._getMenuItems(channels);
         this.setState({
-            _menuItems: this._getMenuItems(channels)
+            _menuItems: menuItems
         });
     },
 
@@ -80,13 +85,10 @@ module.exports = React.createClass({
         });
     },
 
-    _onMessageChange() {
-        let tmpUnread = {};
-        this.state._menuItems.forEach(menuItem => {
-            tmpUnread[menuItem.backEndChannelId] = MessageStore.hasUnread(menuItem) ? 1 : 0;
-        });
+    _onUnreadChange() {
+        let unread = UnreadStore.getAllUnread();
         this.setState({
-            _unread: tmpUnread
+            _unread: unread
         });
     },
 
@@ -115,8 +117,8 @@ module.exports = React.createClass({
                 <div className="mui-font-style-subhead-1 instant-message-channel-brand">{this.props.channelGroup}</div>
                 <PerfectScroll className="instant-message-channel-items">
                     {
-                        this.state._menuItems.map((item) => {
-                            return <ImChannel Channel={item}></ImChannel>
+                        this.state._menuItems.map((item,idx) => {
+                            return <ImChannel key={idx} Channel={item}></ImChannel>
                         })
                     }
                 </PerfectScroll>

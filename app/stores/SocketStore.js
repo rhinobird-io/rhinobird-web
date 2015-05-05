@@ -11,8 +11,6 @@ let _socket;
 
 let SocketStore = assign({}, BaseStore, {
 
-    getOnlineList: () => { return _onlineList;},
-
     getSocket : ()=>{return _socket; },
 
     dispatcherIndex: AppDispatcher.register(function (payload) {
@@ -39,6 +37,8 @@ let SocketStore = assign({}, BaseStore, {
         _socket.on('message:send', function (message) {
             const MessageStore = require('./MessageStore');
             MessageStore.receiveMessage(message);
+            const UnreadStore = require('./MessageUnreadStore');
+            UnreadStore.receiveMessageFromSocket(message);
         });
 
         _socket.on('channel:created', function (channel) {

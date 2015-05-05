@@ -8,17 +8,18 @@ const ImSideNav = require('./ImSideNav');
 const LoginAction = require('../../../actions/LoginAction');
 const ChannelAction = require('../../../actions/ChannelAction');
 const SocketAction = require('../../../actions/SocketAction');
+const InitAction = require('../../../actions/InitAction');
 
 const LoginStore = require('../../../stores/LoginStore');
 const UserStore = require('../../../stores/UserStore');
 const ChannelStore = require('../../../stores/ChannelStore');
 const SocketStore = require('../../../stores/SocketStore');
 const Flex = require('../../Flex');
+import IMConstant from '../../../constants/IMConstants';
 
 
 require('./style.less');
 module.exports = React.createClass({
-
   contextTypes: {
     router: React.PropTypes.func.isRequired
   },
@@ -50,8 +51,26 @@ module.exports = React.createClass({
   },
 
   _onTeamUserChange() {
-    // change channel to current backEndChannelId
-    ChannelAction.changeChannel(this.state.backEndChannelId, LoginStore.getUser());
+    var _allTeams = UserStore.getTeamsArray();
+    var _allUsers = UserStore.getUsersArray();
+
+    var self = this;
+    var channels = {
+      publicGroupChannels: _allTeams.map(team=> {
+        return {
+          id: self._buildBackEndChannelId(true, team)
+        }
+      }),
+      directMessageChannels: _allUsers.filter(user => {
+        return '' + user.id !== '' + LoginStore.getUser().id;
+      }).map(user => {
+        return {
+          id: self._buildBackEndChannelId(false, user)
+        }
+      })
+    };
+
+    InitAction.init(channels, LoginStore.getUser());
   },
 
   _onChannelChange() {
@@ -63,19 +82,43 @@ module.exports = React.createClass({
   },
 
   _onSocketReady() {
-    let socket = SocketStore.getSocket();
-    console.log('socket is ready');
+    let channelIdToGo = this.state.backEndChannelId;
+    if (this.state.backEndChannelId === 'default') {
+      // load from localStorage
+      channelIdToGo = localStorage[IMConstant.LOCALSTORAGE_CHANNEL];
+    }
+    if (channelIdToGo) {
+      ChannelAction.changeChannel(channelIdToGo, LoginStore.getUser());
+      this.context.router.transitionTo('/platform/im/talk/' + channelIdToGo);
+    }
+  },
+
+  willTransitionTo: function(transition) {
+    console.log('ccc');
+    debugger;
+  },
+
+  _buildBackEndChannelId(isGroup, channel) {
+    if (isGroup) {
+      return 'team_' + channel.id;
+    } else {
+      var user = LoginStore.getUser();
+      return 'user_' + Math.min(user.id, channel.id) + '_' + Math.max(user.id, channel.id);
+    }
   },
 
   render() {
-
     return (
     <Flex.Layout fit className="instant-message-container">
-      <Flex.Layout selfStretch flex={5} vertical className="main" >
-        <ImHistory {...this.props} className="history" ></ImHistory>
-        <ImSendBox {...this.props} className="send-box" ></ImSendBox>
-      </Flex.Layout>
-      <ImSideNav {...this.props} ></ImSideNav>
+      {
+        this.state.currentChannel?(<Flex.Layout selfStretch flex={5} vertical className="main" >
+          <ImHistory {...this.props} className="history" ></ImHistory>
+          <ImSendBox {...this.props} className="send-box" ></ImSendBox>
+        </Flex.Layout>):(<Flex.Layout selfCenter flex={5} vertical className="main" >
+          <div className="default">Choose Channel from the right</div>
+        </Flex.Layout>)
+      }
+      <ImSideNav {...this.props} buildBackEndChannelId={this._buildBackEndChannelId} ></ImSideNav>
     </Flex.Layout>
     );
   }

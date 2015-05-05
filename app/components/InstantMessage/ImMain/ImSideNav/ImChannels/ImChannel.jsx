@@ -4,11 +4,13 @@ const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
 const mui = require("material-ui");
 
+import MessageAction from '../../../../../actions/MessageAction';
 import ChannelAction from '../../../../../actions/ChannelAction';
 import LoginStore from '../../../../../stores/LoginStore';
 import ChannelStore from '../../../../../stores/ChannelStore';
 import OnlineStore from '../../../../../stores/OnlineStore';
 import MessageStore from '../../../../../stores/MessageStore';
+import UnreadStore from '../../../../../stores/MessageUnreadStore';
 
 const { Menu, FontIcon, FlatButton } = mui;
 
@@ -29,43 +31,14 @@ module.exports = React.createClass({
 
     componentDidMount() {
         ChannelStore.addChangeListener(this._onChannelChange);
-        MessageStore.addChangeListener(this._onMessageChange);
         OnlineStore.addChangeListener(this._onlineListChange);
-
-        this._initLastseenMessageId();
+        UnreadStore.addChangeListener(this._onUnreadChange);
     },
 
     componentWillUnmount() {
         ChannelStore.removeChangeListener(this._onChannelChange);
-        MessageStore.removeChangeListener(this._onMessageChange);
         OnlineStore.removeChangeListener(this._onlineListChange);
-    },
-
-    _initLastseenMessageId() {
-        let currentUser = LoginStore.getUser();
-        // this is the first time this user login
-        if (!localStorage.getItem(currentUser.id)) {
-            localStorage.setItem(currentUser.id, JSON.stringify({}));
-        }
-        let tmp = JSON.parse(localStorage.getItem(currentUser.id));
-        if (!tmp[this.props.Channel.backEndChannelId]) {
-            tmp[this.props.Channel.backEndChannelId] = 1 << 30;
-            localStorage.setItem(currentUser.id, JSON.stringify(tmp));
-        }
-    },
-
-    /**
-     * get last seen message id from local storage
-     */
-    _getLastseenMessageId() {
-        return localStorage.getItem(currentUser.id)[this.props.Channel.backEndChannelId];
-    },
-
-    _setLastseenMessageId(msgId) {
-        let currentUser = LoginStore.getUser();
-        let tmp = JSON.parse(localStorage.getItem(currentUser.id) || '{}');
-        tmp[this.props.Channel.backEndChannelId] = msgId;
-        localStorage.setItem(currentUser.id, JSON.stringify(tmp));
+        UnreadStore.removeChangeListener(this._onUnreadChange);
     },
 
     _onChannelChange() {
@@ -73,20 +46,7 @@ module.exports = React.createClass({
         let imCurrentChannel = currentChannel.backEndChannelId === this.props.Channel.backEndChannelId;
         this.setState({
             _currentChannel : currentChannel,
-            _imCurrentChannel : imCurrentChannel,
-            _hasUnread : MessageStore.hasUnread(this.props.Channel)
-        });
-
-    },
-
-    _onMessageChange() {
-        if(this.state._imCurrentChannel) {
-            var msgId = MessageStore.getNewestMessagesId(this.props.Channel);
-            this._setLastseenMessageId(msgId);
-        }
-
-        this.setState({
-            _hasUnread : MessageStore.hasUnread(this.props.Channel)
+            _imCurrentChannel : imCurrentChannel
         });
     },
 
@@ -96,9 +56,22 @@ module.exports = React.createClass({
         });
     },
 
+    _onUnreadChange() {
+        let hasUnread = UnreadStore.hasUnread(this.props.Channel.backEndChannelId);
+        this.setState({
+            _hasUnread : hasUnread
+        });
+
+    },
+
     _onItemTap(item, e) {
-        ChannelAction.changeChannel(item.backEndChannelId, LoginStore.getUser());
-        this.context.router.transitionTo('/platform/im/talk/' + item.backEndChannelId);
+        let currentChannel = ChannelStore.getCurrentChannel();
+        if (!currentChannel || currentChannel.backEndChannelId !== item.backEndChannelId) {
+            ChannelAction.changeChannel(item.backEndChannelId, LoginStore.getUser());
+            this.context.router.transitionTo('/platform/im/talk/' + item.backEndChannelId);
+        } else {
+            console.log('change channel : ' + !currentChannel || currentChannel.backEndChannelId !== item.backEndChannelId)
+        }
     },
 
     render() {
