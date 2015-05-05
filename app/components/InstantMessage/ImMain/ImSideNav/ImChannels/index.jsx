@@ -13,6 +13,7 @@ import MessageStore from '../../../../../stores/MessageStore';
 import UnreadStore from '../../../../../stores/MessageUnreadStore';
 
 import ImChannel from './ImChannel.jsx';
+import DropDownAny from '../../../../DropDownAny';
 
 const { Menu, FontIcon, FlatButton } = mui;
 
