@@ -33,7 +33,7 @@ class MessagesWrapper {
     }
 
     getMessages() {
-        return _.clone(this.messages);
+        return this.messages;
     }
 
     /**

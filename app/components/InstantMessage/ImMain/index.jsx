@@ -15,11 +15,11 @@ const UserStore = require('../../../stores/UserStore');
 const ChannelStore = require('../../../stores/ChannelStore');
 const SocketStore = require('../../../stores/SocketStore');
 const Flex = require('../../Flex');
+import IMConstant from '../../../constants/IMConstants';
 
 
 require('./style.less');
 module.exports = React.createClass({
-
   contextTypes: {
     router: React.PropTypes.func.isRequired
   },
@@ -82,10 +82,20 @@ module.exports = React.createClass({
   },
 
   _onSocketReady() {
-    let socket = SocketStore.getSocket();
-    console.log('socket is ready');
-    console.log('change channel');
-    ChannelAction.changeChannel(this.state.backEndChannelId, LoginStore.getUser());
+    let channelIdToGo = this.state.backEndChannelId;
+    if (this.state.backEndChannelId === 'default') {
+      // load from localStorage
+      channelIdToGo = localStorage[IMConstant.LOCALSTORAGE_CHANNEL];
+    }
+    if (channelIdToGo) {
+      ChannelAction.changeChannel(channelIdToGo, LoginStore.getUser());
+      this.context.router.transitionTo('/platform/im/talk/' + channelIdToGo);
+    }
+  },
+
+  willTransitionTo: function(transition) {
+    console.log('ccc');
+    debugger;
   },
 
   _buildBackEndChannelId(isGroup, channel) {
@@ -98,13 +108,16 @@ module.exports = React.createClass({
   },
 
   render() {
-
     return (
     <Flex.Layout fit className="instant-message-container">
-      <Flex.Layout selfStretch flex={5} vertical className="main" >
-        <ImHistory {...this.props} className="history" ></ImHistory>
-        <ImSendBox {...this.props} className="send-box" ></ImSendBox>
-      </Flex.Layout>
+      {
+        this.state.currentChannel?(<Flex.Layout selfStretch flex={5} vertical className="main" >
+          <ImHistory {...this.props} className="history" ></ImHistory>
+          <ImSendBox {...this.props} className="send-box" ></ImSendBox>
+        </Flex.Layout>):(<Flex.Layout selfCenter flex={5} vertical className="main" >
+          <div className="default">Choose Channel from the right</div>
+        </Flex.Layout>)
+      }
       <ImSideNav {...this.props} buildBackEndChannelId={this._buildBackEndChannelId} ></ImSideNav>
     </Flex.Layout>
     );

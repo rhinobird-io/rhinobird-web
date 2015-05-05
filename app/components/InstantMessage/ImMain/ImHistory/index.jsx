@@ -9,6 +9,7 @@ import LoginStore from '../../../../stores/LoginStore.js';
 import PerfectScroll from '../../../PerfectScroll';
 import InfiniteScroll from '../../../InfiniteScroll';
 import Flex from '../../../Flex';
+import IMConstant from '../../../../constants/IMConstants';
 
 
 require('./style.less');
@@ -49,7 +50,8 @@ module.exports = React.createClass({
         }
     },
     _onMessageChange() {
-        let messages = MessageStore.getMessages(this.state.currentChannel);
+        let currentChannel = ChannelStore.getCurrentChannel();
+        let messages = MessageStore.getMessages(currentChannel);
         this.setState({
             messages: messages
         });
@@ -62,9 +64,9 @@ module.exports = React.createClass({
     _onChannelChange() {
         let currentChannel = ChannelStore.getCurrentChannel();
         this.setState({
-            currentChannel: currentChannel,
-            messages: []
+            currentChannel: currentChannel
         });
+        localStorage[IMConstant.LOCALSTORAGE_CHANNEL] = currentChannel.backEndChannelId;
     },
 
     render() {
