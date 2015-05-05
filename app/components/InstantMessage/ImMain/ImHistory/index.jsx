@@ -52,11 +52,9 @@ module.exports = React.createClass({
     _onMessageChange() {
         let currentChannel = ChannelStore.getCurrentChannel();
         let messages = MessageStore.getMessages(currentChannel);
-        this.setState({
-            messages: messages
-        });
         let noMore = MessageStore.noMoreMessages(currentChannel);
         this.setState({
+            messages: messages,
             upperThreshold: noMore? undefined: 100
         });
     },
