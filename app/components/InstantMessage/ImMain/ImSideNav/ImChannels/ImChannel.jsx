@@ -10,6 +10,7 @@ import LoginStore from '../../../../../stores/LoginStore';
 import ChannelStore from '../../../../../stores/ChannelStore';
 import OnlineStore from '../../../../../stores/OnlineStore';
 import MessageStore from '../../../../../stores/MessageStore';
+import UnreadStore from '../../../../../stores/MessageUnreadStore';
 
 const { Menu, FontIcon, FlatButton } = mui;
 
@@ -30,14 +31,14 @@ module.exports = React.createClass({
 
     componentDidMount() {
         ChannelStore.addChangeListener(this._onChannelChange);
-        MessageStore.addChangeListener(this._onMessageChange);
         OnlineStore.addChangeListener(this._onlineListChange);
+        UnreadStore.addChangeListener(this._onUnreadChange);
     },
 
     componentWillUnmount() {
         ChannelStore.removeChangeListener(this._onChannelChange);
-        MessageStore.removeChangeListener(this._onMessageChange);
         OnlineStore.removeChangeListener(this._onlineListChange);
+        UnreadStore.removeChangeListener(this._onUnreadChange);
     },
 
     _onChannelChange() {
@@ -45,15 +46,7 @@ module.exports = React.createClass({
         let imCurrentChannel = currentChannel.backEndChannelId === this.props.Channel.backEndChannelId;
         this.setState({
             _currentChannel : currentChannel,
-            _imCurrentChannel : imCurrentChannel,
-            _hasUnread : MessageStore.hasUnread(this.props.Channel)
-        });
-    },
-
-    _onMessageChange() {
-        let hasUnread = this.state._hasUnread;
-        this.setState({
-            _hasUnread : MessageStore.hasUnread(this.props.Channel)
+            _imCurrentChannel : imCurrentChannel
         });
     },
 
@@ -63,9 +56,20 @@ module.exports = React.createClass({
         });
     },
 
+    _onUnreadChange() {
+        let hasUnread = UnreadStore.hasUnread(this.props.Channel.backEndChannelId);
+        this.setState({
+            _hasUnread : hasUnread
+        });
+
+    },
+
     _onItemTap(item, e) {
-        ChannelAction.changeChannel(item.backEndChannelId, LoginStore.getUser());
-        this.context.router.transitionTo('/platform/im/talk/' + item.backEndChannelId);
+        let currentChannel = ChannelStore.getCurrentChannel();
+        if (currentChannel.backEndChannelId !== item.backEndChannelId) {
+            ChannelAction.changeChannel(item.backEndChannelId, LoginStore.getUser());
+            this.context.router.transitionTo('/platform/im/talk/' + item.backEndChannelId);
+        }
     },
 
     render() {

@@ -34,22 +34,13 @@ export default {
                     messages: messages.reverse()
                 });
 
-                $.getScript(IM_HOST + 'socket.io/socket.io.js')
-                    .done(function () {
-                        var socket = io(IM_HOST, {path: '/socket.io'}).connect();
-                        AppDispatcher.dispatch({
-                            type: Constants.SocketActionTypes.SOCKET_INIT,
-                            socket: socket,
-                            channels: channels
-                        });
-                    })
-                    .done(function(){
-                        AppDispatcher.dispatch({
-                            type: Constants.MessageActionTypes.CLEAR_UNREAD,
-                            channelId : backEndChannelId
-                        });
-                    })
-
+                if (messages.length > 0) {
+                    AppDispatcher.dispatch({
+                        type: Constants.MessageActionTypes.CLEAR_UNREAD,
+                        backEndChannelId : backEndChannelId,
+                        lastSeenMessageId : messages[0].id
+                    });
+                }
 
             })
     }

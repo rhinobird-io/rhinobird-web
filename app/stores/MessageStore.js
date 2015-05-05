@@ -10,17 +10,10 @@ import _ from 'lodash';
 
 class MessagesWrapper {
 
-
-
-    constructor(messages) {
-        if (!(messages instanceof Array)) {
-            throw new Error('' + messages + ' is not a array');
-        }
-        this.messages = messages;
+    constructor() {
+        this.messages = [];
         this.hasUnread = false;
         this.unread = [];
-        this.latestMessageId = 1<<30;
-        this.lastSeenMessageId = 1 << 30;
         this._msgExistsMap = {};
     }
 
@@ -56,6 +49,7 @@ class MessagesWrapper {
                 this._msgExistsMap[msg.id] = true;
             }
         });
+        // newest in the front
         this.messages.sort((msg1, msg2) => {
             return msg2.id - msg1.id;
         });
@@ -144,28 +138,8 @@ let MessageStore = assign({}, BaseStore, {
         if (!channel.backEndChannelId) {
             throw new Error('backEndChannelId should be provided');
         }
-        _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper([]);
+        _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper();
         return channel ? channel.backEndChannelId ? _messages[channel.backEndChannelId].getMessages() : [] : [];
-    },
-
-    hasUnread(channel) {
-        if (!channel.backEndChannelId) {
-            throw new Error('backEndChannelId should be provided');
-        }
-        _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper([]);
-        return _messages[channel.backEndChannelId].hasUnread;
-    },
-
-    getNewestMessagesId(channel){
-        if (!channel.backEndChannelId) {
-            throw new Error('backEndChannelId should be provided');
-        }
-        _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper([]);
-        var messages = _messages[channel.backEndChannelId].getMessages();
-        if (messages.length === 0) {
-            return -1;
-        }
-        return messages[0].id;
     },
 
     // this method was called by SocketStore
@@ -181,36 +155,20 @@ let MessageStore = assign({}, BaseStore, {
             case Constants.MessageActionTypes.RECEIVE_MESSAGES:
                 let channel = payload.channel;
                 let messages = payload.messages;
-                _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper(messages);
+                _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper();
                 _messages[channel.backEndChannelId].addMoreMessages(messages);
                 MessageStore.emitChange();
                 break;
             case Constants.MessageActionTypes.SEND_MESSAGE:
                 let message = payload.message;
-                _messages[message.channelId] = _messages[message.channelId] || new MessagesWrapper([]);
+                _messages[message.channelId] = _messages[message.channelId] || new MessagesWrapper();
                 _messages[message.channelId].sendMessage(message);
                 SocketStore.getSocket().emit('message:send', payload.message, function (message) {
                     _messages[message.channelId].confirmMessageSended(message);
                     MessageStore.emitChange();
                 });
                 break;
-            case Constants.MessageActionTypes.CLEAR_UNREAD:
-                _messages[payload.backEndChannelId].clearUnread();
-                // TODO this one should have callback
-                SocketStore.getSocket().emit('message:seen', {
-                    userId: LoginStore.getUser().id,
-                    messageId: _messages[payload.backEndChannelId].getMaxMessageId(),
-                    channelId: payload.backEndChannelId
-                });
-                MessageStore.emitChange();
-                break;
-            case Constants.MessageActionTypes.INIT_UNREAD:
-                let latestAndLastSeen = payload.latestAndLastSeen;
-                Object.keys(latestAndLastSeen).forEach(backEndChannelId => {
-                    _messages[backEndChannelId].setLatestMessageId(latestAndLastSeen[backEndChannelId].latestMessageId).setLastSeenMessageId(latestAndLastSeen[backEndChannelId].lastSeenMessageId);
-                });
-                MessageStore.emitChange();
-                break;
+
             default:
                 break;
         }

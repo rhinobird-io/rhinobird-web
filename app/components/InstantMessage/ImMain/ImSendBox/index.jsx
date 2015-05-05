@@ -47,7 +47,7 @@ module.exports = React.createClass({
 
   _onSocketReady() {
     this.setState({
-      socket : SocketStore.getSocket,
+      socket : SocketStore.getSocket(),
       ready : !!this.state.currentChannel
     })
   },
