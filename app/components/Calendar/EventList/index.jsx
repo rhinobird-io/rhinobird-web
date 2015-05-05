@@ -1,5 +1,6 @@
 const React                = require("react"),
       MUI                  = require("material-ui"),
+      Moment               = require("moment"),
       Layout               = require("../../Flex").Layout,
       Link                 = require("react-router").Link,
       Select               = require("../../Select").Select,
@@ -16,7 +17,10 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            events: []
+            events: {},
+            eventRange: {},
+            hasMoreNewerEvents: true,
+            hasMoreOlderEvents: true
         }
     },
 
@@ -31,16 +35,26 @@ export default React.createClass({
 
     _onChange() {
         this.setState({
-            events: CalendarStore.getAllEvents()
+            events: CalendarStore.getAllEvents(),
+            eventRange: CalendarStore.getEventTimeRage(),
+            hasMoreNewerEvents: CalendarStore.hasMoreNewerEvents(),
+            hasMoreOlderEvents: CalendarStore.hasMoreOlderEvents()
         });
     },
 
     _loadMoreNewerEvents() {
-        CalendarActions.loadMoreNewerEvents();
+        let eventRange = this.state.eventRange;
+        console.log(eventRange.max);
+        if (eventRange.max && this.state.hasMoreNewerEvents) {
+            CalendarActions.loadMoreNewerEvents(eventRange.max);
+        }
     },
 
     _loadMoreOlderEvents() {
-        CalendarActions.loadMoreOlderEvents();
+        let eventRange = this.state.eventRange;
+        if (eventRange.min && this.state.hasMoreOlderEvents) {
+            CalendarActions.loadMoreOlderEvents(eventRange.min);
+        }
     },
 
     render: function() {
@@ -49,15 +63,20 @@ export default React.createClass({
 
             let dayEvents = [];
             let events = this.state.events[key];
-            let dayDividerLabelClassName = "cal-day-divider-label " + direction;
+
+            let dayDividerClass = "cal-event";
+            if (index === 0) {
+                dayDividerClass += " first";
+            }
+
             dayEvents.push(
-                <div className="cal-day-divider">
-                    <div className={dayDividerLabelClassName}>
-                        <hr/>
-                        <div className="cal-day-divider-label-content">{new Date(key).toDateString()}</div>
+                <div className={dayDividerClass}>
+                    <div className="cal-day-divider-label">
+                        <label>{Moment(key).format("M/D")}</label>
                     </div>
                 </div>
             );
+
             dayEvents.push(events.map((event) => {
                 let contentClass = "cal-event-content " + direction;
                 let eventIconClass = "cal-event-icon";
@@ -77,6 +96,7 @@ export default React.createClass({
                                 <MUI.FontIcon className="icon-event"/>
                             </div>
                         </div>
+
                         <div className={contentClass}>
                             <div className="cal-event-content-inner">
                                 <div className="cal-event-title">
@@ -85,7 +105,10 @@ export default React.createClass({
                                         <span title="Event Members" className="cal-event-member icon-group"></span>
                                     </Layout>
                                     <div className="cal-event-time">
-                                        <SmartTimeDisplay start={event.from_time} end={event.to_time} relative />
+                                        <SmartTimeDisplay
+                                            relative
+                                            end={event.to_time}
+                                            start={event.from_time} />
                                     </div>
                                 </div>
                                 <div className="cal-event-detail">
@@ -98,21 +121,32 @@ export default React.createClass({
             }));
             return dayEvents;
         });
+
+        let noMoreOlderEvents =
+            !this.state.hasMoreOlderEvents ?
+                <div className="cal-event-no-more">No more events.</div> : null;
+
+        let noMoreNewerEvents =
+            !this.state.hasMoreNewerEvents ?
+                <div className="cal-event-no-more">No more events.</div> : null;
+
         return (
             <PerfectScroll className="cal-event-list">
+                <InfiniteScroll
+                    lowerThreshold={100}
+                    upperThreshold={100}
+                    onUpperTrigger={() => this._loadMoreOlderEvents()}
+                    onLowerTrigger={() => this._loadMoreNewerEvents()}
+                    scrollTarget={() => this.getDOMNode()} />
+                {noMoreOlderEvents}
                 <div className="cal-event-wrapper">
-                    <InfiniteScroll
-                        lowerThreshold={10}
-                        upperThreshold={10}
-                        onUpperTrigger={() => this._loadMoreOlderEvents()}
-                        onLowerTrigger={() => this._loadMoreNewerEvents()}
-                        scrollTarget={() => this.getDOMNode().parentNode} />
                     {eventsDOM}
                 </div>
+                {noMoreNewerEvents}
                 <Link to="create-event">
                     <MUI.FloatingActionButton
                         className="add-event"
-                        iconClassName="icon-add"/>
+                        iconClassName="icon-add" />
                 </Link>
             </PerfectScroll>
         );

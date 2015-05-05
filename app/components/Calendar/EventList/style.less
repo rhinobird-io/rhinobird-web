@@ -6,9 +6,13 @@
 @arrowZIndex: 1;
 @eventBg: white;
 @triangleSize: 6px;
+@event-icon-wrapper-bg: rgb(169, 217, 247);
+@day-divider-radius: 22px;
+@expired-event-bg: grey;
+@active-event-bg: @pink-500;
+@future-event-bg: @indigo-500;
 
 .cal-event-list {
-  margin: 0 auto;
   height: 100%;
 }
 
@@ -19,41 +23,42 @@
   z-index: 100;
 }
 
+.cal-event-wrapper {
+  margin: 30px;
+  position: relative;
+  background-color: @calEventBg;
+}
+
 .cal-event {
   padding: 2em 0;
   position: relative;
 }
 
-.cal-event-wrapper {
-  padding: 20px;
-  background-color: @calEventBg;
-}
-
-.cal-day-divider {
-  z-index: 2;
-  width: 100%;
-  font-size: 1.2em;
-  position: relative;
+.cal-event.first {
+  padding-top: 0;
 }
 
 .cal-day-divider-label {
   position: relative;
-  text-align: left;
-  padding-left: 78px;
-  color: #555459;
-  z-index: 0;
-  font-width: 900;
-}
+  z-index: 4;
+  width: @day-divider-radius * 2;
+  height: @day-divider-radius * 2;
+  line-height: @day-divider-radius * 2;
+  top: 0;
+  margin-left: -19px;
+  border-radius: 50%;
+  color: white;
+  font-size: 1.5em;
+  text-align: center;
+  vertical-align: middle;
+  background-color: @pink-300;
 
-.cal-day-divider-label hr {
-  position: absolute;
-  top: 50%;
-  left: 25px;
-  right: 0px;
-  border: 0;
-  margin-top: -2px;
-  border-top: 2px solid #bbb;
-  z-index: 1;
+  label {
+    color: black;
+    font-size: 1.5em;
+    line-height: @day-divider-radius * 2;
+    margin-left: 98px;
+  }
 }
 
 .cal-day-divider-label-content {
@@ -62,22 +67,22 @@
   background-color: @calEventBg;
 }
 
-.cal-event::before,
-.cal-day-divider::before{
+.cal-event-wrapper::before {
   position: absolute;
   content: '';
   top: 0;
-  left: 22px;
+  bottom: 0;
   width: 6px;
   z-index: 1;
   height: 100%;
   padding: 10px 0 10px 0;
-  background-color: @indigo-100;
+  *background: -webkit-linear-gradient(top, rgba(80,80,80,0) 0%, rgb(80,80,80) 8%, rgb(80,80,80) 92%, rgba(80,80,80,0) 100%);
+  background-color: @event-icon-wrapper-bg  ;
 }
 
 .cal-event-icon {
   border-radius: 50%;
-  padding: 8px;
+  padding: 6px;
   color: white;
   background-color: @indigo-500;
 }
@@ -98,16 +103,17 @@
   position: absolute;
   z-index: 4;
   border-radius: 50%;
-  padding: 5px;
-  background-color: @indigo-100;
+  padding: 4px;
+  left: -19px;
+  background-color: @event-icon-wrapper-bg;
 }
 
 .cal-event-icon-wrapper:hover {
-  padding: 0;
+  *padding: 0;
 }
 
 .cal-event-icon-wrapper:hover .cal-event-icon {
-  padding: 13px;
+  *padding: 10px;
 }
 
 .cal-event-content {
@@ -129,6 +135,9 @@
   padding: 6px 10px;
   font-size: 1.2em;
   position: relative;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 
 .cal-event-member {
@@ -144,6 +153,12 @@
 .cal-event-time {
   font-size: 0.8em;
   color: rgba(0, 0, 0, 0.54);
+}
+
+.cal-event-no-more {
+  font-size: 1.2em;
+  text-align: center;
+  margin: 2em 0 1em 0;
 }
 
 @media screen and (max-width: 960px) {
@@ -164,25 +179,28 @@
       transform-origin: 50% 50%;
       transform: rotate(135deg);
 
-      box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.4);
+      box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.4);
     }
   }
 }
 
 @media screen and (min-width: 960px) {
-  .cal-event::before,
-  .cal-day-divider::before {
+  .cal-event-wrapper::before {
     left: 50%;
     margin-left: -3px;
   }
 
   .cal-event-icon-wrapper {
     left: 50%;
-    margin-left: -25px;
+    margin-left: -22px;
   }
 
-  .cal-event-content.left,
-  .cal-day-divider-label.left {
+  .cal-day-divider-label {
+    margin-left: -22px;
+    left: 50%;
+  }
+
+  .cal-event-content.left{
     width: 50%;
     margin-left: 0;
     padding-left: 0;
@@ -190,12 +208,7 @@
     padding-right: 78px;
   }
 
-  .cal-day-divider-label hr {
-    left: 0;
-  }
-
-  .cal-event-content.right,
-  .cal-day-divider-label.right {
+  .cal-event-content.right {
     width: 50%;
     margin-left: 50%;
     text-align: left;
@@ -224,7 +237,7 @@
       transform-origin: 50% 50%;
       transform: rotate(-45deg);
 
-      box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.4);
+      box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.4);
     }
   }
 
