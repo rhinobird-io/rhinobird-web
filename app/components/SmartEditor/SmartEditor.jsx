@@ -13,21 +13,25 @@ const COMMANDS = [
   {name: "file", manual: ":file_id"}
 ];
 
-export default React.createClass({
+const SmartEditor = React.createClass({
   propTypes: {
+    valueLink: React.PropTypes.shape({
+      value: React.PropTypes.string.isRequired,
+      requestChange: React.PropTypes.func.isRequired
+    }),
     nohr: React.PropTypes.bool,
     popupWidth: React.PropTypes.number,
     popupMaxHeight: React.PropTypes.number,
-    popupMarginTop: React.PropTypes.string,
-    popupMinusTop: React.PropTypes.string
+    popupMarginTop: React.PropTypes.number,
+    popupMinusTop: React.PropTypes.number
   },
 
   getDefaultProps() {
     return {
       popupWidth: 240,
       popupMaxHeight: 280,
-      popupMarginTop: "1.8em",
-      popupMinusTop: "-0.3em"
+      popupMarginTop: 24,  // Magic number in `TextField` source code
+      popupMinusTop: -4
     };
   },
 
@@ -90,6 +94,7 @@ export default React.createClass({
     let left = textareaRect.left + caretPos.left - textarea.scrollLeft;
     let popupPosition = {
       position: "fixed",
+      visibility: "hidden",
       top: top,
       left: left,
       marginTop: this.props.popupMarginTop
@@ -100,15 +105,31 @@ export default React.createClass({
     });
   },
 
+  _updateValueLink() {
+    let valueLink = this.props.valueLink;
+    if (valueLink) {
+      valueLink.value = this.getValue();
+      valueLink.requestChange(valueLink.value);
+    }
+  },
+
+  _getInputNode() {
+    if (this.props.multiLine) {
+      return this.refs.textfield.refs.input.getInputNode();  // <textarea>
+    } else {
+      return this.refs.textfield.refs.input.getDOMNode();  // <input>
+    }
+  },
+
   _onInputChange(e) {
-    let textarea = this.refs.textfield.refs.input.getInputNode();
+    let textarea = this._getInputNode();
     let text = textarea.value, triggerPos = -1;
     for (let i = textarea.selectionEnd - 1; i >= 0; i--) {
       let ch = text.charAt(i);
-      if (ch.search(/\w/) >= 0) {
+      if (/[\w\.-]/.test(ch)) {
         continue;
-      } else if ("@#".search(ch) >= 0) {
-        triggerPos = i;
+      } else if (["@", "#"].includes(ch)) {
+        if (i === 0 || /\s/.test(text.charAt(i - 1))) triggerPos = i;
         break;
       } else {
         break;
@@ -120,6 +141,7 @@ export default React.createClass({
     } else if (this.state.showPopup) {
       this.hidePopup();
     }
+    this._updateValueLink();
   },
 
   _onKeyDown(e) {
@@ -131,13 +153,14 @@ export default React.createClass({
   },
 
   _onItemSelect([keyword, replace]) {
-    let textarea = this.refs.textfield.refs.input.getInputNode();
+    let textarea = this._getInputNode();
     let text = textarea.value;
     let end = textarea.selectionEnd - keyword.length + replace.length;
     textarea.value = text.substr(0, textarea.selectionEnd - keyword.length) +
       replace + text.substr(textarea.selectionEnd);
     textarea.selectionEnd = end;
     this.hidePopup();
+    this._updateValueLink();
   },
 
   render() {
@@ -164,19 +187,24 @@ export default React.createClass({
     setTimeout(() => {
       if (this.state.popupJustified) return;
       let rect = this.refs.popup.getDOMNode().getBoundingClientRect();
-      let popupPosition = {position: "fixed"};
+      let popupPosition = {
+        position: "fixed",
+        visibility: "visible"
+      };
       let newTop = this.state.popupPosition.top - rect.height;
       if (rect.bottom > window.innerHeight && newTop > 0) {
         popupPosition.top = newTop;
         popupPosition.marginTop = props.popupMinusTop;
       } else {
+        // unchanged
         popupPosition.top = this.state.popupPosition.top;
-        popupPosition.marginTop = props.popupMarginTop;
+        popupPosition.marginTop = this.state.popupPosition.marginTop;
       }
       if (rect.right > window.innerWidth && rect.width < window.innerWidth) {
         popupPosition.left = "auto";
         popupPosition.right = 0;
       } else {
+        // unchanged
         popupPosition.left = this.state.popupPosition.left;
       }
       this.setState({
@@ -185,10 +213,15 @@ export default React.createClass({
       });
     }, 0);
 
+    let tfProps = {};
+    ["className", "defaultValue", "errorText", "floatingLabelText", "hintText", "multiLine"].map(
+      k => { tfProps[k] = props[k] }
+    );
+
     // Apply `style` to TextField seems no effect, so just apply to Item
     return (
-      <Item flex style={style} className={"smart-editor" + (props.nohr ? " textfield-nohr" : "")}>
-        <TextField {...props} ref="textfield" />
+      <Item flex style={style} className={"smart-editor" + (props.nohr ? " nohr" : "")}>
+        <TextField {...tfProps} ref="textfield" />
         <PopupSelect ref="popup"
             style={popupStyle}
             controller={this.refs.textfield}
@@ -202,3 +235,5 @@ export default React.createClass({
     );
   }
 });
+
+export default SmartEditor;
