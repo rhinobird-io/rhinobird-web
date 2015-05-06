@@ -27,7 +27,9 @@ module.exports = React.createClass({
     },
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !this.state.currentChannel || this.state.currentChannel.backEndChannelId !== nextState.currentChannel.backEndChannelId
+        //return (!this.state.currentChannel || this.state.currentChannel.backEndChannelId !== nextState.currentChannel.backEndChannelId)
+        //|| this.state.messages.length != nextState.messages.length;
+        return true;
     },
 
     componentDidMount() {
@@ -53,6 +55,10 @@ module.exports = React.createClass({
             node.scrollTop = this.scrollTop + (node.scrollHeight - this.scrollHeight);
         }
     },
+
+    /**
+     * on receive message
+     */
     _onMessageChange() {
         let currentChannel = ChannelStore.getCurrentChannel();
         let messages = MessageStore.getMessages(currentChannel);
@@ -66,11 +72,17 @@ module.exports = React.createClass({
 
     _onChannelChange() {
         let currentChannel = ChannelStore.getCurrentChannel();
+        let messages = MessageStore.getMessages(currentChannel) || [];
+        let noMore = MessageStore.noMoreMessages(currentChannel);
+        this.setState({
+            messages: messages,
+            upperThreshold: noMore? undefined: 100,
+            currentChannel: currentChannel
+        });
         localStorage[IMConstant.LOCALSTORAGE_CHANNEL] = currentChannel.backEndChannelId;
     },
 
     render() {
-        console.log('render im history');
         return (
             <Flex.Layout vertical perfectScroll className="history" style={this.props.style}>
                 <InfiniteScroll upperThreshold={this.state.upperThreshold} onUpperTrigger={()=>{
@@ -83,7 +95,6 @@ module.exports = React.createClass({
                         this.state.messages.map((msg, idx) => <ImMessage key={idx} Message={msg}></ImMessage>)
                     }
                 </div>
-
             </Flex.Layout>
         );
     }

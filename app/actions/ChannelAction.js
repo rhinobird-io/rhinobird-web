@@ -6,6 +6,7 @@ import Util from '../util.jsx';
 import async from 'async';
 import $ from 'jquery';
 import SocketAction from './SocketAction';
+import MessageStore from '../stores/MessageStore';
 
 const {IM_HOST, IM_API} = IMConstants;
 export default {
@@ -18,29 +19,33 @@ export default {
             isGroup: parsedBackEndChannelId.isGroup,
             backEndChannelId: backEndChannelId
         });
-        $.ajax(
-            {
-                url: IM_API + 'channels/' + backEndChannelId + '/messages?beforeId=' + (1 << 30) + '&limit=20',
-                type: 'GET',
-                dataType: 'json'
-            }).done(messages => {
-                AppDispatcher.dispatch({
-                    type: Constants.MessageActionTypes.RECEIVE_NEWER_MESSAGES,
-                    channel: {
-                        backEndChannelId: backEndChannelId
-                    },
-                    messages: messages // from oldest to newest
-                });
-
-                if (messages.length > 0) {
+        if (!MessageStore.getMessages({
+                backEndChannelId : backEndChannelId
+            })) {
+            $.ajax(
+                {
+                    url: IM_API + 'channels/' + backEndChannelId + '/messages?beforeId=' + (1 << 30) + '&limit=20',
+                    type: 'GET',
+                    dataType: 'json'
+                }).done(messages => {
                     AppDispatcher.dispatch({
-                        type: Constants.MessageActionTypes.CLEAR_UNREAD,
-                        backEndChannelId : backEndChannelId,
-                        lastSeenMessageId : messages[messages.length - 1].id
+                        type: Constants.MessageActionTypes.RECEIVE_INIT_MESSAGES,
+                        channel: {
+                            backEndChannelId: backEndChannelId
+                        },
+                        messages: messages // from oldest to newest
                     });
-                }
 
-            })
+                    if (messages.length > 0) {
+                        AppDispatcher.dispatch({
+                            type: Constants.MessageActionTypes.CLEAR_UNREAD,
+                            backEndChannelId : backEndChannelId,
+                            lastSeenMessageId : messages[messages.length - 1].id
+                        });
+                    }
+
+                });
+        }
     }
 };
 

@@ -58,15 +58,16 @@ class MessagesWrapper {
         //    return msg2.id - msg1.id;
         //});
         if (!isOld) {
-            this.messages = this.messages.concat(messages);
+            this.messages.push.apply(this.messages, messages);
         } else {
-            this.messages = messages.concat(this.messages);
+            messages.push.apply(messages, this.messages);
+            this.messages = messages;
         }
 
     }
 
     sendMessage(message) {
-        this.messages = this.messages.concat([message, ]);
+        this.addMoreMessages([message,] , false);
     }
 
     receiveNewMessage(message, imCurrentChannelMessageWrapper) {
@@ -108,8 +109,7 @@ let MessageStore = assign({}, BaseStore, {
         if (!channel.backEndChannelId) {
             throw new Error('backEndChannelId should be provided');
         }
-        _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper();
-        return channel ? channel.backEndChannelId ? _messages[channel.backEndChannelId].getMessages() : [] : [];
+        return _messages[channel.backEndChannelId] ? _messages[channel.backEndChannelId].messages:undefined;
     },
 
     // this method was called by SocketStore
@@ -131,15 +131,18 @@ let MessageStore = assign({}, BaseStore, {
 
     dispatcherIndex: AppDispatcher.register(function (payload) {
         switch (payload.type) {
-            case Constants.MessageActionTypes.RECEIVE_NEWER_MESSAGES:
+            case Constants.MessageActionTypes.RECEIVE_INIT_MESSAGES:
                 let channel = payload.channel;
                 let messages = payload.messages; // from older to newer
-                _messages[channel.backEndChannelId] = _messages[channel.backEndChannelId] || new MessagesWrapper();
-                _messages[channel.backEndChannelId].addMoreMessages(messages);
+                if (!_messages[channel.backEndChannelId]) {
+                    _messages[channel.backEndChannelId] = new MessagesWrapper();
+                    _messages[channel.backEndChannelId].addMoreMessages(messages, false);
+                }
                 MessageStore.emitChange();
                 break;
             case Constants.MessageActionTypes.RECEIVE_OLDER_MESSAGES:
-
+                _messages[payload.channel.backEndChannelId].addMoreMessages(payload.messages, true);
+                MessageStore.emitChange();
                 break;
             case Constants.MessageActionTypes.SEND_MESSAGE:
                 let message = payload.message;

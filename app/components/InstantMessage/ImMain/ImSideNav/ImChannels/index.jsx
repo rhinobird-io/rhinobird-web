@@ -62,13 +62,15 @@ module.exports = React.createClass({
     },
 
     componentDidMount() {
+        // ChannelStore.addChangeListener(this._onChannelChange);
         OnlineStore.addChangeListener(this._onlineStatusChange);
-        UnreadStore.addChangeListener(this._onUnreadChange)
+        UnreadStore.addChangeListener(this._onUnreadChange);
     },
 
     componentWillUnmount() {
+        // ChannelStore.removeChangeListener(this._onChannelChange);
         OnlineStore.removeChangeListener(this._onlineStatusChange);
-        UnreadStore.removeChangeListener(this._onUnreadChange)
+        UnreadStore.removeChangeListener(this._onUnreadChange);
     },
 
     updateChannels(channels) {

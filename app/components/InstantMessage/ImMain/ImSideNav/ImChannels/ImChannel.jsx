@@ -36,17 +36,17 @@ module.exports = React.createClass({
             || this.state._hasUnread[this.props.Channel.backEndChannelId] !== nextState._hasUnread[this.props.Channel.backEndChannelId]
     },
 
-    componentDidMount() {
-        ChannelStore.addChangeListener(this._onChannelChange);
-        OnlineStore.addChangeListener(this._onlineListChange);
-        UnreadStore.addChangeListener(this._onUnreadChange);
-    },
-
-    componentWillUnmount() {
-        ChannelStore.removeChangeListener(this._onChannelChange);
-        OnlineStore.removeChangeListener(this._onlineListChange);
-        UnreadStore.removeChangeListener(this._onUnreadChange);
-    },
+    //componentDidMount() {
+    //    ChannelStore.addChangeListener(this._onChannelChange);
+    //    OnlineStore.addChangeListener(this._onlineListChange);
+    //    UnreadStore.addChangeListener(this._onUnreadChange);
+    //},
+    //
+    //componentWillUnmount() {
+    //    ChannelStore.removeChangeListener(this._onChannelChange);
+    //    OnlineStore.removeChangeListener(this._onlineListChange);
+    //    UnreadStore.removeChangeListener(this._onUnreadChange);
+    //},
 
     _onChannelChange() {
         let currentChannel = ChannelStore.getCurrentChannel();
@@ -71,8 +71,10 @@ module.exports = React.createClass({
     },
 
     _onItemTap(item, e) {
+        console.log(item);
         let currentChannel = ChannelStore.getCurrentChannel();
         if (!currentChannel || currentChannel.backEndChannelId !== item.backEndChannelId) {
+
             ChannelAction.changeChannel(item.backEndChannelId, LoginStore.getUser());
             this.context.router.transitionTo('/platform/im/talk/' + item.backEndChannelId);
         } else {
@@ -84,7 +86,7 @@ module.exports = React.createClass({
         let self = this;
         return (
             <div className="instant-message-channel-container">
-                <FlatButton className={this.state._imCurrentChannel?'instant-message-channel-item-selected instant-message-channel-item ':'instant-message-channel-item '}  onClick={self._onItemTap.bind(self, this.props.Channel)}>
+                <FlatButton className={this.state._imCurrentChannel?'instant-message-channel-item-selected instant-message-channel-item ':'instant-message-channel-item '}  onTouchTap={self._onItemTap.bind(self, this.props.Channel)}>
                     <span className={ this.props.Channel.iconClassName}></span>
                     <span className={(this.props.Channel.isDirect && !self.state._onlineStatus[ this.props.Channel.channel.id])?'instant-message-channel-item-offline':''}>{ this.props.Channel.text}</span>
                 </FlatButton>

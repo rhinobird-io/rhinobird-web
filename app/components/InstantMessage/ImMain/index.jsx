@@ -93,10 +93,6 @@ module.exports = React.createClass({
     }
   },
 
-  willTransitionTo: function(transition) {
-    console.log('ccc');
-  },
-
   _buildBackEndChannelId(isGroup, channel) {
     if (isGroup) {
       return 'team_' + channel.id;

@@ -6,6 +6,8 @@ import UserStore from './UserStore';
 import assign from 'object-assign';
 import _ from 'lodash';
 
+import React from 'react';
+
 let _currentChannel;
 
 let ChannelStore = assign({}, BaseStore, {
