@@ -15,6 +15,8 @@ export default {
         CHANNEL_SELECT_PREFIX : 'channel-select-',
         CHANNEL_DESELECT_PREFIX : 'channel-deselect-',
 
-        CHANNEL_UNREAD_CHANGE_PREFIX : 'channel-unread-change-'
+        CHANNEL_UNREAD_CHANGE_PREFIX : 'channel-unread-change-',
+
+        USER_ONLINE_PREFIX: 'user-online-'
     }
 }

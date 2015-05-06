@@ -1,7 +1,7 @@
 'use strict';
 import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
-import IMConstants from '../constants/IMConstants.js';
+import IMConstants from '../constants/IMConstants';
 import BaseStore from './BaseStore';
 import ChannelStore from './ChannelStore';
 import LoginStore from './LoginStore';

@@ -25,7 +25,7 @@ module.exports = React.createClass({
     getInitialState() {
         return {
             _currentChannel : {},
-            _onlineStatus : {},
+            _onlineStatus : false,
             _imCurrentChannel : false,
             _hasUnread : false
         }
@@ -39,6 +39,10 @@ module.exports = React.createClass({
         //OnlineStore.addChangeListener(this._onlineListChange);
         //UnreadStore.addChangeListener(this._onUnreadChange);
         UnreadStore.on(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + this.props.Channel.backEndChannelId, this._onUnreadChange);
+
+        if (!this.props.Channel.isGroup) {
+            OnlineStore.on(IMConstants.EVENTS.USER_ONLINE_PREFIX + this.props.Channel.channel.id, this._onUserOnlineChange);
+        }
     },
 
     componentWillUnmount() {
@@ -47,6 +51,9 @@ module.exports = React.createClass({
         //OnlineStore.removeChangeListener(this._onlineListChange);
         //UnreadStore.removeChangeListener(this._onUnreadChange);
         UnreadStore.removeEventListener(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + this.props.Channel.backEndChannelId, this._onUnreadChange);
+        if (!this.props.Channel.isGroup) {
+            OnlineStore.removeEventListener(IMConstants.EVENTS.USER_ONLINE_PREFIX + this.props.Channel.channel.id, this._onUserOnlineChange);
+        }
     },
 
     _onChannelSelect(channel) {
@@ -72,9 +79,9 @@ module.exports = React.createClass({
     //    });
     //},
 
-    _onlineListChange() {
+    _onUserOnlineChange(myOnlineState) {
         this.setState({
-            _onlineStatus : OnlineStore.getOnlineList()
+            _onlineStatus : myOnlineState.online
         });
     },
 
@@ -101,7 +108,7 @@ module.exports = React.createClass({
             <div className="instant-message-channel-container">
                 <FlatButton className={this.state._imCurrentChannel?'instant-message-channel-item-selected instant-message-channel-item ':'instant-message-channel-item '}  onTouchTap={self._onItemTap.bind(self, this.props.Channel)}>
                     <span className={ this.props.Channel.iconClassName}></span>
-                    <span className={(this.props.Channel.isDirect && !self.state._onlineStatus[ this.props.Channel.channel.id])?'instant-message-channel-item-offline':''}>{ this.props.Channel.text}</span>
+                    <span className={(this.props.Channel.isDirect && !self.state._onlineStatus)?'instant-message-channel-item-offline':''}>{ this.props.Channel.text}</span>
                 </FlatButton>
                 <span className={ this.state._hasUnread?'instant-message-channel-item-unread icon-message':''}></span>
             </div>

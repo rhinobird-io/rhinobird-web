@@ -100,42 +100,40 @@ module.exports = React.createClass({
 
     _onlineStatusChange(onlineState) {
         let _onlineStatus = OnlineStore.getOnlineList();
-        //this.setState({
-        //    _onlineStatus: _onlineStatus
-        //});
+        this.setState({
+            _onlineStatus: _onlineStatus
+        });
     },
 
     _onUnreadChange(unreadState) {
         let unread = UnreadStore.getAllUnread();
-        //this.setState({
-        //    _unread: unread
-        //});
+        this.setState({
+            _unread: unread
+        });
     },
 
     render() {
         let self = this;
         // console.log('render imChannels');
-        //if (!this.props.isGroup) {
-        //    this.state._menuItems.sort((item1, item2) => {
-        //        let _onlineList = self.state._onlineStatus;
-        //        let onlineOffset = (_onlineList[item1.channel.id] ? -1 : 0) - (_onlineList[item2.channel.id] ? -1 : 0);
-        //        onlineOffset = onlineOffset * 100000;
-        //
-        //        var unread = self.state._unread;
-        //        let unreadOffset = 0;
-        //        if (unread) {
-        //            unreadOffset = (unread.get(item1.backEndChannelId) ? -1 : 0) - (unread.get(item2.backEndChannelId) ? -1 : 0);
-        //            unreadOffset = unreadOffset * 1000000;
-        //        }
-        //
-        //
-        //        return item1.channel.id - item2.channel.id + onlineOffset + unreadOffset;
-        //    });
-        //} else {
-        //    this.state._menuItems.sort((item1, item2) => {
-        //        return (item1.channel.id - item2.channel.id);
-        //    });
-        //}
+        if (!this.props.isGroup) {
+            this.state._menuItems.sort((item1, item2) => {
+                let _onlineList = self.state._onlineStatus;
+                let onlineOffset = (_onlineList[item1.channel.id] ? -1 : 0) - (_onlineList[item2.channel.id] ? -1 : 0);
+                onlineOffset = onlineOffset * 100000;
+
+                var unread = self.state._unread;
+                let unreadOffset = 0;
+                if (unread) {
+                    unreadOffset = (unread.get(item1.backEndChannelId) ? -1 : 0) - (unread.get(item2.backEndChannelId) ? -1 : 0);
+                    unreadOffset = unreadOffset * 1000000;
+                }
+                return item1.channel.id - item2.channel.id + onlineOffset + unreadOffset;
+            });
+        } else {
+            this.state._menuItems.sort((item1, item2) => {
+                return (item1.channel.id - item2.channel.id);
+            });
+        }
 
         return (
             <Flex.Layout vertical className={'instant-message-channels ' + this.props.className}>
