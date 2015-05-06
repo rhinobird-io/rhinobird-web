@@ -1,8 +1,10 @@
-const React = require("react");
+const React = require("react/addons");
 const DashboardRecord = require('./DashboardRecord');
 const InfiniteScroll = require('../InfiniteScroll');
 const PerfectScroll = require('../PerfectScroll');
 const LoginStore = require('../../stores/LoginStore');
+const Immutable = require('immutable');
+
 if ($.mockjax) {
     $.mockjax({
         url: '/platform/api/users/*/dashboard_records',
@@ -29,9 +31,10 @@ if ($.mockjax) {
 
 require('./style.less');
 module.exports = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     getInitialState(){
         return {
-            dashboardRecords: [],
+            dashboardRecords: Immutable.List(),
             noMore: false
         }
     },
@@ -39,7 +42,7 @@ module.exports = React.createClass({
         let userId = LoginStore.getUser().id;
         $.get(`/platform/api/users/${userId}/dashboard_records`).then((data)=> {
             this.setState({
-                dashboardRecords: data
+                dashboardRecords: Immutable.fromJS(data)
             })
         });
     },
@@ -50,7 +53,7 @@ module.exports = React.createClass({
         return <PerfectScroll className="dashboard">
             <InfiniteScroll lowerThreshold={this.state.noMore? undefined : 300} onLowerTrigger={()=>{
                 let userId = LoginStore.getUser().id;
-                let lastId = this.state.dashboardRecords[this.state.dashboardRecords.length - 1].id;
+                let lastId = this.state.dashboardRecords.last().get('id');
                 $.get(`/platform/api/users/${userId}/dashboard_records?before=${lastId}`).then((data)=> {
                     if(data.length === 0) {
                         this.setState({
@@ -58,7 +61,7 @@ module.exports = React.createClass({
                         })
                     } else {
                         this.setState({
-                            dashboardRecords: this.state.dashboardRecords.concat(data)
+                            dashboardRecords: this.state.dashboardRecords.concat(Immutable.fromJS(data))
                         });
                     }
                 });
@@ -68,7 +71,7 @@ module.exports = React.createClass({
             <hr />
             {this.state.dashboardRecords.map((record, index)=> {
                 return <div key={index}>
-                    <DashboardRecord creator={record.from_user_id} content={record.content} createdAt={record.created_at}/>
+                    <DashboardRecord record={record}/>
                     <hr/>
                 </div>
             })}
