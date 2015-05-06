@@ -7,7 +7,7 @@ const NotificationStore = require("../stores/NotificationStore");
 
 function _websocket() {
   try {
-    let socket = new WebSocket("ws://" + window.location.host + "/platform/");
+    let socket = new WebSocket("ws://" + window.location.host + "/platform/api/");
     socket.onmessage = msg => {
       AppDispatcher.dispatch({
         type: ActionTypes.RECEIVE_NOTIFI,
