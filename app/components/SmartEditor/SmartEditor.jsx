@@ -4,6 +4,7 @@ const React = require("react");
 const mui = require("material-ui"), TextField = mui.TextField;
 const CaretPosition = require("textarea-caret-position");
 
+const Avatar = require("../Member").Avatar;
 const Item = require("../Flex").Item;
 const PopupSelect = require("../Select").PopupSelect;
 const UserStore = require("../../stores/UserStore");
@@ -58,6 +59,10 @@ const SmartEditor = React.createClass({
 
   // Filter menu options in current component rather than PopupSelect
   _setOptions(keyword) {
+    let style = {
+      overflowX: "hidden",
+      textOverflow: "ellipsis"
+    };
     let options = [];
     if (!keyword) {
       options = [];
@@ -66,7 +71,10 @@ const SmartEditor = React.createClass({
         keyword.length > 1 && u.name.indexOf(keyword.substr(1)) >= 0
       ).map(u =>
         <option key={u.id} value={[keyword, "@" + u.name + " "]}>
-          <span style={{fontWeight: 500}}>{u.name}</span>
+          <div style={style}>
+            <Avatar member={u} /> &ensp;
+            <span style={{fontWeight: 500}}>{u.name}</span>
+          </div>
         </option>
       );
     } else if (keyword.charAt(0) === "#") {
@@ -74,8 +82,10 @@ const SmartEditor = React.createClass({
         c.name.indexOf(keyword.substr(1)) >= 0
       ).map(c =>
         <option key={c.name} value={[keyword, "#" + c.name + ":"]}>
-          <span style={{fontWeight: 500}}>{c.name}</span>
-          <span>{c.manual}</span>
+          <div style={style}>
+            <span style={{fontWeight: 500}}>{c.name}</span>
+            <span>{c.manual}</span>
+          </div>
         </option>
       );
     } else {
