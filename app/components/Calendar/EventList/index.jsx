@@ -26,15 +26,11 @@ export default React.createClass({
     },
 
     componentDidMount() {
-        console.log("ajiodf");
         CalendarStore.addChangeListener(this._onChange);
         if (!this.state.hasReceived) {
-            CalendarActions.receive();
+            let container = this.getDOMNode();
+            CalendarActions.receive(() => container.scrollTop = (container.scrollHeight - container.clientHeight) / 2);
         }
-    },
-
-    componentWillReceiveProps() {
-        console.log("haha");
     },
 
     componentWillUnmount() {
@@ -42,7 +38,6 @@ export default React.createClass({
     },
 
     _onChange() {
-        console.log(CalendarStore.getAllEvents());
         this.setState({
             events: CalendarStore.getAllEvents(),
             eventRange: CalendarStore.getEventTimeRange(),
@@ -63,7 +58,11 @@ export default React.createClass({
     _loadMoreOlderEvents() {
         let eventRange = this.state.eventRange;
         if (eventRange.min && this.state.hasMoreOlderEvents) {
-            CalendarActions.loadMoreOlderEvents(eventRange.min);
+
+            let container = this.getDOMNode();
+            let oldScrollHeight = container.scrollHeight;
+            console.log(oldScrollHeight);
+            CalendarActions.loadMoreOlderEvents(eventRange.min, () => container.scrollTop = container.scrollHeight - oldScrollHeight);
         }
     },
 

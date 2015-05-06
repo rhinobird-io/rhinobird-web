@@ -6,12 +6,15 @@ const CalendarActionTypes = require("../constants/AppConstants").CalendarActionT
 require("./mockjax/events.js");
 
 export default {
-    receive() {
+    receive(success) {
         $.get("/platform/api/events").done(data => {
             AppDispatcher.dispatch({
                 type: CalendarActionTypes.RECEIVE_EVENTS,
                 data: data
             });
+            if (success && typeof success === "function") {
+                success();
+            }
         }).fail(e => {
             console.error(e);
         });
@@ -23,6 +26,9 @@ export default {
                 type: CalendarActionTypes.LOAD_MORE_OLDER_EVENTS,
                 data: data
             });
+            if (success && typeof success === "function") {
+                success();
+            }
         }).fail(e => {
             console.error(e);
         });
