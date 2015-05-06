@@ -131,7 +131,9 @@ let MessageStore = assign({}, BaseStore, {
         var currentChannel = ChannelStore.getCurrentChannel();
         _messages[message.channelId] = _messages[message.channelId] || new MessagesWrapper([]);
         _messages[message.channelId].receiveNewMessage(message, currentChannel.backEndChannelId === message.channelId);
-        this.emit(IMConstants.EVENTS.RECEIVE_NEW_MESSAGE, message);
+        if (currentChannel.backEndChannelId === message.channelId) {
+            this.emit(IMConstants.EVENTS.RECEIVE_NEW_MESSAGE, message);
+        }
     },
 
     noMoreMessages(channel){

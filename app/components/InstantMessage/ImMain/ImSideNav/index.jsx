@@ -31,12 +31,10 @@ module.exports = React.createClass({
 
   componentDidMount() {
     UserStore.addChangeListener(this._onTeamUserChange);
-    SocketStore.addChangeListener(this._onSocketReady);
   },
 
   componentWillUnmount() {
     UserStore.removeChangeListener(this._onTeamUserChange);
-    SocketStore.removeChangeListener(this._onSocketReady);
   },
 
 
@@ -46,11 +44,6 @@ module.exports = React.createClass({
 
     this.refs.groupChannels.updateChannels(_allTeams);
     this.refs.directChannels.updateChannels(_allUsers.filter(user => { return '' + user.id !== '' + LoginStore.getUser().id; }));
-  },
-
-  _onSocketReady() {
-    // init channel unread
-    // change to current channel
   },
 
   render() {

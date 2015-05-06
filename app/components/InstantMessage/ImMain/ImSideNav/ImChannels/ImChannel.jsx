@@ -11,6 +11,7 @@ import ChannelStore from '../../../../../stores/ChannelStore';
 import OnlineStore from '../../../../../stores/OnlineStore';
 import MessageStore from '../../../../../stores/MessageStore';
 import UnreadStore from '../../../../../stores/MessageUnreadStore';
+import IMConstants from '../../../../../constants/IMConstants';
 
 const { Menu, FontIcon, FlatButton } = mui;
 
@@ -30,32 +31,46 @@ module.exports = React.createClass({
         }
     },
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return (this.state._currentChannel.backEndChannelId !== nextState._currentChannel.backEndChannelId && this.state._imCurrentChannel !== nextState._imCurrentChannel)
-            || this.state._onlineStatus[this.props.Channel.backEndChannelId] !== nextState._onlineStatus[this.props.Channel.backEndChannelId]
-            || this.state._hasUnread[this.props.Channel.backEndChannelId] !== nextState._hasUnread[this.props.Channel.backEndChannelId]
+    componentDidMount() {
+
+        // ChannelStore.addChangeListener(this._onChannelChange);
+        ChannelStore.on(IMConstants.EVENTS.CHANNEL_SELECT_PREFIX + this.props.Channel.backEndChannelId, this._onChannelSelect);
+        ChannelStore.on(IMConstants.EVENTS.CHANNEL_DESELECT_PREFIX + this.props.Channel.backEndChannelId, this._onChannelDeselect);
+        //OnlineStore.addChangeListener(this._onlineListChange);
+        //UnreadStore.addChangeListener(this._onUnreadChange);
+        UnreadStore.on(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + this.props.Channel.backEndChannelId, this._onUnreadChange);
     },
 
-    //componentDidMount() {
-    //    ChannelStore.addChangeListener(this._onChannelChange);
-    //    OnlineStore.addChangeListener(this._onlineListChange);
-    //    UnreadStore.addChangeListener(this._onUnreadChange);
-    //},
-    //
-    //componentWillUnmount() {
-    //    ChannelStore.removeChangeListener(this._onChannelChange);
-    //    OnlineStore.removeChangeListener(this._onlineListChange);
-    //    UnreadStore.removeChangeListener(this._onUnreadChange);
-    //},
+    componentWillUnmount() {
+        ChannelStore.removeEventListener(IMConstants.EVENTS.CHANNEL_SELECT_PREFIX + this.props.Channel.backEndChannelId, this._onChannelSelect);
+        ChannelStore.removeEventListener(IMConstants.EVENTS.CHANNEL_DESELECT_PREFIX + this.props.Channel.backEndChannelId, this._onChannelDeselect);
+        //OnlineStore.removeChangeListener(this._onlineListChange);
+        //UnreadStore.removeChangeListener(this._onUnreadChange);
+        UnreadStore.removeEventListener(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + this.props.Channel.backEndChannelId, this._onUnreadChange);
+    },
 
-    _onChannelChange() {
-        let currentChannel = ChannelStore.getCurrentChannel();
-        let imCurrentChannel = currentChannel.backEndChannelId === this.props.Channel.backEndChannelId;
+    _onChannelSelect(channel) {
         this.setState({
-            _currentChannel : currentChannel,
-            _imCurrentChannel : imCurrentChannel
-        });
+            _imCurrentChannel : true,
+            _currentChannel : channel
+        })
     },
+
+    _onChannelDeselect(channel) {
+        this.setState({
+            _imCurrentChannel : false,
+            _currentChannel : ChannelStore.getCurrentChannel
+        })
+    },
+
+    //_onChannelChange() {
+    //    let currentChannel = ChannelStore.getCurrentChannel();
+    //    let imCurrentChannel = currentChannel.backEndChannelId === this.props.Channel.backEndChannelId;
+    //    this.setState({
+    //        _currentChannel : currentChannel,
+    //        _imCurrentChannel : imCurrentChannel
+    //    });
+    //},
 
     _onlineListChange() {
         this.setState({
@@ -63,18 +78,15 @@ module.exports = React.createClass({
         });
     },
 
-    _onUnreadChange() {
-        let hasUnread = UnreadStore.hasUnread(this.props.Channel.backEndChannelId);
+    _onUnreadChange(myUnreadState) {
         this.setState({
-            _hasUnread : hasUnread
+            _hasUnread : myUnreadState.unread
         });
     },
 
     _onItemTap(item, e) {
-        console.log(item);
         let currentChannel = ChannelStore.getCurrentChannel();
         if (!currentChannel || currentChannel.backEndChannelId !== item.backEndChannelId) {
-
             ChannelAction.changeChannel(item.backEndChannelId, LoginStore.getUser());
             this.context.router.transitionTo('/platform/im/talk/' + item.backEndChannelId);
         } else {
@@ -83,6 +95,7 @@ module.exports = React.createClass({
     },
 
     render() {
+        // console.log('render ' + this.props.Channel.backEndChannelId);
         let self = this;
         return (
             <div className="instant-message-channel-container">

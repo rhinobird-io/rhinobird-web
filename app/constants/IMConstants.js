@@ -9,6 +9,12 @@ export default {
         RECEIVE_NEW_MESSAGE : 'message-new',
         RECEIVE_OLD_MESSAGE : 'message-old',
         RECEIVE_INIT_MESSAGE : 'message-init',
-        SEND_MESSAGE : 'message-send'
+        SEND_MESSAGE : 'message-send',
+
+
+        CHANNEL_SELECT_PREFIX : 'channel-select-',
+        CHANNEL_DESELECT_PREFIX : 'channel-deselect-',
+
+        CHANNEL_UNREAD_CHANGE_PREFIX : 'channel-unread-change-'
     }
 }

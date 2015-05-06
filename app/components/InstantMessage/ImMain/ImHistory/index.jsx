@@ -66,6 +66,8 @@ module.exports = React.createClass({
 
     _onChannelChange() {
         let currentChannel = ChannelStore.getCurrentChannel();
+        var node = this.getDOMNode();
+        node.scrollTop = node.scrollHeight;
         localStorage[IMConstant.LOCALSTORAGE_CHANNEL] = currentChannel.backEndChannelId;
     },
 
@@ -156,7 +158,7 @@ module.exports = React.createClass({
                 }}/>
                 <div style={{flex: 1}}>
                     {
-                        this.state.messages.map((msg, idx) => <ImMessage key={idx} Message={msg}></ImMessage>)
+                        this.state.messages.map((msg, idx) => <ImMessage key={msg.id} Message={msg}></ImMessage>)
                     }
                 </div>
             </Flex.Layout>

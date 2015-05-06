@@ -56,6 +56,15 @@ export default {
                     backEndChannelId: backEndChannelId
                 }
             });
+
+            let messages = MessageStore.getMessages({backEndChannelId : backEndChannelId});
+            if (messages && messages.length > 0) {
+                AppDispatcher.dispatch({
+                    type: Constants.MessageActionTypes.CLEAR_UNREAD,
+                    backEndChannelId : backEndChannelId,
+                    lastSeenMessageId : messages[messages.length - 1].id
+                });
+            }
         }
     }
 };
