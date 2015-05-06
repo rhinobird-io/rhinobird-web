@@ -98,14 +98,14 @@ module.exports = React.createClass({
         //}
     },
 
-    _onlineStatusChange(onlineState) {
+    _onlineStatusChange() {
         let _onlineStatus = OnlineStore.getOnlineList();
         this.setState({
             _onlineStatus: _onlineStatus
         });
     },
 
-    _onUnreadChange(unreadState) {
+    _onUnreadChange() {
         let unread = UnreadStore.getAllUnread();
         this.setState({
             _unread: unread

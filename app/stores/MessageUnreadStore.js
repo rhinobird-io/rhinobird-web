@@ -79,7 +79,9 @@ let UnreadStore = assign({}, BaseStore, {
                 });
                 _unreadBool = _unreadBool.set(backEndChannelId, false);
                 UnreadStore.emit(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + backEndChannelId, {unread : false});
-                UnreadStore.emitChange();
+
+                // Clear unread wont change the order
+                // UnreadStore.emitChange();
                 break;
             default:
                 break;

@@ -35,7 +35,7 @@ module.exports = React.createClass({
               <div className="name"><Name member={UserStore.getUser(this.props.Message.userId)} /></div>
               <div className="time"><SmartTimeDisplay start={this.props.Message.createdAt} relative /></div>
             </Layout>
-            <SmartDisplay value={this.props.Message.text + this.props.Message.id}></SmartDisplay>
+            <SmartDisplay value={this.props.Message.text}></SmartDisplay>
           </Layout>
         </Layout>
       </div>
