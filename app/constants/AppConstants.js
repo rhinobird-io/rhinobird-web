@@ -34,7 +34,8 @@ export default {
     RECEIVE_OLDER_MESSAGES : null,
     SEND_MESSAGE : null,
     CLEAR_UNREAD : null,
-    INIT_UNREAD : null
+    INIT_UNREAD : null,
+    MESSAGE_READY : null
   })
 
 };

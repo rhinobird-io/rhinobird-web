@@ -9,9 +9,11 @@ import SocketAction from './SocketAction';
 import MessageStore from '../stores/MessageStore';
 
 const {IM_HOST, IM_API} = IMConstants;
+const limit = 20;
 export default {
 
     changeChannel(backEndChannelId, currentUser) {
+
         let parsedBackEndChannelId = parseBackEndChannelId(backEndChannelId, currentUser);
         AppDispatcher.dispatch({
             type: Constants.ChannelActionTypes.CHANGE_CHANNEL,
@@ -19,12 +21,13 @@ export default {
             isGroup: parsedBackEndChannelId.isGroup,
             backEndChannelId: backEndChannelId
         });
+
         if (!MessageStore.getMessages({
                 backEndChannelId : backEndChannelId
             })) {
             $.ajax(
                 {
-                    url: IM_API + 'channels/' + backEndChannelId + '/messages?beforeId=' + (1 << 30) + '&limit=20',
+                    url: IM_API + 'channels/' + backEndChannelId + '/messages?beforeId=' + (1 << 30) + '&limit=' + limit,
                     type: 'GET',
                     dataType: 'json'
                 }).done(messages => {
@@ -33,7 +36,8 @@ export default {
                         channel: {
                             backEndChannelId: backEndChannelId
                         },
-                        messages: messages // from oldest to newest
+                        messages: messages, // from oldest to newest
+                        noMoreAtBack : messages.length < limit
                     });
 
                     if (messages.length > 0) {
@@ -45,6 +49,13 @@ export default {
                     }
 
                 });
+        } else {
+            AppDispatcher.dispatch({
+                type: Constants.MessageActionTypes.MESSAGE_READY,
+                channel: {
+                    backEndChannelId: backEndChannelId
+                }
+            });
         }
     }
 };

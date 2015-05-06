@@ -1,6 +1,7 @@
 'use strict';
 import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
+import IMConstants from '../constants/IMConstants';
 import BaseStore from './BaseStore';
 import ChannelStore from './ChannelStore';
 import LoginStore from './LoginStore';
@@ -13,22 +14,22 @@ class MessagesWrapper {
     constructor() {
         this.messages = [];
         this.hasUnread = false;
-        this.unread = [];
         this.noMore = false;
+        this.noMoreAtBack = false;
     }
 
     /**
-     * get messages in order from new to old
+     * get messages in order from old to new
      *
      * a bigger msgId means the id the newer
      *
-     * @returns {*|Array} sort from new to old
+     * @returns {*|Array} sort from old to new
      */
     getMessagesArray(beforeMessageId, limit) {
-        var fromIdx = beforeMessageId < 0 ? 0 : _.findIndex(this.messages, msg => {
-            return msg.id === beforeMessageId;
+        var toIndex = beforeMessageId < 0 ? 0 : _.findLastIndex(this.messages, msg => {
+            return msg.id < beforeMessageId;
         });
-        return _.slice(this.messages, fromIdx, fromIdx + limit);
+        return toIndex === -1 ? [] : _.slice(this.messages, toIndex - limit + 1 >=0 ? toIndex - limit + 1 : 0 , toIndex + 1);
     }
 
     getMessages() {
@@ -47,16 +48,6 @@ class MessagesWrapper {
             this.noMore = true;
             return;
         }
-        //messages.forEach(msg => {
-        //    if (!this._msgExistsMap[msg.id]) {
-        //        this.messages.push(msg);
-        //        this._msgExistsMap[msg.id] = true;
-        //    }
-        //});
-        //// newest in the front
-        //this.messages.sort((msg1, msg2) => {
-        //    return msg2.id - msg1.id;
-        //});
         if (!isOld) {
             this.messages.push.apply(this.messages, messages);
         } else {
@@ -64,6 +55,10 @@ class MessagesWrapper {
             this.messages = messages;
         }
 
+    }
+
+    setNoMoreAtBack(noMoreAtBack) {
+       this.noMoreAtBack = noMoreAtBack;
     }
 
     sendMessage(message) {
@@ -105,6 +100,18 @@ let _limit = 20;
 
 let MessageStore = assign({}, BaseStore, {
 
+    /**
+     * beforeMessageId's message should not be included
+     */
+    getMessagesSub(channel, options) {
+        let beforeMessageId = options.beforeMessageId || (1<<30);
+        let limit = options.limit || 20;
+        return _messages[channel.backEndChannelId].getMessagesArray(beforeMessageId, limit);
+    },
+
+    /**
+     * get all messages, you should seldom use this
+     */
     getMessages(channel) {
         if (!channel.backEndChannelId) {
             throw new Error('backEndChannelId should be provided');
@@ -112,12 +119,19 @@ let MessageStore = assign({}, BaseStore, {
         return _messages[channel.backEndChannelId] ? _messages[channel.backEndChannelId].messages:undefined;
     },
 
+    hasOlderMessages(channel, oldestMessageId) {
+        return {
+            atFront : _messages[channel.backEndChannelId].getMessagesArray(oldestMessageId, 1).length > 0,
+            atBack : !_messages[channel.backEndChannelId].noMoreAtBack
+        }
+    },
+
     // this method was called by SocketStore
     receiveMessage(message) {
         var currentChannel = ChannelStore.getCurrentChannel();
         _messages[message.channelId] = _messages[message.channelId] || new MessagesWrapper([]);
         _messages[message.channelId].receiveNewMessage(message, currentChannel.backEndChannelId === message.channelId);
-        MessageStore.emitChange();
+        this.emit(IMConstants.EVENTS.RECEIVE_NEW_MESSAGE, message);
     },
 
     noMoreMessages(channel){
@@ -137,20 +151,24 @@ let MessageStore = assign({}, BaseStore, {
                 if (!_messages[channel.backEndChannelId]) {
                     _messages[channel.backEndChannelId] = new MessagesWrapper();
                     _messages[channel.backEndChannelId].addMoreMessages(messages, false);
+                    _messages[channel.backEndChannelId].setNoMoreAtBack(payload.noMoreAtBack);
                 }
-                MessageStore.emitChange();
+                MessageStore.emit(IMConstants.EVENTS.RECEIVE_INIT_MESSAGE);
                 break;
             case Constants.MessageActionTypes.RECEIVE_OLDER_MESSAGES:
                 _messages[payload.channel.backEndChannelId].addMoreMessages(payload.messages, true);
-                MessageStore.emitChange();
+                _messages[payload.channel.backEndChannelId].setNoMoreAtBack(payload.noMoreAtBack);
+                MessageStore.emit(IMConstants.EVENTS.RECEIVE_OLD_MESSAGE);
+                break;
+            case Constants.MessageActionTypes.MESSAGE_READY:
+                MessageStore.emit(IMConstants.EVENTS.RECEIVE_INIT_MESSAGE);
                 break;
             case Constants.MessageActionTypes.SEND_MESSAGE:
                 let message = payload.message;
-                _messages[message.channelId] = _messages[message.channelId] || new MessagesWrapper();
                 _messages[message.channelId].sendMessage(message);
                 SocketStore.getSocket().emit('message:send', payload.message, function (message) {
                     _messages[message.channelId].confirmMessageSended(message);
-                    MessageStore.emitChange();
+                    MessageStore.emit(IMConstants.EVENTS.SEND_MESSAGE, message);
                 });
                 break;
 
