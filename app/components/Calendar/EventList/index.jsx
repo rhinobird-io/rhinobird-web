@@ -18,7 +18,7 @@ export default React.createClass({
     getInitialState() {
         return {
             events: CalendarStore.getAllEvents() || {},
-            eventRange: CalendarStore.getEventimeRange,
+            eventRange: CalendarStore.getEventTimeRange(),
             hasReceived: CalendarStore.hasReceived(),
             hasMoreNewerEvents: CalendarStore.hasMoreNewerEvents(),
             hasMoreOlderEvents: CalendarStore.hasMoreOlderEvents()
@@ -26,10 +26,15 @@ export default React.createClass({
     },
 
     componentDidMount() {
+        console.log("ajiodf");
         CalendarStore.addChangeListener(this._onChange);
         if (!this.state.hasReceived) {
             CalendarActions.receive();
         }
+    },
+
+    componentWillReceiveProps() {
+        console.log("haha");
     },
 
     componentWillUnmount() {
@@ -40,7 +45,7 @@ export default React.createClass({
         console.log(CalendarStore.getAllEvents());
         this.setState({
             events: CalendarStore.getAllEvents(),
-            eventRange: CalendarStore.getEventTimeRage(),
+            eventRange: CalendarStore.getEventTimeRange(),
             hasReceived: CalendarStore.hasReceived(),
             hasMoreNewerEvents: CalendarStore.hasMoreNewerEvents(),
             hasMoreOlderEvents: CalendarStore.hasMoreOlderEvents()
@@ -142,7 +147,7 @@ export default React.createClass({
                     upperThreshold={5}
                     onUpperTrigger={() => this._loadMoreOlderEvents()}
                     onLowerTrigger={() => this._loadMoreNewerEvents()}
-                    scrollTarget={() => this.getDOMNode()} />
+                    scrollTarget={() => {return this.getDOMNode();}} />
                 {noMoreOlderEvents}
                 <div className="cal-event-wrapper">
                     {eventsDOM}

@@ -466,9 +466,9 @@ export default React.createClass({
 
     _onRepeatToggled(e, isInputChecked) {
         if (isInputChecked) {
-            this.setState({editRepeated: true});
+            this.setState({editRepeated: true, repeated: true});
         } else {
-            this.setState({editRepeated: false});
+            this.setState({editRepeated: false, repeated: false});
         }
     }
 });

@@ -48,6 +48,19 @@ export default {
         parsedEvent.to_time = new Date(event.toTime).toISOString();
         parsedEvent.full_day = event.fullDay;
         parsedEvent.participants = {users: [], teams: []};
+        if (event.repeated) {
+            parsedEvent.repeated = true;
+            parsedEvent.repeated_type = event.repeatedType;
+            parsedEvent.repeated_frequency = event.repeatedFrequency;
+            parsedEvent.repeated_on = event.repeatedOn;
+            parsedEvent.repeated_by = event.repeatedBy;
+            parsedEvent.repeated_times = event.repeatedTimes;
+            parsedEvent.repeated_end_type = event.repeatedEndType;
+            parsedEvent.repeated_end_date = event.repeatedEndDate;
+
+        } else {
+            parsedEvent.repeated = false;
+        }
         $.post("/platform/api/events", parsedEvent).done(data => {
             console.log(data);
             AppDispatcher.dispatch({

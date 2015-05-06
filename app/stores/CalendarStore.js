@@ -5,19 +5,28 @@ const ActionTypes = require("../constants/AppConstants").CalendarActionTypes;
 const BaseStore = require("./BaseStore");
 const assign = require("object-assign");
 
+let _eventsIdMap = {};
 let _events = {};
 let _eventRange = {};
 let _hasMoreNewerEvents = true;
 let _hasMoreOlderEvents = true;
 let _hasReceived = false;
 
-function _addEvent(event) {
+function _addEvent(event, type) {
     let dateFormat = _formatDate(event.from_time);
     if (!_events[dateFormat]) {
         _events[dateFormat] = [];
     }
-    _events[dateFormat].push(event);
-    console.log(_events);
+
+    if (!_eventsIdMap[event.id.toString()]) {
+        _events[dateFormat].push(event);
+        _eventsIdMap[event.id.toString()] = event;
+    }
+
+    if (type && type === ActionTypes.CREATE_EVENT) {
+        return;
+    }
+
     if (_eventRange.min === undefined) {
         _eventRange.min = event.from_time;
     } else if (event.from_time < _eventRange.min) {
@@ -30,7 +39,6 @@ function _addEvent(event) {
         _eventRange.max = event.from_time;
     }
 
-    console.log(_eventRange);
 }
 
 function _addEvents(events) {
@@ -61,7 +69,7 @@ let CalendarStore = assign({}, BaseStore, {
         return _events;
     },
 
-    getEventTimeRage() {
+    getEventTimeRange() {
         return _eventRange;
     },
 
@@ -83,7 +91,7 @@ let CalendarStore = assign({}, BaseStore, {
 
         switch (type) {
             case ActionTypes.CREATE_EVENT:
-                _addEvent(data);
+                _addEvent(data, ActionTypes.CREATE_EVENT);
                 break;
             case ActionTypes.RECEIVE_EVENTS:
                 _events = {};
