@@ -8,7 +8,7 @@ export default {
   }),
 
   NotificationActionTypes: keyMirror({
-    RECEIVE: null
+    RECEIVE_NOTIFI: null
   }),
 
   CalendarActionTypes: keyMirror({

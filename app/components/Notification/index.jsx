@@ -10,6 +10,7 @@ const Name = require("../Member").Name;
 const Layout = require("../Flex").Layout;
 const NotificationActions = require("../../actions/NotificationActions");
 const NotificationStore = require("../../stores/NotificationStore");
+const UserStore = require("../../stores/UserStore");
 const SmartTimeDisplay = require("../SmartTimeDisplay");
 
 require("./style.less");
@@ -27,7 +28,7 @@ let NotifiItem = React.createClass({
         <div className="avatar-wrapper">
           <Avatar scale={1.6} member={this.props.sender} />
         </div>
-        <Layout vertical>
+        <Layout vertical style={{width: "100%"}}>
           <Layout horizontal justified>
             <div className="name"><Name member={this.props.sender} /></div>
             <div className="time"><SmartTimeDisplay start={this.props.time} relative /></div>
@@ -40,7 +41,6 @@ let NotifiItem = React.createClass({
 });
 
 export default React.createClass({
-
   getInitialState() {
     return { notifications: [] };
   },
@@ -62,14 +62,10 @@ export default React.createClass({
 
   render() {
     let control = <IconButton iconClassName="icon-notifications" />;
-    let menu = [1,2,3,4,5].map(i => {
-      let sender = {
-        name: "wizawu",
-        realname: "Wu Hualiang",
-        hash: "9dce167332fc0177c30bcc13a5f3ee89"
-      };
-      return <NotifiItem sender={sender} time={new Date()} message={"Hello long long long long long long long long long long"} />;
+    let menu = this.state.notifications.map(n => {
+      let sender = UserStore.getUser(n.from_user_id);
+      return <NotifiItem sender={sender} time={n.created_at} message={n.content} />;
     });
-    return <DropDownAny top={12} right={12} control={control} menu={menu} menuClasses="notification-menu" />
+    return <DropDownAny top={12} right={12} control={control} menu={menu} menuClasses="notification-menu" />;
   }
 });

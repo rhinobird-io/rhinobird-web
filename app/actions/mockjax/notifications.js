@@ -4,10 +4,9 @@ export default (() => {
   const API = "/platform/api";
 
   $.mockjax({
-    url: API + "/notifications",
+    url: API + "/users/*/notifications",
     type: "GET",
-    responseText: {
-      "notifications": [
+    responseText: [
         {
           "checked": true,
           "content": "Invited you to the event Test vity meeting",
@@ -108,9 +107,7 @@ export default (() => {
           "url": null,
           "user_id": 4
         }
-      ],
-      "total": 23
-    }
+    ]
   });
 
 })();

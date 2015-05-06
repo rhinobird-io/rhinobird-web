@@ -23,10 +23,11 @@ let NotificationStore = assign({}, BaseStore, {
   },
 
   dispatcherIndex: AppDispatcher.register(payload => {
+    let changed = true;
     let data = payload.data;
 
     switch (payload.type) {
-      case ActionTypes.RECEIVE:
+      case ActionTypes.RECEIVE_NOTIFI:
         if (data.length === undefined) {
           _notifications.push(data);
         } else {
@@ -35,10 +36,11 @@ let NotificationStore = assign({}, BaseStore, {
         break;
 
       default:
+        changed = false;
         break;
     }
 
-    NotificationStore.emitChange();
+    if (changed) NotificationStore.emitChange();
   })
 
 });
