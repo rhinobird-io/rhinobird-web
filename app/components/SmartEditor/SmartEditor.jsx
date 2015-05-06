@@ -126,10 +126,10 @@ export default React.createClass({
     let text = textarea.value, triggerPos = -1;
     for (let i = textarea.selectionEnd - 1; i >= 0; i--) {
       let ch = text.charAt(i);
-      if (ch.search(/\w/) >= 0) {
+      if (/[\w\.-]/.test(ch)) {
         continue;
       } else if (["@", "#"].includes(ch)) {
-        triggerPos = i;
+        if (i === 0 || /\s/.test(text.charAt(i - 1))) triggerPos = i;
         break;
       } else {
         break;

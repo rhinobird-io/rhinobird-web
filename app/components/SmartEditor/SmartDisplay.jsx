@@ -12,8 +12,8 @@ let Member = require("../Member");
 let LoginStore = require("../../stores/LoginStore");
 let UserStore = require("../../stores/UserStore");
 
-const AT_REGEX = /^\s*(@\w+)/;
-const SLASH_REGEX = /^\s*(#\w+(:\S+)?)/;
+const AT_REGEX = /^\s*(@[\w\.-]+)/;
+const SLASH_REGEX = /^\s*(#[\w\.-]+(:\S+)?)/;
 
 function _plugin(state, regex, trans) {
   let text = state.src.substr(state.pos);
