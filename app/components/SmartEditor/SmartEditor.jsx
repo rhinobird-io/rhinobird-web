@@ -15,6 +15,10 @@ const COMMANDS = [
 
 export default React.createClass({
   propTypes: {
+    valueLink: React.PropTypes.shape({
+      value: React.PropTypes.string.isRequired,
+      requestChange: React.PropTypes.func.isRequired
+    }),
     nohr: React.PropTypes.bool,
     popupWidth: React.PropTypes.number,
     popupMaxHeight: React.PropTypes.number,
@@ -101,6 +105,14 @@ export default React.createClass({
     });
   },
 
+  _updateValueLink() {
+    let valueLink = this.props.valueLink;
+    if (valueLink) {
+      valueLink.value = this.getValue();
+      valueLink.requestChange(valueLink.value);
+    }
+  },
+
   _getInputNode() {
     if (this.props.multiLine) {
       return this.refs.textfield.refs.input.getInputNode();  // <textarea>
@@ -116,7 +128,7 @@ export default React.createClass({
       let ch = text.charAt(i);
       if (ch.search(/\w/) >= 0) {
         continue;
-      } else if ("@#".search(ch) >= 0) {
+      } else if (["@", "#"].includes(ch)) {
         triggerPos = i;
         break;
       } else {
@@ -129,6 +141,7 @@ export default React.createClass({
     } else if (this.state.showPopup) {
       this.hidePopup();
     }
+    this._updateValueLink();
   },
 
   _onKeyDown(e) {
@@ -147,6 +160,7 @@ export default React.createClass({
       replace + text.substr(textarea.selectionEnd);
     textarea.selectionEnd = end;
     this.hidePopup();
+    this._updateValueLink();
   },
 
   render() {
@@ -199,10 +213,15 @@ export default React.createClass({
       });
     }, 0);
 
+    let tfProps = {};
+    ["className", "defaultValue", "errorText", "floatingLabelText", "hintText", "multiLine"].map(
+      k => { tfProps[k] = props[k] }
+    );
+
     // Apply `style` to TextField seems no effect, so just apply to Item
     return (
       <Item flex style={style} className={"smart-editor" + (props.nohr ? " nohr" : "")}>
-        <TextField {...props} ref="textfield" />
+        <TextField {...tfProps} ref="textfield" />
         <PopupSelect ref="popup"
             style={popupStyle}
             controller={this.refs.textfield}

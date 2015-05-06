@@ -8,11 +8,14 @@ let mui = require("material-ui"),
 let SmartEditor = require("./SmartEditor");
 let SmartDisplay = require("./SmartDisplay");
 
+// `valueLink` are not supported yet because of the bug in enhanced-textarea.jsx
 export default React.createClass({
-  mixins: [React.addons.LinkedStateMixin],
+  propTypes: {
+    defaultValue: React.PropTypes.string
+  },
 
   getInitialState() {
-    return { value: null };
+    return { value: this.props.defaultValue };
   },
 
   _preview(tab) {
@@ -25,7 +28,7 @@ export default React.createClass({
     return (
       <Tabs>
         <Tab label="EDIT">
-          <SmartEditor ref="editor" defaultValue={this.state.value || ""} multiLine={true} />
+          <SmartEditor ref="editor" defaultValue={this.state.value || ""} multiLine />
         </Tab>
         <Tab label="PREVIEW" onActive={this._preview}>
           <SmartDisplay value={this.state.value} />
