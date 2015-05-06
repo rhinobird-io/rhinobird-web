@@ -45,7 +45,7 @@ export default {
         parsedEvent.description = event.description;
         console.log(event.fromTime);
         parsedEvent.from_time = new Date(event.fromTime).toISOString();
-        parsedEvent.to_time = new Date(event.toTime).toISOString    ();
+        parsedEvent.to_time = new Date(event.toTime).toISOString();
         parsedEvent.full_day = event.fullDay;
         parsedEvent.participants = {users: [], teams: []};
         $.post("/platform/api/events", parsedEvent).done(data => {

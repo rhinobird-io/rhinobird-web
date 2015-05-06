@@ -1,8 +1,10 @@
 const React           = require("react"),
+      Router          = require("react-router"),
       MUI             = require('material-ui'),
       Moment          = require("moment"),
       Flex            = require("../../Flex"),
-      Link            = require("react-router").Link,
+      Link            = Router.Link,
+      Navigation      = Router.Navigation,
       Selector        = require("../../Select").Selector,
       CalendarActions = require("../../../actions/CalendarActions");
 
@@ -22,6 +24,10 @@ Date.prototype.weekOfMonth = function() {
 
 export default React.createClass({
     mixins: [React.addons.LinkedStateMixin],
+
+    contextTypes: {
+        router: React.PropTypes.func.isRequired
+    },
 
     repeatedEvery: {
         "Daily": "days",
@@ -116,16 +122,22 @@ export default React.createClass({
                             <MUI.Tab label="Period" >
                                 <div className="tab-template-container">
                                     <Flex.Layout horizontal justified>
-                                        <MUI.DatePicker hintText="From Date" />
-                                        <MUI.DatePicker hintText="To Date" />
+                                        <MUI.DatePicker
+                                            ref="fromDate"
+                                            hintText="From Date"
+                                            onChange={this._onFromDateChange}
+                                            defaultDate={this.state.fromTime} />
+                                        <MUI.DatePicker
+                                            ref="toDate"
+                                            hintText="To Date"
+                                            onChange={this._onToDateChange}
+                                            defaultDate={this.state.fromTime} />
                                     </Flex.Layout>
                                 </div>
                             </MUI.Tab>
                             <MUI.Tab label="Point" >
                                 <div className="tab-template-container">
                                     <Flex.Layout horizontal justified>
-                                        <MUI.DatePicker hintText="From Date" />
-                                        <MUI.DatePicker hintText="To Date" />
                                     </Flex.Layout>
                                 </div>
                             </MUI.Tab>
@@ -148,7 +160,7 @@ export default React.createClass({
                             <Link to="event-list">
                                 <MUI.RaisedButton label="Cancel" />
                             </Link>
-                            <MUI.RaisedButton label="Create Event" primary={true} />
+                            <MUI.RaisedButton type="submit" label="Create Event" primary={true} />
                         </Flex.Layout>
 
                     </div>
@@ -164,6 +176,27 @@ export default React.createClass({
                 </MUI.Paper>
             </Flex.Layout>
         );
+    },
+
+    _onFromDateChange(e, newDate) {
+        let state = {};
+        state.fromTime = newDate;
+        if (newDate > this.state.toTime) {
+            state.toTime = newDate;
+            this.refs.toDate.setDate(newDate);
+        }
+        this.setState(state);
+    },
+
+    _onToDateChange(e, newDate) {
+        let state = {};
+        state.toTime = newDate;
+        if (newDate < this.state.fromTime) {
+            state.fromTime = newDate;
+            this.refs.fromDate.setDate(newDate);
+        }
+        this.setState(state);
+
     },
 
     _handleSubmit(e) {
@@ -184,7 +217,7 @@ export default React.createClass({
             this.setState({descriptionError: ""});
         }
 
-        CalendarActions.create(this.state, () => window.location.href = "/platform/calendar");
+        CalendarActions.create(this.state, () => this.context.router.transitionTo("event-list"));
     },
 
     _getRepeatedInfoContent() {
