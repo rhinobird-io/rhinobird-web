@@ -9,7 +9,7 @@ let SmartEditor = require("./SmartEditor");
 let SmartDisplay = require("./SmartDisplay");
 
 // `valueLink` are not supported yet because of the bug in enhanced-textarea.jsx
-export default React.createClass({
+const SmartPreview = React.createClass({
   propTypes: {
     defaultValue: React.PropTypes.string
   },
@@ -37,3 +37,5 @@ export default React.createClass({
     );
   }
 });
+
+export default SmartPreview;

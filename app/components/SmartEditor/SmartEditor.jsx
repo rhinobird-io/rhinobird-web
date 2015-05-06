@@ -13,7 +13,7 @@ const COMMANDS = [
   {name: "file", manual: ":file_id"}
 ];
 
-export default React.createClass({
+const SmartEditor = React.createClass({
   propTypes: {
     valueLink: React.PropTypes.shape({
       value: React.PropTypes.string.isRequired,
@@ -235,3 +235,5 @@ export default React.createClass({
     );
   }
 });
+
+export default SmartEditor;

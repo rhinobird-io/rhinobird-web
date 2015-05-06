@@ -56,7 +56,7 @@ function slashPlugin(state) {
   });
 }
 
-export default React.createClass({
+const SmartDisplay = React.createClass({
   mixins: [React.addons.PureRenderMixin],
   componentDidMount: function() {
     window.addEventListener('click', this._onClick);
@@ -132,3 +132,5 @@ export default React.createClass({
     );
   }
 });
+
+export default SmartDisplay;
