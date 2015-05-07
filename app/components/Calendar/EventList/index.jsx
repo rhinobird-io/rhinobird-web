@@ -17,16 +17,32 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            events: {},
-            eventRange: {},
-            hasMoreNewerEvents: true,
-            hasMoreOlderEvents: true
+            events: CalendarStore.getAllEvents() || {},
+            eventRange: CalendarStore.getEventTimeRange(),
+            hasReceived: CalendarStore.hasReceived(),
+            hasMoreNewerEvents: CalendarStore.hasMoreNewerEvents(),
+            hasMoreOlderEvents: CalendarStore.hasMoreOlderEvents(),
+            newCreated: CalendarStore.getNewCreated()
         }
     },
 
     componentDidMount() {
         CalendarStore.addChangeListener(this._onChange);
-        CalendarActions.receive();
+        if (!this.state.hasReceived) {
+            let container = this.getDOMNode();
+            CalendarActions.receive(() => container.scrollTop = (container.scrollHeight - container.clientHeight) / 2);
+        }
+
+        if (this.refs.newCreated) {
+            let self = this.getDOMNode();
+            let newCreated = this.refs.newCreated.getDOMNode();
+            let offsetTop = 0, offsetParent = newCreated;
+            while (offsetParent !== self && offsetParent !== null) {
+                offsetTop += offsetParent.offsetTop;
+                offsetParent = offsetParent.offsetParent;
+            }
+            self.scrollTop = offsetTop + newCreated.offsetHeight - self.offsetHeight + 20;
+        }
     },
 
     componentWillUnmount() {
@@ -36,9 +52,11 @@ export default React.createClass({
     _onChange() {
         this.setState({
             events: CalendarStore.getAllEvents(),
-            eventRange: CalendarStore.getEventTimeRage(),
+            eventRange: CalendarStore.getEventTimeRange(),
+            hasReceived: CalendarStore.hasReceived(),
             hasMoreNewerEvents: CalendarStore.hasMoreNewerEvents(),
-            hasMoreOlderEvents: CalendarStore.hasMoreOlderEvents()
+            hasMoreOlderEvents: CalendarStore.hasMoreOlderEvents(),
+            newCreated: CalendarStore.getNewCreated()
         });
     },
 
@@ -53,7 +71,10 @@ export default React.createClass({
     _loadMoreOlderEvents() {
         let eventRange = this.state.eventRange;
         if (eventRange.min && this.state.hasMoreOlderEvents) {
-            CalendarActions.loadMoreOlderEvents(eventRange.min);
+
+            let container = this.getDOMNode();
+            let oldScrollHeight = container.scrollHeight;
+            CalendarActions.loadMoreOlderEvents(eventRange.min, () => container.scrollTop = container.scrollHeight - oldScrollHeight);
         }
     },
 
@@ -80,6 +101,7 @@ export default React.createClass({
             dayEvents.push(events.map((event) => {
                 let contentClass = "cal-event-content " + direction;
                 let eventIconClass = "cal-event-icon";
+
                 let now = new Date();
                 let fromTime = new Date(event.from_time);
                 let toTime = event.to_time ? new Date(event.to_time) : fromTime;
@@ -89,8 +111,13 @@ export default React.createClass({
                     eventIconClass += " active";
                 }
 
+                let ref = event.id.toString() === this.state.newCreated ? "newCreated" : undefined;
+                let contentInnerClass = "cal-event-content-inner";
+                if (event.id.toString() === this.state.newCreated) {
+                    contentInnerClass += " highlight";
+                }
                 return (
-                    <div className="cal-event">
+                    <div ref={ref} className="cal-event">
                         <div className="cal-event-icon-wrapper">
                             <div className={eventIconClass}>
                                 <MUI.FontIcon className="icon-event"/>
@@ -98,7 +125,7 @@ export default React.createClass({
                         </div>
 
                         <div className={contentClass}>
-                            <div className="cal-event-content-inner">
+                            <div className={contentInnerClass}>
                                 <div className="cal-event-title">
                                     <Layout horizontal justified>
                                         <span>{event.title}</span>
@@ -133,11 +160,11 @@ export default React.createClass({
         return (
             <PerfectScroll className="cal-event-list">
                 <InfiniteScroll
-                    lowerThreshold={100}
-                    upperThreshold={100}
+                    lowerThreshold={5}
+                    upperThreshold={5}
                     onUpperTrigger={() => this._loadMoreOlderEvents()}
                     onLowerTrigger={() => this._loadMoreNewerEvents()}
-                    scrollTarget={() => this.getDOMNode()} />
+                    scrollTarget={() => {return this.getDOMNode();}} />
                 {noMoreOlderEvents}
                 <div className="cal-event-wrapper">
                     {eventsDOM}

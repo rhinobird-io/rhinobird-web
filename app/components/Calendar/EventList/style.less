@@ -126,6 +126,12 @@
   position: relative;
   box-shadow: 0px 0px 6px 0 rgba(0, 0, 0, .4);
   background-color: @eventBg;
+  transition: box-shadow 1s;
+}
+
+.cal-event-content-inner.highlight {
+  box-shadow: 0px 0px 6px 0 @pink-500;
+  transition: box-shadow 1s;
 }
 
 .cal-event-content-inner:hover {

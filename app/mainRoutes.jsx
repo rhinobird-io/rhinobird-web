@@ -18,9 +18,9 @@ module.exports = (
         <Route name="signup" path="signup" handler={require("react-proxy!./components/Signup")}></Route>
         <Route name="dashboard" path="dashboard" handler={require("./components/Dashboard")} />
         <Route name="calendar" path="calendar" handler={require("react-proxy!./components/Calendar")}>
-            <Route name="create-event" path="create-event" handler={require("./components/Calendar/CreateEvent")} />
-            <Route name="event-list" path="event-list" handler={require("./components/Calendar/EventList")} />
-            <DefaultRoute handler={require("./components/Calendar/EventList")} />
+            <Route name="create-event" path="create-event" handler={require("react-proxy!./components/Calendar/CreateEvent")} />
+            <Route name="event-list" path="event-list" handler={require("react-proxy!./components/Calendar/EventList")} />
+            <DefaultRoute handler={require("react-proxy!./components/Calendar/EventList")} />
         </Route>
         <Route name="demo" path="demo" handler={require("react-proxy!./components/Demo")} />
         <Route name="im" path="im" handler={require("react-proxy!./components/InstantMessage")}>

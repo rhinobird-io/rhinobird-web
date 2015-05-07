@@ -1,9 +1,13 @@
-const React        = require("react"),
-      MUI          = require('material-ui'),
-      Moment       = require("moment"),
-      Flex         = require("../../Flex"),
-      Link         = require("react-router").Link,
-      Selector     = require("../../Select").Selector;
+const React           = require("react"),
+      Router          = require("react-router"),
+      MUI             = require('material-ui'),
+      Moment          = require("moment"),
+      Flex            = require("../../Flex"),
+      Link            = Router.Link,
+      Navigation      = Router.Navigation,
+      Selector        = require("../../Select").Selector,
+      PerfectScroll   = require('../../PerfectScroll'),
+      CalendarActions = require("../../../actions/CalendarActions");
 
 require("./style.less");
 
@@ -21,6 +25,10 @@ Date.prototype.weekOfMonth = function() {
 
 export default React.createClass({
     mixins: [React.addons.LinkedStateMixin],
+
+    contextTypes: {
+        router: React.PropTypes.func.isRequired
+    },
 
     repeatedEvery: {
         "Daily": "days",
@@ -44,7 +52,9 @@ export default React.createClass({
         'Sat': 'Saturday'
     },
 
-    _handleTouchTap() {
+    errorMsg: {
+        titleRequired: "Event title is required.",
+        descriptionRequired: "Event description is required."
     },
 
     componentDidMount() {
@@ -53,7 +63,12 @@ export default React.createClass({
 
     getInitialState() {
         return {
+            title: "",
+            titleError: "",
+            description: "",
+            fullDay: false,
             fromTime: new Date(),
+            toTime: new Date(),
             editRepeated: false,
             repeated: false,
             repeatedType: "Daily",
@@ -62,8 +77,7 @@ export default React.createClass({
             repeatedBy: "Month",
             repeatedEndType: "Never",
             repeatedEndDate: "",
-            repeatedTimes: 1,
-            summary: ""
+            repeatedTimes: 1
         };
     },
 
@@ -78,69 +92,152 @@ export default React.createClass({
             }
         };
         return (
-            <Flex.Layout horizontal centerJustified wrap>
-                <MUI.Paper zDepth={3} className="cal-create-event">
-                    <div style={{padding: 20}}>
-                        <h3>Create Event</h3>
+            <PerfectScroll style={{height: "100%", position: "relative"}}>
+                <Flex.Layout horizontal centerJustified wrap>
+                    <form onSubmit={this._handleSubmit}>
+                    <MUI.Paper zDepth={3} className="cal-create-event">
+                        <div style={{padding: 20}}>
+                            <h3>Create Event</h3>
 
-                        <MUI.TextField
-                            ref="eventTitle"
-                            className="cal-create-event-textfield"
-                            hintText="Event Title"
-                            floatingLabelText="Event Title"/>
+                            <MUI.TextField
+                                ref="eventTitle"
+                                hintText="Event Title"
+                                errorText={this.state.titleError}
+                                floatingLabelText="Event Title"
+                                valueLink={this.linkState("title")}
+                                className="cal-create-event-textfield" />
 
-                        <MUI.TextField
-                            multiLine={true}
-                            ref="eventDescription"
-                            hintText="Description"
-                            className="cal-create-event-textfield"
-                            floatingLabelText="Description" />
+                            <MUI.TextField
+                                multiLine={true}
+                                ref="eventDescription"
+                                hintText="Description"
+                                errorText={this.state.descriptionError}
+                                floatingLabelText="Description"
+                                className="cal-create-event-textfield"
+                                valueLink={this.linkState("description")} />
 
-                        <MUI.Toggle
-                            label="Full Day" />
+                            <Flex.Layout horizontal justified style={{marginTop: 24, marginBottom: 24}}>
+                                <label>Full Day</label>
+                                <MUI.Toggle />
+                            </Flex.Layout>
 
-                        <MUI.Tabs className="cal-create-event-tab">
-                            <MUI.Tab label="Period" >
-                                <div className="tab-template-container">
-                                    <Flex.Layout horizontal justified>
-                                        <MUI.DatePicker hintText="From Date" />
-                                        <MUI.DatePicker hintText="To Date" />
+                            <MUI.Tabs className="cal-create-event-tab">
+                                <MUI.Tab label="Period" >
+                                    <div className="tab-template-container">
+                                        <Flex.Layout horizontal justified>
+                                            <MUI.DatePicker
+                                                ref="fromDate"
+                                                hintText="From Date"
+                                                onChange={this._onFromDateChange}
+                                                defaultDate={this.state.fromTime} />
+                                            <MUI.DatePicker
+                                                ref="toDate"
+                                                hintText="To Date"
+                                                onChange={this._onToDateChange}
+                                                defaultDate={this.state.fromTime} />
+                                        </Flex.Layout>
+                                    </div>
+                                </MUI.Tab>
+                                <MUI.Tab label="Point" >
+                                    <div className="tab-template-container">
+                                        <Flex.Layout horizontal justified>
+                                        </Flex.Layout>
+                                    </div>
+                                </MUI.Tab>
+                            </MUI.Tabs>
+
+                            <Flex.Layout horizontal justified style={{marginTop: 24}}>
+                                <Flex.Layout vertical selfCenter>
+                                    <label>Repeated</label>
+                                </Flex.Layout>
+                                <Flex.Layout horizontal centerJustified>
+                                    <Flex.Layout vertical selfCenter>
+                                        <label style={{maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>{this._getSummary()}</label>
                                     </Flex.Layout>
-                                </div>
-                            </MUI.Tab>
-                            <MUI.Tab label="Content" >
-                                <div className="tab-template-container">
-                                    <Flex.Layout horizontal justified>
-                                        <MUI.DatePicker hintText="From Date" />
-                                        <MUI.DatePicker hintText="To Date" />
-                                    </Flex.Layout>
-                                </div>
-                            </MUI.Tab>
-                        </MUI.Tabs>
+                                    <MUI.FlatButton
+                                        label="Edit"
+                                        type="button"
+                                        primary={true}
+                                        onClick={() => this.setState({editRepeated: true})}
+                                        style={{display: this.state.repeated ? "inline-block" : "none"}} />
+                                </Flex.Layout><Flex.Layout vertical selfCenter>
+                                    <MUI.Toggle
+                                        ref="repeated"
+                                        onToggle={this._onRepeatToggled} />
+                                </Flex.Layout>
+                            </Flex.Layout>
 
-                        <MUI.Toggle
-                            ref="repeated"
-                            label="Repeated"
-                            onToggle={this._onRepeatToggled} />
+                            <MUI.TextField
+                                ref="eventParticipant"
+                                hintText="Participants"
+                                floatingLabelText="Participants"
+                                className="cal-create-event-textfield" />
 
-                        <Flex.Layout horizontal justified>
-                            <Link to="event-list">
-                                <MUI.RaisedButton label="Cancel" />
-                            </Link>
-                            <MUI.RaisedButton label="Create Event" primary={true} />
-                        </Flex.Layout>
-                    </div>
-                </MUI.Paper>
-                <MUI.Paper zDepth={2} style={styles.repeated} className="cal-create-event">
-                    <div style={{padding: 20}}>
-                        <Flex.Layout horizontal>
-                            <h3>Repeat Infomation</h3>
-                        </Flex.Layout>
-                        {this._getRepeatedInfoContent()}
-                    </div>
-                </MUI.Paper>
-            </Flex.Layout>
+                            <br/>
+
+                            <Flex.Layout horizontal justified>
+                                <Link to="event-list">
+                                    <MUI.RaisedButton label="Cancel" />
+                                </Link>
+                                <MUI.RaisedButton type="submit" label="Create Event" primary={true} />
+                            </Flex.Layout>
+
+                        </div>
+                    </MUI.Paper>
+                    </form>
+                    <MUI.Paper zDepth={2} style={styles.repeated} className="cal-create-event">
+                        <div style={{padding: 20}}>
+                            <Flex.Layout horizontal>
+                                <h3>Repeat Infomation</h3>
+                            </Flex.Layout>
+                            {this._getRepeatedInfoContent()}
+                        </div>
+                    </MUI.Paper>
+                </Flex.Layout>
+            </PerfectScroll>
         );
+    },
+
+    _onFromDateChange(e, newDate) {
+        let state = {};
+        state.fromTime = newDate;
+        if (newDate > this.state.toTime) {
+            state.toTime = newDate;
+            this.refs.toDate.setDate(newDate);
+        }
+        this.setState(state);
+    },
+
+    _onToDateChange(e, newDate) {
+        let state = {};
+        state.toTime = newDate;
+        if (newDate < this.state.fromTime) {
+            state.fromTime = newDate;
+            this.refs.fromDate.setDate(newDate);
+        }
+        this.setState(state);
+
+    },
+
+    _handleSubmit(e) {
+        e.preventDefault();
+        let errorMsg = this.errorMsg;
+
+        if (this.state.title.length === 0) {
+            this.setState({titleError: errorMsg.titleRequired});
+            return;
+        } else {
+            this.setState({titleError: ""});
+        }
+
+        if (this.state.description.length === 0) {
+            this.setState({descriptionError: errorMsg.descriptionRequired});
+            return;
+        } else {
+            this.setState({descriptionError: ""});
+        }
+
+        CalendarActions.create(this.state, () => this.context.router.transitionTo("event-list"));
     },
 
     _getRepeatedInfoContent() {
@@ -227,6 +324,7 @@ export default React.createClass({
                         <span className="cal-event-repeated-item" name="Yearly">Yearly</span>
                     </Selector>
                 </Flex.Layout>
+
                 <Flex.Layout horizontal justified style={styles.row}>
                     <Flex.Layout vertical selfCenter>
                         <label>Repeated Every:</label>
@@ -241,8 +339,11 @@ export default React.createClass({
                         {this.repeatedEvery[this.state.repeatedType]}
                     </div>
                 </Flex.Layout>
+
                 {weeklyRepeatOn}
+
                 {monthlyRepeatBy}
+
                 <Flex.Layout horizontal justified style={styles.row}>
                     <label>Ends Way:</label>
                     <Selector
@@ -254,12 +355,16 @@ export default React.createClass({
                         <span className="cal-event-repeated-item" name="Date">Date</span>
                     </Selector>
                 </Flex.Layout>
+
                 {occurrence}
+
                 {endDate}
+
                 <Flex.Layout horizonal justified style={styles.row}>
                     <label>Repeat Summary:</label>
                     <label>{this._getSummary()}</label>
                 </Flex.Layout>
+
                 <Flex.Layout horizontal justified>
                     <MUI.RaisedButton label="Cancel" onClick={this._cancelRepeatedInfo} />
                     <MUI.RaisedButton label="Confirm" secondary={true} onClick={this._confirmRepeatedInfo} />
@@ -270,11 +375,11 @@ export default React.createClass({
 
     _cancelRepeatedInfo() {
         this.setState({editRepeated: false});
-        this.refs.repeated.setToggled(false);
+        this.refs.repeated.setToggled(this.state.repeated);
     },
 
     _confirmRepeatedInfo() {
-        this.setState({editRepeated: false});
+        this.setState({editRepeated: false, repeated: true});
         this.refs.repeated.setToggled(true);
     },
 
@@ -309,6 +414,9 @@ export default React.createClass({
     _getSummary() {
         let repeatedInfo = this.state;
 
+        if (!repeatedInfo.repeated && !repeatedInfo.editRepeated) {
+            return "No Repeat";
+        }
         var summary = "", frequencyOne, frequencyMultiple;
         frequencyOne = repeatedInfo.repeatedType;
 
@@ -383,7 +491,7 @@ export default React.createClass({
         if (isInputChecked) {
             this.setState({editRepeated: true});
         } else {
-            this.setState({editRepeated: false});
+            this.setState({editRepeated: false, repeated: false});
         }
     }
 });

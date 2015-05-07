@@ -3,7 +3,10 @@ var React                = require("react"),
     SmartEditor = require("../SmartEditor").SmartEditor,
     SmartPreview = require("../SmartEditor").SmartPreview,
     Select = require("../Select").Select,
-    Selector = require("../Select").Selector;
+    Selector = require("../Select").Selector,
+    PopupSelect2 = require("../Select").PopupSelect2;
+
+require("./style.less");
 
 export default React.createClass({
     mixins: [React.addons.LinkedStateMixin],
@@ -59,10 +62,10 @@ export default React.createClass({
                     onSelectChange={() => console.log("Selector is changed.")}
                     valueLink={this.linkState("repeatedType")}
                     selectedStyle={{color: "white", backgroundColor: "#3F51B5"}}>
-                    <span className="cal-event-repeated-item" name="Daily">Daily</span>
-                    <span className="cal-event-repeated-item" name="Weekly">Weekly</span>
-                    <span className="cal-event-repeated-item" name="Monthly">Monthly</span>
-                    <span className="cal-event-repeated-item" name="Yearly">Yearly</span>
+                    <span className="item" name="Daily">Daily</span>
+                    <span className="item" name="Weekly">Weekly</span>
+                    <span className="item" name="Monthly">Monthly</span>
+                    <span className="item" name="Yearly">Yearly</span>
                 </Selector>
 
                 <br/>
@@ -72,16 +75,26 @@ export default React.createClass({
                     multiple
                     valueLink={this.linkState("daysInWeek")}
                     selectedStyle={{color: "white", backgroundColor: "#3F51B5"}}>
-                    <span className="cal-event-repeated-item" name="Sunday">Sun</span>
-                    <span className="cal-event-repeated-item" name="Monday">Mon</span>
-                    <span className="cal-event-repeated-item" name="Tuesday">Tue</span>
-                    <span className="cal-event-repeated-item" name="Wednesday">Wed</span>
-                    <span className="cal-event-repeated-item" name="Thursday">Thu</span>
-                    <span className="cal-event-repeated-item" name="Friday">Fri</span>
-                    <span className="cal-event-repeated-item" name="Saturday">Sat</span>
+                    <span className="item" name="Sunday">Sun</span>
+                    <span className="item" name="Monday">Mon</span>
+                    <span className="item" name="Tuesday">Tue</span>
+                    <span className="item" name="Wednesday">Wed</span>
+                    <span className="item" name="Thursday">Thu</span>
+                    <span className="item" name="Friday">Fri</span>
+                    <span className="item" name="Saturday">Sat</span>
                 </Selector>
 
                 <br/>
+
+                <PopupSelect2>
+                    <div>
+                        <label>group A</label>
+                        <div name="person1" disabled>Person 1</div>
+                        <div name="person2">Person 2</div>
+                    </div>
+                    <div name="B">B</div>
+                </PopupSelect2>
+
                 <SmartEditor />
                 <SmartEditor nohr hintText="I have no underline" />
                 <SmartEditor floatingLabelText="I have a Label" />

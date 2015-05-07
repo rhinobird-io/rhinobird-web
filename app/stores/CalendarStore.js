@@ -5,17 +5,33 @@ const ActionTypes = require("../constants/AppConstants").CalendarActionTypes;
 const BaseStore = require("./BaseStore");
 const assign = require("object-assign");
 
+let _eventsIdMap = {};
 let _events = {};
 let _eventRange = {};
 let _hasMoreNewerEvents = true;
 let _hasMoreOlderEvents = true;
+let _hasReceived = false;
+let _newCreated = null;
 
-function _addEvent(event) {
+function _addEvent(event, type) {
     let dateFormat = _formatDate(event.from_time);
     if (!_events[dateFormat]) {
         _events[dateFormat] = [];
     }
-    _events[dateFormat].push(event);
+
+    if (!_eventsIdMap[event.id.toString()]) {
+        _events[dateFormat].push(event);
+        _eventsIdMap[event.id.toString()] = event;
+    }
+
+    if (type && type === ActionTypes.CREATE_EVENT) {
+        _newCreated = event.id.toString();
+        setTimeout(() => {
+            _newCreated = null;
+            CalendarStore.emitChange();
+        }, 2000);
+        return;
+    }
 
     if (_eventRange.min === undefined) {
         _eventRange.min = event.from_time;
@@ -29,7 +45,6 @@ function _addEvent(event) {
         _eventRange.max = event.from_time;
     }
 
-    console.log(_eventRange);
 }
 
 function _addEvents(events) {
@@ -60,8 +75,12 @@ let CalendarStore = assign({}, BaseStore, {
         return _events;
     },
 
-    getEventTimeRage() {
+    getEventTimeRange() {
         return _eventRange;
+    },
+
+    getNewCreated() {
+        return _newCreated;
     },
 
     hasMoreNewerEvents() {
@@ -72,11 +91,18 @@ let CalendarStore = assign({}, BaseStore, {
         return _hasMoreOlderEvents;
     },
 
+    hasReceived() {
+        return _hasReceived;
+    },
+
     dispatcherIndex: AppDispatcher.register(payload => {
         let type = payload.type;
         let data = payload.data;
 
         switch (type) {
+            case ActionTypes.CREATE_EVENT:
+                _addEvent(data, ActionTypes.CREATE_EVENT);
+                break;
             case ActionTypes.RECEIVE_EVENTS:
                 _events = {};
                 _addEvents(data);
@@ -87,6 +113,7 @@ let CalendarStore = assign({}, BaseStore, {
                 } else {
 
                 }
+                _hasReceived = true;
                 break;
             case ActionTypes.LOAD_MORE_NEWER_EVENTS:
                 _addEvents(data);

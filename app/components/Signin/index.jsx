@@ -25,7 +25,10 @@ var Login = React.createClass({
         }
     },
     componentWillMount(){
-      this.props.setTitle("RhinoBird");
+        this.props.setTitle("RhinoBird");
+    },
+    componentDidMount() {
+        this.refs.email.focus();
     },
     _login(e){
         e.preventDefault();
@@ -46,7 +49,7 @@ var Login = React.createClass({
         return <mui.Paper zDepth={1} className="loginForm" rounded={false}>
             <form className="container" onSubmit={this._login}>
                 <div className="mui-font-style-title">Sign in</div>
-                <mui.TextField hintText='Email' valueLink={this.linkState('email')} autofocus/>
+                <mui.TextField ref="email" hintText='Email' valueLink={this.linkState('email')} autofocus/>
                 <mui.TextField hintText='Password' type="password" valueLink={this.linkState('password')}
                     errorText={this.state.error? 'Email or password incorrect.' : undefined}/>
                 <div className="rightButton">
@@ -57,4 +60,4 @@ var Login = React.createClass({
     }
 });
 
-module.exports = Login;
+export default Login;
