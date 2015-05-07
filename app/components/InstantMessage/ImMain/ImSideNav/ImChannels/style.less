@@ -7,6 +7,10 @@
     padding : 15px;
     margin: 0;
     background-color: @white;
+
+    display: flex;
+    flex-direction: row;
+    align-items : center;
   }
 
   .instant-message-channel-items {
@@ -44,5 +48,14 @@
         color : red;
       }
     }
+  }
+}
+
+.instant-message-channels-menu {
+  max-height: 400px;
+  width: 250px;
+  .mui-menu-item {
+    height: auto !important;
+    padding: 8px 24px !important;
   }
 }

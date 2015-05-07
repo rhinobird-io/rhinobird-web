@@ -15,7 +15,7 @@ import UnreadStore from '../../../../../stores/MessageUnreadStore';
 import ImChannel from './ImChannel.jsx';
 import DropDownAny from '../../../../DropDownAny';
 
-const { Menu, FontIcon, FlatButton } = mui;
+const { Menu, FontIcon, FlatButton, IconButton } = mui;
 
 const Flex = require('../../../../Flex');
 const PerfectScroll = require('../../../../PerfectScroll');
@@ -118,13 +118,30 @@ module.exports = React.createClass({
             });
         }
 
+        let control = <IconButton iconClassName="icon-search" style={{ maxWidth : '48px', flexGrow : 0}}/>;
+        let menu = this.state._menuItems.map((item,idx) => {
+            return <ImChannel key={item.backEndChannelId} Channel={item}></ImChannel>
+        });
+
         return (
             <Flex.Layout vertical className={'instant-message-channels ' + this.props.className}>
-                <div className="mui-font-style-subhead-1 instant-message-channel-brand">{this.props.channelGroup}</div>
+                <div className="mui-font-style-subhead-1 instant-message-channel-brand">
+                    <div style={{ flexGrow : 1 }}>{this.props.channelGroup}</div>
+                    <div style={{ display : 'inline-block'}}>
+                        {
+                            !this.props.isGroup?<DropDownAny top={12} right={12} control={control} menu={menu} menuClasses="instant-message-channels-menu" />:undefined
+                        }
+                    </div>
+
+                </div>
+
+
                 <PerfectScroll className="instant-message-channel-items">
                     {
                         this.state._menuItems.map((item,idx) => {
-                            return <ImChannel key={item.backEndChannelId} Channel={item}></ImChannel>
+                            if (idx < 10) {
+                                return <ImChannel key={item.backEndChannelId} Channel={item}></ImChannel>
+                            }
                         })
                     }
                 </PerfectScroll>
