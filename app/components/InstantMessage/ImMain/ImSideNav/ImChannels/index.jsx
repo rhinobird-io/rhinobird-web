@@ -11,7 +11,6 @@ import LoginStore from '../../../../../stores/LoginStore';
 import OnlineStore from '../../../../../stores/OnlineStore';
 import MessageStore from '../../../../../stores/MessageStore';
 import UnreadStore from '../../../../../stores/MessageUnreadStore';
-import ChannelStore from '../../../../../stores/ChannelStore';
 
 import ImChannel from './ImChannel.jsx';
 import DropDownAny from '../../../../DropDownAny';
@@ -45,10 +44,6 @@ module.exports = React.createClass({
         };
     },
 
-    //shouldComponentUpdate(nextProp, nextState) {
-    //
-    //},
-
     _getMenuItems(channels) {
         var _items = [];
         /**
@@ -70,13 +65,11 @@ module.exports = React.createClass({
     },
 
     componentDidMount() {
-        //ChannelStore.addChangeListener(this._onChannelChange);
         OnlineStore.addChangeListener(this._onlineStatusChange);
         UnreadStore.addChangeListener(this._onUnreadChange);
     },
 
     componentWillUnmount() {
-        //ChannelStore.removeChangeListener(this._onChannelChange);
         OnlineStore.removeChangeListener(this._onlineStatusChange);
         UnreadStore.removeChangeListener(this._onUnreadChange);
     },
@@ -86,16 +79,6 @@ module.exports = React.createClass({
         this.setState({
             _menuItems: menuItems
         });
-    },
-
-    _onChannelChange() {
-        //let prevChannel = this.state.prevChannel;
-        //let currentChannel = ChannelStore.getCurrentChannel();
-        //// make it selected
-        //let imChannel = this.refs['channel_' + currentChannel.backEndChannelId];
-        //if (imChannel) {
-        //    imChannel.select();
-        //}
     },
 
     _onlineStatusChange() {

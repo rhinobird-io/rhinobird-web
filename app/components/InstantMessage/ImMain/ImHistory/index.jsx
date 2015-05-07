@@ -26,12 +26,6 @@ module.exports = React.createClass({
         }
     },
 
-    //shouldComponentUpdate(nextProps, nextState) {
-    //    //return (!this.state.currentChannel || this.state.currentChannel.backEndChannelId !== nextState.currentChannel.backEndChannelId)
-    //    //|| this.state.messages.length != nextState.messages.length;
-    //    return true;
-    //},
-
     componentDidMount() {
         MessageStore.on(IMConstant.EVENTS.RECEIVE_NEW_MESSAGE, this._onReceiveNewMessage);
         MessageStore.on(IMConstant.EVENTS.RECEIVE_INIT_MESSAGE, this._onReceiveInitMessage);

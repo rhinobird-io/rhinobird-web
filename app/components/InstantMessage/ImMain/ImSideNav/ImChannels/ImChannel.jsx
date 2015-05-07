@@ -35,11 +35,9 @@ module.exports = React.createClass({
 
     componentDidMount() {
 
-        // ChannelStore.addChangeListener(this._onChannelChange);
         ChannelStore.on(IMConstants.EVENTS.CHANNEL_SELECT_PREFIX + this.props.Channel.backEndChannelId, this._onChannelSelect);
         ChannelStore.on(IMConstants.EVENTS.CHANNEL_DESELECT_PREFIX + this.props.Channel.backEndChannelId, this._onChannelDeselect);
-        //OnlineStore.addChangeListener(this._onlineListChange);
-        //UnreadStore.addChangeListener(this._onUnreadChange);
+
         UnreadStore.on(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + this.props.Channel.backEndChannelId, this._onUnreadChange);
 
         if (!this.props.Channel.isGroup) {
@@ -50,8 +48,6 @@ module.exports = React.createClass({
     componentWillUnmount() {
         ChannelStore.removeEventListener(IMConstants.EVENTS.CHANNEL_SELECT_PREFIX + this.props.Channel.backEndChannelId, this._onChannelSelect);
         ChannelStore.removeEventListener(IMConstants.EVENTS.CHANNEL_DESELECT_PREFIX + this.props.Channel.backEndChannelId, this._onChannelDeselect);
-        //OnlineStore.removeChangeListener(this._onlineListChange);
-        //UnreadStore.removeChangeListener(this._onUnreadChange);
         UnreadStore.removeEventListener(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + this.props.Channel.backEndChannelId, this._onUnreadChange);
         if (!this.props.Channel.isGroup) {
             OnlineStore.removeEventListener(IMConstants.EVENTS.USER_ONLINE_PREFIX + this.props.Channel.channel.id, this._onUserOnlineChange);
@@ -71,15 +67,6 @@ module.exports = React.createClass({
             _currentChannel : ChannelStore.getCurrentChannel
         })
     },
-
-    //_onChannelChange() {
-    //    let currentChannel = ChannelStore.getCurrentChannel();
-    //    let imCurrentChannel = currentChannel.backEndChannelId === this.props.Channel.backEndChannelId;
-    //    this.setState({
-    //        _currentChannel : currentChannel,
-    //        _imCurrentChannel : imCurrentChannel
-    //    });
-    //},
 
     _onUserOnlineChange(myOnlineState) {
         this.setState({

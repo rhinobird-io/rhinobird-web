@@ -1,11 +1,6 @@
 const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
-
 const ImChannels = require('./ImChannels');
-
-const MessageAction = require('../../../../actions/MessageAction');
-const SocketAction = require('../../../../actions/SocketAction');
-const SocketStore = require('../../../../stores/SocketStore');
 
 const LoginStore = require('../../../../stores/LoginStore');
 const UserStore = require('../../../../stores/UserStore');
