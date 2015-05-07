@@ -7,7 +7,6 @@ const ImSideNav = require('./ImSideNav');
 
 const LoginAction = require('../../../actions/LoginAction');
 const ChannelAction = require('../../../actions/ChannelAction');
-const SocketAction = require('../../../actions/SocketAction');
 const InitAction = require('../../../actions/InitAction');
 
 const LoginStore = require('../../../stores/LoginStore');
@@ -39,9 +38,7 @@ module.exports = React.createClass({
     ChannelStore.addChangeListener(this._onChannelChange);
     SocketStore.addChangeListener(this._onSocketReady);
 
-    // It was fixed, so write here is OK, others cannot
-    this.props.user = LoginStore.getUser(); // it must be there... or it will be redirected
-    LoginAction.updateLogin(this.props.user);
+    LoginAction.updateLogin(LoginStore.getUser());
   },
 
   componentWillUnmount() {
@@ -93,10 +90,6 @@ module.exports = React.createClass({
     }
   },
 
-  willTransitionTo: function(transition) {
-    console.log('ccc');
-  },
-
   _buildBackEndChannelId(isGroup, channel) {
     if (isGroup) {
       return 'team_' + channel.id;
@@ -109,12 +102,12 @@ module.exports = React.createClass({
   render() {
     return (
         <Flex.Layout fit className="instant-message-container">
-          <Flex.Layout selfStretch flex={5} vertical className="main" >
+          <Flex.Layout selfStretch flex vertical className="main" >
             <ImHistory {...this.props} className="history" ></ImHistory>
             <ImSendBox {...this.props} className="send-box" ></ImSendBox>
+          </Flex.Layout>
+          <ImSideNav {...this.props} buildBackEndChannelId={this._buildBackEndChannelId} ></ImSideNav>
         </Flex.Layout>
-      <ImSideNav {...this.props} buildBackEndChannelId={this._buildBackEndChannelId} ></ImSideNav>
-    </Flex.Layout>
     );
   }
 });

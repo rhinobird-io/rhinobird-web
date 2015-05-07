@@ -27,31 +27,28 @@ module.exports = React.createClass({
     }
   },
 
+  _dummy() {
+    console.log('req change');
+  },
+
   componentDidMount() {
-    SocketStore.addChangeListener(this._onSocketReady);
     ChannelStore.addChangeListener(this._onChannelChange);
   },
 
   componentWillUnmount() {
-    SocketStore.removeChangeListener(this._onSocketReady);
     ChannelStore.removeChangeListener(this._onChannelChange);
   },
 
   _onChannelChange() {
     this.setState({
-      currentChannel : ChannelStore.getCurrentChannel(),
-      ready : !!this.state.socket
-    })
-  },
-
-  _onSocketReady() {
-    this.setState({
       socket : SocketStore.getSocket(),
-      ready : !!this.state.currentChannel
+      currentChannel : ChannelStore.getCurrentChannel(),
+      ready : true
     })
   },
 
   sendMessage() {
+
     var msg = {
       userId: LoginStore.getUser().id,
       channelId: this.state.currentChannel.backEndChannelId,
@@ -70,7 +67,7 @@ module.exports = React.createClass({
 
   render() {
     return (
-      <div className="send-box">
+      <div className="send-box" style={this.props.style}>
         <Layout>
           <SmartEditor ref="sEditor" multiLine valueLink={this.linkState('messageValue')} className="instant-message-smart-editor"></SmartEditor>
           <FlatButton label="Send" primary={true} onClick={this.sendMessage} disabled={!this.state.ready}></FlatButton>

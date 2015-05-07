@@ -19,8 +19,11 @@ const { Menu, FontIcon, FlatButton } = mui;
 
 const Flex = require('../../../../Flex');
 const PerfectScroll = require('../../../../PerfectScroll');
+const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 require('./style.less');
 module.exports = React.createClass({
+
+    mixins: [PureRenderMixin],
 
     contextTypes: {
         router: React.PropTypes.func.isRequired
@@ -37,7 +40,7 @@ module.exports = React.createClass({
         return {
             _menuItems: [],
             _onlineStatus: {},
-            _unread: {}
+            _unread: undefined
         };
     },
 
@@ -63,12 +66,12 @@ module.exports = React.createClass({
 
     componentDidMount() {
         OnlineStore.addChangeListener(this._onlineStatusChange);
-        UnreadStore.addChangeListener(this._onUnreadChange)
+        UnreadStore.addChangeListener(this._onUnreadChange);
     },
 
     componentWillUnmount() {
         OnlineStore.removeChangeListener(this._onlineStatusChange);
-        UnreadStore.removeChangeListener(this._onUnreadChange)
+        UnreadStore.removeChangeListener(this._onUnreadChange);
     },
 
     updateChannels(channels) {
@@ -94,16 +97,19 @@ module.exports = React.createClass({
 
     render() {
         let self = this;
-
+        // console.log('render imChannels');
         if (!this.props.isGroup) {
             this.state._menuItems.sort((item1, item2) => {
                 let _onlineList = self.state._onlineStatus;
                 let onlineOffset = (_onlineList[item1.channel.id] ? -1 : 0) - (_onlineList[item2.channel.id] ? -1 : 0);
                 onlineOffset = onlineOffset * 100000;
 
-                let unreadOffset = (self.state._unread[item1.backEndChannelId] ? -1 : 0) - (self.state._unread[item2.backEndChannelId] ? -1 : 0);
-                unreadOffset = unreadOffset * 1000000;
-
+                var unread = self.state._unread;
+                let unreadOffset = 0;
+                if (unread) {
+                    unreadOffset = (unread.get(item1.backEndChannelId) ? -1 : 0) - (unread.get(item2.backEndChannelId) ? -1 : 0);
+                    unreadOffset = unreadOffset * 1000000;
+                }
                 return item1.channel.id - item2.channel.id + onlineOffset + unreadOffset;
             });
         } else {
@@ -118,7 +124,7 @@ module.exports = React.createClass({
                 <PerfectScroll className="instant-message-channel-items">
                     {
                         this.state._menuItems.map((item,idx) => {
-                            return <ImChannel key={idx} Channel={item}></ImChannel>
+                            return <ImChannel key={item.backEndChannelId} Channel={item}></ImChannel>
                         })
                     }
                 </PerfectScroll>
