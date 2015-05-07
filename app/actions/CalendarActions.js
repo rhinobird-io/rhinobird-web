@@ -49,7 +49,6 @@ export default {
         let parsedEvent = {};
         parsedEvent.title = event.title;
         parsedEvent.description = event.description;
-        console.log(event.fromTime);
         parsedEvent.from_time = new Date(event.fromTime).toISOString();
         parsedEvent.to_time = new Date(event.toTime).toISOString();
         parsedEvent.full_day = event.fullDay;
@@ -68,7 +67,6 @@ export default {
             parsedEvent.repeated = false;
         }
         $.post("/platform/api/events", parsedEvent).done(data => {
-            console.log(data);
             AppDispatcher.dispatch({
                 type: CalendarActionTypes.CREATE_EVENT,
                 data: data

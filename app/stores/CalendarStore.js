@@ -11,6 +11,7 @@ let _eventRange = {};
 let _hasMoreNewerEvents = true;
 let _hasMoreOlderEvents = true;
 let _hasReceived = false;
+let _newCreated = null;
 
 function _addEvent(event, type) {
     let dateFormat = _formatDate(event.from_time);
@@ -24,6 +25,11 @@ function _addEvent(event, type) {
     }
 
     if (type && type === ActionTypes.CREATE_EVENT) {
+        _newCreated = event.id.toString();
+        setTimeout(() => {
+            _newCreated = null;
+            CalendarStore.emitChange();
+        }, 2000);
         return;
     }
 
@@ -71,6 +77,10 @@ let CalendarStore = assign({}, BaseStore, {
 
     getEventTimeRange() {
         return _eventRange;
+    },
+
+    getNewCreated() {
+        return _newCreated;
     },
 
     hasMoreNewerEvents() {

@@ -21,7 +21,8 @@ export default React.createClass({
             eventRange: CalendarStore.getEventTimeRange(),
             hasReceived: CalendarStore.hasReceived(),
             hasMoreNewerEvents: CalendarStore.hasMoreNewerEvents(),
-            hasMoreOlderEvents: CalendarStore.hasMoreOlderEvents()
+            hasMoreOlderEvents: CalendarStore.hasMoreOlderEvents(),
+            newCreated: CalendarStore.getNewCreated()
         }
     },
 
@@ -30,6 +31,17 @@ export default React.createClass({
         if (!this.state.hasReceived) {
             let container = this.getDOMNode();
             CalendarActions.receive(() => container.scrollTop = (container.scrollHeight - container.clientHeight) / 2);
+        }
+
+        if (this.refs.newCreated) {
+            let self = this.getDOMNode();
+            let newCreated = this.refs.newCreated.getDOMNode();
+            let offsetTop = 0, offsetParent = newCreated;
+            while (offsetParent !== self && offsetParent !== null) {
+                offsetTop += offsetParent.offsetTop;
+                offsetParent = offsetParent.offsetParent;
+            }
+            self.scrollTop = offsetTop + newCreated.offsetHeight - self.offsetHeight + 20;
         }
     },
 
@@ -43,7 +55,8 @@ export default React.createClass({
             eventRange: CalendarStore.getEventTimeRange(),
             hasReceived: CalendarStore.hasReceived(),
             hasMoreNewerEvents: CalendarStore.hasMoreNewerEvents(),
-            hasMoreOlderEvents: CalendarStore.hasMoreOlderEvents()
+            hasMoreOlderEvents: CalendarStore.hasMoreOlderEvents(),
+            newCreated: CalendarStore.getNewCreated()
         });
     },
 
@@ -61,7 +74,6 @@ export default React.createClass({
 
             let container = this.getDOMNode();
             let oldScrollHeight = container.scrollHeight;
-            console.log(oldScrollHeight);
             CalendarActions.loadMoreOlderEvents(eventRange.min, () => container.scrollTop = container.scrollHeight - oldScrollHeight);
         }
     },
@@ -89,6 +101,7 @@ export default React.createClass({
             dayEvents.push(events.map((event) => {
                 let contentClass = "cal-event-content " + direction;
                 let eventIconClass = "cal-event-icon";
+
                 let now = new Date();
                 let fromTime = new Date(event.from_time);
                 let toTime = event.to_time ? new Date(event.to_time) : fromTime;
@@ -98,8 +111,13 @@ export default React.createClass({
                     eventIconClass += " active";
                 }
 
+                let ref = event.id.toString() === this.state.newCreated ? "newCreated" : undefined;
+                let contentInnerClass = "cal-event-content-inner";
+                if (event.id.toString() === this.state.newCreated) {
+                    contentInnerClass += " highlight";
+                }
                 return (
-                    <div className="cal-event">
+                    <div ref={ref} className="cal-event">
                         <div className="cal-event-icon-wrapper">
                             <div className={eventIconClass}>
                                 <MUI.FontIcon className="icon-event"/>
@@ -107,7 +125,7 @@ export default React.createClass({
                         </div>
 
                         <div className={contentClass}>
-                            <div className="cal-event-content-inner">
+                            <div className={contentInnerClass}>
                                 <div className="cal-event-title">
                                     <Layout horizontal justified>
                                         <span>{event.title}</span>
