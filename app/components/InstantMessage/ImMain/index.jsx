@@ -109,7 +109,7 @@ module.exports = React.createClass({
 
     return (
         <Flex.Layout fit className="instant-message-container">
-          <Flex.Layout selfStretch flex={5} vertical className="main" >
+          <Flex.Layout selfStretch flex vertical className="main" >
             <ImHistory {...this.props} className="history" ></ImHistory>
             <ImSendBox {...this.props} className="send-box" ></ImSendBox>
           </Flex.Layout>

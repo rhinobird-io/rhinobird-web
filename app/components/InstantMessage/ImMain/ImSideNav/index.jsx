@@ -48,7 +48,7 @@ module.exports = React.createClass({
 
   render() {
     return (
-      <Flex.Layout selfStretch vertical flex={1}>
+      <Flex.Layout selfStretch vertical style={{ maxWidth : '250px'}}>
         <ImChannels ref="groupChannels" {...this.props} className="instant-message-group-channels" channelGroup="Group Channel" isGroup={true}></ImChannels>
         <ImChannels ref="directChannels" {...this.props} className='instant-message-direct-message-channels' channelGroup="Direct Message" ></ImChannels>
       </Flex.Layout>

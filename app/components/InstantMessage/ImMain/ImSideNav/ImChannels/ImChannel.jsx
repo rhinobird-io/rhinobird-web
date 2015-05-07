@@ -12,8 +12,10 @@ import OnlineStore from '../../../../../stores/OnlineStore';
 import MessageStore from '../../../../../stores/MessageStore';
 import UnreadStore from '../../../../../stores/MessageUnreadStore';
 import IMConstants from '../../../../../constants/IMConstants';
+import Flex from '../../../../Flex';
 
 const { Menu, FontIcon, FlatButton } = mui;
+const {Layout} = Flex;
 
 require('./style.less');
 module.exports = React.createClass({
@@ -102,13 +104,14 @@ module.exports = React.createClass({
     },
 
     render() {
-        // console.log('render ' + this.props.Channel.backEndChannelId);
         let self = this;
         return (
             <div className="instant-message-channel-container">
                 <FlatButton className={this.state._imCurrentChannel?'instant-message-channel-item-selected instant-message-channel-item ':'instant-message-channel-item '}  onTouchTap={self._onItemTap.bind(self, this.props.Channel)}>
-                    <span className={ this.props.Channel.iconClassName}></span>
-                    <span className={(this.props.Channel.isDirect && !self.state._onlineStatus)?'instant-message-channel-item-offline':''}>{ this.props.Channel.text}</span>
+                    <div style={{overflowX: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <span className={ this.props.Channel.iconClassName}></span>
+                        <span className={(this.props.Channel.isDirect && !self.state._onlineStatus)?'instant-message-channel-item-offline':''}>{ this.props.Channel.text}</span>
+                    </div>
                 </FlatButton>
                 <span className={ this.state._hasUnread?'instant-message-channel-item-unread icon-message':''}></span>
             </div>
