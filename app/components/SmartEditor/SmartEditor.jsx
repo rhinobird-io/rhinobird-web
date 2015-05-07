@@ -29,6 +29,12 @@ const SmartEditor = React.createClass({
     popupMinusTop: React.PropTypes.number
   },
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.valueLink) {
+      this._getInputNode().value = nextProps.valueLink.value;
+    }
+  },
+
   getDefaultProps() {
     return {
       popupWidth: 240,

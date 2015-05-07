@@ -33,7 +33,6 @@ module.exports = React.createClass({
     //},
 
     componentDidMount() {
-        // MessageStore.addChangeListener(this._onMessageChange);
         MessageStore.on(IMConstant.EVENTS.RECEIVE_NEW_MESSAGE, this._onReceiveNewMessage);
         MessageStore.on(IMConstant.EVENTS.RECEIVE_INIT_MESSAGE, this._onReceiveInitMessage);
         MessageStore.on(IMConstant.EVENTS.RECEIVE_OLD_MESSAGE, this._onReceiveOldMessage);
@@ -42,7 +41,6 @@ module.exports = React.createClass({
     },
 
     componentWillUnmount() {
-        // MessageStore.removeChangeListener(this._onMessageChange);
         MessageStore.removeEventListener(IMConstant.EVENTS.RECEIVE_NEW_MESSAGE, this._onReceiveNewMessage);
         MessageStore.removeEventListener(IMConstant.EVENTS.RECEIVE_INIT_MESSAGE, this._onReceiveInitMessage);
         MessageStore.removeEventListener(IMConstant.EVENTS.RECEIVE_OLD_MESSAGE, this._onReceiveOldMessage);
@@ -151,7 +149,6 @@ module.exports = React.createClass({
         return (
             <Flex.Layout vertical perfectScroll className="history" style={this.props.style}>
                 <InfiniteScroll upperThreshold={this.state.upperThreshold} onUpperTrigger={()=>{
-                    // MessageAction.getMessages(ChannelStore.getCurrentChannel(), this.state.messages[this.state.messages.length-1]);
                     this.loadMoreOldMessages()
                 }} scrollTarget={()=>{
                     return this.getDOMNode();

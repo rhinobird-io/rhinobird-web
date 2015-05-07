@@ -27,6 +27,10 @@ module.exports = React.createClass({
     }
   },
 
+  _dummy() {
+    console.log('req change');
+  },
+
   componentDidMount() {
     ChannelStore.addChangeListener(this._onChannelChange);
   },
@@ -44,6 +48,7 @@ module.exports = React.createClass({
   },
 
   sendMessage() {
+
     var msg = {
       userId: LoginStore.getUser().id,
       channelId: this.state.currentChannel.backEndChannelId,
