@@ -1,6 +1,7 @@
 'use strict';
 import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
+import IMConstants from '../constants/IMConstants.js';
 import BaseStore from './BaseStore';
 import LoginStore from './LoginStore';
 import MessageStore from './MessageStore';
@@ -13,16 +14,21 @@ let OnlineStore = assign({}, BaseStore, {
 
     setOnlineList : (onlineList)=> {
         _onlineList = onlineList;
+        Object.keys(onlineList).forEach((onlineUserId) => {
+            OnlineStore.emit(IMConstants.EVENTS.USER_ONLINE_PREFIX + onlineUserId, { online : true});
+        });
         OnlineStore.emitChange();
     },
 
     userJoin : (userStatus) => {
         _onlineList[userStatus.userId] = userStatus.channelId;
+        OnlineStore.emit(IMConstants.EVENTS.USER_ONLINE_PREFIX + userStatus.userId, { online : true});
         OnlineStore.emitChange();
     },
 
     userLeft : (userStatus) => {
         delete _onlineList[userStatus.userId];
+        OnlineStore.emit(IMConstants.EVENTS.USER_ONLINE_PREFIX + userStatus.userId, { online : false});
         OnlineStore.emitChange();
     },
 

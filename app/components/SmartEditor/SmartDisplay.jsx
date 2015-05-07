@@ -3,15 +3,16 @@
 require("./markdown.css");
 require("../../../node_modules/highlight.js/styles/default.css");
 
-let React = require("react");
+let React = require("react/addons");
 let HighLight = require("highlight.js");
 let MarkdownIt = require("markdown-it");
 
 let IconLink = require("../IconLink");
 let Member = require("../Member");
+let LoginStore = require("../../stores/LoginStore");
 let UserStore = require("../../stores/UserStore");
 
-const AT_REGEX = /^\s*(@\w+)/;
+const AT_REGEX = /^\s*(@[\w\.-]+)/;
 const SLASH_REGEX = /^\s*(#[\w\.-]+(:\S+)?)/;
 
 function _plugin(state, regex, trans) {
@@ -55,7 +56,8 @@ function slashPlugin(state) {
   });
 }
 
-export default React.createClass({
+const SmartDisplay = React.createClass({
+  mixins: [React.addons.PureRenderMixin],
   componentDidMount: function() {
     window.addEventListener('click', this._onClick);
   },
@@ -100,8 +102,8 @@ export default React.createClass({
       let item = list[i], iconLink;
       let [plugin, arg] = item.getAttribute("value").substr(1).split(":");
       switch (plugin) {
-        case "vity":  // TODO
-          iconLink = <IconLink type="vity" args={{room: arg, user: "guest"}} />;
+        case "vity":
+          iconLink = <IconLink type="vity" args={{room: arg, user: LoginStore.getUser().name}} />;
           break;
         case "file":  // TODO
           iconLink = <IconLink type="file" args={{id: arg, name: arg}} />;
@@ -130,3 +132,5 @@ export default React.createClass({
     );
   }
 });
+
+export default SmartDisplay;

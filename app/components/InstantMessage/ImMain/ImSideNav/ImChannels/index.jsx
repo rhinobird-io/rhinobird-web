@@ -5,18 +5,25 @@ const RouteHandler = require("react-router").RouteHandler;
 const mui = require("material-ui");
 
 import ChannelAction from '../../../../../actions/ChannelAction';
+import MessageAction from '../../../../../actions/MessageAction';
+
 import LoginStore from '../../../../../stores/LoginStore';
 import OnlineStore from '../../../../../stores/OnlineStore';
 import MessageStore from '../../../../../stores/MessageStore';
+import UnreadStore from '../../../../../stores/MessageUnreadStore';
 
 import ImChannel from './ImChannel.jsx';
+import DropDownAny from '../../../../DropDownAny';
 
 const { Menu, FontIcon, FlatButton } = mui;
 
 const Flex = require('../../../../Flex');
 const PerfectScroll = require('../../../../PerfectScroll');
+const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 require('./style.less');
 module.exports = React.createClass({
+
+    mixins: [PureRenderMixin],
 
     contextTypes: {
         router: React.PropTypes.func.isRequired
@@ -33,7 +40,7 @@ module.exports = React.createClass({
         return {
             _menuItems: [],
             _onlineStatus: {},
-            _unread: {}
+            _unread: undefined
         };
     },
 
@@ -59,17 +66,18 @@ module.exports = React.createClass({
 
     componentDidMount() {
         OnlineStore.addChangeListener(this._onlineStatusChange);
-        MessageStore.addChangeListener(this._onMessageChange);
+        UnreadStore.addChangeListener(this._onUnreadChange);
     },
 
     componentWillUnmount() {
         OnlineStore.removeChangeListener(this._onlineStatusChange);
-        MessageStore.removeChangeListener(this._onMessageChange);
+        UnreadStore.removeChangeListener(this._onUnreadChange);
     },
 
     updateChannels(channels) {
+        var menuItems = this._getMenuItems(channels);
         this.setState({
-            _menuItems: this._getMenuItems(channels)
+            _menuItems: menuItems
         });
     },
 
@@ -80,28 +88,28 @@ module.exports = React.createClass({
         });
     },
 
-    _onMessageChange() {
-        let tmpUnread = {};
-        this.state._menuItems.forEach(menuItem => {
-            tmpUnread[menuItem.backEndChannelId] = MessageStore.hasUnread(menuItem) ? 1 : 0;
-        });
+    _onUnreadChange() {
+        let unread = UnreadStore.getAllUnread();
         this.setState({
-            _unread: tmpUnread
+            _unread: unread
         });
     },
 
     render() {
         let self = this;
-
+        // console.log('render imChannels');
         if (!this.props.isGroup) {
             this.state._menuItems.sort((item1, item2) => {
                 let _onlineList = self.state._onlineStatus;
                 let onlineOffset = (_onlineList[item1.channel.id] ? -1 : 0) - (_onlineList[item2.channel.id] ? -1 : 0);
                 onlineOffset = onlineOffset * 100000;
 
-                let unreadOffset = (self.state._unread[item1.backEndChannelId] ? -1 : 0) - (self.state._unread[item2.backEndChannelId] ? -1 : 0);
-                unreadOffset = unreadOffset * 1000000;
-
+                var unread = self.state._unread;
+                let unreadOffset = 0;
+                if (unread) {
+                    unreadOffset = (unread.get(item1.backEndChannelId) ? -1 : 0) - (unread.get(item2.backEndChannelId) ? -1 : 0);
+                    unreadOffset = unreadOffset * 1000000;
+                }
                 return item1.channel.id - item2.channel.id + onlineOffset + unreadOffset;
             });
         } else {
@@ -115,8 +123,8 @@ module.exports = React.createClass({
                 <div className="mui-font-style-subhead-1 instant-message-channel-brand">{this.props.channelGroup}</div>
                 <PerfectScroll className="instant-message-channel-items">
                     {
-                        this.state._menuItems.map((item) => {
-                            return <ImChannel Channel={item}></ImChannel>
+                        this.state._menuItems.map((item,idx) => {
+                            return <ImChannel key={item.backEndChannelId} Channel={item}></ImChannel>
                         })
                     }
                 </PerfectScroll>

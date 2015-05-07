@@ -1,8 +1,10 @@
-const React                = require("react"),
-      SmartTimeDisplay     = require("../SmartTimeDisplay"),
-      Select = require("../Select").Select,
-      Selector = require("../Select").Selector,
-      PopupSelect2 = require("../Select").PopupSelect2;
+var React                = require("react"),
+    SmartTimeDisplay     = require("../SmartTimeDisplay"),
+    SmartEditor = require("../SmartEditor").SmartEditor,
+    SmartPreview = require("../SmartEditor").SmartPreview,
+    Select = require("../Select").Select,
+    Selector = require("../Select").Selector,
+    PopupSelect2 = require("../Select").PopupSelect2;
 
 require("./style.less");
 
@@ -92,6 +94,12 @@ export default React.createClass({
                     </div>
                     <div name="B">B</div>
                 </PopupSelect2>
+
+                <SmartEditor />
+                <SmartEditor nohr hintText="I have no underline" />
+                <SmartEditor floatingLabelText="I have a Label" />
+                <br/>
+                <SmartPreview />
             </div>
         );
     }

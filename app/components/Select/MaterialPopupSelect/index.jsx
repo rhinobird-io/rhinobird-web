@@ -26,12 +26,34 @@ export default React.createClass({
     },
 
     getInitialState() {
-        var _this = this;
+        return {
+            visible: false,
+            list: [],
+            filteredContent: [],
+            filteredContentMap: {},
+            selectedIndex: 0
+        }
+    },
 
+    componentDidMount() {
+
+    },
+
+    componentWillReceiveProps(nextProps) {
+        // TODO: this following event binding is not recommended
+        if (nextProps.controller) {
+            var target = nextProps.controller;
+            target.props.onBlur = nextProps.onBlur || this._blurListener;
+            target.props.onFocus = nextProps.onFocus || this._focusListener;
+            target.props.onChange = nextProps.onChange || this._changeListener;
+            target.props.onKeyDown = nextProps.onKeyDown || this._keyDownListener;
+        }
+
+        var _this = this;
         let listContent = [];
         let listContentMap;
 
-        this.props.children.forEach(function(child) {
+        nextProps.children.forEach(function(child) {
             var _content = null;
             if (child instanceof Array) {
                 _content = _this._parseChildren(child);
@@ -45,24 +67,13 @@ export default React.createClass({
 
         listContentMap = this._getListContentMap(listContent);
 
-        return {
+        this.setState({
             visible: false,
             list: listContent,
             filteredContent: listContent,
             filteredContentMap: listContentMap,
             selectedIndex: 0
-        }
-    },
-
-    componentWillReceiveProps(nextProps) {
-        // TODO: this following event binding is not recommended
-        if (nextProps.controller) {
-            var target = nextProps.controller;
-            target.props.onBlur = nextProps.onBlur || this._blurListener;
-            target.props.onFocus = nextProps.onFocus || this._focusListener;
-            target.props.onChange = nextProps.onChange || this._changeListener;
-            target.props.onKeyDown = nextProps.onKeyDown || this._keyDownListener;
-        }
+        });
     },
 
     componentWillUnmount() {

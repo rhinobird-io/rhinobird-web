@@ -11,8 +11,6 @@ let _socket;
 
 let SocketStore = assign({}, BaseStore, {
 
-    getOnlineList: () => { return _onlineList;},
-
     getSocket : ()=>{return _socket; },
 
     dispatcherIndex: AppDispatcher.register(function (payload) {
@@ -39,6 +37,8 @@ let SocketStore = assign({}, BaseStore, {
         _socket.on('message:send', function (message) {
             const MessageStore = require('./MessageStore');
             MessageStore.receiveMessage(message);
+            const UnreadStore = require('./MessageUnreadStore');
+            UnreadStore.receiveMessageFromSocket(message);
         });
 
         _socket.on('channel:created', function (channel) {
@@ -71,20 +71,16 @@ let SocketStore = assign({}, BaseStore, {
             OnlineStore.userLeft(data);
         });
         _socket.on('disconnect', function () {
-            self.$.connectingDialog.open();
             self.connectinStatus = "disconnected.";
         });
 
         _socket.on('reconnecting', function (number) {
-            self.$.connectingDialog.open();
             self.connectinStatus = "reconnecting... (" + number + ")";
         });
         _socket.on('reconnecting_failed', function () {
-            self.$.connectingDialog.open();
             self.connectinStatus = "reconnecting failed.";
         });
         _socket.on('reconnect', function () {
-            self.$.connectingDialog.open();
             self.connectinStatus = "connected";
         });
 
