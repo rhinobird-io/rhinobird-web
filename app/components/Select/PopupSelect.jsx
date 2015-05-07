@@ -1,4 +1,5 @@
 const React = require('react');
+
 export default React.createClass({
     mixins: [React.addons.LinkedStateMixin],
 
@@ -68,6 +69,14 @@ export default React.createClass({
         this.setState({activeOptionIndex: activeOptionIndex});
     },
 
+    hide() {
+        this.setState({visible: false});
+    },
+
+    show() {
+        this.setState({visible: true});
+    },
+
     render: function() {
         let styles = {
             popup: {
@@ -75,7 +84,6 @@ export default React.createClass({
             }
         };
 
-        console.log(this.state.options);
         let children = this._construct(this.props.children, this.props.valueAttr);
 
         return (
@@ -84,7 +92,6 @@ export default React.createClass({
     },
 
     _parse(props) {
-        console.log("Doing parse.");
         let children = [].concat(props.children);
         let valueAttr = props.valueAttr;
         let options = {};
@@ -95,7 +102,6 @@ export default React.createClass({
 
         let index = 0;
         let optionsMap = Object.keys(options).filter((option) => {
-            console.log(options[option]);
             if (!options[option].disabled) {
                 options[option].index = index++;
                 return true;
@@ -128,8 +134,7 @@ export default React.createClass({
     },
 
     _construct(children, valueAttr) {
-        let children = [].concat(children);
-        return children.map(child => {
+        return [].concat(children).map(child => {
             return this._constructChild(child, valueAttr);
         });
     },
