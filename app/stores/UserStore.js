@@ -15,32 +15,27 @@ if ($.mockjax) {
                 name: 'team1',
                 created_at: Date.now(),
                 updated_at: Date.now(),
-                hash: '@team1',
                 users: [
                     {
                         id: '1',
                         name: 'tomcat',
                         email: 'tom@cat.pet',
                         realname: 'Tom Cat',
-                        hash: 'a'
                     }, {
                         id: '2',
                         name: 'atomcat',
                         email: 'tom@cat.pet',
                         realname: 'Jerry Kitty',
-                        hash: 'b'
                     }, {
                         id: '3',
                         name: 'xtomcat',
                         email: 'tom@cat.pet',
                         realname: 'Some Body',
-                        hash: 'c'
                     }, {
                         id: '4',
                         name: 'btomcat',
                         email: 'tom@cat.pet',
                         realname: '无名',
-                        hash: 'd'
                     }]
             }
             , {
@@ -48,26 +43,22 @@ if ($.mockjax) {
                 name: 'team2',
                 created_at: Date.now(),
                 updated_at: Date.now(),
-                hash: '@team2',
                 users: [
                     {
                         id: '1',
                         name: 'tomcat',
                         email: 'tom@cat.pet',
                         realname: 'Tom Cat',
-                        hash: 'a'
                     }, {
                         id: '2',
                         name: 'atomcat',
                         email: 'tom@cat.pet',
                         realname: 'Jerry Kitty',
-                        hash: 'b'
                     }, {
                         id: '3',
                         email: 'tom@cat.pet',
                         name: 'xtomcat',
                         realname: 'Some Body',
-                        hash: 'c'
                     }]
             }
         ]
@@ -79,7 +70,7 @@ let _teams_users = {};
 // key: userId, value: teams
 let _users_teams = {};
 
-// key, teamId or teamhash
+// key, teamId
 let _teams = {};
 //
 let _users = {};
@@ -97,22 +88,14 @@ let UserStore = assign({}, BaseStore, {
     },
 
     getTeamsArray() {
-
-        var _tmp = {};
-        return _.values(_teams).filter(_team => {
-            if (_tmp[_team.id]) {
-                return false;
-            }
-            _tmp[_team.id] = _team;
-            return true;
-        });
+        return Object.values(_teams);
     },
 
     /**
      * get all users current user can see among all teams
      * @returns {*}
      */
-        getUsersMap() {
+    getUsersMap() {
         return _users;
     },
 
@@ -203,7 +186,6 @@ function buildIndex(teams_users) {
 
         // build teams
         _teams[team.id] = team;
-        _teams[team.hash] = team;
     });
     Object.values(_teams).forEach(team => {
         team.teams = team.teams.map(sub_team_id =>{
