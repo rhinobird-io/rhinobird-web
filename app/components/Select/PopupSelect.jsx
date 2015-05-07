@@ -5,7 +5,8 @@ export default React.createClass({
     propTypes: {
         valueAttr: React.PropTypes.string,
         activeStyle: React.PropTypes.object,
-        activeClass: React.PropTypes.string
+        activeClass: React.PropTypes.string,
+        disabledStyle: React.PropTypes.object
     },
 
     getDefaultProps: function() {
@@ -13,6 +14,9 @@ export default React.createClass({
             valueAttr: "name",
             activeStyle: {
                 fontWeight: "bold"
+            },
+            disabledStyle: {
+                color: "#888"
             },
             activeClass: "active"
         };
@@ -23,7 +27,7 @@ export default React.createClass({
             visible: true,
             options: {},
             optionsMap: [],
-            activeOptionIndex: 0
+            activeOptionIndex: -1
         }
     },
 
@@ -55,11 +59,13 @@ export default React.createClass({
     cursorDown() {
         let optionsMap = this.state.optionsMap;
         let activeOptionIndex = this.state.activeOptionIndex;
+
         if (activeOptionIndex < optionsMap.length - 1) {
-            this.setState({activeOptionIndex: activeOptionIndex + 1});
+            activeOptionIndex = activeOptionIndex + 1;
         } else {
-            this.setState({activeOptionIndex: 0});
+            activeOptionIndex = 0;
         }
+        this.setState({activeOptionIndex: activeOptionIndex});
     },
 
     render: function() {
@@ -87,9 +93,14 @@ export default React.createClass({
             this._parseChild(children[i], valueAttr, options);
         }
 
-        let optionsMap = Object.keys(options).map((option, index) => {
-            options[option]["index"] = index;
-            return option;
+        let index = 0;
+        let optionsMap = Object.keys(options).filter((option) => {
+            console.log(options[option]);
+            if (!options[option].disabled) {
+                options[option].index = index++;
+                return true;
+            }
+            return false;
         });
         this.setState({options: options, optionsMap: optionsMap});
     },
@@ -102,6 +113,9 @@ export default React.createClass({
             let value = child.props[valueAttr].toString();
             if (!options[value]) {
                 options[value] = {};
+                if (child.props.disabled) {
+                    options[value].disabled = true;
+                }
             }
         } else {
             if (child.props.children) {
@@ -124,7 +138,13 @@ export default React.createClass({
         if (child.props) {
             if (child.props[valueAttr]) {
                 let value = child.props[valueAttr].toString();
-                let style = this.state.options[value] && this.state.options[value]["index"] === this.state.activeOptionIndex ? this.props.activeStyle : null;
+                let disabled = !!child.props.disabled;
+                let style;
+                if (disabled) {
+                    style = this.props.disabledStyle;
+                } else {
+                    style = this.state.options[value] && this.state.options[value]["index"] === this.state.activeOptionIndex ? this.props.activeStyle : null;
+                }
                 return React.cloneElement(child, {
                     key: value,
                     style: style,

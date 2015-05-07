@@ -87,7 +87,7 @@ export default React.createClass({
                 <PopupSelect2>
                     <div>
                         <label>group A</label>
-                        <div name="person1">Person 1</div>
+                        <div name="person1" disabled>Person 1</div>
                         <div name="person2">Person 2</div>
                     </div>
                     <div name="B">B</div>
