@@ -199,10 +199,17 @@ function buildIndex(teams_users) {
         });
         //Avoid duplicated user
         team.users = linkedUsers;
+        team.parentTeams = [];
 
         // build teams
         _teams[team.id] = team;
         _teams[team.hash] = team;
+    });
+    Object.values(_teams).forEach(team => {
+        team.teams = team.teams.map(sub_team_id =>{
+            _teams[sub_team_id].parentTeams.push(team);
+            return _teams[sub_team_id];
+        });
     });
 
 
