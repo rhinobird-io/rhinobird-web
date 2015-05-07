@@ -13,41 +13,44 @@
     align-items : center;
   }
 
-  .instant-message-channel-items {
-    .instant-message-channel-container {
-      width: 100%;
-      display: flex;
-      align-items: center;
+  .instant-message-channel-container {
+    width: 100%;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
 
-      .instant-message-channel-item-selected {
-        background: @pink-500;
-        color :  @white;
-      }
+    .instant-message-channel-item-selected {
+      background: @pink-500;
+      color :  @white;
+    }
 
-      .instant-message-channel-item {
-        text-align: left;
+    .instant-message-channel-item {
+      text-align: left;
+      padding: 5px;
+      float : left;
+      flex: 5;
+
+      span {
         padding: 5px;
-        float : left;
-        flex: 5;
-
-        span {
-          padding: 5px;
-        }
-
-        .instant-message-channel-item-online {
-
-        }
-
-        .instant-message-channel-item-offline {
-          color: @grey-400;
-        }
       }
 
-      .instant-message-channel-item-unread {
-        flex: 1;
-        color : red;
+      .instant-message-channel-item-online {
+
+      }
+
+      .instant-message-channel-item-offline {
+        color: @grey-400;
       }
     }
+
+    .instant-message-channel-item-unread {
+      flex: 1;
+      color : red;
+    }
+  }
+
+  .instant-message-channel-items {
+
   }
 }
 
@@ -55,7 +58,7 @@
   max-height: 400px;
   width: 250px;
   .mui-menu-item {
+    padding: 0px !important;
     height: auto !important;
-    padding: 8px 24px !important;
   }
 }
