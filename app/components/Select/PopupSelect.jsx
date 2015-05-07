@@ -69,6 +69,7 @@ export default React.createClass({
             }
         };
 
+        console.log(this.state.options);
         let children = this._construct(this.props.children, this.props.valueAttr);
 
         return (
@@ -94,14 +95,17 @@ export default React.createClass({
     },
 
     _parseChild(child, valueAttr, options) {
+        if (!child.props) {
+            return;
+        }
         if (child.props[valueAttr]) {
             let value = child.props[valueAttr].toString();
             if (!options[value]) {
                 options[value] = {};
             }
         } else {
-            if (child.children) {
-                let children = [].concat(child.children);
+            if (child.props.children) {
+                let children = [].concat(child.props.children);
                 for (let i = 0; i < children.length; i++) {
                     this._parseChild(children[i], valueAttr, options);
                 }
@@ -117,27 +121,26 @@ export default React.createClass({
     },
 
     _constructChild(child, valueAttr) {
-        if (child.props[valueAttr]) {
-            let value = child.props[valueAttr].toString();
-            let style = this.state.options[value] && this.state.options[value]["index"] === this.state.activeOptionIndex ? this.props.activeStyle : null;
-            return React.cloneElement(child, {
-                key: value,
-                style: style,
-                onMouseOver: () => this.setState({activeOptionIndex: this.state.options[value].index})
-            });
-        } else {
-            if (child.children) {
-                let children = [].concat(child.children);
+        if (child.props) {
+            if (child.props[valueAttr]) {
+                let value = child.props[valueAttr].toString();
+                let style = this.state.options[value] && this.state.options[value]["index"] === this.state.activeOptionIndex ? this.props.activeStyle : null;
+                return React.cloneElement(child, {
+                    key: value,
+                    style: style,
+                    onMouseOver: () => this.setState({activeOptionIndex: this.state.options[value].index})
+                });
+            } else if (child.props.children) {
+                let children = [].concat(child.props.children);
 
                 return React.cloneElement(child, {
                     children: children.map((c) => {
                         return this._constructChild(c, valueAttr)
                     })
                 });
-            } else {
-                return null;
             }
-
+        } else {
+            return child;
         }
     },
 
