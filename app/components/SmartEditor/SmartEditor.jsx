@@ -29,12 +29,6 @@ const SmartEditor = React.createClass({
     popupMinusTop: React.PropTypes.number
   },
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.valueLink) {
-      this._getInputNode().value = nextProps.valueLink.value;
-    }
-  },
-
   getDefaultProps() {
     return {
       popupWidth: 240,
@@ -51,6 +45,21 @@ const SmartEditor = React.createClass({
       popupPosition: {},
       popupJustified: false
     };
+  },
+
+  componentDidMount() {
+    // When using `SmartEditor` in `Tabs`, switching tabs will cause
+    // components' re-mount. Since the `valueLink` property won't be passed to
+    // `TextField`, we need to restore the text value here.
+    if (this.props.valueLink) {
+      this._getInputNode().value = this.props.valueLink.value;
+    }
+  },
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.valueLink) {
+      this._getInputNode().value = nextProps.valueLink.value;
+    }
   },
 
   getValue() {
@@ -139,7 +148,7 @@ const SmartEditor = React.createClass({
     }
   },
 
-  _onInputChange(e) {
+  _onInputChange() {
     let textarea = this._getInputNode();
     let text = textarea.value, triggerPos = -1;
     for (let i = textarea.selectionEnd - 1; i >= 0; i--) {
