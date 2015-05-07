@@ -76,8 +76,7 @@ export default React.createClass({
             repeatedBy: "Month",
             repeatedEndType: "Never",
             repeatedEndDate: "",
-            repeatedTimes: 1,
-            summary: ""
+            repeatedTimes: 1
         };
     },
 
@@ -115,8 +114,10 @@ export default React.createClass({
                             className="cal-create-event-textfield"
                             valueLink={this.linkState("description")} />
 
-                        <MUI.Toggle
-                            label="Full Day" />
+                        <Flex.Layout horizontal justified style={{marginTop: 24, marginBottom: 24}}>
+                            <label>Full Day</label>
+                            <MUI.Toggle />
+                        </Flex.Layout>
 
                         <MUI.Tabs className="cal-create-event-tab">
                             <MUI.Tab label="Period" >
@@ -143,10 +144,26 @@ export default React.createClass({
                             </MUI.Tab>
                         </MUI.Tabs>
 
-                        <MUI.Toggle
-                            ref="repeated"
-                            label="Repeated"
-                            onToggle={this._onRepeatToggled} />
+                        <Flex.Layout horizontal justified style={{marginTop: 24}}>
+                            <Flex.Layout vertical selfCenter>
+                                <label>Repeated</label>
+                            </Flex.Layout>
+                            <Flex.Layout horizontal centerJustified>
+                                <Flex.Layout vertical selfCenter>
+                                    <label style={{maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>{this._getSummary()}</label>
+                                </Flex.Layout>
+                                <MUI.FlatButton
+                                    label="Edit"
+                                    type="button"
+                                    primary={true}
+                                    onClick={() => this.setState({editRepeated: true})}
+                                    style={{display: this.state.repeated ? "inline-block" : "none"}} />
+                            </Flex.Layout><Flex.Layout vertical selfCenter>
+                                <MUI.Toggle
+                                    ref="repeated"
+                                    onToggle={this._onRepeatToggled} />
+                            </Flex.Layout>
+                        </Flex.Layout>
 
                         <MUI.TextField
                             ref="eventParticipant"
@@ -355,11 +372,11 @@ export default React.createClass({
 
     _cancelRepeatedInfo() {
         this.setState({editRepeated: false});
-        this.refs.repeated.setToggled(false);
+        this.refs.repeated.setToggled(this.state.repeated);
     },
 
     _confirmRepeatedInfo() {
-        this.setState({editRepeated: false});
+        this.setState({editRepeated: false, repeated: true});
         this.refs.repeated.setToggled(true);
     },
 
@@ -394,6 +411,9 @@ export default React.createClass({
     _getSummary() {
         let repeatedInfo = this.state;
 
+        if (!repeatedInfo.repeated && !repeatedInfo.editRepeated) {
+            return "No Repeat";
+        }
         var summary = "", frequencyOne, frequencyMultiple;
         frequencyOne = repeatedInfo.repeatedType;
 
@@ -466,7 +486,7 @@ export default React.createClass({
 
     _onRepeatToggled(e, isInputChecked) {
         if (isInputChecked) {
-            this.setState({editRepeated: true, repeated: true});
+            this.setState({editRepeated: true});
         } else {
             this.setState({editRepeated: false, repeated: false});
         }
