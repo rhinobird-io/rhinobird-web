@@ -8,6 +8,7 @@ const DropDownAny = require("../DropDownAny");
 const Avatar = require("../Member").Avatar;
 const Name = require("../Member").Name;
 const Layout = require("../Flex").Layout;
+const LoginStore = require("../../stores/LoginStore");
 const NotificationActions = require("../../actions/NotificationActions");
 const NotificationStore = require("../../stores/NotificationStore");
 const UserStore = require("../../stores/UserStore");
@@ -18,7 +19,7 @@ require("./style.less");
 let NotifiItem = React.createClass({
   propTypes: {
     sender: React.PropTypes.object.isRequired,
-    time: React.PropTypes.object.isRequired,
+    time: React.PropTypes.oneOfType([React.PropTypes.object, React.PropTypes.string]),
     message: React.PropTypes.string.isRequired
   },
 
@@ -46,12 +47,18 @@ export default React.createClass({
   },
 
   componentDidMount() {
+    LoginStore.addChangeListener(this._onLoginChange);
     NotificationStore.addChangeListener(this._onChange);
     NotificationActions.receive();
   },
 
   componentWillUnmount() {
+    LoginStore.removeChangeListener(this._onLoginChange);
     NotificationStore.removeChangeListener(this._onChange);
+  },
+
+  _onLoginChange() {
+    NotificationActions.receive();
   },
 
   _onChange() {
@@ -64,7 +71,7 @@ export default React.createClass({
     let control = <IconButton iconClassName="icon-notifications" />;
     let menu = this.state.notifications.map(n => {
       let sender = UserStore.getUser(n.from_user_id);
-      return <NotifiItem sender={sender} time={n.created_at} message={n.content} />;
+      return <NotifiItem key={n.id} sender={sender} time={n.created_at} message={n.content} />;
     });
     return <DropDownAny top={12} right={12} control={control} menu={menu} menuClasses="notification-menu" />;
   }

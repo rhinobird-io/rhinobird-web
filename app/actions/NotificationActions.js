@@ -29,6 +29,7 @@ export default {
   receive() {
     if (NotificationStore.getWebSocket() !== null) return;
     let user = LoginStore.getUser();
+    if (!user) return;
     $.get("/platform/api/users/" + user.id + "/notifications").done(data => {
       AppDispatcher.dispatch({
         type: ActionTypes.RECEIVE_NOTIFI,

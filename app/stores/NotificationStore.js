@@ -5,7 +5,7 @@ const ActionTypes = require("../constants/AppConstants").NotificationActionTypes
 const BaseStore = require("./BaseStore");
 const assign = require("object-assign");
 
-let _notifications = {};
+let _notifications = [];
 let _websocket = null;
 
 let NotificationStore = assign({}, BaseStore, {
