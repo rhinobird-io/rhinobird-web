@@ -55,6 +55,8 @@ export default React.createClass({
         } = this.props;
 
         let popup = {
+            zIndex: 9,
+            background: "white",
             display: this.state.visible ? "block" : "none"
         };
 

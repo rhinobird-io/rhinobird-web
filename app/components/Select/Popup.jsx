@@ -170,7 +170,7 @@ export default React.createClass({
             }
             return false;
         });
-        this.setState({options: options, optionsMap: optionsMap, activeOptionIndex: optionsMap.length > 0 ? 0 : -1});
+        this.setState({options: options, optionsMap: optionsMap});
     },
 
     _parseChild(child, valueAttr, options) {
