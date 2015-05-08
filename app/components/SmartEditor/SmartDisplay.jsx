@@ -6,6 +6,8 @@ require("../../../node_modules/highlight.js/styles/default.css");
 let React = require("react/addons");
 let HighLight = require("highlight.js");
 let MarkdownIt = require("markdown-it");
+let Emoji = require("markdown-it-emoji");
+let EmojiPng = require.context("../../../node_modules/emojify.js/src/images/emoji", false, /png$/);
 
 let IconLink = require("../IconLink");
 let Member = require("../Member");
@@ -76,7 +78,7 @@ const SmartDisplay = React.createClass({
   },
 
   markdown(value) {
-    let renderer = MarkdownIt({
+    let md = MarkdownIt({
       highlight(str, lang) {
         if (lang && HighLight.getLanguage(lang)) {
           return HighLight.highlight(lang, str).value;
@@ -90,8 +92,19 @@ const SmartDisplay = React.createClass({
       md.inline.ruler.before("text", "at", atPlugin);
     }).use(md => {
       md.inline.ruler.before("text", "slash", slashPlugin);
-    });
-    return renderer.render(value);
+    }).use(Emoji);
+
+    md.renderer.rules.emoji = (token, i) => {
+      let markup = token[i].markup;
+      if (EmojiPng.keys().includes("./" + markup + ".png")) {
+        return '<img class="emoji" alt="$" src="$"></img>'
+          .replace("$", token[i].content)
+          .replace("$", EmojiPng("./" + markup + ".png"));
+      } else {
+        return ":" + markup + ":";
+      }
+    };
+    return md.render(value);
   },
 
   renderIconLink(value) {

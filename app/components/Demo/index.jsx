@@ -17,6 +17,7 @@ export default React.createClass({
 
     getInitialState() {
         return {
+            editorValue: "",
             select1: [],
             select2: [],
             repeatedType: null,
@@ -95,11 +96,13 @@ export default React.createClass({
                     <div name="B">B</div>
                 </PopupSelect2>
 
-                <SmartEditor />
+                <br/>
+
+                <SmartEditor valueLink={this.linkState("editorValue")} hintText="Linked to SmartPreview" />
                 <SmartEditor nohr hintText="I have no underline" />
                 <SmartEditor floatingLabelText="I have a Label" />
                 <br/>
-                <SmartPreview />
+                <SmartPreview valueLink={this.linkState("editorValue")} />
             </div>
         );
     }

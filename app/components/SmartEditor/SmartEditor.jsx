@@ -3,6 +3,7 @@
 const React = require("react");
 const mui = require("material-ui"), TextField = mui.TextField;
 const CaretPosition = require("textarea-caret-position");
+const EmojiPng = require.context("../../../node_modules/emojify.js/src/images/emoji", false, /png$/);
 
 const Avatar = require("../Member").Avatar;
 const Item = require("../Flex").Item;
@@ -29,12 +30,6 @@ const SmartEditor = React.createClass({
     popupMinusTop: React.PropTypes.number
   },
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.valueLink) {
-      this._getInputNode().value = nextProps.valueLink.value;
-    }
-  },
-
   getDefaultProps() {
     return {
       popupWidth: 240,
@@ -53,6 +48,21 @@ const SmartEditor = React.createClass({
     };
   },
 
+  componentDidMount() {
+    // When using `SmartEditor` in `Tabs`, switching tabs will cause
+    // components' re-mount. Since the `valueLink` property won't be passed to
+    // `TextField`, we need to restore the text value here.
+    if (this.props.valueLink) {
+      this._getInputNode().value = this.props.valueLink.value;
+    }
+  },
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.valueLink) {
+      this._getInputNode().value = nextProps.valueLink.value;
+    }
+  },
+
   getValue() {
     return this.refs.textfield.getValue();
   },
@@ -69,14 +79,15 @@ const SmartEditor = React.createClass({
   _setOptions(keyword) {
     let style = {
       overflowX: "hidden",
-      textOverflow: "ellipsis"
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap"
     };
     let options = [];
     if (!keyword) {
       options = [];
-    } else if (keyword.charAt(0) === "@") {
+    } else if (keyword.charAt(0) === "@" && keyword.length > 1) {
       options = UserStore.getUsersArray().filter(u =>
-        keyword.length > 1 && u.name.indexOf(keyword.substr(1)) >= 0
+        u.name.indexOf(keyword.substr(1)) >= 0
       ).map(u =>
         <option key={u.id} value={[keyword, "@" + u.name + " "]}>
           <div style={style}>
@@ -93,6 +104,19 @@ const SmartEditor = React.createClass({
           <div style={style}>
             <span style={{fontWeight: 500}}>{c.name}</span>
             <span>{c.manual}</span>
+          </div>
+        </option>
+      );
+    } else if (keyword.charAt(0) === ":" && keyword.length > 1) {
+      options = EmojiPng.keys().map(k => k.substr(2, k.length - 6)).filter(k =>
+        k.indexOf(keyword.substr(1)) >= 0
+      ).slice(0, 10).map(k =>
+        <option key={k} value={[keyword, ":" + k + ": "]}>
+          <div style={style}>
+            <span>
+              <img style={{height: "1.6em", verticalAlign: "middle"}} src={EmojiPng("./" + k + ".png")} />
+            </span> &ensp;
+            <span style={{fontWeight: 500}}>{k}</span>
           </div>
         </option>
       );
@@ -139,14 +163,14 @@ const SmartEditor = React.createClass({
     }
   },
 
-  _onInputChange(e) {
+  _onInputChange() {
     let textarea = this._getInputNode();
     let text = textarea.value, triggerPos = -1;
     for (let i = textarea.selectionEnd - 1; i >= 0; i--) {
       let ch = text.charAt(i);
       if (/[\w\.-]/.test(ch)) {
         continue;
-      } else if (["@", "#"].includes(ch)) {
+      } else if (["@", "#", ":"].includes(ch)) {
         if (i === 0 || /\s/.test(text.charAt(i - 1))) triggerPos = i;
         break;
       } else {
