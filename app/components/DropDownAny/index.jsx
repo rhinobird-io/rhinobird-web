@@ -15,10 +15,6 @@ export default React.createClass({
   propTypes: {
     control: React.PropTypes.element.isRequired,
     menu: React.PropTypes.array.isRequired,
-    right: React.PropTypes.number,
-    bottom: React.PropTypes.number,
-    top: React.PropTypes.number,
-    left: React.PropTypes.number,
     controlClasses: React.PropTypes.string,
     menuClasses: React.PropTypes.string
   },
@@ -50,26 +46,13 @@ export default React.createClass({
       "mui-visible": this.state.open,
       "dropdownany-hidden": !this.state.open
     });
-    let style = {};
-    if(this.props.right) {
-      style.right = this.props.right;
-    }
-    if(this.props.bottom) {
-      style.bottom = this.props.bottom;
-    }
-    if(this.props.left) {
-      style.left = this.props.left;
-    }
-    if(this.props.top) {
-      style.top = this.props.top;
-    }
     return (
       <div className={dropClasses}>
         <div className={controlClasses} onClick={this._onControlClick}>
           {this.props.control}
         </div>
-        <Paper className={menuClasses} style={style}>
-          <PerfectScroll className={this.props.menuClasses}>
+        <Paper className={menuClasses} style={this.props.style}>
+          <PerfectScroll className={this.props.menuClasses} noScrollX>
             {this._getMenuItems(this.props.menu)}
           </PerfectScroll>
         </Paper>

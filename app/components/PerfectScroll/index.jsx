@@ -3,8 +3,21 @@ const Flex = require('../Flex');
 const Ps = require('perfect-scrollbar');
 
 module.exports = React.createClass({
+    propTypes: {
+      noScrollX: React.PropTypes.bool,
+      noScrollY: React.PropTypes.bool
+    },
+    getDefaultProps() {
+      return {
+        noScrollX: false,
+        noScrollY: false
+      };
+    },
     componentDidMount() {
-        Ps.initialize(this.refs.container.getDOMNode());
+        Ps.initialize(this.refs.container.getDOMNode(), {
+          suppressScrollX: this.props.noScrollX,
+          suppressScrollY: this.props.noScrollY
+        });
     },
     componentDidUpdate(){
         Ps.update(this.refs.container.getDOMNode());

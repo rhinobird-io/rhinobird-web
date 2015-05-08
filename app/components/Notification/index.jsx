@@ -73,6 +73,6 @@ export default React.createClass({
       let sender = UserStore.getUser(n.from_user_id);
       return <NotifiItem key={n.id} sender={sender} time={n.created_at} message={n.content} />;
     });
-    return <DropDownAny top={12} right={12} control={control} menu={menu} menuClasses="notification-menu" />;
+    return <DropDownAny style={{top: 12, right: 12}} control={control} menu={menu} menuClasses="notification-menu" />;
   }
 });
