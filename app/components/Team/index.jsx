@@ -140,7 +140,7 @@ let TeamGraph = React.createClass({
         let force = d3.layout.force()
             .gravity(0.05)
             .linkDistance(100)
-            .charge(-250).size([width, height])
+            .charge(-300).size([width, height])
             .nodes(teams)
             .links(connections)
             .start();
