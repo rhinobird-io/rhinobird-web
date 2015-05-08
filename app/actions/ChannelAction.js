@@ -5,7 +5,6 @@ import IMConstants from '../constants/IMConstants';
 import Util from '../util.jsx';
 import async from 'async';
 import $ from 'jquery';
-import SocketAction from './SocketAction';
 import MessageStore from '../stores/MessageStore';
 
 const {IM_HOST, IM_API} = IMConstants;

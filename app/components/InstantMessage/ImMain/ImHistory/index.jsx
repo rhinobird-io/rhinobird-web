@@ -35,10 +35,10 @@ module.exports = React.createClass({
     },
 
     componentWillUnmount() {
-        MessageStore.removeEventListener(IMConstant.EVENTS.RECEIVE_NEW_MESSAGE, this._onReceiveNewMessage);
-        MessageStore.removeEventListener(IMConstant.EVENTS.RECEIVE_INIT_MESSAGE, this._onReceiveInitMessage);
-        MessageStore.removeEventListener(IMConstant.EVENTS.RECEIVE_OLD_MESSAGE, this._onReceiveOldMessage);
-        MessageStore.removeEventListener(IMConstant.EVENTS.SEND_MESSAGE, this._onSendMessage);
+        MessageStore.removeListener(IMConstant.EVENTS.RECEIVE_NEW_MESSAGE, this._onReceiveNewMessage);
+        MessageStore.removeListener(IMConstant.EVENTS.RECEIVE_INIT_MESSAGE, this._onReceiveInitMessage);
+        MessageStore.removeListener(IMConstant.EVENTS.RECEIVE_OLD_MESSAGE, this._onReceiveOldMessage);
+        MessageStore.removeListener(IMConstant.EVENTS.SEND_MESSAGE, this._onSendMessage);
         ChannelStore.removeChangeListener(this._onChannelChange);
     },
     componentWillUpdate: function() {

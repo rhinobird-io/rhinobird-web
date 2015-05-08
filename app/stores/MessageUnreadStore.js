@@ -17,25 +17,24 @@ let _unreadBool = Immutable.Map({});
 let UnreadStore = assign({}, BaseStore, {
 
     hasUnread(backEndChannelId) {
-        //_unread[backEndChannelId] = _unread[backEndChannelId] || {
-        //        latestMessageId : 1 << 30,
-        //        lastSeenMessageId : 1 << 30
-        //    };
-        //return _unread[backEndChannelId].latestMessageId > _unread[backEndChannelId].lastSeenMessageId;
         return _unreadBool.get(backEndChannelId)?_unreadBool.get(backEndChannelId):false;
     },
 
     getAllUnread() {
-        //let tmp = {};
-        //Object.keys(_unread).map(cid => {
-        //    tmp[cid] = this.hasUnread(cid)
-        //});
-        //return tmp;
         return _unreadBool;
+    },
+
+    onSendMessage(message) {
+        _unread[message.channelId] = _unread[message.channelId] || {};
+        _unread[message.channelId].lastSeenMessageId = message.id;
+        _unread[message.channelId].latestMessageId = message.id;
+        _unreadBool = _unreadBool.set(backEndChannelId, false);
+        UnreadStore.emit(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + message.channelId, {unread : false});
     },
 
     receiveMessageFromSocket(message){
         var currentChannel = ChannelStore.getCurrentChannel();
+        _unread[message.channelId] = _unread[message.channelId] || {};
         if (currentChannel.backEndChannelId === message.channelId) {
             _unread[message.channelId].lastSeenMessageId = message.id;
             SocketStore.getSocket().emit('message:seen', {
