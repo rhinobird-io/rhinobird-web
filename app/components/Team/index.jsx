@@ -53,7 +53,7 @@ let TeamDisplay = React.createClass({
 
                         {this.props.team.parentTeams.length > 0 ?
                             <div>
-                                <div className='mui-font-style-subhead-1'>Belongs to</div>
+                                <div className='mui-font-style-subhead-1'>Parent teams</div>
                                 <Flex.Layout wrap>
                                     {this.props.team.parentTeams.map((parent)=> {
                                         return <mui.FlatButton key={parent.name} className='team-item'
