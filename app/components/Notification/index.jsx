@@ -5,6 +5,7 @@ const mui = require("material-ui"),
       IconButton = mui.IconButton;
 
 const DropDownAny = require("../DropDownAny");
+const InfiniteScroll = require("../InfiniteScroll");
 const Avatar = require("../Member").Avatar;
 const Name = require("../Member").Name;
 const Layout = require("../Flex").Layout;
@@ -20,10 +21,17 @@ let NotifiItem = React.createClass({
   propTypes: {
     sender: React.PropTypes.object.isRequired,
     time: React.PropTypes.oneOfType([React.PropTypes.object, React.PropTypes.string]),
-    message: React.PropTypes.string.isRequired
+    message: React.PropTypes.string.isRequired,
+    read: React.PropTypes.bool
   },
 
   render() {
+    let messageStyle = {
+      lineHeight: "1.2em",
+      wordWrap: "break-word",
+      whiteSpace: "pre-line",
+      color: this.props.read ? "#888" : "#000"
+    };
     return (
       <Layout horizontal>
         <div className="avatar-wrapper">
@@ -34,7 +42,7 @@ let NotifiItem = React.createClass({
             <div className="name"><Name member={this.props.sender} /></div>
             <div className="time"><SmartTimeDisplay start={this.props.time} relative /></div>
           </Layout>
-          <div className="message">{this.props.message}</div>
+          <div style={messageStyle}>{this.props.message}</div>
         </Layout>
       </Layout>
     );
@@ -49,7 +57,7 @@ export default React.createClass({
   componentDidMount() {
     LoginStore.addChangeListener(this._onLoginChange);
     NotificationStore.addChangeListener(this._onChange);
-    NotificationActions.receive();
+    NotificationActions.receive(this.state.notifications.length);
   },
 
   componentWillUnmount() {
@@ -58,7 +66,7 @@ export default React.createClass({
   },
 
   _onLoginChange() {
-    NotificationActions.receive();
+    NotificationActions.receive(0);
   },
 
   _onChange() {
@@ -67,12 +75,35 @@ export default React.createClass({
     });
   },
 
+  _loadMore() {
+    NotificationActions.receive(this.state.notifications.length);
+  },
+
+  _onClickAway() {
+    NotificationActions.markAsRead();
+  },
+
   render() {
     let control = <IconButton iconClassName="icon-notifications" />;
     let menu = this.state.notifications.map(n => {
       let sender = UserStore.getUser(n.from_user_id);
-      return <NotifiItem key={n.id} sender={sender} time={n.created_at} message={n.content} />;
+      return <NotifiItem key={n.id} sender={sender} time={n.created_at} message={n.content} read={n.checked} />;
     });
-    return <DropDownAny style={{top: 12, right: 12}} control={control} menu={menu} menuClasses="notification-menu" />;
+    if (this.state.notifications.length >= NotificationStore.getTotal()) {
+      menu.push(
+        <div style={{textAlign: "center", color: "#888"}}>
+          {`All ${this.state.notifications.length} notifications are listed`}
+        </div>
+      );
+    }
+
+    return (
+      <span>
+        <DropDownAny ref="dropdown" control={control} menu={menu} menuClasses="notification-menu"
+          onClickAway={this._onClickAway} style={{top: 12, right: 12}} />;
+        <InfiniteScroll scrollTarget={() => this.refs.dropdown.refs.scroll.getDOMNode()}
+          lowerThreshold={5} onLowerTrigger={this._loadMore} />
+      </span>
+    );
   }
 });

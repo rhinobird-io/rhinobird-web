@@ -16,7 +16,8 @@ export default React.createClass({
     control: React.PropTypes.element.isRequired,
     menu: React.PropTypes.array.isRequired,
     controlClasses: React.PropTypes.string,
-    menuClasses: React.PropTypes.string
+    menuClasses: React.PropTypes.string,
+    onClickAway: React.PropTypes.func
   },
 
   getInitialState() {
@@ -25,6 +26,7 @@ export default React.createClass({
 
   componentClickAway() {
     this.setState({ open: false });
+    if (this.props.onClickAway) this.props.onClickAway();
   },
 
   _onControlClick() {
@@ -52,7 +54,7 @@ export default React.createClass({
           {this.props.control}
         </div>
         <Paper className={menuClasses} style={this.props.style}>
-          <PerfectScroll className={this.props.menuClasses} noScrollX>
+          <PerfectScroll ref="scroll" noScrollX className={this.props.menuClasses}>
             {this._getMenuItems(this.props.menu)}
           </PerfectScroll>
         </Paper>
