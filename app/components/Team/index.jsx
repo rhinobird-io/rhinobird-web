@@ -32,6 +32,9 @@ let TeamDisplay = React.createClass({
             this.refs.toggle.setToggled(false);
         }
     },
+    _teamItemClick(team){
+        this.props.onClickTeam(team);
+    },
     render: function () {
         if (this.props.team) {
             let users;
@@ -53,10 +56,11 @@ let TeamDisplay = React.createClass({
                                 <div className='mui-font-style-subhead-1'>Belongs to</div>
                                 <Flex.Layout wrap>
                                     {this.props.team.parentTeams.map((parent)=> {
-                                        return <Flex.Layout center style={{margin: 6}} key={parent.name}>
-                                            <mui.FontIcon className='icon-group'/>
-                                            <span style={{paddingLeft: 4}}>{parent.name}</span>
-                                        </Flex.Layout>;
+                                        return <mui.FlatButton key={parent.name} className='team-item'
+                                                               onClick={this._teamItemClick.bind(this, parent)}>
+                                            <mui.FontIcon className='icon-group flat-button-icon'/>
+                                            <span className='flat-button-label'>{parent.name}</span>
+                                        </mui.FlatButton>;
                                     })}
                                 </Flex.Layout>
                                 <hr/>
@@ -68,10 +72,11 @@ let TeamDisplay = React.createClass({
                                 <div className='mui-font-style-subhead-1'>Subsidiary teams</div>
                                 <Flex.Layout wrap>
                                     {this.props.team.teams.map((team)=> {
-                                        return <Flex.Layout center style={{margin: 6}} key={team.name}>
-                                            <mui.FontIcon className='icon-group'/>
-                                            <span style={{paddingLeft: 4}}>{team.name}</span>
-                                        </Flex.Layout>;
+                                        return <mui.FlatButton key={team.name} className='team-item'
+                                                               onClick={this._teamItemClick.bind(this, team)}>
+                                            <mui.FontIcon className='icon-group flat-button-icon'/>
+                                            <span className='flat-button-label'>{team.name}</span>
+                                        </mui.FlatButton>;
                                     })}
                                 </Flex.Layout>
                                 <hr/>
@@ -209,7 +214,7 @@ let TeamPage = React.createClass({
                     <TeamGraph teams={this.state.teams} onClickTeam={this._onClickTeam}/>
                 </Paper>
             </Flex.Item>
-            {this.state.selectedTeam ? <TeamDisplay team={this.state.selectedTeam}></TeamDisplay> : undefined}
+            {this.state.selectedTeam ? <TeamDisplay onClickTeam={this._onClickTeam} team={this.state.selectedTeam}></TeamDisplay> : undefined}
         </Flex.Layout>;
     }
 });
