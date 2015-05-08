@@ -1,13 +1,17 @@
 const React = require('react');
+const StyleSheet = require('react-style');
 
 export default React.createClass({
     mixins: [React.addons.LinkedStateMixin],
 
     propTypes: {
         valueAttr: React.PropTypes.string,
+        normalStyle: React.PropTypes.object,
+        normalClass: React.PropTypes.string,
         activeStyle: React.PropTypes.object,
         activeClass: React.PropTypes.string,
-        disabledStyle: React.PropTypes.object
+        disabledStyle: React.PropTypes.object,
+        disabledClass: React.PropTypes.string
     },
 
     getDefaultProps: function() {
@@ -19,7 +23,8 @@ export default React.createClass({
             disabledStyle: {
                 color: "#888"
             },
-            activeClass: "active"
+            activeClass: "active",
+            disabledClass: "disabled"
         };
     },
 
@@ -87,7 +92,7 @@ export default React.createClass({
         let children = this._construct(this.props.children, this.props.valueAttr);
 
         return (
-            <div style={styles.popup}>{children}</div>
+            <div style={[this.props.style, styles.popup]}>{children}</div>
         );
     },
 
@@ -145,15 +150,31 @@ export default React.createClass({
                 let value = child.props[valueAttr].toString();
                 let disabled = !!child.props.disabled;
                 let style;
+                let className = "";
+                let onMouseOver;
+
+                if (this.props.normalClass) {
+                    className += this.props.normalClass;
+                }
+
                 if (disabled) {
                     style = this.props.disabledStyle;
+                    className += " " + this.props.disabledClass;
                 } else {
-                    style = this.state.options[value] && this.state.options[value]["index"] === this.state.activeOptionIndex ? this.props.activeStyle : null;
+                    onMouseOver = () => this.setState({activeOptionIndex: this.state.options[value].index});
+                    if (this.state.options[value]
+                        && this.state.options[value]["index"] === this.state.activeOptionIndex
+                        && this.props.activeClass) {
+                        style =  this.props.activeStyle;
+                        className += " " + this.props.activeClass;
+                    }
                 }
+
                 return React.cloneElement(child, {
                     key: value,
                     style: style,
-                    onMouseOver: () => this.setState({activeOptionIndex: this.state.options[value].index})
+                    className: className,
+                    onMouseOver: onMouseOver
                 });
             } else if (child.props.children) {
                 let children = [].concat(child.props.children);

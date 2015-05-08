@@ -4,7 +4,8 @@ var React                = require("react"),
     SmartPreview = require("../SmartEditor").SmartPreview,
     Select = require("../Select").Select,
     Selector = require("../Select").Selector,
-    PopupSelect2 = require("../Select").PopupSelect2;
+    PopupSelect2 = require("../Select").PopupSelect2,
+    MaterialPopup = require("../Select").MaterialPopup;
 
 require("./style.less");
 
@@ -86,14 +87,14 @@ export default React.createClass({
 
                 <br/>
 
-                <PopupSelect2>
+                <MaterialPopup>
                     <div>
                         <label>group A</label>
                         <div name="person1" disabled>Person 1</div>
                         <div name="person2">Person 2</div>
                     </div>
                     <div name="B">B</div>
-                </PopupSelect2>
+                </MaterialPopup>
 
                 <SmartEditor />
                 <SmartEditor nohr hintText="I have no underline" />

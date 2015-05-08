@@ -84,7 +84,7 @@ export default React.createClass({
         }
 
         // TODO: to have a triangle arrow, however, currently not fit the origin animation.
-        // let triangle = <div ref="triangle" styles={styles.triangleDown}></div>;
+        // let triangle = <div ref="triangle" style={styles.triangleDown}></div>;
 
         return (
             <span ref="wrapper"

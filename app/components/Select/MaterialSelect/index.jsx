@@ -1,5 +1,4 @@
 const React       = require('react'),
-      StyleSheet  = require('react-style'),
       MUI         = require('material-ui'),
       Paper       = MUI.Paper,
       TextField   = MUI.TextField,
@@ -202,12 +201,15 @@ export default React.createClass({
                     }}>
                     {tokens}
                 </div> : null;
+
+        let textfieldStyle = styles.hint;
+        textfieldStyle.paddingLeft = styles.padding.paddingLeft;
         return (
             <div style={styles.select}>
                 {tokenWrapperDOM}
                 {text}
                 {popupSelect}
-                <TextField styles={[styles.hint, styles.padding]} valueLink={this.linkState("hint")} ref="hint" type="text" className="select-hint" />
+                <TextField style={textfieldStyle} valueLink={this.linkState("hint")} ref="hint" type="text" className="select-hint" />
             </div>
         );
     }
