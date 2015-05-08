@@ -111,8 +111,17 @@ let UserStore = assign({}, BaseStore, {
         });
     },
 
-    getUsersByTeamId(teamId) {
-        return _teams_users[teamId] ? _teams_users[teamId] : [];
+    getUsersByTeamId(teamId, includeSub) {
+        let team = _teams[teamId];
+        let result = new Set(team.users || []);
+        if(!includeSub){
+            return Array.from(result);
+        }
+        team.teams.forEach(team =>{
+            let subResult = this.getUsersByTeamId(team.id, true);
+            result = new Set([...result, ...subResult]);
+        })
+        return Array.from(result);
     },
 
     getTeamsByUserId(userId) {
