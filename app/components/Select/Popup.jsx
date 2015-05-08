@@ -1,22 +1,26 @@
 const React = require('react');
-const StyleSheet = require('react-style');
+const PerfectScroll = require('../PerfectScroll');
+const Layout = require("../Flex").Layout;
 
 export default React.createClass({
     mixins: [React.addons.LinkedStateMixin],
 
     propTypes: {
         valueAttr: React.PropTypes.string,
+        onItemSelect: React.PropTypes.func,
         normalStyle: React.PropTypes.object,
         normalClass: React.PropTypes.string,
         activeStyle: React.PropTypes.object,
         activeClass: React.PropTypes.string,
+        wrapperStyle: React.PropTypes.object,
+        wrapperClass: React.PropTypes.string,
         disabledStyle: React.PropTypes.object,
         disabledClass: React.PropTypes.string
     },
 
     getDefaultProps: function() {
         return {
-            valueAttr: "name",
+            valueAttr: "value",
             activeStyle: {
                 fontWeight: "bold"
             },
@@ -30,7 +34,7 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            visible: true,
+            visible: false,
             options: {},
             optionsMap: [],
             activeOptionIndex: -1
@@ -55,11 +59,14 @@ export default React.createClass({
     cursorUp() {
         let optionsMap = this.state.optionsMap;
         let activeOptionIndex = this.state.activeOptionIndex;
+
         if (activeOptionIndex > 0) {
-            this.setState({activeOptionIndex: activeOptionIndex - 1});
+            activeOptionIndex = activeOptionIndex - 1;
         } else {
-            this.setState({activeOptionIndex: optionsMap.length - 1});
+            activeOptionIndex = optionsMap.length - 1;
         }
+        this.setState({activeOptionIndex: activeOptionIndex});
+        this._updateScroll(activeOptionIndex);
     },
 
     cursorDown() {
@@ -72,9 +79,10 @@ export default React.createClass({
             activeOptionIndex = 0;
         }
         this.setState({activeOptionIndex: activeOptionIndex});
+        this._updateScroll(activeOptionIndex);
     },
 
-    hide() {
+    dismiss() {
         this.setState({visible: false});
     },
 
@@ -83,17 +91,66 @@ export default React.createClass({
     },
 
     render: function() {
+        let children = this._construct(this.props.children, this.props.valueAttr);
         let styles = {
+            outer: {
+                height: 200
+            },
             popup: {
+                position: "relative",
                 display: this.state.visible ? "block" : "none"
             }
         };
 
-        let children = this._construct(this.props.children, this.props.valueAttr);
-
         return (
-            <div style={[this.props.style, styles.popup]}>{children}</div>
+            <Layout vertical style={styles.outer}>
+                <div style={{flex: 1}}></div>
+                <PerfectScroll
+                    ref="scroll"
+                    style={styles.popup}
+                    className={this.props.wrapperClass} alwaysVisible>{children}</PerfectScroll>
+            </Layout>
         );
+    },
+
+    _updateScroll: function(activeOptionIndex) {
+        let scroll = this.refs.scroll.getDOMNode();
+        let optionsMap = this.state.optionsMap;
+        if (activeOptionIndex >= 0 && activeOptionIndex < optionsMap.length) {
+            let activeOptionDOM = this.refs[optionsMap[activeOptionIndex]].getDOMNode();
+            let offsetTop = 0;
+            let offsetParent = activeOptionDOM;
+            let offsetHeight = activeOptionDOM.offsetHeight;
+            while (offsetParent !== scroll && offsetParent !== null) {
+                if (!isNaN(offsetParent.offsetTop)) {
+                    offsetTop += offsetParent.offsetTop;
+                }
+                offsetParent = offsetParent.offsetParent;
+            }
+
+            let scrollTop = scroll.scrollTop;
+            let clientHeight = scroll.clientHeight;
+
+            if (offsetTop + offsetHeight - scrollTop > clientHeight) {
+                scroll.scrollTop = offsetTop - scroll.clientHeight + offsetHeight;
+            } else if (offsetTop - scrollTop < 0) {
+                scroll.scrollTop = offsetTop;
+            }
+        }
+
+    },
+
+    _select() {
+        let optionsMap = this.state.optionsMap;
+        let activeIndex = this.state.activeOptionIndex;
+        if (activeIndex >= 0 && activeIndex < optionsMap.length) {
+            let options = this.state.options;
+            let value = optionsMap[activeIndex];
+            let onItemSelect = this.props.onItemSelect;
+            if (onItemSelect && typeof onItemSelect === "function") {
+                onItemSelect(options[value].value);
+            }
+        }
     },
 
     _parse(props) {
@@ -113,7 +170,7 @@ export default React.createClass({
             }
             return false;
         });
-        this.setState({options: options, optionsMap: optionsMap});
+        this.setState({options: options, optionsMap: optionsMap, activeOptionIndex: optionsMap.length > 0 ? 0 : -1});
     },
 
     _parseChild(child, valueAttr, options) {
@@ -121,11 +178,14 @@ export default React.createClass({
             return;
         }
         if (child.props[valueAttr]) {
-            let value = child.props[valueAttr].toString();
-            if (!options[value]) {
-                options[value] = {};
+            let value = child.props[valueAttr];
+            let key = value.toString();
+            if (!options[key]) {
+                options[key] = {
+                    value: value
+                };
                 if (child.props.disabled) {
-                    options[value].disabled = true;
+                    options[key].disabled = true;
                 }
             }
         } else {
@@ -147,7 +207,7 @@ export default React.createClass({
     _constructChild(child, valueAttr) {
         if (child.props) {
             if (child.props[valueAttr]) {
-                let value = child.props[valueAttr].toString();
+                let key = child.props[valueAttr].toString();
                 let disabled = !!child.props.disabled;
                 let style;
                 let className = "";
@@ -161,9 +221,9 @@ export default React.createClass({
                     style = this.props.disabledStyle;
                     className += " " + this.props.disabledClass;
                 } else {
-                    onMouseOver = () => this.setState({activeOptionIndex: this.state.options[value].index});
-                    if (this.state.options[value]
-                        && this.state.options[value]["index"] === this.state.activeOptionIndex
+                    let option = this.state.options[key];
+                    onMouseOver = () => this.setState({activeOptionIndex: option.index});
+                    if (option && option["index"] === this.state.activeOptionIndex
                         && this.props.activeClass) {
                         style =  this.props.activeStyle;
                         className += " " + this.props.activeClass;
@@ -171,7 +231,8 @@ export default React.createClass({
                 }
 
                 return React.cloneElement(child, {
-                    key: value,
+                    key: key,
+                    ref: key,
                     style: style,
                     className: className,
                     onMouseOver: onMouseOver
@@ -204,13 +265,18 @@ export default React.createClass({
                     break;
                 case 13:    // Enter
                     e.preventDefault();
+                    this._select();
                     break;
                 case 27:    // Escape
                     event.preventDefault();
                     break;
-                case 9:
+                case 9:     // Tab
                     event.preventDefault();
-                    this.cursorDown();
+                    if (e.shiftKey) {
+                        this.cursorUp();
+                    } else {
+                        this.cursorDown();
+                    }
                     break;
                 default:
                     break;

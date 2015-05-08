@@ -160,7 +160,8 @@ export default React.createClass({
                                         primary={true}
                                         onClick={() => this.setState({editRepeated: true})}
                                         style={{display: this.state.repeated ? "inline-block" : "none"}} />
-                                </Flex.Layout><Flex.Layout vertical selfCenter>
+                                </Flex.Layout>
+                                <Flex.Layout vertical selfCenter>
                                     <MUI.Toggle
                                         ref="repeated"
                                         onToggle={this._onRepeatToggled} />
