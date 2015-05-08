@@ -151,11 +151,11 @@ let TeamGraph = React.createClass({
             .start();
         let link = svg.selectAll('.link').data(connections).enter().append('path').attr('class', 'link').attr('marker-end', 'url(#default)');
         let node = svg.selectAll('.node').data(teams).enter().append('g').on('click', this.props.onClickTeam);
-        let circle = node.append('circle').attr('r', 14).attr('fill', 'white').attr('stroke', 'black').call(force.drag);
-        let icon = node.append('text').attr('class', 'group-icon').attr('x', -10).attr('y', '.31em').text("\ue8d8");
+        let circle = node.append('circle').attr('r', 14).attr('fill', 'white').attr('stroke', 'black').call(force.drag).on('click', this.props.onClickTeam);
+        let icon = node.append('text').attr('class', 'group-icon').attr('x', -10).attr('y', '.31em').text("\ue8d8").on('click', this.props.onClickTeam);
         let text = node.append('text').attr('x', 20).attr('y', '.31em').text(function (d) {
             return d.name;
-        });
+        }).on('click', this.props.onClickTeam);
         force.on("tick", function () {
             link.attr("d", function (d) {
                 var dx = d.target.x - d.source.x,
