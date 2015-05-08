@@ -39,6 +39,8 @@ let SocketStore = assign({}, BaseStore, {
             MessageStore.receiveMessage(message);
             const UnreadStore = require('./MessageUnreadStore');
             UnreadStore.receiveMessageFromSocket(message);
+            const RecentChannelStore = require('./RecentChannelStore');
+            RecentChannelStore.onRecentChange(message);
         });
 
         _socket.on('channel:created', function (channel) {
@@ -56,7 +58,6 @@ let SocketStore = assign({}, BaseStore, {
             } else {
                 self.$.imChannels.init();
             }
-
         });
 
         _socket.on('user:dead', function (data) {
@@ -85,7 +86,6 @@ let SocketStore = assign({}, BaseStore, {
         });
 
         let currentUser = LoginStore.getUser();
-
         _socket.emit('init', {
             userId: currentUser.id,
             publicChannels: channels.publicGroupChannels,

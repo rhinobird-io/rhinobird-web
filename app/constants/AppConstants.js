@@ -36,6 +36,10 @@ export default {
     CLEAR_UNREAD : null,
     INIT_UNREAD : null,
     MESSAGE_READY : null
+  }),
+
+  RecentChannelAction : keyMirror({
+    INIT_RECENT: null
   })
 
 };

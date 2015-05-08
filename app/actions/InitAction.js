@@ -17,8 +17,7 @@ export default {
      * Init channels unread
      */
     init(channels, currentUser) {
-
-        var channelIds = _.pluck(channels.publicGroupChannels, 'id').concat(_.pluck(channels.directMessageChannels, 'id'));
+        var channelIds = _.pluck(channels.publicGroupChannels, 'backEndChannelId').concat(_.pluck(channels.directMessageChannels, 'backEndChannelId'));
         // key channelId, value latestMessageId and lastSeenMessageId
         let latestAndLastSeen = {};
         async.series([
@@ -89,6 +88,13 @@ export default {
             });
             AppDispatcher.dispatch({
                 type: Constants.MessageActionTypes.INIT_UNREAD,
+                latestAndLastSeen : latestAndLastSeen
+            });
+
+            AppDispatcher.dispatch({
+                type: Constants.RecentChannelAction.INIT_RECENT,
+                publicGroupChannels: channels.publicGroupChannels,
+                directMessageChannels:channels.directMessageChannels,
                 latestAndLastSeen : latestAndLastSeen
             });
 

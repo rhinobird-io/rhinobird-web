@@ -46,11 +46,11 @@ module.exports = React.createClass({
     },
 
     componentWillUnmount() {
-        ChannelStore.removeEventListener(IMConstants.EVENTS.CHANNEL_SELECT_PREFIX + this.props.Channel.backEndChannelId, this._onChannelSelect);
-        ChannelStore.removeEventListener(IMConstants.EVENTS.CHANNEL_DESELECT_PREFIX + this.props.Channel.backEndChannelId, this._onChannelDeselect);
-        UnreadStore.removeEventListener(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + this.props.Channel.backEndChannelId, this._onUnreadChange);
+        ChannelStore.removeListener(IMConstants.EVENTS.CHANNEL_SELECT_PREFIX + this.props.Channel.backEndChannelId, this._onChannelSelect);
+        ChannelStore.removeListener(IMConstants.EVENTS.CHANNEL_DESELECT_PREFIX + this.props.Channel.backEndChannelId, this._onChannelDeselect);
+        UnreadStore.removeListener(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + this.props.Channel.backEndChannelId, this._onUnreadChange);
         if (!this.props.Channel.isGroup) {
-            OnlineStore.removeEventListener(IMConstants.EVENTS.USER_ONLINE_PREFIX + this.props.Channel.channel.id, this._onUserOnlineChange);
+            OnlineStore.removeListener(IMConstants.EVENTS.USER_ONLINE_PREFIX + this.props.Channel.channel.id, this._onUserOnlineChange);
         }
     },
 
@@ -92,12 +92,15 @@ module.exports = React.createClass({
 
     render() {
         let self = this;
+        let style = {
+           display : this.props.hide?'none':''
+        };
         return (
-            <div className="instant-message-channel-container">
+            <div className="instant-message-channel-container" style={style}>
                 <FlatButton className={this.state._imCurrentChannel?'instant-message-channel-item-selected instant-message-channel-item ':'instant-message-channel-item '}  onTouchTap={self._onItemTap.bind(self, this.props.Channel)}>
                     <div style={{overflowX: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        <span className={ this.props.Channel.iconClassName}></span>
-                        <span className={(this.props.Channel.isDirect && !self.state._onlineStatus)?'instant-message-channel-item-offline':''}>{ this.props.Channel.text}</span>
+                        <span className={ this.props.Channel.isGroup ? 'icon-group' : ''}></span>
+                        <span className={(this.props.Channel.isDirect && !self.state._onlineStatus)?'instant-message-channel-item-offline':''}>{ this.props.Channel.channel.name}</span>
                     </div>
                 </FlatButton>
                 <span className={ this.state._hasUnread?'instant-message-channel-item-unread icon-message':''}></span>

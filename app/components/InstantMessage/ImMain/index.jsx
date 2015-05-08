@@ -12,6 +12,7 @@ const InitAction = require('../../../actions/InitAction');
 const LoginStore = require('../../../stores/LoginStore');
 const UserStore = require('../../../stores/UserStore');
 const ChannelStore = require('../../../stores/ChannelStore');
+const RecentChannelStore = require('../../../stores/RecentChannelStore');
 const SocketStore = require('../../../stores/SocketStore');
 const Flex = require('../../Flex');
 import IMConstant from '../../../constants/IMConstants';
@@ -54,15 +55,35 @@ module.exports = React.createClass({
     var self = this;
     var channels = {
       publicGroupChannels: _allTeams.map(team=> {
-        return {
-          id: self._buildBackEndChannelId(true, team)
+        var backEndChannelId = self._buildBackEndChannelId(true, team);
+          return {
+          isGroup: true,
+          isDirect: false,
+          backEndChannelId: backEndChannelId,
+          id : backEndChannelId,
+          channel : {
+            created_at: team.created_at,
+            name: team.name,
+            updated_at: team.updated_at,
+            id: team.id
+          }
         }
       }),
       directMessageChannels: _allUsers.filter(user => {
         return '' + user.id !== '' + LoginStore.getUser().id;
       }).map(user => {
-        return {
-          id: self._buildBackEndChannelId(false, user)
+        var backEndChannelId = self._buildBackEndChannelId(false, user);
+          return {
+          isGroup: false,
+          isDirect: true,
+          backEndChannelId: backEndChannelId,
+          id : backEndChannelId,
+            channel : {
+              created_at: user.created_at,
+              name: user.name,
+              updated_at: user.updated_at,
+              id: user.id
+            }
         }
       })
     };
@@ -73,9 +94,6 @@ module.exports = React.createClass({
   _onChannelChange() {
     var currentChannel = ChannelStore.getCurrentChannel();
     this.props.setTitle("Instant Message - Talk - " + currentChannel.backEndChannelId);
-    this.setState({
-      currentChannel : currentChannel
-    });
   },
 
   _onSocketReady() {
