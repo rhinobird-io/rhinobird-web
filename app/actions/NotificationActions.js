@@ -51,6 +51,7 @@ export default {
     NotificationStore.getAll().map(n => {
       if (!n.checked) data.push({id: n.id});
     });
+    if (data.length === 0) return;
     socket.send(JSON.stringify(data));
     AppDispatcher.dispatch({
       type: ActionTypes.READ_NOTIFI,
