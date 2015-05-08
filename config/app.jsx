@@ -87,7 +87,7 @@ let render = function () {
                     return null;
                 },
                 showFloatingContent: false
-            })
+            });
             if (publicRoutes.indexOf(state.pathname) === -1) {
                 if (!LoginStore.getUser()) {
                     this.transitionTo('/platform/signin', {}, {target: state.path});
@@ -97,7 +97,7 @@ let render = function () {
             React.render(<Handler />, document.getElementById("content"));
         });
     }
-}
+};
 i18n.init({
     resStore: resBundle,
     lng: "en-US"

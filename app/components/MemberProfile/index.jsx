@@ -39,7 +39,7 @@ module.exports = React.createClass({
 
             let info = [
                 { payload: '1', text: 'Email', data: this.state.member.email}
-            ]
+            ];
 
             return <div className='member-profile'>
                 <Flex.Layout className='name'>
