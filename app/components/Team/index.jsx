@@ -42,6 +42,15 @@ let TeamDisplay = React.createClass({
 function transform(d) {
     return "translate(" + d.x + "," + d.y + ")";
 }
+function _buildConnections(teams){
+    let connections = [];
+    teams.forEach((team, index) =>{
+        team.parentTeams.forEach((parent)=>{
+            connections.push({source:index, target:teams.indexOf(parent)});
+        });
+    });
+    return connections;
+}
 let TeamPage = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     componentDidMount(){
@@ -56,9 +65,13 @@ let TeamPage = React.createClass({
     _userChanged(){
         this.forceUpdate();
     },
+    _nodeClick(d){
+        console.log(d);
+        console.log(this);
+    },
     _drawGraph(){
         let teams = UserStore.getTeamsArray();
-        let connections = [{"source":1,"target":0,"value":1}];
+        let connections = _buildConnections(teams);
         let width = 960, height= 500;
         let svg = d3.select(".teamPage").append("svg")
             .attr("width",width)
@@ -72,13 +85,14 @@ let TeamPage = React.createClass({
             .attr("orient", "auto").append("path")
             .attr("d", "M0,-5L10,0L0,5");
         let force = d3.layout.force()
+            .gravity(0.05)
             .linkDistance(100)
-            .charge(-200).size([width, height])
+            .charge(-250).size([width, height])
             .nodes(teams)
             .links(connections)
             .start();
         let link = svg.selectAll('.link').data(connections).enter().append('path').attr('class', 'link').attr('marker-end', 'url(#default)');
-        let node = svg.selectAll('.node').data(teams).enter().append('g');
+        let node = svg.selectAll('.node').data(teams).enter().append('g').on('click', this._nodeClick.bind(this));
         let circle = node.append('circle').attr('r', 14).attr('fill', 'white').attr('stroke','black').call(force.drag);
         let icon = node.append('text').attr('class','group-icon').attr('x', -10).attr('y', '.31em').text("\ue8d8");
         let text = node.append('text').attr('x', 20).attr('y', '.31em').text(function(d){
