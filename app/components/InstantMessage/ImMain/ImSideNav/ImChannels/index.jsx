@@ -4,22 +4,21 @@ const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
 const mui = require("material-ui");
 
-import ChannelAction from '../../../../../actions/ChannelAction';
-import MessageAction from '../../../../../actions/MessageAction';
-
 import LoginStore from '../../../../../stores/LoginStore';
-import OnlineStore from '../../../../../stores/OnlineStore';
+import ChannelStore from '../../../../../stores/ChannelStore';
 import MessageStore from '../../../../../stores/MessageStore';
-import UnreadStore from '../../../../../stores/MessageUnreadStore';
+import RecentChannelStore from '../../../../../stores/RecentChannelStore.js';
 
 import ImChannel from './ImChannel.jsx';
 import DropDownAny from '../../../../DropDownAny';
 
-const { Menu, FontIcon, FlatButton, IconButton } = mui;
+const { Menu, FontIcon, FlatButton, IconButton, TextField } = mui;
 
 const Flex = require('../../../../Flex');
 const PerfectScroll = require('../../../../PerfectScroll');
 const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+
+const showLimit = 10;
 require('./style.less');
 module.exports = React.createClass({
 
@@ -38,113 +37,77 @@ module.exports = React.createClass({
 
     getInitialState() {
         return {
-            _menuItems: [],
+            _channels: [],
             _onlineStatus: {},
-            _unread: undefined
+            _unread: undefined,
+            _currentChannel: {}
         };
     },
 
-    _getMenuItems(channels) {
-        var _items = [];
-        /**
-         * Personal Note:
-         * using => will change the this binding to the outside,
-         * using function will make the this does work here
-         */
-        channels.forEach((channel, idx) => {
-            _items.push({
-                text: channel.name,
-                isGroup: this.props.isGroup,
-                isDirect: !this.props.isGroup,
-                iconClassName: this.props.isGroup ? 'icon-group' : '',
-                channel: channel,
-                backEndChannelId: this.props.buildBackEndChannelId(this.props.isGroup, channel)
-            })
-        });
-        return _items;
-    },
-
     componentDidMount() {
-        OnlineStore.addChangeListener(this._onlineStatusChange);
-        UnreadStore.addChangeListener(this._onUnreadChange);
+        ChannelStore.addChangeListener(this._onChannelChange);
+        RecentChannelStore.addChangeListener(this._onRecentChannelChange);
     },
 
     componentWillUnmount() {
-        OnlineStore.removeChangeListener(this._onlineStatusChange);
-        UnreadStore.removeChangeListener(this._onUnreadChange);
+        ChannelStore.removeChangeListener(this._onChannelChange);
+        RecentChannelStore.removeChangeListener(this._onRecentChannelChange);
     },
 
-    updateChannels(channels) {
-        var menuItems = this._getMenuItems(channels);
+    _onRecentChannelChange() {
+        let channels;
+        if(this.props.isGroup) {
+            channels = RecentChannelStore.getOrderedRecentPublicChannels();
+        } else {
+            channels = RecentChannelStore.getOrderedRecentDirectChannels();
+        }
         this.setState({
-            _menuItems: menuItems
+            _channels : channels
         });
     },
 
-    _onlineStatusChange() {
-        let _onlineStatus = OnlineStore.getOnlineList();
-        this.setState({
-            _onlineStatus: _onlineStatus
+    getShownChannels() {
+        let channelsShownMap = {};
+        let currentChannelBackEndId = this.context.router.getCurrentParams().backEndChannelId;
+        return this.state._channels.map((channel, idx)=> {
+            channelsShownMap[channel.backEndChannelId] = true;
+            return <ImChannel key={channel.backEndChannelId} Channel={channel} hide={ idx > showLimit && channel.backEndChannelId !== currentChannelBackEndId }></ImChannel>
         });
     },
 
-    _onUnreadChange() {
-        let unread = UnreadStore.getAllUnread();
+    _onChannelChange() {
+        // close the dropdownany
+        this.refs.directMessageMenu && this.refs.directMessageMenu.componentClickAway();
+        // move the current channel to the visible place
         this.setState({
-            _unread: unread
-        });
+            _currentChannel : ChannelStore.getCurrentChannel()
+        })
     },
 
     render() {
-        let self = this;
-        // console.log('render imChannels');
-        if (!this.props.isGroup) {
-            this.state._menuItems.sort((item1, item2) => {
-                let _onlineList = self.state._onlineStatus;
-                let onlineOffset = (_onlineList[item1.channel.id] ? -1 : 0) - (_onlineList[item2.channel.id] ? -1 : 0);
-                onlineOffset = onlineOffset * 100000;
-
-                var unread = self.state._unread;
-                let unreadOffset = 0;
-                if (unread) {
-                    unreadOffset = (unread.get(item1.backEndChannelId) ? -1 : 0) - (unread.get(item2.backEndChannelId) ? -1 : 0);
-                    unreadOffset = unreadOffset * 1000000;
-                }
-                return item1.channel.id - item2.channel.id + onlineOffset + unreadOffset;
-            });
-        } else {
-            this.state._menuItems.sort((item1, item2) => {
-                return (item1.channel.id - item2.channel.id);
-            });
-        }
 
         let control = <IconButton iconClassName="icon-search" style={{ maxWidth : '48px', flexGrow : 0}}/>;
-        let menu = this.state._menuItems.map((item,idx) => {
+        let menu = this.state._channels.map((item,idx) => {
             return <ImChannel key={item.backEndChannelId} Channel={item}></ImChannel>
         });
-
         return (
             <Flex.Layout vertical className={'instant-message-channels ' + this.props.className}>
                 <div className="mui-font-style-subhead-1 instant-message-channel-brand">
                     <div style={{ flexGrow : 1 }}>{this.props.channelGroup}</div>
                     <div style={{ display : 'inline-block'}}>
                         {
-                            !this.props.isGroup?<DropDownAny top={12} right={12} control={control} menu={menu} menuClasses="instant-message-channels-menu" />:undefined
+                            !this.props.isGroup?<DropDownAny ref="directMessageMenu" top={12} right={12} control={control} menu={menu} menuClasses="instant-message-channels-menu" />:undefined
                         }
                     </div>
 
                 </div>
-
-
-                <PerfectScroll className="instant-message-channel-items">
+                {
+                   <PerfectScroll className="instant-message-channel-items">
                     {
-                        this.state._menuItems.map((item,idx) => {
-                            if (idx < 10) {
-                                return <ImChannel key={item.backEndChannelId} Channel={item}></ImChannel>
-                            }
-                        })
+                        this.getShownChannels()
                     }
-                </PerfectScroll>
+                   </PerfectScroll>
+                }
             </Flex.Layout>
         );
     }

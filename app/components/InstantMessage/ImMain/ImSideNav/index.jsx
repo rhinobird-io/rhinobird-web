@@ -1,9 +1,6 @@
 const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
 const ImChannels = require('./ImChannels');
-
-const LoginStore = require('../../../../stores/LoginStore');
-const UserStore = require('../../../../stores/UserStore');
 const Flex = require('../../../Flex');
 
 import _ from 'lodash';
@@ -16,29 +13,8 @@ module.exports = React.createClass({
 
   getInitialState() {
     return {
-      user: LoginStore.getUser(), // it must be there... or it will be redirected
-      channels : {
-        publicGroupChannels : [],
-        directMessageChannels : []
-      }
+
     };
-  },
-
-  componentDidMount() {
-    UserStore.addChangeListener(this._onTeamUserChange);
-  },
-
-  componentWillUnmount() {
-    UserStore.removeChangeListener(this._onTeamUserChange);
-  },
-
-
-  _onTeamUserChange() {
-    var _allTeams = UserStore.getTeamsArray();
-    var _allUsers = UserStore.getUsersArray();
-
-    this.refs.groupChannels.updateChannels(_allTeams);
-    this.refs.directChannels.updateChannels(_allUsers.filter(user => { return '' + user.id !== '' + LoginStore.getUser().id; }));
   },
 
   render() {

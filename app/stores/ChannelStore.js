@@ -22,6 +22,7 @@ let ChannelStore = assign({}, BaseStore, {
             case Constants.ChannelActionTypes.CHANGE_CHANNEL:
                 let prevChannel = _currentChannel;
                 _currentChannel = {
+                    isDirect: !payload.isGroup,
                     isGroup: payload.isGroup,
                     backEndChannelId: payload.backEndChannelId,
                     channel: payload.isGroup ? UserStore.getTeam(payload.channelId) : UserStore.getUser(payload.channelId)
