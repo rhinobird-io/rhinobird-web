@@ -14,10 +14,11 @@ const Link = require("react-router").Link;
 require("./style.less");
 
 let TeamDisplay = React.createClass({
-    mixins: [React.addons.PureRenderMixin],
+    mixins: [React.addons.PureRenderMixin, React.addons.LinkedStateMixin],
     getInitialState(){
         return {
-            includeSubsidiaryMembers: false
+            includeSubsidiaryMembers: false,
+            typedTeamName: ''
         }
     },
     _toggle(e, toggled) {
@@ -36,6 +37,10 @@ let TeamDisplay = React.createClass({
     _teamItemClick(team){
         this.props.onClickTeam(team);
     },
+    _leaveTeam(){
+        console.log('leave team');
+        this.refs.dialog.dismiss();
+    },
     render: function () {
         if (this.props.team) {
             let users;
@@ -44,16 +49,41 @@ let TeamDisplay = React.createClass({
             } else {
                 users = this.props.team.users;
             }
+            let loginUserTeam = !!this.props.team.users.find(u => u.id === LoginStore.getUser().id);
+            let dialogActions = [
+                <mui.FlatButton
+                    label="Cancel" key={1}
+                    onTouchTap={()=>this.refs.dialog.dismiss()} />,
+                <mui.FlatButton
+                    label="Leave" key={2}
+                    primary={true}
+                    disabled={this.state.typedTeamName !== this.props.team.name}
+                    onTouchTap={this._leaveTeam} />
+            ];
             return <div className='paper-outer-container'>
                 <Paper zDepth={1}>
                     <div className='paper-inner-container'>
-                        <Flex.Layout center className='mui-font-style-title'>
-                            <mui.FontIcon className='icon-group'/>
-                            <div style={{marginLeft: 8}}>{this.props.team.name}</div>
+                        <Flex.Layout justified center>
+                            <Flex.Layout center className='mui-font-style-title'>
+                                <mui.FontIcon className='icon-group'/>
+                                <div style={{marginLeft: 8}}>{this.props.team.name}</div>
+                            </Flex.Layout>
+                            {loginUserTeam ?
+                                <div>
+                                    <mui.IconButton onClick={()=>this.refs.dialog.show()} iconClassName='icon-exit-to-app' tooltip='Leave this team'/>
+                                    <mui.Dialog ref='dialog' title={`Leaving team ${this.props.team.name}`}
+                                                actions={dialogActions}
+                                        >
+                                        Please type the team name to confirm
+                                        <mui.TextField valueLink={this.linkState('typedTeamName')}/>
+                                    </mui.Dialog>
+                                </div>
+                                : undefined}
                         </Flex.Layout>
 
                         {this.props.team.parentTeams.length > 0 ?
                             <div>
+                                <hr/>
                                 <div className='mui-font-style-subhead-1'>Parent teams</div>
                                 <Flex.Layout wrap>
                                     {this.props.team.parentTeams.map((parent)=> {
@@ -89,7 +119,8 @@ let TeamDisplay = React.createClass({
                                     <div className='mui-font-style-subhead-1' style={{margin:0, lineHeight:'48px'}}>
                                         Members
                                     </div>
-                                    <mui.IconButton onClick={()=>{this.setState({addMember: true})}} className='add-member' iconClassName='icon-person-add'/>
+                                    <mui.IconButton onClick={()=>{this.setState({addMember: true})}}
+                                                    className='add-member' iconClassName='icon-person-add'/>
                                 </Flex.Layout>
 
                                 <div style={{width:300}}>
