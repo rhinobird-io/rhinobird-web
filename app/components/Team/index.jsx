@@ -9,6 +9,7 @@ const LoginStore = require('../../stores/LoginStore');
 const Flex = require('../Flex');
 const Member = require('../Member');
 const d3 = require('d3');
+const Link = require("react-router").Link;
 
 require("./style.less");
 
@@ -215,6 +216,9 @@ let TeamPage = React.createClass({
                 </Paper>
             </Flex.Item>
             {this.state.selectedTeam ? <TeamDisplay onClickTeam={this._onClickTeam} team={this.state.selectedTeam}></TeamDisplay> : undefined}
+            <Link to='create-team'>
+                <mui.FloatingActionButton className='add-team' iconClassName="icon-group-add" />
+            </Link>
         </Flex.Layout>;
     }
 });

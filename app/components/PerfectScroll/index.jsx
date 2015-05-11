@@ -7,7 +7,8 @@ require("./style.less");
 module.exports = React.createClass({
     propTypes: {
       noScrollX: React.PropTypes.bool,
-      noScrollY: React.PropTypes.bool
+      noScrollY: React.PropTypes.bool,
+      alwaysVisible: React.PropTypes.bool
     },
     getDefaultProps() {
       return {
