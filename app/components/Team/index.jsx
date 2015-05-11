@@ -81,8 +81,7 @@ let TeamDisplay = React.createClass({
                                     <mui.IconButton onClick={()=>this.refs.dialog.show()}
                                                     iconClassName='icon-exit-to-app' tooltip='Leave this team'/>
                                     <mui.Dialog ref='dialog' title={`Leaving team ${this.props.team.name}`}
-                                                actions={dialogActions}
-                                        >
+                                                actions={dialogActions} >
                                         Please type the team name to confirm
                                         <mui.TextField valueLink={this.linkState('typedTeamName')}/>
                                     </mui.Dialog>
@@ -193,16 +192,6 @@ let TeamGraph = React.createClass({
             .attr("height", height)
             .attr('viewBox', '0 0 960 500')
             .attr('preserveAspectRatio', 'xMidYMid');
-        svg.append('defs').selectAll('marker').data(['default']).enter().append('marker').attr('id', function (d) {
-            return d;
-        })
-            .attr("viewBox", "0 -5 10 10")
-            .attr("refX", 25)
-            .attr("refY", -2)
-            .attr("markerWidth", 6)
-            .attr("markerHeight", 6)
-            .attr("orient", "auto").append("path")
-            .attr("d", "M0,-5L10,0L0,5").attr('fill', '#bdbdbd');
         let primaryColor = '#e91e63', secondaryColor = '#00bcd4';
         svg.append('circle').attr('r', 4).attr('stroke', primaryColor).attr('fill', primaryColor).attr('cx', 30).attr('cy', 10);
         svg.append('text').text('Teams directly under').attr('x', 40).attr('y', 14);
@@ -210,12 +199,12 @@ let TeamGraph = React.createClass({
         svg.append('text').text('Teams indirectly under').attr('x', 40).attr('y', 34);
         let force = d3.layout.force()
             .gravity(0.05)
-            .linkDistance(100)
+            .linkDistance(130)
             .charge(-300).size([width, height])
             .nodes(teams)
             .links(connections)
             .start();
-        let link = svg.selectAll('.link').data(connections).enter().append('path').attr('class', 'link').attr('marker-end', 'url(#default)');
+        let link = svg.selectAll('.link').data(connections).enter().append('path').attr('class', 'link');
         let node = svg.selectAll('.node').data(teams).enter().append('g').attr('class', function (d) {
             if (d.users.find(u => u.id === LoginStore.getUser().id)) {
                 return 'highlight primary';
@@ -225,9 +214,16 @@ let TeamGraph = React.createClass({
                 return '';
             }
         }).call(force.drag).on('click', this.props.onClickTeam);
-        let circle = node.append('circle').attr('r', 14).attr('fill', 'white').attr('stroke', 'black').on('click', this.props.onClickTeam);
-        let icon = node.append('text').attr('class', 'group-icon').attr('x', -10).attr('y', '.31em').text("\ue8d8").on('click', this.props.onClickTeam);
-        let text = node.append('text').attr('x', 20).attr('y', '.31em').text(function (d) {
+        let circle = node.append('circle').attr('r', function(d){
+            return 8 + 6 * d.level;
+        }).attr('fill', 'white').attr('stroke', 'black').on('click', this.props.onClickTeam);
+        let icon = node.append('text').attr('class', 'group-icon').attr('x', '-0.5em').attr('y', '.35em')
+            .style('font-size', function(d){
+                return 8 + 12 * d.level;
+            }).text("\ue8d8").on('click', this.props.onClickTeam);
+        let text = node.append('text').attr('x', function(d){
+            return 14 + 6 * d.level;
+        }).attr('y', '.31em').text(function (d) {
             return d.name;
         }).on('click', this.props.onClickTeam);
         force.on("tick", function () {
