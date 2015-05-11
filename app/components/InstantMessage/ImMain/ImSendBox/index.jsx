@@ -1,7 +1,6 @@
 const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
-const SmartEditor = require('../../../SmartEditor/SmartEditor.jsx');
-const SmartPreview = require('../../../SmartEditor/SmartPreview.jsx');
+const se = require('../../../SmartEditor');
 const Layout = require("../../../Flex").Layout;
 
 import LoginStore from '../../../../stores/LoginStore';
@@ -13,7 +12,8 @@ import MessageAction from '../../../../actions/MessageAction';
 import uuid from 'node-uuid';
 import mui from 'material-ui';
 
-const {FlatButton} = mui;
+const {FlatButton, IconButton, Dialog} = mui;
+const {SmartEditor, SmartPreview} = se;
 
 require('./style.less');
 module.exports = React.createClass({
@@ -65,12 +65,39 @@ module.exports = React.createClass({
     MessageAction.sendMessage(msg);
   },
 
+  showInfoDialog() {
+    this.refs.infoDialog.show();
+  },
+
+  hideInfoDialog() {
+    this.refs.infoDialog.dismiss();
+  },
+
   render() {
+    var customActions = [
+      <FlatButton
+          label="OK"
+          primary={true}
+          onTouchTap={this.hideInfoDialog} />
+    ];
     return (
       <div className="send-box" style={this.props.style}>
+        <Dialog
+            ref="infoDialog"
+            title="Hints"
+            actions={customActions}
+            actionFocus="OK"
+            modal={false}
+            dismissOnClickAway={this.state.dismissOnClickAway}
+            contentClassName="mui-font-style-title">
+          <p>1. ENTER to send</p>
+          <p>2. SHIFT + ENTER to have newline</p>
+          <p>3. Markdown support</p>
+        </Dialog>
+
         <Layout>
-          <SmartEditor ref="sEditor" multiLine valueLink={this.linkState('messageValue')} className="instant-message-smart-editor"></SmartEditor>
-          <FlatButton label="Send" primary={true} onClick={this.sendMessage} disabled={!this.state.ready}></FlatButton>
+          <SmartEditor ref="sEditor" nohr multiLine valueLink={this.linkState('messageValue')} className="instant-message-smart-editor"></SmartEditor>
+          <IconButton className="icon-info-outline" style={{ fontSize:'2em' }} onClick={this.showInfoDialog}></IconButton>
         </Layout>
       </div>
     );

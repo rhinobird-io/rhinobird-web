@@ -12,6 +12,8 @@ const UserStore = require("../../stores/UserStore");
 
 import _ from 'lodash';
 
+require('./style.less');
+
 const COMMANDS = [
   {name: "vity", manual: ":room_name"},
   {name: "file", manual: ":file_id"}
