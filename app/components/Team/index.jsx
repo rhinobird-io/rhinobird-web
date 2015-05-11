@@ -164,7 +164,7 @@ let TeamDisplay = React.createClass({
                             <div>
                                 <hr/>
                                 <div className='mui-font-style-subhead-1'>
-                                    Add members
+                                    Add direct members
                                 </div>
                                 <mui.TextField ref='addMemberInput'/>
                                 <Flex.Layout endJustified>
