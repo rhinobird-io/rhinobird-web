@@ -13,6 +13,7 @@ import ImChannel from '../ImSideNav/ImChannels/ImChannel';
 import DropDownAny from '../../../DropDownAny';
 import Flex from '../../../Flex';
 import IMConstant from '../../../../constants/IMConstants';
+import moment from 'moment';
 
 const { IconButton } = mui;
 const limit = 20;
@@ -150,7 +151,8 @@ module.exports = React.createClass({
         let result = [], previousMsg = messages[messages.length-1], conCount = 1, msgSet = [previousMsg];
         for(let i=messages.length - 1; i>=0; i--){
             let msg = messages[i];
-            if(conCount <=5 && msg.userId === previousMsg.userId && msg.createdAt) {
+            let preMoment = moment(previousMsg.createdAt), curMoment = moment(msg.createdAt);
+            if(conCount <=5 && msg.userId === previousMsg.userId && preMoment.diff(curMoment, 'minutes') <= 1) {
                 conCount ++;
                 msgSet.unshift(msg);
             } else {
@@ -174,7 +176,7 @@ module.exports = React.createClass({
             }}/>
                 <div style={{flex: 1}}>
                     {
-                        msgs.map((msg, idx) => <ImMessage key={msg[0].id} messages={msg}></ImMessage>)
+                        msgs.map((msg, idx) => <ImMessage key={`group${msg[0].id}`} messages={msg}></ImMessage>)
                     }
                 </div>
             </Flex.Layout>
