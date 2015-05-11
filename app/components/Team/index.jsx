@@ -30,24 +30,33 @@ let TeamDisplay = React.createClass({
     componentWillReceiveProps(nextProps){
         if (nextProps.team !== this.props.team) {
             this.setState({
-                includeSubsidiaryMembers: false
+                includeSubsidiaryMembers: false,
+                addMember: false
             });
-            this.refs.toggle.setToggled(false);
+            if(this.refs.toggle){
+                this.refs.toggle.setToggled(false);
+            }
+        }
+    },
+    componentDidUpdate(){
+        if(this.refs.addMemberInput){
+            this.refs.addMemberInput.focus();
         }
     },
     _teamItemClick(team){
         this.props.onClickTeam(team);
     },
     _leaveTeam(){
-        console.log('leave team');
-        $.ajax({
-            url: `/platform/api/teams/${this.props.team.id}/users/${LoginStore.getUser().id}`,
-            type: 'DELETE',
-            success: ()=> {
-                UserAction.updateUserData();
-                this.refs.dialog.dismiss();
-            }
-        });
+        if(this.state.typedTeamName === this.props.team.name) {
+            $.ajax({
+                url: `/platform/api/teams/${this.props.team.id}/users/${LoginStore.getUser().id}`,
+                type: 'DELETE',
+                success: ()=> {
+                    UserAction.updateUserData();
+                    this.refs.dialog.dismiss();
+                }
+            });
+        }
     },
     render: function () {
         if (this.props.team) {
@@ -81,8 +90,7 @@ let TeamDisplay = React.createClass({
                                     <mui.IconButton onClick={()=>this.refs.dialog.show()}
                                                     iconClassName='icon-exit-to-app' tooltip='Leave this team'/>
                                     <mui.Dialog ref='dialog' title={`Leaving team ${this.props.team.name}`}
-                                                actions={dialogActions}
-                                        >
+                                                actions={dialogActions} >
                                         Please type the team name to confirm
                                         <mui.TextField valueLink={this.linkState('typedTeamName')}/>
                                     </mui.Dialog>
@@ -128,14 +136,17 @@ let TeamDisplay = React.createClass({
                                     <div className='mui-font-style-subhead-1' style={{margin:0, lineHeight:'48px'}}>
                                         Members
                                     </div>
-                                    <mui.IconButton onClick={()=>{this.setState({addMember: true})}}
+                                    <mui.IconButton onClick={()=>{
+                                        this.setState({addMember: true});
+                                    }}
                                                     className='add-member' iconClassName='icon-person-add'/>
                                 </Flex.Layout>
+                                {this.props.team.teams.length !== 0?
+                                    <div style={{width:300}}>
+                                        <mui.Toggle ref='toggle' label='Include subsidiary members'
+                                                    onToggle={this._toggle}></mui.Toggle>
+                                    </div>:undefined}
 
-                                <div style={{width:300}}>
-                                    <mui.Toggle ref='toggle' label='Include subsidiary members'
-                                                onToggle={this._toggle}></mui.Toggle>
-                                </div>
                             </Flex.Layout>
                             <Flex.Layout wrap>
                                 {users.map((user, index)=> {
@@ -145,14 +156,21 @@ let TeamDisplay = React.createClass({
                                     </div>;
                                 })}
                             </Flex.Layout>
+                            {users.length !== 0?
+                                <Flex.Layout endJustified>
+                                    {this.state.includeSubsidiaryMembers?
+                                        <div className='mui-font-style-caption'>{`${users.length} members in total, including subsidiary members`}</div>:
+                                        <div className='mui-font-style-caption'>{`${users.length} members directly under this team`}</div>}
+                                </Flex.Layout>:undefined}
+
                         </div>
                         {this.state.addMember ?
                             <div>
                                 <hr/>
                                 <div className='mui-font-style-subhead-1'>
-                                    Add members
+                                    Add direct members
                                 </div>
-                                <mui.TextField/>
+                                <mui.TextField ref='addMemberInput'/>
                                 <Flex.Layout endJustified>
                                     <mui.FlatButton label='cancel' onClick={()=>{this.setState({addMember: false})}}/>
                                     <mui.FlatButton primary label='Add members'/>
@@ -193,16 +211,6 @@ let TeamGraph = React.createClass({
             .attr("height", height)
             .attr('viewBox', '0 0 960 500')
             .attr('preserveAspectRatio', 'xMidYMid');
-        svg.append('defs').selectAll('marker').data(['default']).enter().append('marker').attr('id', function (d) {
-            return d;
-        })
-            .attr("viewBox", "0 -5 10 10")
-            .attr("refX", 25)
-            .attr("refY", -2)
-            .attr("markerWidth", 6)
-            .attr("markerHeight", 6)
-            .attr("orient", "auto").append("path")
-            .attr("d", "M0,-5L10,0L0,5");
         let primaryColor = '#e91e63', secondaryColor = '#00bcd4';
         svg.append('circle').attr('r', 4).attr('stroke', primaryColor).attr('fill', primaryColor).attr('cx', 30).attr('cy', 10);
         svg.append('text').text('Teams directly under').attr('x', 40).attr('y', 14);
@@ -215,7 +223,7 @@ let TeamGraph = React.createClass({
             .nodes(teams)
             .links(connections)
             .start();
-        let link = svg.selectAll('.link').data(connections).enter().append('path').attr('class', 'link').attr('marker-end', 'url(#default)');
+        let link = svg.selectAll('.link').data(connections).enter().append('path').attr('class', 'link');
         let node = svg.selectAll('.node').data(teams).enter().append('g').attr('class', function (d) {
             if (d.users.find(u => u.id === LoginStore.getUser().id)) {
                 return 'highlight primary';
@@ -225,9 +233,13 @@ let TeamGraph = React.createClass({
                 return '';
             }
         }).call(force.drag).on('click', this.props.onClickTeam);
-        let circle = node.append('circle').attr('r', 14).attr('fill', 'white').attr('stroke', 'black').on('click', this.props.onClickTeam);
-        let icon = node.append('text').attr('class', 'group-icon').attr('x', -10).attr('y', '.31em').text("\ue8d8").on('click', this.props.onClickTeam);
-        let text = node.append('text').attr('x', 20).attr('y', '.31em').text(function (d) {
+        let icon = node.append('text').attr('class', 'group-icon').attr('x', '-0.5em').attr('y', '.35em')
+            .style('font-size', function(d){
+                return 8 + 12 * d.level;
+            }).text("\ue8d8").on('click', this.props.onClickTeam);
+        let text = node.append('text').attr('x', function(d){
+            return 14 + 6 * d.level;
+        }).attr('y', '.31em').text(function (d) {
             return d.name;
         }).on('click', this.props.onClickTeam);
         force.on("tick", function () {
@@ -238,7 +250,6 @@ let TeamGraph = React.createClass({
                 return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
             });
 
-            circle.attr("transform", _transform);
             icon.attr("transform", _transform);
             text.attr("transform", _transform);
         });

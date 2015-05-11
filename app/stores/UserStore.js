@@ -95,7 +95,7 @@ let UserStore = assign({}, BaseStore, {
      * get all users current user can see among all teams
      * @returns {*}
      */
-    getUsersMap() {
+        getUsersMap() {
         return _users;
     },
 
@@ -114,10 +114,10 @@ let UserStore = assign({}, BaseStore, {
     getUsersByTeamId(teamId, includeSub) {
         let team = _teams[teamId];
         let result = new Set(team.users || []);
-        if(!includeSub){
+        if (!includeSub) {
             return Array.from(result);
         }
-        team.teams.forEach(team =>{
+        team.teams.forEach(team => {
             let subResult = this.getUsersByTeamId(team.id, true);
             result = new Set([...result, ...subResult]);
         })
@@ -167,6 +167,20 @@ let UserStore = assign({}, BaseStore, {
 });
 
 const md5 = require('blueimp-md5');
+
+function _setTeamLevel(team) {
+    if (team.level) {
+        return team.level;
+    }
+    else if (team.teams.length === 0) {
+        team.level = 1;
+        return 1;
+    } else {
+        let level = Math.max.apply(null, team.teams.map(t => _setTeamLevel(t))) + 1;
+        team.level = level;
+        return level;
+    }
+}
 function buildIndex(teams_users) {
     var _teams_users = {};
     var _users_teams = {};
@@ -198,10 +212,15 @@ function buildIndex(teams_users) {
         _teams[team.id] = team;
     });
     Object.values(_teams).forEach(team => {
-        team.teams = team.teams.map(sub_team_id =>{
+        team.teams = team.teams.map(sub_team_id => {
             _teams[sub_team_id].parentTeams.push(team);
             return _teams[sub_team_id];
         });
+    });
+
+    //Calculate team level
+    Object.values(_teams).forEach(team => {
+        _setTeamLevel(team);
     });
 
 
