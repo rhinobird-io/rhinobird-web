@@ -203,6 +203,11 @@ let TeamGraph = React.createClass({
             .attr("markerHeight", 6)
             .attr("orient", "auto").append("path")
             .attr("d", "M0,-5L10,0L0,5");
+        let primaryColor = '#e91e63', secondaryColor = '#00bcd4';
+        svg.append('circle').attr('r', 4).attr('stroke', primaryColor).attr('fill', primaryColor).attr('cx', 30).attr('cy', 10);
+        svg.append('text').text('Teams directly under').attr('x', 40).attr('y', 14);
+        svg.append('circle').attr('r', 4).attr('stroke', secondaryColor).attr('fill', secondaryColor).attr('cx', 30).attr('cy', 30);
+        svg.append('text').text('Teams indirectly under').attr('x', 40).attr('y', 34);
         let force = d3.layout.force()
             .gravity(0.05)
             .linkDistance(100)
@@ -213,7 +218,9 @@ let TeamGraph = React.createClass({
         let link = svg.selectAll('.link').data(connections).enter().append('path').attr('class', 'link').attr('marker-end', 'url(#default)');
         let node = svg.selectAll('.node').data(teams).enter().append('g').attr('class', function (d) {
             if (d.users.find(u => u.id === LoginStore.getUser().id)) {
-                return 'highlight';
+                return 'highlight primary';
+            } else if(UserStore.getUsersByTeamId(d.id, true).find(u => u.id === LoginStore.getUser().id)){
+                return 'highlight secondary';
             } else {
                 return '';
             }
