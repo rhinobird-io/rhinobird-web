@@ -35,19 +35,25 @@ let TeamDisplay = React.createClass({
             this.refs.toggle.setToggled(false);
         }
     },
+    componentDidUpdate(){
+        if(this.refs.addMemberInput){
+            this.refs.addMemberInput.focus();
+        }
+    },
     _teamItemClick(team){
         this.props.onClickTeam(team);
     },
     _leaveTeam(){
-        console.log('leave team');
-        $.ajax({
-            url: `/platform/api/teams/${this.props.team.id}/users/${LoginStore.getUser().id}`,
-            type: 'DELETE',
-            success: ()=> {
-                UserAction.updateUserData();
-                this.refs.dialog.dismiss();
-            }
-        });
+        if(this.state.typedTeamName === this.props.team.name) {
+            $.ajax({
+                url: `/platform/api/teams/${this.props.team.id}/users/${LoginStore.getUser().id}`,
+                type: 'DELETE',
+                success: ()=> {
+                    UserAction.updateUserData();
+                    this.refs.dialog.dismiss();
+                }
+            });
+        }
     },
     render: function () {
         if (this.props.team) {
@@ -127,7 +133,9 @@ let TeamDisplay = React.createClass({
                                     <div className='mui-font-style-subhead-1' style={{margin:0, lineHeight:'48px'}}>
                                         Members
                                     </div>
-                                    <mui.IconButton onClick={()=>{this.setState({addMember: true})}}
+                                    <mui.IconButton onClick={()=>{
+                                        this.setState({addMember: true});
+                                    }}
                                                     className='add-member' iconClassName='icon-person-add'/>
                                 </Flex.Layout>
 
@@ -144,6 +152,13 @@ let TeamDisplay = React.createClass({
                                     </div>;
                                 })}
                             </Flex.Layout>
+                            {users.length !== 0?
+                                <Flex.Layout endJustified>
+                                    {this.state.includeSubsidiaryMembers?
+                                        <div className='mui-font-style-caption'>{`${users.length} members in total, including subsidiary members`}</div>:
+                                        <div className='mui-font-style-caption'>{`${users.length} members directly under this team`}</div>}
+                                </Flex.Layout>:undefined}
+
                         </div>
                         {this.state.addMember ?
                             <div>
@@ -151,7 +166,7 @@ let TeamDisplay = React.createClass({
                                 <div className='mui-font-style-subhead-1'>
                                     Add members
                                 </div>
-                                <mui.TextField/>
+                                <mui.TextField ref='addMemberInput'/>
                                 <Flex.Layout endJustified>
                                     <mui.FlatButton label='cancel' onClick={()=>{this.setState({addMember: false})}}/>
                                     <mui.FlatButton primary label='Add members'/>
@@ -199,7 +214,7 @@ let TeamGraph = React.createClass({
         svg.append('text').text('Teams indirectly under').attr('x', 40).attr('y', 34);
         let force = d3.layout.force()
             .gravity(0.05)
-            .linkDistance(130)
+            .linkDistance(100)
             .charge(-300).size([width, height])
             .nodes(teams)
             .links(connections)
@@ -214,9 +229,6 @@ let TeamGraph = React.createClass({
                 return '';
             }
         }).call(force.drag).on('click', this.props.onClickTeam);
-        let circle = node.append('circle').attr('r', function(d){
-            return 8 + 6 * d.level;
-        }).attr('fill', 'white').attr('stroke', 'black').on('click', this.props.onClickTeam);
         let icon = node.append('text').attr('class', 'group-icon').attr('x', '-0.5em').attr('y', '.35em')
             .style('font-size', function(d){
                 return 8 + 12 * d.level;
@@ -234,7 +246,6 @@ let TeamGraph = React.createClass({
                 return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
             });
 
-            circle.attr("transform", _transform);
             icon.attr("transform", _transform);
             text.attr("transform", _transform);
         });
