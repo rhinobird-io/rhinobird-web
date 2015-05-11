@@ -30,7 +30,8 @@ let TeamDisplay = React.createClass({
     componentWillReceiveProps(nextProps){
         if (nextProps.team !== this.props.team) {
             this.setState({
-                includeSubsidiaryMembers: false
+                includeSubsidiaryMembers: false,
+                addMember: false
             });
             this.refs.toggle.setToggled(false);
         }
