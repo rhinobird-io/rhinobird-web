@@ -16,9 +16,9 @@ require("./style.less");
 let TeamDisplay = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     getInitialState(){
-      return {
-          includeSubsidiaryMembers: false
-      }
+        return {
+            includeSubsidiaryMembers: false
+        }
     },
     _toggle(e, toggled) {
         this.setState({
@@ -26,7 +26,7 @@ let TeamDisplay = React.createClass({
         })
     },
     componentWillReceiveProps(nextProps){
-        if(nextProps.team !== this.props.team){
+        if (nextProps.team !== this.props.team) {
             this.setState({
                 includeSubsidiaryMembers: false
             });
@@ -39,9 +39,9 @@ let TeamDisplay = React.createClass({
     render: function () {
         if (this.props.team) {
             let users;
-            if(this.state.includeSubsidiaryMembers){
+            if (this.state.includeSubsidiaryMembers) {
                 users = UserStore.getUsersByTeamId(this.props.team.id, true);
-            } else{
+            } else {
                 users = this.props.team.users;
             }
             return <div className='paper-outer-container'>
@@ -85,7 +85,13 @@ let TeamDisplay = React.createClass({
                             : undefined}
                         <div>
                             <Flex.Layout center justified>
-                                <div className='mui-font-style-subhead-1'>Members</div>
+                                <Flex.Layout center>
+                                    <div className='mui-font-style-subhead-1' style={{margin:0, lineHeight:'48px'}}>
+                                        Members
+                                    </div>
+                                    <mui.IconButton onClick={()=>{this.setState({addMember: true})}} className='add-member' iconClassName='icon-person-add'/>
+                                </Flex.Layout>
+
                                 <div style={{width:300}}>
                                     <mui.Toggle ref='toggle' label='Include subsidiary members'
                                                 onToggle={this._toggle}></mui.Toggle>
@@ -100,6 +106,20 @@ let TeamDisplay = React.createClass({
                                 })}
                             </Flex.Layout>
                         </div>
+                        {this.state.addMember ?
+                            <div>
+                                <hr/>
+                                <div className='mui-font-style-subhead-1'>
+                                    Add members
+                                </div>
+                                <mui.TextField/>
+                                <Flex.Layout endJustified>
+                                    <mui.FlatButton label='cancel' onClick={()=>{this.setState({addMember: false})}}/>
+                                    <mui.FlatButton primary label='Add members'/>
+                                </Flex.Layout>
+                            </div> : undefined}
+
+
                     </div>
                 </Paper>
             </div>
@@ -215,9 +235,10 @@ let TeamPage = React.createClass({
                     <TeamGraph teams={this.state.teams} onClickTeam={this._onClickTeam}/>
                 </Paper>
             </Flex.Item>
-            {this.state.selectedTeam ? <TeamDisplay onClickTeam={this._onClickTeam} team={this.state.selectedTeam}></TeamDisplay> : undefined}
+            {this.state.selectedTeam ?
+                <TeamDisplay onClickTeam={this._onClickTeam} team={this.state.selectedTeam}></TeamDisplay> : undefined}
             <Link to='create-team'>
-                <mui.FloatingActionButton className='add-team' iconClassName="icon-group-add" />
+                <mui.FloatingActionButton className='add-team' iconClassName="icon-group-add"/>
             </Link>
         </Flex.Layout>;
     }
