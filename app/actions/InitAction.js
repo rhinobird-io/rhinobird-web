@@ -20,6 +20,13 @@ export default {
         var channelIds = _.pluck(channels.publicGroupChannels, 'backEndChannelId').concat(_.pluck(channels.directMessageChannels, 'backEndChannelId'));
         // key channelId, value latestMessageId and lastSeenMessageId
         let latestAndLastSeen = {};
+
+        AppDispatcher.dispatch({
+            type: Constants.ChannelActionTypes.INIT_CHANNELS,
+            publicGroupChannels: channels.publicGroupChannels,
+            directMessageChannels:channels.directMessageChannels
+        });
+
         async.series([
 
             /**

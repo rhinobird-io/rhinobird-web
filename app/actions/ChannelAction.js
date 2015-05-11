@@ -87,8 +87,8 @@ function parseBackEndChannelId(backEndChannelId, currentUser) {
         }
     } else if (flags[0] === 'user') {
         return {
-            channelId: flags[1] === currentUser.id ? flags[2] : flags[1],
-            isGroup: true,
+            channelId: flags[1] === '' + currentUser.id ? flags[2] : flags[1],
+            isGroup: false,
             backEndChannelId: backEndChannelId
         }
     }
