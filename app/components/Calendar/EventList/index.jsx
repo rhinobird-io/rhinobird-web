@@ -151,11 +151,11 @@ export default React.createClass({
 
         let noMoreOlderEvents =
             !this.state.hasMoreOlderEvents ?
-                <div className="cal-event-no-more">No more events.</div> : null;
+                <div className="cal-event-no-more">No more events</div> : null;
 
         let noMoreNewerEvents =
             !this.state.hasMoreNewerEvents ?
-                <div className="cal-event-no-more">No more events.</div> : null;
+                <div className="cal-event-no-more">No more events</div> : null;
 
         return (
             <PerfectScroll className="cal-event-list">

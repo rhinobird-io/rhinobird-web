@@ -42,6 +42,7 @@ const SmartEditor = React.createClass({
   getInitialState() {
     return {
       options: [],
+      position: "top",
       popupPosition: {},
       popupJustified: false
     };
@@ -206,9 +207,7 @@ const SmartEditor = React.createClass({
     let popupStyle = {
       width: props.popupWidth,
       maxHeight: props.popupMaxHeight,
-        height: "200px",
       overflow: "auto",
-      background: "#fff",
       zIndex: 20
     };
     for (let k in this.state.popupPosition) {
@@ -224,10 +223,13 @@ const SmartEditor = React.createClass({
         visibility: "visible"
       };
       let newTop = this.state.popupPosition.top - rect.height;
+      let position;
       if (rect.bottom > window.innerHeight && newTop > 0) {
+        position = "top";
         popupPosition.top = newTop;
         popupPosition.marginTop = props.popupMinusTop;
       } else {
+          position = "bottom";
         // unchanged
         popupPosition.top = this.state.popupPosition.top;
         popupPosition.marginTop = this.state.popupPosition.marginTop;
@@ -241,7 +243,8 @@ const SmartEditor = React.createClass({
       }
       this.setState({
         popupPosition: popupPosition,
-        popupJustified: true
+        popupJustified: true,
+          position: position
       });
     }, 0);
 
@@ -257,6 +260,7 @@ const SmartEditor = React.createClass({
                                 onChange={this._onInputChange}
                                 onBlur={this.hidePopup}/>
         <PopupSelect ref="popup"
+                     position={this.state.position}
                      onItemSelect={this._onItemSelect}
             style={popupStyle}>
           {this.state.options}

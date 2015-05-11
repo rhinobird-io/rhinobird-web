@@ -2,12 +2,13 @@ const React       = require('react'),
       MUI         = require('material-ui'),
       Paper       = MUI.Paper,
       TextField   = MUI.TextField,
-      MaterialPopup = require('./MaterialPopup');
+      MaterialPopup = require('./MaterialPopup'),
+      ClickAwayable = MUI.Mixins.ClickAwayable;
 
 require('./style.less');
 
 export default React.createClass({
-    mixins: [React.addons.LinkedStateMixin],
+    mixins: [ClickAwayable, React.addons.LinkedStateMixin],
 
     propTypes: {
         valueLink: React.PropTypes.shape({
@@ -15,11 +16,17 @@ export default React.createClass({
             requestChange: React.PropTypes.func.isRequired
         }),
         multiple: React.PropTypes.bool,
+        indexAttr: React.PropTypes.string,
         placeholder: React.PropTypes.string
     },
 
     focused: false,
+
     layoutUpdated: false,
+
+    componentClickAway() {
+        this.refs.popupSelect.dismiss();
+    },
 
     componentDidMount() {
         this._updateLayout(this.focused);
@@ -34,13 +41,21 @@ export default React.createClass({
         }
     },
 
+    getDefaultProps() {
+        return {
+            indexAttr: "index"
+        }
+    },
+
     getInitialState() {
         return {
-            selected: []
+            selected: [],
+            children: []
         };
     },
 
     getValueLink(props) {
+        console.log(props.onChange);
         return props.valueLink || {
                 value: props.value,
                 requestChange: props.onChange
@@ -60,7 +75,7 @@ export default React.createClass({
         }
     },
 
-    _updateLayout(focused) {
+    _updateLayout: function(focused) {
         this.focused = focused;
         let selected = this.state.selected;
         let marginTop = 0;
@@ -76,7 +91,6 @@ export default React.createClass({
                 marginTop = tokenWrapper.getDOMNode().clientHeight;
             }
             this.refs.text.getDOMNode().style.marginTop = marginTop + "px";
-            console.log(marginTop)
         }
         this.setState({paddingLeft: paddingLeft});
     },
@@ -96,7 +110,22 @@ export default React.createClass({
         }
         this.setState({selected: selected});
         this._updateLayout(true, selected);
-        this.getValueLink(this.props).requestChange(selected);
+        if (this.props.valueLink || this.props.onChange) {
+            console.log(selected);
+            this.getValueLink(this.props).requestChange(selected);
+        }
+    },
+
+    _filter() {
+        let keyword = this.refs.text.getValue();
+        let children = this.props.children.filter((child) => {
+            if (keyword.length === 0 || !child.props.index) return true;
+            return child.props.index.indexOf(keyword) >= 0;
+        });
+        if (children.length >= 0 && !this.refs.popupSelect.isShow()) {
+            this.refs.popupSelect.show();
+        }
+        this.setState({children: children});
     },
 
     render() {
@@ -142,37 +171,30 @@ export default React.createClass({
         let text =
             <TextField
                 ref="text"
-                onFocus={() => this.refs.popupSelect.show()}
-                onBlur={() => this.refs.popupSelect.dismiss()} style={styles.padding} type="text" className="select-text"/>;
-        let popupSelect = <MaterialPopup
-            ref="popupSelect"
-            style={{position: "absolute", top: "100%", left: 0, right: 0}}
-            onItemSelect={(value) => {
-                    this._addSelectedOption(value);
-                    this.refs.text.setValue("");
-                }
-            }
-            onShow={() => this._updateLayout(true)}
-            onHide={() => this._updateLayout(false)}
-            onChange={() => this.refs.popupSelect.filter(this.refs.text.getValue())}
-            onFilter={(values) => {
+                type="text"
+                style={styles.padding}
+                className={this.props.className}
+                onChange={this._filter}
+                onFocus={() => this.refs.popupSelect.show()} />;
 
-            }}
-            onAutoComplete={(values) =>
-                {
-                    let textValue = "";
-                    if (values[0] && values[0].indexOf(this.refs.text.getValue()) === 0) {
-                        textValue = values[0];
+        let popupSelect =
+            <MaterialPopup
+                ref="popupSelect"
+                style={{position: "absolute", top: "100%", left: 0, right: 0}}
+                onItemSelect={(value) => {
+                        this._addSelectedOption(value);
+                        this.refs.text.setValue("");
+                        this._filter();
+                        this.refs.popupSelect.dismiss();
                     }
-                    this.refs.text.setValue(textValue);
                 }
-            }>
-            {this.props.children}
+            >
+            {this.state.children}
         </MaterialPopup>;
 
         for (let i = 0; i < this.state.selected.length; i++) {
             tokens.push(
-                <Paper ref={"token-" + i} zDepth={1} style={styles.token}>
+                <Paper key={"token_" + i} ref={"token-" + i} zDepth={1} style={styles.token}>
                     <a onClick={(e) => e.stopPropagation()}>{this.state.selected[i]}</a>
                     <span style={styles.tokenDelete} onClick={(e) => {
                         this._delete(i);
@@ -185,14 +207,14 @@ export default React.createClass({
         let tokenWrapperDOM =
             tokens.length > 0 ?
                 <div ref="tokenWrapper" style={styles.tokenWrapper}
-                     onClick={(e) => {
+                     onClick={() => {
                         this.refs.text.focus();
                     }}>
                     {tokens}
                 </div> : null;
 
         return (
-            <div style={styles.select}>
+            <div style={styles.select} >
                 {tokenWrapperDOM}
                 {text}
                 {popupSelect}

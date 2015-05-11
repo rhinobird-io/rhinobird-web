@@ -6,6 +6,7 @@ export default React.createClass({
     mixins: [React.addons.LinkedStateMixin],
 
     propTypes: {
+        position: React.PropTypes.string,
         valueAttr: React.PropTypes.string,
         onItemSelect: React.PropTypes.func,
         normalStyle: React.PropTypes.object,
@@ -20,6 +21,7 @@ export default React.createClass({
 
     getDefaultProps: function() {
         return {
+            position: "bottom",
             valueAttr: "value",
             activeStyle: {
                 fontWeight: "bold"
@@ -91,24 +93,36 @@ export default React.createClass({
     },
 
     render: function() {
+        let {
+            position,
+            ...other
+        } = this.props;
         let children = this._construct(this.props.children, this.props.valueAttr);
         let styles = {
             outer: {
                 height: 200
             },
             popup: {
+                background: "white",
                 position: "relative",
                 display: this.state.visible ? "block" : "none"
             }
         };
 
+        let padding = <div style={{flex: 1}}></div>;
+        let topPadding = position === "top" ? padding : null;
+        let bottomPadding = position === "bottom" ? padding : null;
+
         return (
             <Layout vertical style={styles.outer}>
-                <div style={{flex: 1}}></div>
+                {topPadding}
                 <PerfectScroll
                     ref="scroll"
                     style={styles.popup}
-                    className={this.props.wrapperClass} alwaysVisible>{children}</PerfectScroll>
+                    className={this.props.wrapperClass} alwaysVisible>
+                    {children}
+                </PerfectScroll>
+                {bottomPadding}
             </Layout>
         );
     },
@@ -170,7 +184,8 @@ export default React.createClass({
             }
             return false;
         });
-        this.setState({options: options, optionsMap: optionsMap});
+        this.setState({options: options, optionsMap: optionsMap, activeOptionIndex: 0});
+        this._updateScroll(0);
     },
 
     _parseChild(child, valueAttr, options) {
@@ -211,7 +226,7 @@ export default React.createClass({
                 let disabled = !!child.props.disabled;
                 let style;
                 let className = "";
-                let onMouseOver;
+                let onMouseOver, onClick;
 
                 if (this.props.normalClass) {
                     className += this.props.normalClass;
@@ -223,6 +238,7 @@ export default React.createClass({
                 } else {
                     let option = this.state.options[key];
                     onMouseOver = () => this.setState({activeOptionIndex: option.index});
+                    onClick = () => this._select(option.index);
                     if (option && option["index"] === this.state.activeOptionIndex
                         && this.props.activeClass) {
                         style =  this.props.activeStyle;
@@ -234,6 +250,7 @@ export default React.createClass({
                     key: key,
                     ref: key,
                     style: style,
+                    onClick: onClick,
                     className: className,
                     onMouseOver: onMouseOver
                 });

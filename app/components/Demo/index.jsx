@@ -2,10 +2,9 @@ var React                = require("react"),
     SmartTimeDisplay     = require("../SmartTimeDisplay"),
     SmartEditor = require("../SmartEditor").SmartEditor,
     SmartPreview = require("../SmartEditor").SmartPreview,
-    Select = require("../Select").Select,
     Selector = require("../Select").Selector,
-    MaterialPopup = require("../Select").MaterialPopup,
-    MaterialSelect = require("../Select").MaterialSelect;
+    MaterialSelect = require("../Select").Select,
+    MemberSelect = require("../MemberSelect");
 
 require("./style.less");
 
@@ -51,12 +50,6 @@ export default React.createClass({
                     </div>
                 </MaterialSelect>
 
-                <div>{this.state.select2}</div>
-                <Select valueLink={this.linkState("select2")}>
-                    <option value="Guang Dong">Guang Dong</option>
-                    <option value="Shang Hai">Shang Hai</option>
-                </Select>
-
                 <br/>
 
                 {this.state.repeatedType}
@@ -85,6 +78,10 @@ export default React.createClass({
                     <span className="item" name="Friday">Fri</span>
                     <span className="item" name="Saturday">Sat</span>
                 </Selector>
+
+                <br/>
+
+                <MemberSelect></MemberSelect>
 
                 <br/>
 

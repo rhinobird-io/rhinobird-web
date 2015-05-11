@@ -2,19 +2,20 @@ const React      = require('react'),
       ReactStyle = require('react-style'),
       MUI        = require('material-ui'),
       Popup      = require('./Popup'),
-      Flex       = require('../Flex'),
-      PerfectScroll = require('../PerfectScroll');
+      Flex       = require('../Flex');
 
 export default React.createClass({
     mixins: [React.addons.LinkedStateMixin],
 
     propTypes: {
+        position: React.PropTypes.string,
         valueAttr: React.PropTypes.string,
         onItemSelect: React.PropTypes.func
     },
 
     getDefaultProps() {
         return {
+            position: "bottom",
             valueAttr: "value"
         }
     },
@@ -49,6 +50,7 @@ export default React.createClass({
     render() {
         let {
             style,
+            position,
             valueAttr,
             onItemSelect,
             ...other
@@ -56,7 +58,6 @@ export default React.createClass({
 
         let popup = {
             zIndex: 9,
-            background: "white",
             display: this.state.visible ? "block" : "none"
         };
 
@@ -64,10 +65,11 @@ export default React.createClass({
             <div styles={[style, popup]} {...other}>
                 <Popup
                     ref="popup"
+                    position={position}
                     valueAttr={valueAttr}
                     onItemSelect={this.select}
                     normalClass="mui-menu-item"
-                    wrapperClass="mui-z-depth-5"
+                    wrapperClass="mui-paper mui-z-depth-2"
                     activeClass="mui-is-selected"
                     disabledClass="mui-is-disabled">
                     {this.props.children}

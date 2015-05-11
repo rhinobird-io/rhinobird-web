@@ -52,7 +52,7 @@ export default {
         parsedEvent.from_time = new Date(event.fromTime).toISOString();
         parsedEvent.to_time = new Date(event.toTime).toISOString();
         parsedEvent.full_day = event.fullDay;
-        parsedEvent.participants = {users: [], teams: []};
+        parsedEvent.participants = event.participants;
         if (event.repeated) {
             parsedEvent.repeated = true;
             parsedEvent.repeated_type = event.repeatedType;
