@@ -14,7 +14,7 @@ module.exports = React.createClass({
     },
     render: function() {
         let mainPage = (['/platform/signin', '/platform/signup'].indexOf(this.context.router.getCurrentPathname()) === -1);
-        let rightElement = <Flex.Layout reverse className="top-nav-right"><Notification /></Flex.Layout>;
+        let rightElement = mainPage ? <Flex.Layout reverse className="top-nav-right"><Notification /></Flex.Layout> : undefined;
         return <Paper className='topNav' rounded={false}>
             <mui.AppBar
                 onMenuIconButtonTouchTap={this.props.onMenuIconButtonTouchTap}

@@ -26,17 +26,36 @@ function _websocket() {
 
 export default {
 
-  receive() {
-    if (NotificationStore.getWebSocket() !== null) return;
+  receive(startIndex) {
+    if (startIndex === 0) NotificationStore.clear();
     let user = LoginStore.getUser();
-    $.get("/platform/api/users/" + user.id + "/notifications").done(data => {
+    if (!user) return;
+    $.get("/platform/api/users/" + user.id + "/notifications/" + startIndex + "/10").done(data => {
       AppDispatcher.dispatch({
         type: ActionTypes.RECEIVE_NOTIFI,
-        data: data
+        data: data.notifications
       });
-      NotificationStore.setWebSocket(_websocket());
+      NotificationStore.setTotal(data.total);
+      if (NotificationStore.getWebSocket() === null) {
+        NotificationStore.setWebSocket(_websocket());
+      }
     }).fail(_ => {
       console.error(_);
+    });
+  },
+
+  markAsRead() {
+    let socket = NotificationStore.getWebSocket();
+    if (socket === null) return;
+    let data = [];
+    NotificationStore.getAll().map(n => {
+      if (!n.checked) data.push({id: n.id});
+    });
+    if (data.length === 0) return;
+    socket.send(JSON.stringify(data));
+    AppDispatcher.dispatch({
+      type: ActionTypes.READ_NOTIFI,
+      data: data
     });
   }
 
