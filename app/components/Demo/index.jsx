@@ -2,9 +2,9 @@ var React                = require("react"),
     SmartTimeDisplay     = require("../SmartTimeDisplay"),
     SmartEditor = require("../SmartEditor").SmartEditor,
     SmartPreview = require("../SmartEditor").SmartPreview,
-    Select = require("../Select").Select,
     Selector = require("../Select").Selector,
-    MaterialPopup = require("../Select").MaterialPopup;
+    MaterialSelect = require("../Select").Select,
+    MemberSelect = require("../MemberSelect");
 
 require("./style.less");
 
@@ -35,26 +35,20 @@ export default React.createClass({
                 <br/>
                 <br/>
                 <div>{this.state.select1.toString()}</div>
-                <Select multiple valueLink={this.linkState("select1")} placeholder="Select a team">
-                    <optgroup label="NBA">
+                <MaterialSelect multiple valueLink={this.linkState("select1")} placeholder="Select a team">
+                    <div label="NBA">
                         <label></label>
-                        <option value="Lakers" data="Lakers">Lakers</option>
-                        <option value="Celtics" data="Celtics">Celtics</option>
-                        <option value="Warriors" data="Warriors">Warriors</option>
-                        <option value="Pacers" data="Pacers">Pacers</option>
-                    </optgroup>
-                    <optgroup label="CBA">
-                        <option value="Guang Dong">Guang Dong</option>
-                        <option value="Shang Hai">Shang Hai</option>
-                        <option value="Bei Jing">Bei Jing</option>
-                    </optgroup>
-                </Select>
-
-                <div>{this.state.select2}</div>
-                <Select valueLink={this.linkState("select2")}>
-                    <option value="Guang Dong">Guang Dong</option>
-                    <option value="Shang Hai">Shang Hai</option>
-                </Select>
+                        <div value="Lakers" data="Lakers">Lakers</div>
+                        <div value="Celtics" data="Celtics">Celtics</div>
+                        <div value="Warriors" data="Warriors">Warriors</div>
+                        <div value="Pacers" data="Pacers">Pacers</div>
+                    </div>
+                    <div label="CBA">
+                        <div value="Guang Dong">Guang Dong</div>
+                        <div value="Shang Hai">Shang Hai</div>
+                        <div value="Bei Jing">Bei Jing</div>
+                    </div>
+                </MaterialSelect>
 
                 <br/>
 
@@ -84,6 +78,10 @@ export default React.createClass({
                     <span className="item" name="Friday">Fri</span>
                     <span className="item" name="Saturday">Sat</span>
                 </Selector>
+
+                <br/>
+
+                <MemberSelect></MemberSelect>
 
                 <br/>
 

@@ -6,6 +6,7 @@ const React           = require("react"),
       Link            = Router.Link,
       Navigation      = Router.Navigation,
       Selector        = require("../../Select").Selector,
+      MemberSelect    = require("../../MemberSelect"),
       PerfectScroll   = require('../../PerfectScroll'),
       CalendarActions = require("../../../actions/CalendarActions");
 
@@ -67,6 +68,10 @@ export default React.createClass({
             titleError: "",
             description: "",
             fullDay: false,
+            participants: {
+                teams: [],
+                users: []
+            },
             fromTime: new Date(),
             toTime: new Date(),
             editRepeated: false,
@@ -168,11 +173,7 @@ export default React.createClass({
                                 </Flex.Layout>
                             </Flex.Layout>
 
-                            <MUI.TextField
-                                ref="eventParticipant"
-                                hintText="Participants"
-                                floatingLabelText="Participants"
-                                className="cal-create-event-textfield" />
+                            <MemberSelect className="cal-create-event-textfield" valueLink={this.linkState("participants")} />
 
                             <br/>
 
