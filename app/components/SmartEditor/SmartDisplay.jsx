@@ -101,7 +101,7 @@ const SmartDisplay = React.createClass({
           .replace("$", token[i].content)
           .replace("$", EmojiPng("./" + markup + ".png"));
       } else {
-        return ":" + markup + ":";git
+        return ":" + markup + ":";
       }
     };
     return md.render(value);
