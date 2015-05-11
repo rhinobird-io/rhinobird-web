@@ -33,7 +33,7 @@ let NotifiItem = React.createClass({
       color: this.props.read ? "#888" : "#000"
     };
     return (
-      <Layout horizontal>
+      <Layout horizontal className="mui-menu-item">
         <div className="avatar-wrapper">
           <Avatar scale={1.6} member={this.props.sender} />
         </div>
@@ -91,7 +91,7 @@ export default React.createClass({
     });
     if (this.state.notifications.length >= NotificationStore.getTotal()) {
       menu.push(
-        <div style={{textAlign: "center", color: "#888"}}>
+        <div style={{textAlign: "center", color: "#888", margin: 12}}>
           {`All ${this.state.notifications.length} notifications are listed`}
         </div>
       );

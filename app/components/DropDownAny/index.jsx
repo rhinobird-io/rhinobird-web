@@ -33,11 +33,6 @@ export default React.createClass({
     this.setState({ open: !this.state.open });
   },
 
-  _getMenuItems(list) {
-    let key = 0;
-    return list.map(item => <div key={key += 1} className="mui-menu-item">{item}</div>);
-  },
-
   render() {
     let dropClasses = this.getClasses("mui-drop-down-menu", {
       "mui-open": this.state.open
@@ -55,7 +50,7 @@ export default React.createClass({
         </div>
         <Paper className={menuClasses} style={this.props.style}>
           <PerfectScroll ref="scroll" noScrollX className={this.props.menuClasses}>
-            {this._getMenuItems(this.props.menu)}
+            {this.props.menu}
           </PerfectScroll>
         </Paper>
       </div>
