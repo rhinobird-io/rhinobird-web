@@ -4,6 +4,7 @@ export default {
 
   ActionTypes: keyMirror({
     LOGIN_UPDATE: null,
+    USER_UPDATE: null,
     FLOATING_CONTENT_UPDATE: null
   }),
 
