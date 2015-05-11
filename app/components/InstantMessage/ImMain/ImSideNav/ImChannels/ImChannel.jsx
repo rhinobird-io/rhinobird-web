@@ -7,6 +7,7 @@ const mui = require("material-ui");
 import MessageAction from '../../../../../actions/MessageAction';
 import ChannelAction from '../../../../../actions/ChannelAction';
 import LoginStore from '../../../../../stores/LoginStore';
+import UserStore from '../../../../../stores/UserStore';
 import ChannelStore from '../../../../../stores/ChannelStore';
 import OnlineStore from '../../../../../stores/OnlineStore';
 import MessageStore from '../../../../../stores/MessageStore';
@@ -14,7 +15,9 @@ import UnreadStore from '../../../../../stores/MessageUnreadStore';
 import IMConstants from '../../../../../constants/IMConstants';
 import Flex from '../../../../Flex';
 
-const { Menu, FontIcon, FlatButton } = mui;
+import DropDownAny from '../../../../DropDownAny';
+
+const { Menu, FontIcon, FlatButton, IconButton } = mui;
 const {Layout} = Flex;
 
 require('./style.less');

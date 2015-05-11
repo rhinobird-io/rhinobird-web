@@ -24,7 +24,8 @@ export default {
   ChannelActionTypes : keyMirror({
     RECEIVE_ALL: null,
     RECEIVE_CURRENT_CHANNEL : null,
-    CHANGE_CHANNEL : null
+    CHANGE_CHANNEL : null,
+    INIT_CHANNELS : null
   }),
 
   SocketActionTypes : keyMirror({

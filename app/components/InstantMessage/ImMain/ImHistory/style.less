@@ -1,6 +1,19 @@
 @import '../../../../../node_modules/material-ui/src/less/variables/colors';
+@import '../variables';
 
 .history {
   background-color: @white;
   padding: 24px;
+}
+
+.group-members{
+  position: fixed;
+  top: @app-bar-height + 5;
+  right: @sideNav-width + 5;
+
+  .control {
+    top : 10px;
+    right : 10px;
+    position: absolute;
+  }
 }

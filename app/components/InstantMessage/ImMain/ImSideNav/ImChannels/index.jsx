@@ -86,7 +86,7 @@ module.exports = React.createClass({
 
     render() {
 
-        let control = <IconButton iconClassName="icon-search" style={{ maxWidth : '48px', flexGrow : 0}}/>;
+        let control = <IconButton iconClassName="icon-search" style={{ maxWidth : '48px'}}/>;
         let menu = this.state._channels.map((item,idx) => {
             return <ImChannel key={item.backEndChannelId} Channel={item}></ImChannel>
         });
@@ -96,7 +96,7 @@ module.exports = React.createClass({
                     <div style={{ flexGrow : 1 }}>{this.props.channelGroup}</div>
                     <div style={{ display : 'inline-block'}}>
                         {
-                            !this.props.isGroup?<DropDownAny ref="directMessageMenu" top={12} right={12} control={control} menu={menu} menuClasses="instant-message-channels-menu" />:undefined
+                            !this.props.isGroup?<DropDownAny ref="directMessageMenu" control={control} menu={menu} menuClasses="instant-message-channels-menu" style={{ top : '12px', right : '12px'}}/>:undefined
                         }
                     </div>
 

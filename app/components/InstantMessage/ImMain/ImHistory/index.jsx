@@ -1,6 +1,7 @@
 const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
 const ImMessage = require('./ImMessage');
+const mui = require("material-ui");
 
 import MessageAction from '../../../../actions/MessageAction.js';
 import MessageStore from '../../../../stores/MessageStore.js';
@@ -8,9 +9,12 @@ import ChannelStore from '../../../../stores/ChannelStore.js';
 import LoginStore from '../../../../stores/LoginStore.js';
 import PerfectScroll from '../../../PerfectScroll';
 import InfiniteScroll from '../../../InfiniteScroll';
+import ImChannel from '../ImSideNav/ImChannels/ImChannel';
+import DropDownAny from '../../../DropDownAny';
 import Flex from '../../../Flex';
 import IMConstant from '../../../../constants/IMConstants';
 
+const { IconButton } = mui;
 const limit = 20;
 require('./style.less');
 module.exports = React.createClass({
@@ -141,18 +145,21 @@ module.exports = React.createClass({
 
     render() {
         return (
+
             <Flex.Layout vertical perfectScroll className="history" style={this.props.style}>
                 <InfiniteScroll upperThreshold={this.state.upperThreshold} onUpperTrigger={()=>{
-                    this.loadMoreOldMessages()
-                }} scrollTarget={()=>{
-                    return this.getDOMNode();
-                }}/>
+                this.loadMoreOldMessages()
+            }} scrollTarget={()=>{
+                return this.getDOMNode();
+            }}/>
                 <div style={{flex: 1}}>
                     {
                         this.state.messages.map((msg, idx) => <ImMessage key={msg.id} Message={msg}></ImMessage>)
                     }
                 </div>
             </Flex.Layout>
+
+
         );
     }
 });
