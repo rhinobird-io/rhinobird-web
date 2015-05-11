@@ -63,19 +63,15 @@ const SmartDisplay = React.createClass({
   mixins: [React.addons.PureRenderMixin],
 
   componentDidMount() {
-    window.addEventListener("click", this._onClick);
-  },
-
-  componentWillUnmount() {
-    window.removeEventListener("click", this._onClick);
+    let list = this.getDOMNode().querySelectorAll("a[isAtUser]");
+    for (let i = 0; i < list.length; i++) {
+      list[i].addEventListener("click", this._onClick);
+    }
   },
 
   _onClick(e) {
-    let target = e.target;
-    if (!target.getAttribute("isAtUser")) return;
-    if (target.tagName.toLowerCase() !== "a" || !target.innerHTML) return;
     e.preventDefault();
-    let user = UserStore.getUserByName(target.innerHTML.substr(1));
+    let user = UserStore.getUserByName(e.target.innerHTML.substr(1));
     if (user) Member.showMemberProfile(user.id);
   },
 
