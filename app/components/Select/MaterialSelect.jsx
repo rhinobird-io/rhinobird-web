@@ -1,4 +1,5 @@
 const React       = require('react'),
+      StyleSheet  = require('react-style'),
       MUI         = require('material-ui'),
       Paper       = MUI.Paper,
       TextField   = MUI.TextField,
@@ -16,8 +17,9 @@ export default React.createClass({
             requestChange: React.PropTypes.func.isRequired
         }),
         multiple: React.PropTypes.bool,
+        hintText: React.PropTypes.string,
         indexAttr: React.PropTypes.string,
-        placeholder: React.PropTypes.string
+        floatingLabelText: React.PropTypes.string
     },
 
     focused: false,
@@ -30,6 +32,10 @@ export default React.createClass({
 
     componentDidMount() {
         this._updateLayout(this.focused);
+    },
+
+    componentWillReceiveProps() {
+        this.setState({children: this.props.children});
     },
 
     componentDidUpdate() {
@@ -50,7 +56,7 @@ export default React.createClass({
     getInitialState() {
         return {
             selected: [],
-            children: []
+            children: this.props.children
         };
     },
 
@@ -77,7 +83,6 @@ export default React.createClass({
 
     _updateLayout: function(focused) {
         this.focused = focused;
-        let selected = this.state.selected;
         let marginTop = 0;
         let paddingLeft = 0;
         let tokenWrapper = this.refs.tokenWrapper;
@@ -129,13 +134,18 @@ export default React.createClass({
     },
 
     render() {
+        let {
+            style,
+            hintText,
+            floatingLabelText,
+            ...other
+        } = this.props;
+
         let multiple = this.props.multiple || false;
         let styles = {
             select: {
                 position: "relative",
-                display: "inline-block",
-                cursor: "text",
-                width: 256
+                cursor: "text"
             },
             hint: {
                 color: "#999"
@@ -158,7 +168,7 @@ export default React.createClass({
                 position: "absolute",
                 cursor: "text",
                 zIndex: 2,
-                top: 10,
+                top: floatingLabelText ? 34 : 10,
                 left: 0,
                 right: 0
             },
@@ -167,15 +177,21 @@ export default React.createClass({
             }
         };
 
+
         let tokens = [];
         let text =
             <TextField
                 ref="text"
                 type="text"
+                hintText={hintText}
+                floatingLabelText={floatingLabelText}
                 style={styles.padding}
                 className={this.props.className}
                 onChange={this._filter}
-                onFocus={() => this.refs.popupSelect.show()} />;
+                onFocus={() => {
+                    this.focused = true;
+                    this.refs.popupSelect.show()
+                }} />;
 
         let popupSelect =
             <MaterialPopup
@@ -214,7 +230,7 @@ export default React.createClass({
                 </div> : null;
 
         return (
-            <div style={styles.select} >
+            <div styles={[styles.select, style]}>
                 {tokenWrapperDOM}
                 {text}
                 {popupSelect}

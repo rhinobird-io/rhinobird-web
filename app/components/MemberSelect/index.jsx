@@ -12,7 +12,9 @@ export default React.createClass({
         valueLink: React.PropTypes.shape({
             value: React.PropTypes.array.isRequired,
             requestChange: React.PropTypes.func.isRequired
-        })
+        }),
+        hintText: React.PropTypes.string,
+        floatingLabelText: React.PropTypes.string
     },
 
     getDefaultProps: function() {
@@ -83,25 +85,29 @@ export default React.createClass({
         }
 
         return (
-            <Select.Select multiple className={className} onChange={(selected) => {
-                let results = {};
-                if (team) {
-                    results.teams = [];
-                }
-                if (user) {
-                    results.users = [];
-                }
-                selected.forEach((s) => {
-                    if (s.indexOf("user_") === 0) {
-                        results.users.push(parseInt(s.substring(5)));
-                    } else if (s.indexOf("team_") === 0) {
-                        results.teams.push(parseInt(s.substring(5)));
+            <Select.Select
+                multiple
+                className={className}
+                onChange={(selected) => {
+                    let results = {};
+                    if (team) {
+                        results.teams = [];
                     }
-                });
-                if (this.props.valueLink || this.props.onChange) {
-                    this.getValueLink(this.props).requestChange(results);
-                }
-            }}>
+                    if (user) {
+                        results.users = [];
+                    }
+                    selected.forEach((s) => {
+                        if (s.indexOf("user_") === 0) {
+                            results.users.push(parseInt(s.substring(5)));
+                        } else if (s.indexOf("team_") === 0) {
+                            results.teams.push(parseInt(s.substring(5)));
+                        }
+                    });
+                    if (this.props.valueLink || this.props.onChange) {
+                        this.getValueLink(this.props).requestChange(results);
+                    }
+                }}
+                {...other}>
                 {children}
             </Select.Select>
         );

@@ -6,6 +6,8 @@ export default React.createClass({
     mixins: [React.addons.LinkedStateMixin],
 
     propTypes: {
+        onShow: React.PropTypes.func,
+        onDismiss: React.PropTypes.func,
         position: React.PropTypes.string,
         valueAttr: React.PropTypes.string,
         onItemSelect: React.PropTypes.func,
@@ -286,6 +288,7 @@ export default React.createClass({
                     break;
                 case 27:    // Escape
                     event.preventDefault();
+                    this.dismiss();
                     break;
                 case 9:     // Tab
                     event.preventDefault();

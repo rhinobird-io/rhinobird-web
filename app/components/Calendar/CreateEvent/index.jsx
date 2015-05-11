@@ -173,7 +173,11 @@ export default React.createClass({
                                 </Flex.Layout>
                             </Flex.Layout>
 
-                            <MemberSelect className="cal-create-event-textfield" valueLink={this.linkState("participants")} />
+                            <MemberSelect
+                                hintText="Participants"
+                                floatingLabelText="Participants"
+                                className="cal-create-event-textfield"
+                                valueLink={this.linkState("participants")} />
 
                             <br/>
 
