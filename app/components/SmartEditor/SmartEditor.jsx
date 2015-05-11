@@ -249,7 +249,7 @@ const SmartEditor = React.createClass({
     }, 0);
 
     let tfProps = {};
-    ["className", "defaultValue", "errorText", "floatingLabelText", "hintText", "multiLine"].map(
+    ["className", "defaultValue", "errorText", "floatingLabelText", "hintText", "multiLine", "onKeyDown"].map(
       k => { tfProps[k] = props[k] }
     );
 
