@@ -5,21 +5,26 @@ const ActionTypes = require("../constants/AppConstants").NotificationActionTypes
 const BaseStore = require("./BaseStore");
 const assign = require("object-assign");
 
-let _notifications = {};
+const MAX_INT = Number.MAX_SAFE_INTEGER;
+let _notifications = [];
 let _websocket = null;
+let _total = MAX_INT;
 
 let NotificationStore = assign({}, BaseStore, {
 
-  getWebSocket(socket) {
-    return _websocket;
-  },
+  getWebSocket() { return _websocket; },
 
-  setWebSocket(socket) {
-    _websocket = socket;
-  },
+  setWebSocket(socket) { _websocket = socket; },
 
-  getAll() {
-    return _notifications;
+  getTotal() { return _total; },
+
+  setTotal(total) { _total = total; },
+
+  getAll() { return _notifications; },
+
+  clear() {
+    _notifications = [];
+    _total = MAX_INT;
   },
 
   dispatcherIndex: AppDispatcher.register(payload => {
@@ -29,10 +34,20 @@ let NotificationStore = assign({}, BaseStore, {
     switch (payload.type) {
       case ActionTypes.RECEIVE_NOTIFI:
         if (data.length === undefined) {
-          _notifications.push(data);
+          // from websocket
+          _notifications.splice(0, 0, data);
+          if (_total !== MAX_INT) _total += 1;
         } else {
-          _notifications = data;
+          // from API
+          _notifications = _notifications.concat(data);
         }
+        break;
+
+      case ActionTypes.READ_NOTIFI:
+        let list = data.map(n => n.id);
+        _notifications.map(n => {
+          if (list.includes(n.id)) n.checked = true;
+        });
         break;
 
       default:

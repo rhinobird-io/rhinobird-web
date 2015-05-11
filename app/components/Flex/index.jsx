@@ -7,9 +7,10 @@ let Item = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     // See Polymer layout attributes
     propTypes: {
-        flex: React.PropTypes.oneOf([
+        flex: React.PropTypes.oneOfType([
             React.PropTypes.bool,
-            React.PropTypes.number
+            React.PropTypes.number,  // deprecated
+            React.PropTypes.string
         ]),
         wrap: React.PropTypes.bool,
         reverse: React.PropTypes.bool,
@@ -41,6 +42,8 @@ let Item = React.createClass({
     // flex
     if (typeof(props.flex) === "number") {
       style.flexGrow = props.flex;
+    } else if (typeof(props.flex) === "string") {
+      style.flex = props.flex;
     } else if (props.flex) {
       style.flex = "1 1 1e-9px";
     }

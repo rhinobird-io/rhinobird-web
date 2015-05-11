@@ -4,11 +4,13 @@ export default {
 
   ActionTypes: keyMirror({
     LOGIN_UPDATE: null,
+    USER_UPDATE: null,
     FLOATING_CONTENT_UPDATE: null
   }),
 
   NotificationActionTypes: keyMirror({
-    RECEIVE_NOTIFI: null
+    RECEIVE_NOTIFI: null,
+    READ_NOTIFI: null
   }),
 
   CalendarActionTypes: keyMirror({

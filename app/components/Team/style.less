@@ -1,3 +1,5 @@
+@import "~material-ui/src/less/variables/colors.less";
+
 .teamPage {
   .paper-outer-container {
     flex-grow: 1;
@@ -12,27 +14,76 @@
       width: 100%;
     }
   }
-}
 
-.svgContainer{
-}
+  .add-member {
+    color: @pink-500;
+  }
+  .add-team {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 100;
+  }
+  .team-item {
+    margin: 6px;
+    padding-right: 12px;
 
-svg  {
-  width: 100%;
-  height: 100%;
-  text {
-    pointer-events: none;
+    span.flat-button-icon {
+      display: inline-block;
+      float: left;
+      line-height: 36px;
+      padding-left: 12px;
+    }
+
+    span.flat-button-label {
+      padding-left: 8px;
+      text-transform: none;
+      font-weight: normal;
+    }
   }
-  text.group-icon {
-    font-family: icomoon;
-    font-size: 20px;
+
+  .svgContainer {
   }
-  circle{
-    cursor: pointer;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    g {
+      text {
+        pointer-events: auto;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+        -ms-user-select: none;
+      }
+      text.group-icon {
+        font-family: icomoon;
+        font-size: 20px;
+      }
+      &.highlight.primary {
+        fill: @pink-500;
+
+        circle {
+          stroke: @pink-500;
+        }
+      }
+      &.highlight.secondary {
+        fill: @cyan-500;
+
+        circle {
+          stroke: @cyan-500;
+        }
+      }
+      circle {
+        cursor: pointer;
+      }
+    }
+    .link {
+      fill: none;
+      stroke: #666;
+      stroke-width: 1.5px;
+    }
   }
-  .link{
-    fill: none;
-    stroke: #666;
-    stroke-width: 1.5px;
-  }
+
 }
