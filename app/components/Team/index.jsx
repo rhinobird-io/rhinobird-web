@@ -10,6 +10,7 @@ const Flex = require('../Flex');
 const Member = require('../Member');
 const d3 = require('d3');
 const Link = require("react-router").Link;
+const UserAction = require('../../actions/UserAction');
 
 require("./style.less");
 
@@ -39,7 +40,14 @@ let TeamDisplay = React.createClass({
     },
     _leaveTeam(){
         console.log('leave team');
-        this.refs.dialog.dismiss();
+        $.ajax({
+            url: `/platform/api/teams/${this.props.team.id}/users/${LoginStore.getUser().id}`,
+            type: 'DELETE',
+            success: ()=> {
+                UserAction.updateUserData();
+                this.refs.dialog.dismiss();
+            }
+        });
     },
     render: function () {
         if (this.props.team) {
@@ -53,12 +61,12 @@ let TeamDisplay = React.createClass({
             let dialogActions = [
                 <mui.FlatButton
                     label="Cancel" key={1}
-                    onTouchTap={()=>this.refs.dialog.dismiss()} />,
+                    onTouchTap={()=>this.refs.dialog.dismiss()}/>,
                 <mui.FlatButton
                     label="Leave" key={2}
                     primary={true}
                     disabled={this.state.typedTeamName !== this.props.team.name}
-                    onTouchTap={this._leaveTeam} />
+                    onTouchTap={this._leaveTeam}/>
             ];
             return <div className='paper-outer-container'>
                 <Paper zDepth={1}>
@@ -70,7 +78,8 @@ let TeamDisplay = React.createClass({
                             </Flex.Layout>
                             {loginUserTeam ?
                                 <div>
-                                    <mui.IconButton onClick={()=>this.refs.dialog.show()} iconClassName='icon-exit-to-app' tooltip='Leave this team'/>
+                                    <mui.IconButton onClick={()=>this.refs.dialog.show()}
+                                                    iconClassName='icon-exit-to-app' tooltip='Leave this team'/>
                                     <mui.Dialog ref='dialog' title={`Leaving team ${this.props.team.name}`}
                                                 actions={dialogActions}
                                         >
@@ -202,7 +211,13 @@ let TeamGraph = React.createClass({
             .links(connections)
             .start();
         let link = svg.selectAll('.link').data(connections).enter().append('path').attr('class', 'link').attr('marker-end', 'url(#default)');
-        let node = svg.selectAll('.node').data(teams).enter().append('g').on('click', this.props.onClickTeam);
+        let node = svg.selectAll('.node').data(teams).enter().append('g').attr('class', function (d) {
+            if (d.users.find(u => u.id === LoginStore.getUser().id)) {
+                return 'highlight';
+            } else {
+                return '';
+            }
+        }).on('click', this.props.onClickTeam);
         let circle = node.append('circle').attr('r', 14).attr('fill', 'white').attr('stroke', 'black').call(force.drag).on('click', this.props.onClickTeam);
         let icon = node.append('text').attr('class', 'group-icon').attr('x', -10).attr('y', '.31em').text("\ue8d8").on('click', this.props.onClickTeam);
         let text = node.append('text').attr('x', 20).attr('y', '.31em').text(function (d) {
@@ -249,7 +264,8 @@ let TeamPage = React.createClass({
     },
     _userChanged(){
         this.setState({
-            teams: UserStore.getTeamsArray()
+            teams: UserStore.getTeamsArray(),
+            selectedTeam: UserStore.getTeam(this.state.selectedTeam.id)
         })
     },
 
