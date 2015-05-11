@@ -202,7 +202,7 @@ let TeamGraph = React.createClass({
             .attr("markerWidth", 6)
             .attr("markerHeight", 6)
             .attr("orient", "auto").append("path")
-            .attr("d", "M0,-5L10,0L0,5");
+            .attr("d", "M0,-5L10,0L0,5").attr('fill', '#bdbdbd');
         let primaryColor = '#e91e63', secondaryColor = '#00bcd4';
         svg.append('circle').attr('r', 4).attr('stroke', primaryColor).attr('fill', primaryColor).attr('cx', 30).attr('cy', 10);
         svg.append('text').text('Teams directly under').attr('x', 40).attr('y', 14);
