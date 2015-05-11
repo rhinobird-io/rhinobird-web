@@ -33,7 +33,9 @@ let TeamDisplay = React.createClass({
                 includeSubsidiaryMembers: false,
                 addMember: false
             });
-            this.refs.toggle.setToggled(false);
+            if(this.refs.toggle){
+                this.refs.toggle.setToggled(false);
+            }
         }
     },
     componentDidUpdate(){
@@ -139,11 +141,12 @@ let TeamDisplay = React.createClass({
                                     }}
                                                     className='add-member' iconClassName='icon-person-add'/>
                                 </Flex.Layout>
+                                {this.props.team.teams.length !== 0?
+                                    <div style={{width:300}}>
+                                        <mui.Toggle ref='toggle' label='Include subsidiary members'
+                                                    onToggle={this._toggle}></mui.Toggle>
+                                    </div>:undefined}
 
-                                <div style={{width:300}}>
-                                    <mui.Toggle ref='toggle' label='Include subsidiary members'
-                                                onToggle={this._toggle}></mui.Toggle>
-                                </div>
                             </Flex.Layout>
                             <Flex.Layout wrap>
                                 {users.map((user, index)=> {
