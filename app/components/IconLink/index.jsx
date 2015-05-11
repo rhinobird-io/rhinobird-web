@@ -1,7 +1,6 @@
 "use strict";
 
 const React = require("react");
-const ReactStyle = require("react-style");
 const FontIcon = require("material-ui").FontIcon;
 
 export default React.createClass({
@@ -37,7 +36,7 @@ export default React.createClass({
   },
 
   render() {
-    let styles = ReactStyle.create({
+    let styles = {
       wrapper: {
         display: "inline-flex",
         margin: "0 2px"
@@ -47,7 +46,7 @@ export default React.createClass({
         fontSize: "1.4em",
         verticalAlign: "sub"
       }
-    });
+    };
 
     let args = this.props.args, attrs;
     switch (this.props.type) {
@@ -63,9 +62,9 @@ export default React.createClass({
     }
 
     return (
-      <span styles={styles.wrapper}>
+      <span style={styles.wrapper}>
         <a target="_blank" href={attrs.url}>
-          <FontIcon className={attrs.icon} styles={styles.icon} />
+          <FontIcon className={attrs.icon} style={styles.icon} />
           <span>{attrs.text}</span>
         </a>
       </span>

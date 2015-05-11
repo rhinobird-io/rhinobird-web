@@ -1,6 +1,6 @@
 export default {
-    PopupSelect2: require('./PopupSelect'),
-    PopupSelect: require('./MaterialPopupSelect'),
+    MaterialPopup: require('./MaterialPopup'),
+    PopupSelect: require('./MaterialPopup'),
     Select: require('./MaterialSelect'),
     Selector: require('./Selector')
 }

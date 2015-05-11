@@ -42,7 +42,6 @@ const SmartEditor = React.createClass({
   getInitialState() {
     return {
       options: [],
-      showPopup: false,
       popupPosition: {},
       popupJustified: false
     };
@@ -68,11 +67,13 @@ const SmartEditor = React.createClass({
   },
 
   showPopup() {
-    this.setState({showPopup: true});
+    //this.setState({showPopup: true});
+      this.refs.popup.show();
   },
 
   hidePopup() {
-    this.setState({showPopup: false});
+    //this.setState({showPopup: false});
+      this.refs.popup.dismiss();
   },
 
   // Filter menu options in current component rather than PopupSelect
@@ -89,23 +90,19 @@ const SmartEditor = React.createClass({
       options = UserStore.getUsersArray().filter(u =>
         u.name.indexOf(keyword.substr(1)) >= 0
       ).map(u =>
-        <option key={u.id} value={[keyword, "@" + u.name + " "]}>
-          <div style={style}>
+          <div key={u.id} value={[keyword, "@" + u.name + " "]} style={style}>
             <Avatar member={u} /> &ensp;
             <span style={{fontWeight: 500}}>{u.name}</span>
           </div>
-        </option>
       );
     } else if (keyword.charAt(0) === "#") {
       options = COMMANDS.filter(c =>
         c.name.indexOf(keyword.substr(1)) >= 0
       ).map(c =>
-        <option key={c.name} value={[keyword, "#" + c.name + ":"]}>
-          <div style={style}>
+          <div key={c.name} value={[keyword, "#" + c.name + ":"]} style={style}>
             <span style={{fontWeight: 500}}>{c.name}</span>
             <span>{c.manual}</span>
           </div>
-        </option>
       );
     } else if (keyword.charAt(0) === ":" && keyword.length > 1) {
       options = EmojiPng.keys().map(k => k.substr(2, k.length - 6)).filter(k =>
@@ -123,10 +120,12 @@ const SmartEditor = React.createClass({
     } else {
       options = [];
     }
-    this.setState({
-      showPopup: options.length > 0,
-      options: options
-    });
+    if (options.length > 0) {
+      this.setState({options: options});
+      this.showPopup();
+    } else {
+      this.hidePopup();
+    }
   },
 
   _setPopupPosition(textarea, pos) {
@@ -136,7 +135,6 @@ const SmartEditor = React.createClass({
     let left = textareaRect.left + caretPos.left - textarea.scrollLeft;
     let popupPosition = {
       position: "fixed",
-      visibility: "hidden",
       top: top,
       left: left,
       marginTop: this.props.popupMarginTop
@@ -180,18 +178,10 @@ const SmartEditor = React.createClass({
     if (triggerPos >= 0) {
       this._setOptions(text.substring(triggerPos, textarea.selectionEnd));
       this._setPopupPosition(textarea, triggerPos);
-    } else if (this.state.showPopup) {
+    } else if (this.refs.popup.isShow()) {
       this.hidePopup();
     }
     this._updateValueLink();
-  },
-
-  _onKeyDown(e) {
-    // If popup is not active, 'ENTER', 'UP' and 'DOWN' will work as usual
-    if (!this.state.showPopup && [13, 38, 40].includes(e.keyCode)) return;
-    // If popup is active, map 'TAB' to 'DOWN'
-    if (this.state.showPopup && e.keyCode === 9) e.keyCode = 40;
-    this.refs.popup._keyDownListener(e);
   },
 
   _onItemSelect([keyword, replace]) {
@@ -216,9 +206,9 @@ const SmartEditor = React.createClass({
     let popupStyle = {
       width: props.popupWidth,
       maxHeight: props.popupMaxHeight,
+        height: "200px",
       overflow: "auto",
       background: "#fff",
-      display: this.state.showPopup ? "block" : "none",
       zIndex: 20
     };
     for (let k in this.state.popupPosition) {
@@ -263,14 +253,12 @@ const SmartEditor = React.createClass({
     // Apply `style` to TextField seems no effect, so just apply to Item
     return (
       <Item flex style={style} className={"smart-editor" + (props.nohr ? " nohr" : "")}>
-        <TextField {...tfProps} ref="textfield" />
+        <TextField {...tfProps} ref="textfield"
+                                onChange={this._onInputChange}
+                                onBlur={this.hidePopup}/>
         <PopupSelect ref="popup"
-            style={popupStyle}
-            controller={this.refs.textfield}
-            onChange={this._onInputChange}
-            onKeyDown={this._onKeyDown}
-            onItemSelect={this._onItemSelect}
-            onBlur={this.hidePopup}>
+                     onItemSelect={this._onItemSelect}
+            style={popupStyle}>
           {this.state.options}
         </PopupSelect>
       </Item>
