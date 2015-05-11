@@ -20,7 +20,7 @@ require("./style.less");
 let NotifiItem = React.createClass({
   propTypes: {
     sender: React.PropTypes.object.isRequired,
-    time: React.PropTypes.oneOfType([React.PropTypes.object, React.PropTypes.string]),
+    time: React.PropTypes.string.isRequired,
     message: React.PropTypes.string.isRequired,
     read: React.PropTypes.bool
   },
@@ -100,7 +100,7 @@ export default React.createClass({
     return (
       <span>
         <DropDownAny ref="dropdown" control={control} menu={menu} menuClasses="notification-menu"
-          onClickAway={this._onClickAway} style={{top: 12, right: 12}} />;
+          onClickAway={this._onClickAway} style={{top: 12, right: 12}} />
         <InfiniteScroll scrollTarget={() => this.refs.dropdown.refs.scroll.getDOMNode()}
           lowerThreshold={5} onLowerTrigger={this._loadMore} />
       </span>
