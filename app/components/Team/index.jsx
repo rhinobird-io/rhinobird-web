@@ -72,7 +72,7 @@ let TeamDisplay = React.createClass({
                     label="Cancel" key={1}
                     onTouchTap={()=>this.refs.dialog.dismiss()}/>,
                 <mui.FlatButton
-                    label="Leave" key={2}
+                    label="Leave" k
                     primary={true}
                     disabled={this.state.typedTeamName !== this.props.team.name}
                     onTouchTap={this._leaveTeam}/>

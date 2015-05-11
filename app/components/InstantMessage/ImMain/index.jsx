@@ -49,7 +49,7 @@ module.exports = React.createClass({
   },
 
   _onTeamUserChange() {
-    var _allTeams = UserStore.getTeamsArray();
+    var _allTeams = UserStore.getUserInvolvedTeams(LoginStore.getUser().id);
     var _allUsers = UserStore.getUsersArray();
 
     var self = this;

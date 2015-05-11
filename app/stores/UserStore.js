@@ -123,6 +123,25 @@ let UserStore = assign({}, BaseStore, {
         })
         return Array.from(result);
     },
+    getTeamInvolvedTeams(teamId){
+        let team = _teams[teamId];
+        let result = new Set(team.parentTeams || []);
+        team.parentTeams.forEach(team => {
+            let parentResult = this.getTeamInvolvedTeams(team.id);
+            result = new Set([...result, ...parentResult]);
+        })
+        return Array.from(result);
+    },
+    //Get User's direct teams & parent teams of direct teams
+    getUserInvolvedTeams(userId) {
+        let user = _users[userId];
+        let result = new Set(user.teams || []);
+        user.teams.forEach(team => {
+            let parentResult = this.getTeamInvolvedTeams(team.id);
+            result = new Set([...result, ...parentResult]);
+        })
+        return Array.from(result);
+    },
 
     getTeamsByUserId(userId) {
         return _users_teams[userId] ? _users_teams[userId] : [];
