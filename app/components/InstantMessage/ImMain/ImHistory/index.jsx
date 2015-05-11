@@ -143,7 +143,27 @@ module.exports = React.createClass({
         }
     },
 
+    _wrapMessages(messages) {
+        if(messages.length === 0){
+            return [];
+        }
+        let result = [], previousMsg = messages[messages.length-1], conCount = 1, msgSet = [previousMsg];
+        for(let i=messages.length - 1; i>=0; i--){
+            let msg = messages[i];
+            if(conCount <=5 && msg.userId === previousMsg.userId && msg.createdAt) {
+                conCount ++;
+                msgSet.unshift(msg);
+            } else {
+                result.unshift(msgSet);
+                msgSet = [msg];
+                conCount = 1;
+            }
+            previousMsg = msg;
+        }
+        return result;
+    },
     render() {
+        let msgs = this._wrapMessages(this.state.messages);
         return (
 
             <Flex.Layout vertical perfectScroll className="history" style={this.props.style}>
@@ -154,7 +174,7 @@ module.exports = React.createClass({
             }}/>
                 <div style={{flex: 1}}>
                     {
-                        this.state.messages.map((msg, idx) => <ImMessage key={msg.id} Message={msg}></ImMessage>)
+                        msgs.map((msg, idx) => <ImMessage key={msg[0].id} messages={msg}></ImMessage>)
                     }
                 </div>
             </Flex.Layout>
