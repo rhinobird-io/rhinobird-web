@@ -1,11 +1,12 @@
 
 require("./markdown.css");
 require("../../../../node_modules/highlight.js/styles/default.css");
-require('./highlight-material.css');
+require('./highlight-material.less');
 let HighLight = require("highlight.js");
 let MarkdownIt = require("markdown-it");
 let Emoji = require("markdown-it-emoji");
 let EmojiPng = require.context("../../../../node_modules/emojify.js/src/images/emoji", false, /png$/);
+let commands = require('../commands');
 
 
 const AT_REGEX = /^\s*(@[\w\.-]+)/;
@@ -46,10 +47,8 @@ function atPlugin(state) {
 
 function commandPlugin(state) {
     return _plugin(state, COMMAND_REGEX, (state, match) => {
-        let token = state.push("command_open", "span", 1);
-        token.attrPush(["isIconLink", true]);
-        token.attrPush(["value", match]);
-        token = state.push("command_close", "span", -1);
+        let token = state.push("command", "", 0);
+        token.content = match;
     });
 }
 
@@ -78,6 +77,17 @@ md.renderer.rules.emoji = (token, i) => {
             .replace("$", EmojiPng("./" + markup + ".png"));
     } else {
         return ":" + markup + ":";
+    }
+};
+
+md.renderer.rules.command = (token, i) => {
+    let content = token[i].content;
+    let [,commandName, value] = content.match(/#(.*):(.*)/);
+    let command = commands.getCommand(commandName);
+    if(!command) {
+        return content;
+    } else {
+        return command.render(value);
     }
 };
 

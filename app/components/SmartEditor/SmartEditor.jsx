@@ -14,10 +14,7 @@ import _ from 'lodash';
 
 require('./style.less');
 
-const COMMANDS = [
-  {name: "vity", manual: ":room_name"},
-  {name: "file", manual: ":file_id"}
-];
+const COMMANDS = require('./commands').list;
 
 const SmartEditor = React.createClass({
   mixins: [ClickAwayable],
