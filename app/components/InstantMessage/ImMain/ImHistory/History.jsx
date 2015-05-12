@@ -163,6 +163,7 @@ module.exports = React.createClass({
             }
             previousMsg = msg;
         }
+        result.unshift(msgSet);
         return result;
     },
     render() {
