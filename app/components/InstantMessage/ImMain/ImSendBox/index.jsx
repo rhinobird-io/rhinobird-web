@@ -27,10 +27,6 @@ module.exports = React.createClass({
     }
   },
 
-  _dummy() {
-    console.log('req change');
-  },
-
   componentDidMount() {
     ChannelStore.addChangeListener(this._onChannelChange);
   },
@@ -83,6 +79,7 @@ module.exports = React.createClass({
   render() {
     var customActions = [
       <FlatButton
+          key={1}
           label="OK"
           primary={true}
           onTouchTap={this.hideInfoDialog} />
@@ -97,8 +94,8 @@ module.exports = React.createClass({
             modal={false}
             dismissOnClickAway={this.state.dismissOnClickAway}
             contentClassName="mui-font-style-title">
-          <p>1. ENTER to send</p>
-          <p>2. SHIFT + ENTER to have newline</p>
+          <p>1. SHIFT + ENTER to send</p>
+          <p>2. ENTER to have newline</p>
           <p>3. Markdown support</p>
         </Dialog>
 
