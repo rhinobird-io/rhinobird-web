@@ -13,7 +13,7 @@ import uuid from 'node-uuid';
 import mui from 'material-ui';
 
 const {FlatButton, IconButton, Dialog} = mui;
-const {SmartEditor, SmartPreview} = se;
+const {SmartEditor, SmartDisplay, SmartPreview} = se;
 
 require('./style.less');
 module.exports = React.createClass({
