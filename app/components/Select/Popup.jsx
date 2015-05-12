@@ -100,6 +100,7 @@ export default React.createClass({
 
     render: function() {
         let {
+            style,
             position,
             ...other
         } = this.props;
@@ -112,7 +113,8 @@ export default React.createClass({
             },
             popup: {
                 background: "white",
-                position: "relative"
+                position: "relative",
+                margin: 4
             }
         };
 
@@ -121,12 +123,12 @@ export default React.createClass({
         let bottomPadding = position === "bottom" ? padding : null;
 
         return (
-            <Layout vertical style={styles.outer}>
+            <Layout vertical styles={[styles.outer, style]}>
                 {topPadding}
                 <PerfectScroll
                     ref="scroll"
-                    style={styles.popup}
-                    className={this.props.wrapperClass} alwaysVisible>
+                    styles={[styles.popup, this.props.wrapperStyle]}
+                    className={this.props.wrapperClass || ""} alwaysVisible>
                     {children}
                 </PerfectScroll>
                 {bottomPadding}

@@ -62,20 +62,19 @@ export default React.createClass({
         };
 
         return (
-            <div styles={[style, popup]}>
-                <Popup
-                    ref="popup"
-                    position={position}
-                    valueAttr={valueAttr}
-                    onItemSelect={this.select}
-                    normalClass="mui-menu-item"
-                    wrapperClass="mui-paper mui-z-depth-2"
-                    activeClass="mui-is-selected"
-                    disabledClass="mui-is-disabled"
-                    {...other}>
-                    {this.props.children}
-                </Popup>
-            </div>
+            <Popup
+                ref="popup"
+                style={style}
+                position={position}
+                valueAttr={valueAttr}
+                onItemSelect={this.select}
+                normalClass="mui-menu-item"
+                wrapperClass="mui-paper mui-z-depth-2"
+                activeClass="mui-is-selected"
+                disabledClass="mui-is-disabled"
+                {...other}>
+                {this.props.children}
+            </Popup>
         );
     }
 });
