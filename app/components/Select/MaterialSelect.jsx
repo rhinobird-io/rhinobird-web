@@ -1,4 +1,5 @@
 const React       = require('react'),
+      StyleSheet  = require('react-style'),
       MUI         = require('material-ui'),
       Paper       = MUI.Paper,
       TextField   = MUI.TextField,
@@ -16,8 +17,9 @@ export default React.createClass({
             requestChange: React.PropTypes.func.isRequired
         }),
         multiple: React.PropTypes.bool,
+        hintText: React.PropTypes.string,
         indexAttr: React.PropTypes.string,
-        placeholder: React.PropTypes.string
+        floatingLabelText: React.PropTypes.string
     },
 
     focused: false,
@@ -30,6 +32,10 @@ export default React.createClass({
 
     componentDidMount() {
         this._updateLayout(this.focused);
+    },
+
+    componentWillReceiveProps() {
+        this.setState({children: this.props.children});
     },
 
     componentDidUpdate() {
@@ -50,12 +56,11 @@ export default React.createClass({
     getInitialState() {
         return {
             selected: [],
-            children: []
+            children: this.props.children
         };
     },
 
     getValueLink(props) {
-        console.log(props.onChange);
         return props.valueLink || {
                 value: props.value,
                 requestChange: props.onChange
@@ -70,14 +75,16 @@ export default React.createClass({
         selected.splice(index, 1);
         this._updateLayout(false, selected);
         this.setState({selected: selected});
-        if (this.props.valueLink || this.props.value) {
+        if (this.props.valueLink || this.props.onChange) {
             this.getValueLink(this.props).requestChange(selected);
+            if (this.props.onChange) {
+                this.props.onChange(selected);
+            }
         }
     },
 
     _updateLayout: function(focused) {
         this.focused = focused;
-        let selected = this.state.selected;
         let marginTop = 0;
         let paddingLeft = 0;
         let tokenWrapper = this.refs.tokenWrapper;
@@ -111,8 +118,10 @@ export default React.createClass({
         this.setState({selected: selected});
         this._updateLayout(true, selected);
         if (this.props.valueLink || this.props.onChange) {
-            console.log(selected);
             this.getValueLink(this.props).requestChange(selected);
+            if (this.props.onChange) {
+                this.props.onChange(selected);
+            }
         }
     },
 
@@ -129,13 +138,18 @@ export default React.createClass({
     },
 
     render() {
+        let {
+            style,
+            hintText,
+            floatingLabelText,
+            ...other
+        } = this.props;
+
         let multiple = this.props.multiple || false;
         let styles = {
             select: {
                 position: "relative",
-                display: "inline-block",
-                cursor: "text",
-                width: 256
+                cursor: "text"
             },
             hint: {
                 color: "#999"
@@ -158,7 +172,7 @@ export default React.createClass({
                 position: "absolute",
                 cursor: "text",
                 zIndex: 2,
-                top: 10,
+                top: floatingLabelText ? 34 : 10,
                 left: 0,
                 right: 0
             },
@@ -167,19 +181,25 @@ export default React.createClass({
             }
         };
 
+
         let tokens = [];
         let text =
             <TextField
                 ref="text"
                 type="text"
+                floatingLabelText={this.state.selected.length === 0 ? floatingLabelText : " "}
                 style={styles.padding}
                 className={this.props.className}
                 onChange={this._filter}
-                onFocus={() => this.refs.popupSelect.show()} />;
+                onFocus={() => {
+                    this.focused = true;
+                    this.refs.popupSelect.show()
+                }} />;
 
         let popupSelect =
             <MaterialPopup
                 ref="popupSelect"
+                relatedTo={() => this.refs.getDOMNode()}
                 style={{position: "absolute", top: "100%", left: 0, right: 0}}
                 onItemSelect={(value) => {
                         this._addSelectedOption(value);
@@ -188,9 +208,12 @@ export default React.createClass({
                         this.refs.popupSelect.dismiss();
                     }
                 }
+                onDismiss={() => {
+                    this.refs.text.blur()
+                }}
             >
-            {this.state.children}
-        </MaterialPopup>;
+                {this.state.children}
+            </MaterialPopup>;
 
         for (let i = 0; i < this.state.selected.length; i++) {
             tokens.push(
@@ -214,7 +237,7 @@ export default React.createClass({
                 </div> : null;
 
         return (
-            <div style={styles.select} >
+            <div styles={[styles.select, style]}>
                 {tokenWrapperDOM}
                 {text}
                 {popupSelect}

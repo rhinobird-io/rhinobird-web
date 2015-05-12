@@ -1,12 +1,15 @@
 const React                = require("react"),
       MUI                  = require("material-ui"),
       Moment               = require("moment"),
-      Layout               = require("../../Flex").Layout,
+      Flex                 = require("../../Flex"),
       Link                 = require("react-router").Link,
+      DropDownAny          = require("../../DropDownAny"),
       Select               = require("../../Select").Select,
+      Avatar               = require("../../Member").Avatar,
       SmartTimeDisplay     = require("../../SmartTimeDisplay"),
       CalendarStore        = require("../../../stores/CalendarStore"),
       CalendarActions      = require("../../../actions/CalendarActions"),
+      UserStore            = require("../../../stores/UserStore"),
       PerfectScroll        = require('../../PerfectScroll'),
       InfiniteScroll       = require('../../InfiniteScroll');
 
@@ -93,6 +96,7 @@ export default React.createClass({
             dayEvents.push(
                 <div className={dayDividerClass}>
                     <div className="cal-day-divider-label">
+                        <span>{Moment.weekdaysShort()[Moment(key).day()]}</span>
                         <label>{Moment(key).format("M/D")}</label>
                     </div>
                 </div>
@@ -116,21 +120,36 @@ export default React.createClass({
                 if (event.id.toString() === this.state.newCreated) {
                     contentInnerClass += " highlight";
                 }
+
+                let control = <span title="Event Members" className="cal-event-member icon-group"></span>;
+                let menu = event.participants.map((p) => {
+                    let u = UserStore.getUser(p.id);
+                    return <Flex.Layout key={u.id} horizontal justified>
+                        <Avatar member={u} style={{borderRadius: "50%"}} /> &ensp;&ensp;
+                        <span style={{fontWeight: 500}}>{u.name}</span>
+                    </Flex.Layout>;
+                });
+
+                menu = menu.concat(event.team_participants.map(t => {
+                    let t = UserStore.getTeam(t.id);
+                    return <Flex.Layout key={t.id} horizontal justified>
+                        <Avatar member={t} style={{borderRadius: "50%"}} /> &ensp;&ensp;
+                        <span style={{fontWeight: 500}}>{t.name}</span>
+                    </Flex.Layout>;
+                }));
                 return (
                     <div ref={ref} className="cal-event">
-                        <div className="cal-event-icon-wrapper">
-                            <div className={eventIconClass}>
-                                <MUI.FontIcon className="icon-event"/>
-                            </div>
+                        <div className={eventIconClass}>
+                            <MUI.FontIcon className="icon-event"/>
                         </div>
 
                         <div className={contentClass}>
                             <div className={contentInnerClass}>
                                 <div className="cal-event-title">
-                                    <Layout horizontal justified>
+                                    <Flex.Layout horizontal justified>
                                         <span>{event.title}</span>
-                                        <span title="Event Members" className="cal-event-member icon-group"></span>
-                                    </Layout>
+                                        <DropDownAny ref="dropdown" control={control} menu={menu} />
+                                    </Flex.Layout>
                                     <div className="cal-event-time">
                                         <SmartTimeDisplay
                                             relative

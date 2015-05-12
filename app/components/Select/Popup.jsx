@@ -6,7 +6,10 @@ export default React.createClass({
     mixins: [React.addons.LinkedStateMixin],
 
     propTypes: {
+        onShow: React.PropTypes.func,
+        onDismiss: React.PropTypes.func,
         position: React.PropTypes.string,
+        relatedTo: React.PropTypes.object,
         valueAttr: React.PropTypes.string,
         onItemSelect: React.PropTypes.func,
         normalStyle: React.PropTypes.object,
@@ -86,6 +89,9 @@ export default React.createClass({
 
     dismiss() {
         this.setState({visible: false});
+        if (this.props.onDismiss && typeof this.props.onDismiss === "function") {
+            this.props.onDismiss();
+        }
     },
 
     show() {
@@ -94,18 +100,21 @@ export default React.createClass({
 
     render: function() {
         let {
+            style,
             position,
             ...other
         } = this.props;
         let children = this._construct(this.props.children, this.props.valueAttr);
         let styles = {
             outer: {
-                height: 200
+                zIndex: 9,
+                height: 200,
+                display: this.state.visible ? "flex" : "none"
             },
             popup: {
                 background: "white",
                 position: "relative",
-                display: this.state.visible ? "block" : "none"
+                margin: 4
             }
         };
 
@@ -114,12 +123,12 @@ export default React.createClass({
         let bottomPadding = position === "bottom" ? padding : null;
 
         return (
-            <Layout vertical style={styles.outer}>
+            <Layout vertical styles={[styles.outer, style]}>
                 {topPadding}
                 <PerfectScroll
                     ref="scroll"
-                    style={styles.popup}
-                    className={this.props.wrapperClass} alwaysVisible>
+                    styles={[styles.popup, this.props.wrapperStyle]}
+                    className={this.props.wrapperClass || ""} alwaysVisible>
                     {children}
                 </PerfectScroll>
                 {bottomPadding}
@@ -286,6 +295,7 @@ export default React.createClass({
                     break;
                 case 27:    // Escape
                     event.preventDefault();
+                    this.dismiss();
                     break;
                 case 9:     // Tab
                     event.preventDefault();

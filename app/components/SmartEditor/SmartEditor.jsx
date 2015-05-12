@@ -1,7 +1,7 @@
 "use strict";
 
 const React = require("react");
-const mui = require("material-ui"), TextField = mui.TextField;
+const MUI = require("material-ui"), TextField = MUI.TextField;
 const CaretPosition = require("textarea-caret-position");
 const EmojiPng = require.context("../../../node_modules/emojify.js/src/images/emoji", false, /png$/);
 
@@ -9,7 +9,7 @@ const Avatar = require("../Member").Avatar;
 const Item = require("../Flex").Item;
 const PopupSelect = require("../Select").PopupSelect;
 const UserStore = require("../../stores/UserStore");
-
+const ClickAwayable = MUI.Mixins.ClickAwayable;
 import _ from 'lodash';
 
 require('./style.less');
@@ -20,6 +20,8 @@ const COMMANDS = [
 ];
 
 const SmartEditor = React.createClass({
+  mixins: [ClickAwayable],
+
   propTypes: {
     valueLink: React.PropTypes.shape({
       value: React.PropTypes.string.isRequired,
@@ -30,6 +32,10 @@ const SmartEditor = React.createClass({
     popupMaxHeight: React.PropTypes.number,
     popupMarginTop: React.PropTypes.number,
     popupMinusTop: React.PropTypes.number
+  },
+
+  componentClickAway() {
+    this.hidePopup();
   },
 
   getDefaultProps() {
@@ -70,12 +76,10 @@ const SmartEditor = React.createClass({
   },
 
   showPopup() {
-    //this.setState({showPopup: true});
       this.refs.popup.show();
   },
 
   hidePopup() {
-    //this.setState({showPopup: false});
       this.refs.popup.dismiss();
   },
 
@@ -111,14 +115,12 @@ const SmartEditor = React.createClass({
       options = EmojiPng.keys().map(k => k.substr(2, k.length - 6)).filter(k =>
         k.indexOf(keyword.substr(1)) >= 0
       ).slice(0, 10).map(k =>
-        <option key={k} value={[keyword, ":" + k + ": "]}>
-          <div style={style}>
+          <div key={k} value={[keyword, ":" + k + ": "]} style={style}>
             <span>
               <img style={{height: "1.6em", verticalAlign: "middle"}} src={EmojiPng("./" + k + ".png")} />
             </span> &ensp;
             <span style={{fontWeight: 500}}>{k}</span>
           </div>
-        </option>
       );
     } else {
       options = [];
@@ -259,8 +261,7 @@ const SmartEditor = React.createClass({
     return (
       <Item flex style={style} className={"smart-editor" + (props.nohr ? " nohr" : "")}>
         <TextField {...tfProps} ref="textfield"
-                                onChange={this._onInputChange}
-                                onBlur={this.hidePopup}/>
+                                onChange={this._onInputChange}/>
         <PopupSelect ref="popup"
                      position={this.state.position}
                      onItemSelect={this._onItemSelect}

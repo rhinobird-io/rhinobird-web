@@ -6,7 +6,7 @@ const React           = require("react"),
       Link            = Router.Link,
       Navigation      = Router.Navigation,
       Selector        = require("../../Select").Selector,
-      MemberSelect    = require("../../MemberSelect"),
+      MemberSelect    = require("../../Member").MemberSelect,
       PerfectScroll   = require('../../PerfectScroll'),
       CalendarActions = require("../../../actions/CalendarActions");
 
@@ -173,7 +173,11 @@ export default React.createClass({
                                 </Flex.Layout>
                             </Flex.Layout>
 
-                            <MemberSelect className="cal-create-event-textfield" valueLink={this.linkState("participants")} />
+                            <MemberSelect
+                                hintText="Participants"
+                                floatingLabelText="Participants"
+                                className="cal-create-event-textfield"
+                                valueLink={this.linkState("participants")} />
 
                             <br/>
 
