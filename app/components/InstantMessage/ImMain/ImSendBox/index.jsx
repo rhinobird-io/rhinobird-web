@@ -79,6 +79,7 @@ module.exports = React.createClass({
   render() {
     var customActions = [
       <FlatButton
+          key={1}
           label="OK"
           primary={true}
           onTouchTap={this.hideInfoDialog} />
