@@ -13,7 +13,7 @@ import uuid from 'node-uuid';
 import mui from 'material-ui';
 
 const {FlatButton, IconButton, Dialog} = mui;
-const {SmartEditor, SmartPreview} = se;
+const {SmartEditor, SmartDisplay, SmartPreview} = se;
 
 require('./style.less');
 module.exports = React.createClass({
@@ -84,6 +84,17 @@ module.exports = React.createClass({
                 primary={true}
                 onTouchTap={this.hideInfoDialog} />
         ];
+        let exampleText = `
+* markdown list item 1
+* markdown list **item** 2
+
+## code block
+
+\`\`\`java
+public static void main(String[] args) {
+    System.out.println("Hello World");
+}
+\`\`\``;
         return (
             <div className="send-box" style={this.props.style}>
                 <Dialog
@@ -97,11 +108,27 @@ module.exports = React.createClass({
                     <p>1. ENTER to send</p>
                     <p>2. SHIFT + ENTER to have newline</p>
                     <p>3. Markdown support</p>
+                    <p>4. '@' to mention a member, '#' to use commands</p>
+                    <p>5. Markdown support</p>
+                    <br/>
+                    <div className='mui-font-style-title'>Example:</div>
+                    <Layout justified>
+                        <div>
+                            <div className='mui-font-style-subhead-1'>Input</div>
+              <pre style={{fontSize: 14, backgroundColor: 'rgba(0,0,0,0.06)'}}>
+                {exampleText}
+              </pre>
+                        </div>
+                        <div>
+                            <div className='mui-font-style-subhead-1'>Output</div>
+                            <SmartDisplay value={exampleText}/>
+                        </div>
+                    </Layout>
                 </Dialog>
 
-                <Layout>
+                <Layout style={{marginLeft: 44}} center>
                     <SmartEditor ref="sEditor" nohr multiLine valueLink={this.linkState('messageValue')} className="instant-message-smart-editor" onKeyDown={this.handleKeyDown}></SmartEditor>
-                    <IconButton className="icon-info-outline" style={{ fontSize:'2em' }} onClick={this.showInfoDialog}></IconButton>
+                    <IconButton className="icon-info-outline" style={{ fontSize:'2em',marginBottom: '6.5px' }} onClick={this.showInfoDialog}></IconButton>
                 </Layout>
             </div>
         );
