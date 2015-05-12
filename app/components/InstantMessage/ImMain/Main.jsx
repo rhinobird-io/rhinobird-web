@@ -1,9 +1,9 @@
 const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
 
-const ImHistory = require('./ImHistory');
-const ImSendBox = require('./ImSendBox');
-const ImSideNav = require('./ImSideNav');
+const ImHistory = require('./ImHistory').History;
+const ImSendBox = require('./ImSendBox').SendBox;
+const ImSideNav = require('./ImSideNav').SideNav;
 
 const LoginAction = require('../../../actions/LoginAction');
 const ChannelAction = require('../../../actions/ChannelAction');

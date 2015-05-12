@@ -25,7 +25,7 @@ module.exports = (
         </Route>
         <Route name="demo" path="demo" handler={require("react-proxy!./components/Demo")} />
         <Route name="im" path="im" handler={require("react-proxy!./components/InstantMessage")}>
-          <Route name="talk" path="talk/:backEndChannelId" handler={require("react-proxy!./components/InstantMessage/ImMain")} onEnter={require("react-proxy!./components/InstantMessage/ImMain").willTransitionTo}/>
+          <Route name="talk" path="talk/:backEndChannelId" handler={require("react-proxy!./components/InstantMessage/ImMain/Main")}/>
           <Route name="setting" path="setting" handler={require("react-proxy!./components/InstantMessage/ImSetting")} />
         </Route>
         <Redirect from="/platform" to="/platform/dashboard" />
