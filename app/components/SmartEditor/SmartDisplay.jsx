@@ -1,64 +1,15 @@
 "use strict";
 
-require("./markdown.css");
-require("../../../node_modules/highlight.js/styles/default.css");
-require('./highlight-material.css');
 
 let React = require("react/addons");
-let HighLight = require("highlight.js");
-let MarkdownIt = require("markdown-it");
-let Emoji = require("markdown-it-emoji");
-let EmojiPng = require.context("../../../node_modules/emojify.js/src/images/emoji", false, /png$/);
 
 let IconLink = require("../IconLink");
 let Member = require("../Member");
 let LoginStore = require("../../stores/LoginStore");
 let UserStore = require("../../stores/UserStore");
 
-const AT_REGEX = /^\s*(@[\w\.-]+)/;
-const SLASH_REGEX = /^\s*(#[\w\.-]+(:\S+)?)/;
+let markdown = require('./markdown');
 
-function _plugin(state, regex, trans) {
-  let text = state.src.substr(state.pos);
-  if (text.search(regex) < 0) {
-    return false;
-  } else {
-    let start = text.search(/\S/), token;
-    if (start > 0) {
-      // skip leading whitespaces
-      token = state.push("text", "", 0);
-      token.content = text.substr(0, start);
-    } else if (start === 0) {
-      // then the previous character must be whitespace
-      if (state.pos > 0 && state.src.charAt(state.pos - 1).search(/\S/) === 0) {
-        return false;
-      }
-    }
-    let match = text.substr(start).match(regex)[0];
-    trans(state, match);
-    state.pos += start + match.length;
-    return true;
-  }
-}
-
-function atPlugin(state) {
-  return _plugin(state, AT_REGEX, (state, match) => {
-    let token = state.push("at_open", "a", 1);
-    token.attrPush(["isAtUser", true]);
-    token = state.push("text", "", 0);
-    token.content = match;
-    token = state.push("at_close", "a", -1);
-  });
-}
-
-function slashPlugin(state) {
-  return _plugin(state, SLASH_REGEX, (state, match) => {
-    let token = state.push("slash_open", "span", 1);
-    token.attrPush(["isIconLink", true]);
-    token.attrPush(["value", match]);
-    token = state.push("slash_close", "span", -1);
-  });
-}
 
 const SmartDisplay = React.createClass({
   mixins: [React.addons.PureRenderMixin],
@@ -76,35 +27,6 @@ const SmartDisplay = React.createClass({
     if (user) Member.showMemberProfile(user.id);
   },
 
-  markdown(value) {
-    let md = MarkdownIt({
-      highlight(str, lang) {
-        if (lang && HighLight.getLanguage(lang)) {
-          return HighLight.highlight(lang, str).value;
-        } else {
-          return HighLight.highlightAuto(str).value;
-        }
-      },
-      html: false,
-      linkify: true
-    }).use(md => {
-      md.inline.ruler.before("text", "at", atPlugin);
-    }).use(md => {
-      md.inline.ruler.before("text", "slash", slashPlugin);
-    }).use(Emoji);
-
-    md.renderer.rules.emoji = (token, i) => {
-      let markup = token[i].markup;
-      if (EmojiPng.keys().includes("./" + markup + ".png")) {
-        return '<img class="emoji" alt="$" src="$"></img>'
-          .replace("$", token[i].content)
-          .replace("$", EmojiPng("./" + markup + ".png"));
-      } else {
-        return ":" + markup + ":";
-      }
-    };
-    return md.render(value);
-  },
 
   renderIconLink(value) {
     let root = document.createElement("span");
@@ -134,7 +56,7 @@ const SmartDisplay = React.createClass({
   },
   
   render() {
-    let value = this.markdown(this.props.value);
+    let value = markdown.render(this.props.value);
     value = this.renderIconLink(value);
     value = this.removeNewline(value);
     return (
