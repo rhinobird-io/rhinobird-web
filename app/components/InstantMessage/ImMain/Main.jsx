@@ -93,7 +93,7 @@ module.exports = React.createClass({
 
   _onChannelChange() {
     var currentChannel = ChannelStore.getCurrentChannel();
-    this.props.setTitle("Instant Message - Talk - " + currentChannel.backEndChannelId);
+    this.props.setTitle("Instant Message - Talk - " + (currentChannel.isGroup?currentChannel.channel.name:currentChannel.channel.realname));
   },
 
   _onSocketReady() {
