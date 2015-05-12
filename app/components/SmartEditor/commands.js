@@ -1,7 +1,7 @@
 import LoginStore from '../../stores/LoginStore';
 
 function iconLink(iconClassName, content, href){
-    return `<a href=${href} class="link-with-icon ${iconClassName}">${content}</a>`
+    return `<a target="_blank" href=${href} class="link-with-icon ${iconClassName}">${content}</a>`
 }
 
 const commands = [
