@@ -3,8 +3,7 @@ var React                = require("react"),
     SmartEditor = require("../SmartEditor").SmartEditor,
     SmartPreview = require("../SmartEditor").SmartPreview,
     Selector = require("../Select").Selector,
-    MaterialSelect = require("../Select").Select,
-    MemberSelect = require("../MemberSelect");
+    MaterialSelect = require("../Select").Select;
 
 require("./style.less");
 
@@ -80,8 +79,6 @@ export default React.createClass({
                 </Selector>
 
                 <br/>
-
-                <MemberSelect></MemberSelect>
 
                 <br/>
 

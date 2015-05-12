@@ -6,7 +6,7 @@ const React           = require("react"),
       Link            = Router.Link,
       Navigation      = Router.Navigation,
       Selector        = require("../../Select").Selector,
-      MemberSelect    = require("../../MemberSelect"),
+      MemberSelect    = require("../../Member").MemberSelect,
       PerfectScroll   = require('../../PerfectScroll'),
       CalendarActions = require("../../../actions/CalendarActions");
 
