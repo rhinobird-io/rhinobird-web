@@ -3,7 +3,7 @@ const RouteHandler = require("react-router").RouteHandler;
 
 const Member = require("../../../../Member");
 const {Avatar, Name} = Member;
-const Layout = require("../../../../Flex").Layout;
+const Flex = require("../../../../Flex"), Layout = Flex.Layout, Item = Flex.Item;
 const SmartTimeDisplay = require("../../../../SmartTimeDisplay");
 const SmartDisplay = require("../../../../SmartEditor/SmartDisplay");
 
@@ -25,17 +25,19 @@ module.exports = React.createClass({
   render() {
 
     return (
-      <div className={this.props.Message.messageStatus && this.props.Message.messageStatus === -1 ?'instant-message-message-item unconfirmed':'instant-message-message-item'}>
+      <div className='instant-message-message-item'>
         <Layout horizontal>
           <div className="avatar-wrapper">
-            <Avatar scale={1.6} member={UserStore.getUser(this.props.Message.userId)} />
+            <Avatar scale={1.6} member={UserStore.getUser(this.props.messages[0].userId)} />
           </div>
           <Layout vertical flex={1}>
             <Layout horizontal justified>
-              <div className="name"><Name member={UserStore.getUser(this.props.Message.userId)} /></div>
-              <div className="time"><SmartTimeDisplay start={this.props.Message.createdAt} relative /></div>
+              <div className="name"><Name member={UserStore.getUser(this.props.messages[0].userId)} /></div>
+              <div className="time"><SmartTimeDisplay start={this.props.messages[0].createdAt} relative /></div>
             </Layout>
-            <SmartDisplay value={this.props.Message.text}></SmartDisplay>
+            {this.props.messages.map(msg=>{
+              return <SmartDisplay key={msg.id} value={msg.text}></SmartDisplay>
+            })}
           </Layout>
         </Layout>
       </div>
