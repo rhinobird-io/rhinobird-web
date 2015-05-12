@@ -70,7 +70,7 @@ module.exports = React.createClass({
     },
 
     handleKeyDown(e) {
-        if (e.keyCode === 13 && e.shiftKey) {
+        if (e.keyCode === 13) {
             this.sendMessage();
             e.preventDefault();
         }
@@ -94,8 +94,8 @@ module.exports = React.createClass({
                     modal={false}
                     dismissOnClickAway={this.state.dismissOnClickAway}
                     contentClassName="mui-font-style-title">
-                    <p>1. SHIFT + ENTER to send</p>
-                    <p>2. ENTER to have newline</p>
+                    <p>1. ENTER to send</p>
+                    <p>2. SHIFT + ENTER to have newline</p>
                     <p>3. Markdown support</p>
                 </Dialog>
 
