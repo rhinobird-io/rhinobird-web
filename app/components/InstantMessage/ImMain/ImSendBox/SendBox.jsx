@@ -124,9 +124,9 @@ public static void main(String[] args) {
                     </Layout>
                 </Dialog>
 
-                <Layout>
+                <Layout style={{marginLeft: 44}} center>
                     <SmartEditor ref="sEditor" nohr multiLine valueLink={this.linkState('messageValue')} className="instant-message-smart-editor" onKeyDown={this.handleKeyDown}></SmartEditor>
-                    <IconButton className="icon-info-outline" style={{ fontSize:'2em' }} onClick={this.showInfoDialog}></IconButton>
+                    <IconButton className="icon-info-outline" style={{ fontSize:'2em',marginBottom: '6.5px' }} onClick={this.showInfoDialog}></IconButton>
                 </Layout>
             </div>
         );
