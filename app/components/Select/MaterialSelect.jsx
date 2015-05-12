@@ -183,8 +183,7 @@ export default React.createClass({
             <TextField
                 ref="text"
                 type="text"
-                hintText={hintText}
-                floatingLabelText={floatingLabelText}
+                floatingLabelText={this.state.selected.length === 0 ? floatingLabelText : " "}
                 style={styles.padding}
                 className={this.props.className}
                 onChange={this._filter}
@@ -196,6 +195,7 @@ export default React.createClass({
         let popupSelect =
             <MaterialPopup
                 ref="popupSelect"
+                relatedTo={() => this.refs.getDOMNode()}
                 style={{position: "absolute", top: "100%", left: 0, right: 0}}
                 onItemSelect={(value) => {
                         this._addSelectedOption(value);
@@ -204,9 +204,12 @@ export default React.createClass({
                         this.refs.popupSelect.dismiss();
                     }
                 }
+                onDismiss={() => {
+                    this.refs.text.blur()
+                }}
             >
-            {this.state.children}
-        </MaterialPopup>;
+                {this.state.children}
+            </MaterialPopup>;
 
         for (let i = 0; i < this.state.selected.length; i++) {
             tokens.push(

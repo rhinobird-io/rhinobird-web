@@ -9,6 +9,7 @@ export default React.createClass({
         onShow: React.PropTypes.func,
         onDismiss: React.PropTypes.func,
         position: React.PropTypes.string,
+        relatedTo: React.PropTypes.object,
         valueAttr: React.PropTypes.string,
         onItemSelect: React.PropTypes.func,
         normalStyle: React.PropTypes.object,
@@ -88,6 +89,9 @@ export default React.createClass({
 
     dismiss() {
         this.setState({visible: false});
+        if (this.props.onDismiss && typeof this.props.onDismiss === "function") {
+            this.props.onDismiss();
+        }
     },
 
     show() {
@@ -102,12 +106,13 @@ export default React.createClass({
         let children = this._construct(this.props.children, this.props.valueAttr);
         let styles = {
             outer: {
-                height: 200
+                zIndex: 9,
+                height: 200,
+                display: this.state.visible ? "flex" : "none"
             },
             popup: {
                 background: "white",
-                position: "relative",
-                display: this.state.visible ? "block" : "none"
+                position: "relative"
             }
         };
 
