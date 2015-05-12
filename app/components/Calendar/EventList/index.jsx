@@ -1,13 +1,15 @@
 const React                = require("react"),
       MUI                  = require("material-ui"),
       Moment               = require("moment"),
-      Layout               = require("../../Flex").Layout,
+      Flex                 = require("../../Flex"),
       Link                 = require("react-router").Link,
       DropDownAny          = require("../../DropDownAny"),
       Select               = require("../../Select").Select,
+      Avatar               = require("../../Member").Avatar,
       SmartTimeDisplay     = require("../../SmartTimeDisplay"),
       CalendarStore        = require("../../../stores/CalendarStore"),
       CalendarActions      = require("../../../actions/CalendarActions"),
+      UserStore            = require("../../../stores/UserStore"),
       PerfectScroll        = require('../../PerfectScroll'),
       InfiniteScroll       = require('../../InfiniteScroll');
 
@@ -120,8 +122,21 @@ export default React.createClass({
                 }
 
                 let control = <span title="Event Members" className="cal-event-member icon-group"></span>;
-                let menu = [1,2]
+                let menu = event.participants.map((p) => {
+                    let u = UserStore.getUser(p.id);
+                    return <Flex.Layout key={u.id} horizontal justified>
+                        <Avatar member={u} style={{borderRadius: "50%"}} /> &ensp;&ensp;
+                        <span style={{fontWeight: 500}}>{u.name}</span>
+                    </Flex.Layout>;
+                });
 
+                menu = menu.concat(event.team_participants.map(t => {
+                    let t = UserStore.getTeam(t.id);
+                    return <Flex.Layout key={t.id} horizontal justified>
+                        <Avatar member={t} style={{borderRadius: "50%"}} /> &ensp;&ensp;
+                        <span style={{fontWeight: 500}}>{t.name}</span>
+                    </Flex.Layout>;
+                }));
                 return (
                     <div ref={ref} className="cal-event">
                         <div className={eventIconClass}>
@@ -131,10 +146,10 @@ export default React.createClass({
                         <div className={contentClass}>
                             <div className={contentInnerClass}>
                                 <div className="cal-event-title">
-                                    <Layout horizontal justified>
+                                    <Flex.Layout horizontal justified>
                                         <span>{event.title}</span>
                                         <DropDownAny ref="dropdown" control={control} menu={menu} />
-                                    </Layout>
+                                    </Flex.Layout>
                                     <div className="cal-event-time">
                                         <SmartTimeDisplay
                                             relative

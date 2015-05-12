@@ -62,7 +62,7 @@ export default React.createClass({
         };
 
         return (
-            <div styles={[style, popup]} {...other}>
+            <div styles={[style, popup]} className="mui-paper mui-z-depth-2">
                 <Popup
                     ref="popup"
                     position={position}

@@ -61,7 +61,6 @@ export default React.createClass({
     },
 
     getValueLink(props) {
-        console.log(props.onChange);
         return props.valueLink || {
                 value: props.value,
                 requestChange: props.onChange
@@ -76,8 +75,11 @@ export default React.createClass({
         selected.splice(index, 1);
         this._updateLayout(false, selected);
         this.setState({selected: selected});
-        if (this.props.valueLink || this.props.value) {
+        if (this.props.valueLink || this.props.onChange) {
             this.getValueLink(this.props).requestChange(selected);
+            if (this.props.onChange) {
+                this.props.onChange(selected);
+            }
         }
     },
 
@@ -116,8 +118,10 @@ export default React.createClass({
         this.setState({selected: selected});
         this._updateLayout(true, selected);
         if (this.props.valueLink || this.props.onChange) {
-            console.log(selected);
             this.getValueLink(this.props).requestChange(selected);
+            if (this.props.onChange) {
+                this.props.onChange(selected);
+            }
         }
     },
 
