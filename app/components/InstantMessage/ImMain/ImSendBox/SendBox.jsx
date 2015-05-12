@@ -108,7 +108,7 @@ public static void main(String[] args) {
                     <p>1. ENTER to send</p>
                     <p>2. SHIFT + ENTER to have newline</p>
                     <p>3. Markdown support</p>
-                    <p>4. '@' to mention a member, '#' to use commands</p>
+                    <p>4. '@' to mention a member, '#' to use commands, ':' to use emoji</p>
                     <p>5. Markdown support</p>
                     <br/>
                     <div className='mui-font-style-title'>Example:</div>
