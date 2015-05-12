@@ -27,11 +27,11 @@ module.exports = React.createClass({
     return (
       <div className='instant-message-message-item'>
         <Layout horizontal>
-          <div className="avatar-wrapper">
+          <div className="avatar-wrapper" style={{flexShrink: 0}}>
             <Avatar scale={1.6} member={UserStore.getUser(this.props.messages[0].userId)} />
           </div>
           <Layout vertical flex={1}>
-            <Layout horizontal justified>
+            <Layout horizontal justified style={{marginBottom:8}}>
               <div className="name"><Name member={UserStore.getUser(this.props.messages[0].userId)} /></div>
               <div className="time"><SmartTimeDisplay start={this.props.messages[0].createdAt} relative /></div>
             </Layout>
