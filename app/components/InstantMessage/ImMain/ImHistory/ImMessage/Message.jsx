@@ -36,7 +36,7 @@ module.exports = React.createClass({
               <div className="time"><SmartTimeDisplay start={this.props.messages[0].createdAt} relative /></div>
             </Layout>
             {this.props.messages.map(msg=>{
-              return <SmartDisplay key={msg.id} value={msg.text}></SmartDisplay>
+              return <SmartDisplay key={msg.id} value={msg.text + msg.id}></SmartDisplay>
             })}
           </Layout>
         </Layout>

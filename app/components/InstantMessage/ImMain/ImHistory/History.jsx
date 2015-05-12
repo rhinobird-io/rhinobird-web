@@ -28,7 +28,8 @@ module.exports = React.createClass({
     getInitialState() {
         return {
             messages: [],
-            upperThreshold: 100
+            upperThreshold: 100,
+            messageSuites : []
         }
     },
 
@@ -70,41 +71,48 @@ module.exports = React.createClass({
     },
 
     _onReceiveInitMessage() {
-        let currentChannel = ChannelStore.getCurrentChannel();
-        let messages = MessageStore.getMessagesSub(currentChannel, { limit : limit });
-        let hasOlder = MessageStore.hasOlderMessages(currentChannel, messages.length > 0 ? messages[0].id: -1);
+        //let currentChannel = ChannelStore.getCurrentChannel();
+        //let messages = MessageStore.getMessagesSub(currentChannel, { limit : limit });
+        //let hasOlder = MessageStore.hasOlderMessages(currentChannel, messages.length > 0 ? messages[0].id: -1);
+        //this.setState({
+        //    messages: messages,
+        //    upperThreshold: (!hasOlder.atBack && !hasOlder.atFront) ? undefined: 100
+        //});
         this.setState({
-            messages: messages,
-            upperThreshold: (!hasOlder.atBack && !hasOlder.atFront) ? undefined: 100
+            messageSuites: MessageStore.getCurrentChannelMessageSuites()
         });
     },
 
     _onReceiveOldMessage() {
-        let currentChannel = ChannelStore.getCurrentChannel();
-        let oldestMessageInScreen = this.state.messages.length > 0 ? this.state.messages[0].id: -1;
-        let messages = MessageStore.getMessagesSub(currentChannel, { beforeMessageId: oldestMessageInScreen, limit: limit });
-        messages.push.apply(messages, this.state.messages);
-        let hasOlder = MessageStore.hasOlderMessages(currentChannel, messages.length > 0 ? messages[0].id: -1);
+        //let currentChannel = ChannelStore.getCurrentChannel();
+        //let oldestMessageInScreen = this.state.messages.length > 0 ? this.state.messages[0].id: -1;
+        //let messages = MessageStore.getMessagesSub(currentChannel, { beforeMessageId: oldestMessageInScreen, limit: limit });
+        //messages.push.apply(messages, this.state.messages);
+        // let hasOlder = MessageStore.hasOlderMessages(currentChannel, messages.length > 0 ? messages[0].id: -1);
         this.setState({
-            messages: messages,
-            upperThreshold: (!hasOlder.atBack && !hasOlder.atFront) ? undefined: 100,
-            currentChannel: currentChannel
+            messages: MessageStore.getCurrentChannelMessageSuites(),
+            upperThreshold: 100
         });
     },
 
-    _onSendMessage(msg) {
-        let messages = this.state.messages;
-        messages.push(msg);
+    _onSendMessage() {
+        //let messages = this.state.messages;
+        //messages.push(msg);
+        debugger;
         this.setState({
-            messages: messages
+            messages: MessageStore.getCurrentChannelMessageSuites()
         });
+
     },
 
     _onReceiveNewMessage(msg) {
-        let messages = this.state.messages;
-        messages.push(msg);
+        //let messages = this.state.messages;
+        //messages.push(msg);
+        //this.setState({
+        //    messages: messages
+        //});
         this.setState({
-            messages: messages
+            messages: MessageStore.getCurrentChannelMessageSuites()
         });
     },
 
@@ -113,36 +121,43 @@ module.exports = React.createClass({
      * load more old messages on demand
      */
     loadMoreOldMessages() {
-        let currentChannel = ChannelStore.getCurrentChannel();
-        let oldestMessageInScreen = this.state.messages.length > 0 ? this.state.messages[0].id: -1;
-        let hasOlder = MessageStore.hasOlderMessages(currentChannel, oldestMessageInScreen);
-        if (hasOlder.atFront){
-            // console.log('find in front');
-            // load from the MessageStores
-            let messages = MessageStore.getMessagesSub(currentChannel, {
-                beforeMessageId : oldestMessageInScreen,
-                limit : limit
-            });
-            messages.push.apply(messages, this.state.messages);
-            let newHasOlder = MessageStore.hasOlderMessages(currentChannel, messages.length > 0 ? messages[0].id: -1);
-
-            this.setState({
-                messages: messages,
-                upperThreshold: (!newHasOlder.atBack && !newHasOlder.atFront) ? undefined: 100,
-                currentChannel: currentChannel
-            });
-
-        } else if (hasOlder.atBack){
-            // trigger action to load from backEnd
-            // console.log('find in back');
-            MessageAction.getMessages(currentChannel, { id : oldestMessageInScreen});
-
+        //let currentChannel = ChannelStore.getCurrentChannel();
+        //let oldestMessageInScreen = this.state.messages.length > 0 ? this.state.messages[0].id: -1;
+        //let hasOlder = MessageStore.hasOlderMessages(currentChannel, oldestMessageInScreen);
+        //if (hasOlder.atFront){
+        //    // console.log('find in front');
+        //    // load from the MessageStores
+        //    let messages = MessageStore.getMessagesSub(currentChannel, {
+        //        beforeMessageId : oldestMessageInScreen,
+        //        limit : limit
+        //    });
+        //    messages.push.apply(messages, this.state.messages);
+        //    let newHasOlder = MessageStore.hasOlderMessages(currentChannel, messages.length > 0 ? messages[0].id: -1);
+        //
+        //    this.setState({
+        //        messages: messages,
+        //        upperThreshold: (!newHasOlder.atBack && !newHasOlder.atFront) ? undefined: 100,
+        //        currentChannel: currentChannel
+        //    });
+        //
+        //} else if (hasOlder.atBack){
+        //    // trigger action to load from backEnd
+        //    // console.log('find in back');
+        //    MessageAction.getMessages(currentChannel, { id : oldestMessageInScreen});
+        //
+        //} else {
+        //    this.setState({
+        //        upperThreshold: undefined
+        //    });
+        //}
+        let oldestMessageId = undefined;
+        if (this.state.messageSuites.length > 0) {
+            oldestMessageId = this.state.messageSuites[0][0].id;
         } else {
-
-            this.setState({
-                upperThreshold: undefined
-            });
+            oldestMessageId = (1 << 30);
         }
+
+        MessageAction.getOlderMessage(oldestMessageId);
     },
 
     _wrapMessages(messages) {
@@ -167,7 +182,7 @@ module.exports = React.createClass({
         return result;
     },
     render() {
-        let msgs = this._wrapMessages(this.state.messages);
+        // let msgs = this._wrapMessages(this.state.messages);
         return (
 
             <Flex.Layout vertical perfectScroll className="history" style={this.props.style}>
@@ -178,7 +193,7 @@ module.exports = React.createClass({
             }}/>
                 <div style={{flex: 1}}>
                     {
-                        msgs.map((msg, idx) => <ImMessage key={`group${msg[0].id}`} messages={msg}></ImMessage>)
+                        this.state.messageSuites.map((msg, idx) => <ImMessage key={`group${msg[0].id}`} messages={msg}></ImMessage>)
                     }
                 </div>
             </Flex.Layout>
