@@ -2,6 +2,7 @@
 
 require("./markdown.css");
 require("../../../node_modules/highlight.js/styles/default.css");
+require('./highlight-material.css');
 
 let React = require("react/addons");
 let HighLight = require("highlight.js");
