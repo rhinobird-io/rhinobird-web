@@ -81,7 +81,7 @@ module.exports = React.createClass({
             <FlatButton
                 key={1}
                 label="OK"
-                primary={true}
+                secondary={true}
                 onTouchTap={this.hideInfoDialog} />
         ];
         let exampleText = `
