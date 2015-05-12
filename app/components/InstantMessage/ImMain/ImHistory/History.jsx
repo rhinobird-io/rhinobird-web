@@ -150,7 +150,7 @@ module.exports = React.createClass({
             return [];
         }
         let result = [], previousMsg = messages[messages.length-1], conCount = 1, msgSet = [previousMsg];
-        for(let i=messages.length - 1; i>=0; i--){
+        for(let i=messages.length - 2; i>=0; i--){
             let msg = messages[i];
             let preMoment = moment(previousMsg.createdAt), curMoment = moment(msg.createdAt);
             if(conCount <=5 && msg.userId === previousMsg.userId && preMoment.diff(curMoment, 'minutes') <= 1) {
