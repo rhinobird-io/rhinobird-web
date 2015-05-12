@@ -70,7 +70,7 @@ module.exports = React.createClass({
     },
 
     handleKeyDown(e) {
-        if (e.keyCode === 13) {
+        if (e.keyCode === 13 && !e.shiftKey) {
             this.sendMessage();
             e.preventDefault();
         }

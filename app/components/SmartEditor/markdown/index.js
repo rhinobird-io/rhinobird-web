@@ -7,6 +7,7 @@ let MarkdownIt = require("markdown-it");
 let Emoji = require("markdown-it-emoji");
 let EmojiPng = require.context("../../../../node_modules/emojify.js/src/images/emoji", false, /png$/);
 let commands = require('../commands');
+import UserStore from '../../../stores/UserStore';
 
 
 const AT_REGEX = /^\s*(@[\w\.-]+)/;
@@ -37,11 +38,8 @@ function _plugin(state, regex, trans) {
 
 function atPlugin(state) {
     return _plugin(state, AT_REGEX, (state, match) => {
-        let token = state.push("at_open", "a", 1);
-        token.attrPush(["isAtUser", true]);
-        token = state.push("text", "", 0);
+        let token = state.push("at", '', 0);
         token.content = match;
-        token = state.push("at_close", "a", -1);
     });
 }
 
@@ -82,12 +80,28 @@ md.renderer.rules.emoji = (token, i) => {
 
 md.renderer.rules.command = (token, i) => {
     let content = token[i].content;
-    let [,commandName, value] = content.match(/#(.*):(.*)/);
+    let match = content.match(/#(.*):(.*)/);
+    if(!match){
+        return content;
+    }
+    let [,commandName, value] = match;
     let command = commands.getCommand(commandName);
     if(!command) {
         return content;
     } else {
         return command.render(value);
+    }
+};
+
+md.renderer.rules.at = (token, i) => {
+    let content = token[i].content;
+    let username = content.substr(1);
+    let user = UserStore.getUserByName(username);
+    if(!user){
+        return content;
+    }
+    else {
+        return `<a class="member-at">${content}</a>`
     }
 };
 
