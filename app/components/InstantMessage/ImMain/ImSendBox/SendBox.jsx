@@ -84,6 +84,17 @@ module.exports = React.createClass({
                 primary={true}
                 onTouchTap={this.hideInfoDialog} />
         ];
+        let exampleText = `
+* markdown list item 1
+* markdown list **item** 2
+
+## code block
+
+\`\`\`java
+public static void main(String[] args) {
+    System.out.println("Hello World");
+}
+\`\`\``;
         return (
             <div className="send-box" style={this.props.style}>
                 <Dialog
@@ -97,6 +108,20 @@ module.exports = React.createClass({
                     <p>1. ENTER to send</p>
                     <p>2. SHIFT + ENTER to have newline</p>
                     <p>3. Markdown support</p>
+                    <br/>
+                    <div className='mui-font-style-title'>Example:</div>
+                    <Layout justified>
+                        <div>
+                            <div className='mui-font-style-subhead-1'>Input</div>
+              <pre style={{fontSize: 14, backgroundColor: 'rgba(0,0,0,0.06)'}}>
+                {exampleText}
+              </pre>
+                        </div>
+                        <div>
+                            <div className='mui-font-style-subhead-1'>Output</div>
+                            <SmartDisplay value={exampleText}/>
+                        </div>
+                    </Layout>
                 </Dialog>
 
                 <Layout>
