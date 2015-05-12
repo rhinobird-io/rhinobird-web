@@ -294,11 +294,11 @@ export default React.createClass({
                     this._select();
                     break;
                 case 27:    // Escape
-                    event.preventDefault();
+                    e.preventDefault();
                     this.dismiss();
                     break;
                 case 9:     // Tab
-                    event.preventDefault();
+                    e.preventDefault();
                     if (e.shiftKey) {
                         this.cursorUp();
                     } else {

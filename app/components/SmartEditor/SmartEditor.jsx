@@ -14,10 +14,7 @@ import _ from 'lodash';
 
 require('./style.less');
 
-const COMMANDS = [
-  {name: "vity", manual: ":room_name"},
-  {name: "file", manual: ":file_id"}
-];
+const COMMANDS = require('./commands').list;
 
 const SmartEditor = React.createClass({
   mixins: [ClickAwayable],
@@ -200,6 +197,12 @@ const SmartEditor = React.createClass({
     this._updateValueLink();
   },
 
+  _inputKeyDown(e){
+    if(!this.refs.popup.isShow()){
+      this.props.onKeyDown(e);
+    }
+  },
+
   render() {
     let props = this.props;
     let style = {
@@ -253,14 +256,14 @@ const SmartEditor = React.createClass({
     }, 0);
 
     let tfProps = {};
-    ["className", "defaultValue", "errorText", "floatingLabelText", "hintText", "multiLine", "onKeyDown"].map(
+    ["className", "defaultValue", "errorText", "floatingLabelText", "hintText", "multiLine"].map(
       k => { tfProps[k] = props[k] }
     );
 
     // Apply `style` to TextField seems no effect, so just apply to Item
     return (
       <Item flex style={style} className={"smart-editor" + (props.nohr ? " nohr" : "")}>
-        <TextField {...tfProps} ref="textfield"
+        <TextField {...tfProps} onKeyDown={this._inputKeyDown} ref="textfield"
                                 onChange={this._onInputChange}/>
         <PopupSelect ref="popup"
                      position={this.state.position}
