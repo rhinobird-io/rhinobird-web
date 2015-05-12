@@ -82,7 +82,11 @@ md.renderer.rules.emoji = (token, i) => {
 
 md.renderer.rules.command = (token, i) => {
     let content = token[i].content;
-    let [,commandName, value] = content.match(/#(.*):(.*)/);
+    let match = content.match(/#(.*):(.*)/);
+    if(!match){
+        return content;
+    }
+    let [,commandName, value] = match;
     let command = commands.getCommand(commandName);
     if(!command) {
         return content;
