@@ -43,6 +43,7 @@ function _plugin(state, regex, trans) {
 function atPlugin(state) {
   return _plugin(state, AT_REGEX, (state, match) => {
     let token = state.push("at_open", "a", 1);
+    token.attrPush(["isAtUser", true]);
     token = state.push("text", "", 0);
     token.content = match;
     token = state.push("at_close", "a", -1);
@@ -60,21 +61,18 @@ function slashPlugin(state) {
 
 const SmartDisplay = React.createClass({
   mixins: [React.addons.PureRenderMixin],
-  componentDidMount: function() {
-    window.addEventListener('click', this._onClick);
+
+  componentDidMount() {
+    let list = this.getDOMNode().querySelectorAll("a[isAtUser]");
+    for (let i = 0; i < list.length; i++) {
+      list[i].addEventListener("click", this._onClick);
+    }
   },
 
   _onClick(e) {
-    let target = e.target, text = target.innerHTML;
-    // A link Element without `href` attribute, like <a>@someone</a>
-    if (text && target.tagName.toLowerCase() === "a" && !target.href) {
-      let match = text.match(AT_REGEX);
-      if (match && match[0] === text) {
-        e.preventDefault();
-        let user = UserStore.getUserByName(text.substr(1));
-        if (user) Member.showMemberProfile(user.id);
-      }
-    }
+    e.preventDefault();
+    let user = UserStore.getUserByName(e.target.innerHTML.substr(1));
+    if (user) Member.showMemberProfile(user.id);
   },
 
   markdown(value) {
