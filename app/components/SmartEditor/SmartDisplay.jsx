@@ -15,7 +15,7 @@ const SmartDisplay = React.createClass({
   mixins: [React.addons.PureRenderMixin],
 
   componentDidMount() {
-    let list = this.getDOMNode().querySelectorAll("a[isAtUser]");
+    let list = this.getDOMNode().querySelectorAll("a.member-at");
     for (let i = 0; i < list.length; i++) {
       list[i].addEventListener("click", this._onClick);
     }
