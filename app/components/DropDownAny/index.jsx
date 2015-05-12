@@ -49,7 +49,7 @@ export default React.createClass({
       "dropdownany-hidden": !this.state.open
     });
     return (
-      <div className={dropClasses}>
+      <div className={dropClasses} style={{height: "auto"}}>
         <div className={controlClasses} onClick={this._onControlClick}>
           {this.props.control}
         </div>

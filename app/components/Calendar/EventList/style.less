@@ -5,8 +5,9 @@
 @arrowBg: white;
 @arrowZIndex: 1;
 @eventBg: white;
-@triangleSize: 6px;
-@event-icon-wrapper-bg: rgb(169, 217, 247);
+@triangle-size: 6px;
+@event-expired-bg: @indigo-200;
+@event-icon-wrapper-bg: @indigo-300;
 @day-divider-radius: 22px;
 @expired-event-bg: grey;
 @active-event-bg: @pink-500;
@@ -14,8 +15,8 @@
 
 .cal-event-list {
   height: 100%;
-  -webkit-user-select: none;
   -moz-user-select: none;
+  -webkit-user-select: none;
 }
 
 .add-event {
@@ -42,7 +43,6 @@
 
 .cal-day-divider-label {
   position: relative;
-  z-index: 4;
   width: @day-divider-radius * 2;
   height: @day-divider-radius * 2;
   line-height: @day-divider-radius * 2;
@@ -50,21 +50,21 @@
   margin-left: -19px;
   border-radius: 50%;
   color: white;
-  font-size: 1.5em;
+  font-size: 1.1em;
   text-align: center;
   vertical-align: middle;
   background-color: @pink-300;
 
   label {
-    color: black;
-    font-size: 1.5em;
     line-height: @day-divider-radius * 2;
-    margin-left: 98px;
+    position: absolute;
+    font-size: 2em;
+    color: black;
+    left: 98px;
   }
 }
 
 .cal-day-divider-label-content {
-  z-index: 2;
   position: relative;
   background-color: @calEventBg;
 }
@@ -74,27 +74,26 @@
   content: '';
   top: 0;
   bottom: 0;
-  width: 6px;
-  z-index: 1;
+  width: 4px;
   height: 100%;
   padding: 10px 0 10px 0;
-  *background: -webkit-linear-gradient(top, rgba(80,80,80,0) 0%, rgb(80,80,80) 8%, rgb(80,80,80) 92%, rgba(80,80,80,0) 100%);
-  background-color: @event-icon-wrapper-bg  ;
+  background-color: @event-icon-wrapper-bg;
 }
 
 .cal-event-icon {
+  position: absolute;
   border-radius: 50%;
-  padding: 6px;
+  padding: 8px;
   color: white;
-  background-color: @indigo-500;
+  background-color: @indigo-300;
 }
 
 .cal-event-icon.expired {
-  background-color: grey;
+  *background-color: @event-expired-bg;
 }
 
 .cal-event-icon.active {
-  background-color: @pink-500;
+  *background-color: @pink-500;
 }
 
 .cal-event-icon span {
@@ -102,11 +101,9 @@
 }
 
 .cal-event-icon-wrapper {
-  position: absolute;
-  z-index: 4;
   border-radius: 50%;
   padding: 4px;
-  left: -19px;
+  left: -17px;
   background-color: @event-icon-wrapper-bg;
 }
 
@@ -176,12 +173,12 @@
       position: absolute;
       width: 0;
       height: 0;
-      left: -@triangleSize;
-      margin-top: -@triangleSize;
+      left: -@triangle-size;
+      margin-top: -@triangle-size;
       top: 50%;
       box-sizing: border-box;
 
-      border: @triangleSize solid black;
+      border: @triangle-size solid black;
       border-color: transparent white white transparent;
 
       transform-origin: 50% 50%;
@@ -195,16 +192,16 @@
 @media screen and (min-width: 960px) {
   .cal-event-wrapper::before {
     left: 50%;
-    margin-left: -3px;
+    margin-left: -2px;
   }
 
-  .cal-event-icon-wrapper {
+  .cal-event-icon {
     left: 50%;
-    margin-left: -22px;
+    margin-left: -20px;
   }
 
   .cal-day-divider-label {
-    margin-left: -22px;
+    margin-left: -@day-divider-radius;
     left: 50%;
   }
 
@@ -234,12 +231,12 @@
       position: absolute;
       width: 0;
       height: 0;
-      right: -@triangleSize;
-      margin-top: -@triangleSize;
+      right: -@triangle-size;
+      margin-top: -@triangle-size;
       top: 50%;
       box-sizing: border-box;
 
-      border: @triangleSize solid black;
+      border: @triangle-size solid black;
       border-color: transparent white white transparent;
 
       transform-origin: 50% 50%;
@@ -259,12 +256,12 @@
       position: absolute;
       width: 0;
       height: 0;
-      left: -@triangleSize;
-      margin-top: -@triangleSize;
+      left: -@triangle-size;
+      margin-top: -@triangle-size;
       top: 50%;
       box-sizing: border-box;
 
-      border: @triangleSize solid black;
+      border: @triangle-size solid black;
       border-color: transparent white white transparent;
 
       transform-origin: 50% 50%;

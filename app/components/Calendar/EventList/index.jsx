@@ -3,6 +3,7 @@ const React                = require("react"),
       Moment               = require("moment"),
       Layout               = require("../../Flex").Layout,
       Link                 = require("react-router").Link,
+      DropDownAny          = require("../../DropDownAny"),
       Select               = require("../../Select").Select,
       SmartTimeDisplay     = require("../../SmartTimeDisplay"),
       CalendarStore        = require("../../../stores/CalendarStore"),
@@ -93,6 +94,7 @@ export default React.createClass({
             dayEvents.push(
                 <div className={dayDividerClass}>
                     <div className="cal-day-divider-label">
+                        <span>{Moment.weekdaysShort()[Moment(key).day()]}</span>
                         <label>{Moment(key).format("M/D")}</label>
                     </div>
                 </div>
@@ -116,12 +118,14 @@ export default React.createClass({
                 if (event.id.toString() === this.state.newCreated) {
                     contentInnerClass += " highlight";
                 }
+
+                let control = <span title="Event Members" className="cal-event-member icon-group"></span>;
+                let menu = [1,2]
+
                 return (
                     <div ref={ref} className="cal-event">
-                        <div className="cal-event-icon-wrapper">
-                            <div className={eventIconClass}>
-                                <MUI.FontIcon className="icon-event"/>
-                            </div>
+                        <div className={eventIconClass}>
+                            <MUI.FontIcon className="icon-event"/>
                         </div>
 
                         <div className={contentClass}>
@@ -129,7 +133,7 @@ export default React.createClass({
                                 <div className="cal-event-title">
                                     <Layout horizontal justified>
                                         <span>{event.title}</span>
-                                        <span title="Event Members" className="cal-event-member icon-group"></span>
+                                        <DropDownAny ref="dropdown" control={control} menu={menu} />
                                     </Layout>
                                     <div className="cal-event-time">
                                         <SmartTimeDisplay
