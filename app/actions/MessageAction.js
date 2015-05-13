@@ -14,6 +14,9 @@ const {IM_HOST, IM_API} = IMConstants;
 const limit =  20;
 export default {
 
+    /**
+     * Imply it was called on current Channel
+     */
     getOlderMessage(oldestMessageId) {
         let currentChannel = ChannelStore.getCurrentChannel();
         let hasOlder = MessageStore.hasOlderMessages(currentChannel, oldestMessageId);
@@ -26,34 +29,11 @@ export default {
         } else if (hasOlder.atBack){
             // trigger action to load from backEnd
             // console.log('find in back');
-            this.getMessages(currentChannel, { id : oldestMessageId});
+            getMessages(currentChannel, { id : oldestMessageId});
 
         } else {
             console.log('no more');
         }
-    },
-
-
-    /**
-     * get messages from oldest one, limit to 20, in the specified channel
-     * @param channel
-     * @param oldestMessage
-     * @returns {*}
-     */
-    getMessages(channel, oldestMessage) {
-        return $.ajax(
-            {
-                url: IM_API + 'channels/' + channel.backEndChannelId + '/messages?beforeId=' + (oldestMessage ? oldestMessage.id : 1 << 30) + '&limit=' + limit,
-                type: 'GET',
-                dataType: 'json'
-            }).done(messages => {
-                AppDispatcher.dispatch({
-                    type: Constants.MessageActionTypes.RECEIVE_OLDER_MESSAGES,
-                    channel: channel,
-                    messages: messages, // from oldest to newest
-                    noMoreAtBack : messages.length < limit
-                });
-            }).fail(Util.handleError);
     },
 
     sendMessage(msg) {
@@ -63,3 +43,26 @@ export default {
         });
     }
 };
+
+
+/**
+ * get messages from oldest one, limit to 20, in the specified channel
+ * @param channel
+ * @param oldestMessage
+ * @returns {*}
+ */
+function getMessages(channel, oldestMessage) {
+    return $.ajax(
+        {
+            url: IM_API + 'channels/' + channel.backEndChannelId + '/messages?beforeId=' + (oldestMessage ? oldestMessage.id : 1 << 30) + '&limit=' + limit,
+            type: 'GET',
+            dataType: 'json'
+        }).done(messages => {
+            AppDispatcher.dispatch({
+                type: Constants.MessageActionTypes.RECEIVE_OLDER_MESSAGES,
+                channel: channel,
+                messages: messages, // from oldest to newest
+                noMoreAtBack : messages.length < limit
+            });
+        }).fail(Util.handleError);
+}
