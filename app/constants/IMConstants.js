@@ -6,6 +6,7 @@ export default {
     LOCALSTORAGE_CHANNEL : 'localchannel',
 
     EVENTS : {
+        RECEIVE_MESSAGE : 'message-receive',
         RECEIVE_NEW_MESSAGE : 'message-new',
         RECEIVE_OLD_MESSAGE : 'message-old',
         RECEIVE_INIT_MESSAGE : 'message-init',
