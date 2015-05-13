@@ -90,17 +90,16 @@ module.exports = React.createClass({
         //messages.push.apply(messages, this.state.messages);
         // let hasOlder = MessageStore.hasOlderMessages(currentChannel, messages.length > 0 ? messages[0].id: -1);
         this.setState({
-            messages: MessageStore.getCurrentChannelMessageSuites(),
+            messageSuites: MessageStore.getCurrentChannelMessageSuites(),
             upperThreshold: 100
         });
     },
 
     _onSendMessage() {
         //let messages = this.state.messages;
-        //messages.push(msg);
-        debugger;
+        //messages.push(msg)
         this.setState({
-            messages: MessageStore.getCurrentChannelMessageSuites()
+            messageSuites: MessageStore.getCurrentChannelMessageSuites()
         });
 
     },
@@ -112,7 +111,7 @@ module.exports = React.createClass({
         //    messages: messages
         //});
         this.setState({
-            messages: MessageStore.getCurrentChannelMessageSuites()
+            messageSuites: MessageStore.getCurrentChannelMessageSuites()
         });
     },
 
@@ -193,7 +192,7 @@ module.exports = React.createClass({
             }}/>
                 <div style={{flex: 1}}>
                     {
-                        this.state.messageSuites.map((msg, idx) => <ImMessage key={`group${msg[0].id}`} messages={msg}></ImMessage>)
+                        this.state.messageSuites.map((msg, idx) => <ImMessage key={`group${msg[0].id + '_'+ msg.length}`} messages={msg}></ImMessage>)
                     }
                 </div>
             </Flex.Layout>

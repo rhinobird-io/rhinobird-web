@@ -74,11 +74,17 @@ class MessagesWrapper {
 
     }
 
-    _findIndexInSuiteFromLast(msgId) {
+    /**
+     *
+     * @returns {{outIdx: (*|idx2), inIdx: undefined}}
+     * @private
+     * @param messageGuid
+     */
+    _findIndexInSuiteFromLast(messageGuid) {
         let cfmMsg, outIdx, inIdx = undefined;
         let idx2 = _.findLastIndex(this.messageSuites, (msgSuite, outIdx) => {
             let idx1 = _.findLastIndex(msgSuite, (msg) => {
-                return msg.id === msgId;
+                return messageGuid === msg.guid;
             });
             inIdx = idx1;
             return idx1 !== -1;
@@ -151,8 +157,10 @@ class MessagesWrapper {
         let idx = _.findIndex(this.messages, msg => {
             return msg.guid === message.guid;
         });
-        debugger;
         this.messages[idx] = message;
+        // also need to update in the messageSuite
+        let idxSuite = this._findIndexInSuiteFromLast(message.guid);
+        idxSuite && (this.messageSuites[idxSuite.outIdx][idxSuite.inIdx] = message);
     }
 
     /**
