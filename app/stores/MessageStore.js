@@ -9,6 +9,7 @@ import SocketStore from './SocketStore';
 import assign from 'object-assign';
 import moment from 'moment';
 import _ from 'lodash';
+import Immutable from 'immutable';
 
 class MessagesWrapper {
 
@@ -120,6 +121,8 @@ class MessagesWrapper {
         // also need to update in the messageSuite
         let idxSuite = this._findIndexInSuiteFromLast(message.guid);
         idxSuite && (this.messageSuites[idxSuite.outIdx][idxSuite.inIdx] = message);
+
+        addNewMessageToCurrentMessageSuite(message);
     }
 
     /**
@@ -151,10 +154,17 @@ class MessagesWrapper {
     }
 }
 
+function addNewMessageToCurrentMessageSuite(message) {
+    // to update _currentChannelMessageSuite
+    let array = _currentChannelMessageSuites.get(_currentChannelMessageSuites.size - 1).slice(0);
+    array.push(message);
+    _currentChannelMessageSuites = _currentChannelMessageSuites.set(_currentChannelMessageSuites.size - 1, array);
+}
+
 // key channelid, value, messages array
 let _messages = {};
 let _limit = 20;
-let _currentChannelMessageSuites = [];
+let _currentChannelMessageSuites = new Immutable.List();
 
 let MessageStore = assign({}, BaseStore, {
 
@@ -184,6 +194,9 @@ let MessageStore = assign({}, BaseStore, {
         var currentChannel = ChannelStore.getCurrentChannel();
         _messages[message.channelId] = _messages[message.channelId] || new MessagesWrapper([]);
         _messages[message.channelId].addMoreMessages([message,], currentChannel.backEndChannelId === message.channelId);
+
+        addNewMessageToCurrentMessageSuite(message);
+
         if (currentChannel.backEndChannelId === message.channelId) {
             this.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
         }
@@ -194,8 +207,7 @@ let MessageStore = assign({}, BaseStore, {
             case Constants.ChannelActionTypes.CHANGE_CHANNEL:
                 AppDispatcher.waitFor([ChannelStore.dispatcherIndex]);
                 let currentChannel = ChannelStore.getCurrentChannel();
-                _currentChannelMessageSuites = _messages[currentChannel.backEndChannelId]?_messages[currentChannel.backEndChannelId].messageSuites:[];
-                ;
+                _currentChannelMessageSuites = Immutable.List.of.apply(Immutable.List, _messages[currentChannel.backEndChannelId]?_messages[currentChannel.backEndChannelId].messageSuites:[]);
                 break;
             case Constants.MessageActionTypes.RECEIVE_INIT_MESSAGES:
                 let channel = payload.channel; // current Channel
@@ -203,31 +215,28 @@ let MessageStore = assign({}, BaseStore, {
                 _messages[channel.backEndChannelId] = new MessagesWrapper();
                 _messages[channel.backEndChannelId].addMoreMessages(messages, false);
                 _messages[channel.backEndChannelId].setNoMoreAtBack(payload.noMoreAtBack);
-                _currentChannelMessageSuites = _messages[channel.backEndChannelId].messageSuites;
-                
+                _currentChannelMessageSuites = Immutable.List.of.apply(Immutable.List, _messages[channel.backEndChannelId].messageSuites);
                 MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
                 break;
             case Constants.MessageActionTypes.RECEIVE_OLDER_MESSAGES:
-                // this was loaded from backEnd
+                // this was loaded from backEnd, that means there is no more he can fetch from the front end, currentsuite should sync with messagesWrapper
                 _messages[payload.channel.backEndChannelId].addMoreMessages(payload.messages, true);
                 _messages[payload.channel.backEndChannelId].setNoMoreAtBack(payload.noMoreAtBack);
+                _currentChannelMessageSuites = Immutable.List.of.apply(Immutable.List, _messages[payload.channel.backEndChannelId].messageSuites);
                 MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
-                
                 break;
             case Constants.MessageActionTypes.RECEIVE_OLDER_MESSAGES_AT_FRONT:
                 // this was loaded from frontEnd
-                _currentChannelMessageSuites
+                _currentChannelMessageSuites = _currentChannelMessageSuites
                     .unshift
                     .apply(_currentChannelMessageSuites,
                         _messages[payload.channel.backEndChannelId].getMessagesSuites(payload.oldestMessageId, _limit));
                 MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
-                
                 break;
             case Constants.MessageActionTypes.MESSAGE_READY:
                 // add latest 20(limit) messages to currentChannelMessageSuite
-                _currentChannelMessageSuites = _messages[payload.channel.backEndChannelId].getMessagesSuites(1 << 30, _limit);
+                _currentChannelMessageSuites = Immutable.List.of.apply(Immutable.List, _messages[payload.channel.backEndChannelId].getMessagesSuites(1 << 30, _limit));
                 MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
-                
                 break;
             case Constants.MessageActionTypes.SEND_MESSAGE:
                 let message = payload.message;

@@ -14,12 +14,15 @@ import DropDownAny from '../../../DropDownAny';
 import Flex from '../../../Flex';
 import IMConstant from '../../../../constants/IMConstants';
 import moment from 'moment';
+import Immutable from 'immutable';
 
 const { IconButton } = mui;
 const limit = 20;
 
 require('./style.less');
 module.exports = React.createClass({
+
+    mixins: [React.addons.PureRenderMixin],
 
     contextTypes: {
         router: React.PropTypes.func.isRequired
@@ -29,7 +32,7 @@ module.exports = React.createClass({
         return {
             messages: [],
             upperThreshold: 100,
-            messageSuites : []
+            messageSuites : Immutable.List.of()
         }
     },
 
@@ -67,8 +70,8 @@ module.exports = React.createClass({
      */
     loadMoreOldMessages() {
         let oldestMessageId = undefined;
-        if (this.state.messageSuites.length > 0) {
-            oldestMessageId = this.state.messageSuites[0][0].id;
+        if (this.state.messageSuites.size > 0) {
+            oldestMessageId = this.state.messageSuites.get(0)[0].id;
         } else {
             oldestMessageId = (1 << 30);
         }
@@ -77,7 +80,6 @@ module.exports = React.createClass({
 
     render() {
         return (
-
             <Flex.Layout vertical perfectScroll className="history" style={this.props.style}>
                 <InfiniteScroll upperThreshold={this.state.upperThreshold} onUpperTrigger={()=>{
                 this.loadMoreOldMessages()
