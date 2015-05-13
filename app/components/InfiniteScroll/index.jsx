@@ -58,9 +58,6 @@ module.exports = React.createClass({
         this.props.scrollTarget().addEventListener('scroll', this._handleScroll);
     },
     componentWillReceiveProps(nextProps){
-        console.log("Received");
-        console.log(this.props);
-        console.log(nextProps);
         this.upperTriggered = false;
         this.lowerTriggered = false;
         this.props.scrollTarget().removeEventListener('scroll', this._handleScroll);

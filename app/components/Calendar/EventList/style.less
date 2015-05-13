@@ -83,8 +83,11 @@
 .cal-event-icon {
   position: absolute;
   border-radius: 50%;
-  padding: 8px;
   left: -18px;
+  width: 40px;
+  height: 40px;
+  line-height: 36px;
+  text-align: center;
   color: white;
   background-color: @indigo-300;
 }
@@ -99,21 +102,6 @@
 
 .cal-event-icon span {
   vertical-align: middle;
-}
-
-.cal-event-icon-wrapper {
-  border-radius: 50%;
-  padding: 4px;
-  left: -17px;
-  background-color: @event-icon-wrapper-bg;
-}
-
-.cal-event-icon-wrapper:hover {
-  *padding: 0;
-}
-
-.cal-event-icon-wrapper:hover .cal-event-icon {
-  *padding: 10px;
 }
 
 .cal-event-content {
@@ -144,6 +132,12 @@
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
+
+  span {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
 }
 
 .cal-event-member {

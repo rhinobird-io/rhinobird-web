@@ -2,10 +2,11 @@ const React      = require('react'),
       ReactStyle = require('react-style'),
       MUI        = require('material-ui'),
       Popup      = require('./Popup'),
-      Flex       = require('../Flex');
+      Flex       = require('../Flex'),
+      Flexible   = require('../Mixins').Flexible;
 
 export default React.createClass({
-    mixins: [React.addons.LinkedStateMixin],
+    mixins: [Flexible],
 
     propTypes: {
         position: React.PropTypes.string,

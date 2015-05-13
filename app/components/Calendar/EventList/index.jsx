@@ -124,30 +124,37 @@ export default React.createClass({
                 let control = <span title="Event Members" className="cal-event-member icon-group"></span>;
                 let menu = event.participants.map((p) => {
                     let u = UserStore.getUser(p.id);
-                    return <Flex.Layout key={u.id} horizontal justified>
+                    return <Flex.Layout key={u.id} horizontal>
                         <Avatar member={u} style={{borderRadius: "50%"}} /> &ensp;&ensp;
                         <span style={{fontWeight: 500}}>{u.name}</span>
                     </Flex.Layout>;
                 });
 
-                menu = menu.concat(event.team_participants.map(t => {
+                let teamMenu = event.team_participants.map(t => {
                     let t = UserStore.getTeam(t.id);
-                    return <Flex.Layout key={t.id} horizontal justified>
+                    return <Flex.Layout key={t.id} horizontal>
                         <Avatar member={t} style={{borderRadius: "50%"}} /> &ensp;&ensp;
                         <span style={{fontWeight: 500}}>{t.name}</span>
                     </Flex.Layout>;
-                }));
+                });
+
+                if (menu.length === 0) {
+                    menu = teamMenu;
+                } else if (teamMenu.length !== 0) {
+                    //menu = menu.concat(<hr style={{margin: 4}}/>);
+                    menu = menu.concat(teamMenu);
+                }
                 return (
                     <div ref={ref} className="cal-event">
                         <div className={eventIconClass}>
-                            <MUI.FontIcon className="icon-event"/>
+                            <span style={{fontSize: 20}} className="icon-event"></span>
                         </div>
 
                         <div className={contentClass}>
                             <div className={contentInnerClass}>
                                 <div className="cal-event-title">
                                     <Flex.Layout horizontal justified>
-                                        <span>{event.title}</span>
+                                        <span title={event.title}>{event.title}</span>
                                         <DropDownAny ref="dropdown" control={control} menu={menu} />
                                     </Flex.Layout>
                                     <div className="cal-event-time">
@@ -168,6 +175,8 @@ export default React.createClass({
             return dayEvents;
         });
 
+        let emptyMessage = <div style={{textAlign: "center", fontSize: "3em", marginTop: "10%"}}>Loading</div>;
+
         let noMoreOlderEvents =
             !this.state.hasMoreOlderEvents ?
                 <div className="cal-event-no-more">No more events</div> : null;
@@ -185,9 +194,13 @@ export default React.createClass({
                     onLowerTrigger={() => this._loadMoreNewerEvents()}
                     scrollTarget={() => {return this.getDOMNode();}} />
                 {noMoreOlderEvents}
-                <div className="cal-event-wrapper">
-                    {eventsDOM}
-                </div>
+                {
+                    eventsDOM.length > 0 ?
+                        <div className="cal-event-wrapper">
+                            {eventsDOM}
+                        </div> :
+                        emptyMessage
+                }
                 {noMoreNewerEvents}
                 <Link to="create-event">
                     <MUI.FloatingActionButton

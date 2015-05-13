@@ -19,9 +19,13 @@ function _addEvent(event, type) {
         _events[dateFormat] = [];
     }
 
-    if (!_eventsIdMap[event.id.toString()]) {
+    if (!_eventsIdMap[event.id.toString()] || !_eventsIdMap[event.id.toString()][event.repeated_number.toString()]) {
         _events[dateFormat].push(event);
-        _eventsIdMap[event.id.toString()] = event;
+        if (!_eventsIdMap[event.id.toString()]) {
+            _eventsIdMap[event.id.toString()] = {};
+        }
+        console.log(event.repeated_number);
+        _eventsIdMap[event.id.toString()][event.repeated_number.toString()] = event;
     }
 
     if (type && type === ActionTypes.CREATE_EVENT) {

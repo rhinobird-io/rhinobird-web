@@ -6,8 +6,32 @@ const mui = require("material-ui"),
       ClickAwayable = mui.Mixins.ClickAwayable,
       Paper = mui.Paper;
 const PerfectScroll = require('../PerfectScroll');
+const Flexible = require('../Mixins').Flexible;
 
 require("./style.less");
+
+let DropDownPopup = React.createClass({
+  mixins: [Flexible],
+
+  render() {
+    let {
+      menu,
+      menuClasses,
+      ...other
+    } = this.props;
+
+    return <Paper {...other}>
+      <PerfectScroll noScrollX className={menuClasses}>
+        {this._getMenuItems(menu)}
+      </PerfectScroll>
+    </Paper>;
+  },
+
+  _getMenuItems(list) {
+    let key = 0;
+    return list.map(item => <div key={key += 1} className="mui-menu-item">{item}</div>);
+  }
+});
 
 export default React.createClass({
   mixins: [Classable, ClickAwayable],
@@ -33,11 +57,6 @@ export default React.createClass({
     this.setState({ open: !this.state.open });
   },
 
-  _getMenuItems(list) {
-    let key = 0;
-    return list.map(item => <div key={key += 1} className="mui-menu-item">{item}</div>);
-  },
-
   render() {
     let dropClasses = this.getClasses("mui-drop-down-menu", {
       "mui-open": this.state.open
@@ -50,14 +69,14 @@ export default React.createClass({
     });
     return (
       <div className={dropClasses} style={{height: "auto"}}>
-        <div className={controlClasses} onClick={this._onControlClick}>
+        <div ref="control" className={controlClasses} onClick={this._onControlClick}>
           {this.props.control}
         </div>
-        <Paper className={menuClasses} style={this.props.style}>
-          <PerfectScroll ref="scroll" noScrollX className={this.props.menuClasses}>
-            {this._getMenuItems(this.props.menu)}
-          </PerfectScroll>
-        </Paper>
+        <DropDownPopup
+            ref="scroll"
+            relatedTo={() => this.refs.control}
+            menu={this.props.menu} className={menuClasses} style={this.props.style} menuClasses={this.props.menuClasses}>
+        </DropDownPopup>
       </div>
     );
   }
