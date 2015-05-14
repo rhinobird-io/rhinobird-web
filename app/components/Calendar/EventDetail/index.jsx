@@ -42,12 +42,14 @@ export default React.createClass({
             eventContent = [];
             eventContent.push(
                 <MUI.TextField
+                    key="title"
                     disabled
                     floatingLabelText="Title"
                     value={this.state.event.title} />
             );
             eventContent.push(
                 <MUI.TextField
+                    key="description"
                     disabled
                     multiLine
                     floatingLabelText="Description"

@@ -82,7 +82,8 @@ export default React.createClass({
     },
 
     render: function() {
-        let eventsDOM = Object.keys(this.state.events).sort().map((key, index) => {
+        let eventKeys = Object.keys(this.state.events).sort();
+        let eventsDOM = eventKeys.map((key, index) => {
             let direction = index % 2 === 0 ? "left" : "right";
 
             let dayEvents = [];
@@ -177,14 +178,25 @@ export default React.createClass({
             return dayEvents;
         });
 
-        let emptyMessage = <div style={{textAlign: "center", fontSize: "3em", marginTop: "10%"}}>Loading</div>;
+        let emptyMessage = "";
+
+        if (this.state.hasMoreOlderEvents || this.state.hasMoreNewerEvents) {
+            emptyMessage = "Loading";
+        } else {
+            emptyMessage = "Empty Calendar";
+        }
+
+        let emptyMessageDOM =
+            <div style={{textAlign: "center", fontSize: "3em", marginTop: "10%"}}>
+                {emptyMessage}
+            </div>;
 
         let noMoreOlderEvents =
-            !this.state.hasMoreOlderEvents ?
+            !this.state.hasMoreOlderEvents && eventsDOM.length !== 0 ?
                 <div className="cal-event-no-more">No more events</div> : null;
 
         let noMoreNewerEvents =
-            !this.state.hasMoreNewerEvents ?
+            !this.state.hasMoreNewerEvents && eventsDOM.length !== 0 ?
                 <div className="cal-event-no-more">No more events</div> : null;
 
         return (
@@ -201,7 +213,7 @@ export default React.createClass({
                         <div className="cal-event-wrapper">
                             {eventsDOM}
                         </div> :
-                        emptyMessage
+                        emptyMessageDOM
                 }
                 {noMoreNewerEvents}
                 <Link to="create-event">
