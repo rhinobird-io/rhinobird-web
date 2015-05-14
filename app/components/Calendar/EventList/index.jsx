@@ -142,7 +142,6 @@ export default React.createClass({
                 if (menu.length === 0) {
                     menu = teamMenu;
                 } else if (teamMenu.length !== 0) {
-                    //menu = menu.concat(<hr style={{margin: 4}}/>);
                     menu = menu.concat(teamMenu);
                 }
                 return (
@@ -199,6 +198,7 @@ export default React.createClass({
             !this.state.hasMoreNewerEvents && eventsDOM.length !== 0 ?
                 <div className="cal-event-no-more">No more events</div> : null;
 
+        console.log(this.state);
         return (
             <PerfectScroll className="cal-event-list">
                 <InfiniteScroll

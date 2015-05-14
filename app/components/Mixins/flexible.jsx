@@ -16,9 +16,18 @@ module.exports = {
 
     componentDidMount() {
         this._updatePosition();
+        window.addEventListener("resize", this._onWindowResize);
     },
 
     componentDidUpdate() {
+        this._updatePosition();
+    },
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this._onWindowResize);
+    },
+
+    _onWindowResize() {
         this._updatePosition();
     },
 
@@ -35,7 +44,6 @@ module.exports = {
         }
 
         if (base) {
-
             let self = this.getDOMNode();
             let baseDOM = base.getDOMNode();
             let baseRect = baseDOM.getBoundingClientRect();
@@ -81,9 +89,14 @@ module.exports = {
 
             if (selfLeft) {
                 self.style.left = selfLeft + "px";
+            } else {
+                self.style.left = "auto";
             }
+
             if (selfRight) {
                 self.style.right = selfRight + "px";
+            } else {
+                self.style.right = "auto";
             }
         }
     }
