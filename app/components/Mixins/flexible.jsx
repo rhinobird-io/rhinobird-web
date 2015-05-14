@@ -17,6 +17,7 @@ module.exports = {
     componentDidMount() {
         this._updatePosition();
         window.addEventListener("resize", this._onWindowResize);
+        window.addEventListener("wheel", this._onWindowScroll)
     },
 
     componentDidUpdate() {
@@ -25,9 +26,14 @@ module.exports = {
 
     componentWillUnmount() {
         window.removeEventListener("resize", this._onWindowResize);
+        window.removeEventListener("wheel", this._onWindowScroll)
     },
 
     _onWindowResize() {
+        this._updatePosition();
+    },
+
+    _onWindowScroll() {
         this._updatePosition();
     },
 

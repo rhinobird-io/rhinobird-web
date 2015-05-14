@@ -82,7 +82,8 @@ export default React.createClass({
             repeatedBy: "Month",
             repeatedEndType: "Never",
             repeatedEndDate: "",
-            repeatedTimes: 1
+            repeatedTimes: 1,
+            isPeriod: true
         };
     },
 
@@ -127,7 +128,7 @@ export default React.createClass({
                             </Flex.Layout>
 
                             <MUI.Tabs className="cal-create-event-tab">
-                                <MUI.Tab label="Period" >
+                                <MUI.Tab label="Period" onActive={() => this.setState({isPeriod: true})}>
                                     <div className="tab-template-container">
                                         <Flex.Layout horizontal justified>
                                             <MUI.DatePicker
@@ -143,9 +144,13 @@ export default React.createClass({
                                         </Flex.Layout>
                                     </div>
                                 </MUI.Tab>
-                                <MUI.Tab label="Point" >
+                                <MUI.Tab label="Point" onActive={() => this.setState({isPeriod: false})}>
                                     <div className="tab-template-container">
                                         <Flex.Layout horizontal justified>
+                                            <MUI.DatePicker
+                                                ref="fromDate"
+                                                hintText="From Date"
+                                                defaultDate={this.state.fromTime} />
                                         </Flex.Layout>
                                     </div>
                                 </MUI.Tab>
