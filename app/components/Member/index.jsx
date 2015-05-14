@@ -2,6 +2,7 @@ const React = require("react/addons");
 require('./style.less');
 const FloatingContentAction = require('../../actions/FloatingContentAction');
 const Select = require('../Select');
+const Flex = require('../Flex');
 const UserStore = require("../../stores/UserStore");
 
 function Member() {
@@ -154,18 +155,40 @@ Member.MemberSelect = React.createClass({
         let children = [];
 
         if (users) {
-            children = children.concat(<div key="user" style={{fontSize: "1.1em", fontWeight: 800, padding: "6px 10px"}}>User</div>);
+            if (teams) {
+                children = children.concat(<div key="user" style={{fontSize: "1.1em", fontWeight: 800, padding: "6px 10px"}}>User</div>);
+            }
             children = children.concat(users);
         }
 
         if (teams) {
-            children = children.concat(<div key="team" style={{fontSize: "1.1em", fontWeight: 800, padding: "6px 10px"}}>Team</div>);
+            if (users) {
+                children = children.concat(<div key="team" style={{fontSize: "1.1em", fontWeight: 800, padding: "6px 10px"}}>Team</div>);
+            }
             children = children.concat(teams);
         }
+
 
         return (
             <Select.Select
                 multiple
+                token={(v) => {
+                    let u;
+                    if (v.indexOf("user_") === 0) {
+                        u = UserStore.getUser(parseInt(v.substring(5)));
+                    } else if (v.indexOf("team_") === 0) {
+                        u = UserStore.getTeam(parseInt(v.substring(5)));
+                    }
+
+                    if (u) {
+                        return <span key={"user_" + u.id} value={"user_" + u.id} index={u.name}>
+                            <Member.Avatar scale={0.5} member={u} /> &ensp;
+                            <span>{u.name}</span>
+                        </span>;
+                    }
+
+                    return null;
+                }}
                 className={className}
                 onChange={(selected) => {
                     let results = {};

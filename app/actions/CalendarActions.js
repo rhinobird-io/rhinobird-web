@@ -20,6 +20,17 @@ export default {
         });
     },
 
+    receiveSingle(id, repeatedNumber) {
+        $.get("/platform/api/events/" + id + "/" + repeatedNumber).done(data => {
+            AppDispatcher.dispatch({
+                type: CalendarActionTypes.RECEIVE_EVENT,
+                data: data
+            });
+        }).fail(e => {
+            console.error(e);
+        });
+    },
+
     loadMoreOlderEvents(time, success, error) {
         $.get("/platform/api/events/before/" + time).done(data => {
             AppDispatcher.dispatch({
@@ -41,7 +52,9 @@ export default {
                 data: data
             });
         }).fail(e => {
-            console.error(e);
+            if (e.status == 404) {
+
+            }
         });
     },
 

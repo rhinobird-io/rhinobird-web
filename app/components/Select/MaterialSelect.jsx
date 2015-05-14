@@ -13,9 +13,14 @@ export default React.createClass({
 
     propTypes: {
         valueLink: React.PropTypes.shape({
-            value: React.PropTypes.array.isRequired,
+            value: React.PropTypes.oneOfType([
+                React.PropTypes.array,
+                React.PropTypes.object
+            ]),
             requestChange: React.PropTypes.func.isRequired
         }),
+        top: React.PropTypes.number,
+        token: React.PropTypes.func,
         multiple: React.PropTypes.bool,
         hintText: React.PropTypes.string,
         indexAttr: React.PropTypes.string,
@@ -98,6 +103,13 @@ export default React.createClass({
                 marginTop = tokenWrapper.getDOMNode().clientHeight;
             }
             this.refs.text.getDOMNode().style.marginTop = marginTop + "px";
+            if (this.props.floatingLabelText) {
+                if (this.refs.text.state.isFocused) {
+                    this.refs.text.getDOMNode().children[0].style.marginLeft = paddingLeft + "px";
+                }
+                //
+                //this.refs.text.getDOMNode().children[0].style.marginTop = marginTop + "px";
+            }
         }
         this.setState({paddingLeft: paddingLeft});
     },
@@ -181,25 +193,27 @@ export default React.createClass({
             }
         };
 
-
         let tokens = [];
+
         let text =
             <TextField
                 ref="text"
                 type="text"
-                floatingLabelText={this.state.selected.length === 0 ? floatingLabelText : " "}
                 style={styles.padding}
+                floatingLabelText={this.props.floatingLabelText}
                 className={this.props.className}
                 onChange={this._filter}
                 onFocus={() => {
                     this.focused = true;
-                    this.refs.popupSelect.show()
+                    this.refs.popupSelect.show();
+                    this._updateLayout();
                 }} />;
 
         let popupSelect =
             <MaterialPopup
+                hRestrict
                 ref="popupSelect"
-                relatedTo={() => this.refs.getDOMNode()}
+                relatedTo={() => this.refs.text}
                 style={{position: "absolute", top: "100%", left: 0, right: 0}}
                 onItemSelect={(value) => {
                         this._addSelectedOption(value);
@@ -216,9 +230,14 @@ export default React.createClass({
             </MaterialPopup>;
 
         for (let i = 0; i < this.state.selected.length; i++) {
+            let selected = this.state.selected[i];
+            let token = this.props.token ? this.props.token(selected) : selected;
             tokens.push(
                 <Paper key={"token_" + i} ref={"token-" + i} zDepth={1} style={styles.token}>
-                    <a onClick={(e) => e.stopPropagation()}>{this.state.selected[i]}</a>
+
+                    <span onClick={(e) => e.stopPropagation()}>
+                        {token}
+                    </span>
                     <span style={styles.tokenDelete} onClick={(e) => {
                         this._delete(i);
                         e.stopPropagation();

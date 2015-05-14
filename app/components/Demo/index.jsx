@@ -3,7 +3,8 @@ var React                = require("react"),
     SmartEditor = require("../SmartEditor").SmartEditor,
     SmartPreview = require("../SmartEditor").SmartPreview,
     Selector = require("../Select").Selector,
-    MaterialSelect = require("../Select").Select;
+    MaterialSelect = require("../Select").Select,
+    SearchEverywhere = require("../SearchEverywhere");
 
 require("./style.less");
 
@@ -34,7 +35,7 @@ export default React.createClass({
                 <br/>
                 <br/>
                 <div>{this.state.select1.toString()}</div>
-                <MaterialSelect multiple valueLink={this.linkState("select1")} floatingLabelText="Select a team">
+                <MaterialSelect multiple valueLink={this.linkState("select1")}>
                     <div label="NBA">
                         <label></label>
                         <div value="Lakers" data="Lakers">Lakers</div>
@@ -79,7 +80,7 @@ export default React.createClass({
                 </Selector>
 
                 <br/>
-
+                <SearchEverywhere />
                 <br/>
 
                 <SmartEditor valueLink={this.linkState("editorValue")} hintText="Linked to SmartPreview" />

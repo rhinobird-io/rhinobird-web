@@ -9,7 +9,6 @@ export default React.createClass({
         onShow: React.PropTypes.func,
         onDismiss: React.PropTypes.func,
         position: React.PropTypes.string,
-        relatedTo: React.PropTypes.object,
         valueAttr: React.PropTypes.string,
         onItemSelect: React.PropTypes.func,
         normalStyle: React.PropTypes.object,
@@ -109,6 +108,7 @@ export default React.createClass({
             outer: {
                 zIndex: 9,
                 height: 200,
+                margin: -4,
                 display: this.state.visible ? "flex" : "none"
             },
             popup: {
@@ -277,7 +277,7 @@ export default React.createClass({
         }
     },
 
-    _windowKeyDownListener(e) {
+    _windowKeyDownListener: function(e) {
         if (this.state.visible) {
             let keyCode = e.keyCode;
             switch (keyCode) {

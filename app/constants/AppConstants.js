@@ -17,6 +17,7 @@ export default {
     CREATE_EVENT: null,
     RECEIVE_EVENT: null,
     RECEIVE_EVENTS: null,
+    DELETE_EVENT: null,
     LOAD_MORE_NEWER_EVENTS: null,
     LOAD_MORE_OLDER_EVENTS: null
   }),

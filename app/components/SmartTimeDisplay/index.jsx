@@ -72,6 +72,7 @@ export default React.createClass({
             },
             tooltip: {
                 position: "fixed",
+                height: this.state.tipShow ? 20 : 0,
                 zIndex: this.state.tipShow ? 12 : -1
             }
         };
