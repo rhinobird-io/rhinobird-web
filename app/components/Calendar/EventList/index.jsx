@@ -154,7 +154,9 @@ export default React.createClass({
                             <div className={contentInnerClass}>
                                 <div className="cal-event-title">
                                     <Flex.Layout horizontal justified>
-                                        <span title={event.title}>{event.title}</span>
+                                        <Link to="event-detail" params={{ id: event.id, repeatedNumber: event.repeated_number }}>
+                                            <span title={event.title}>{event.title}</span>
+                                        </Link>
                                         <DropDownAny ref="dropdown" control={control} menu={menu} />
                                     </Flex.Layout>
                                     <div className="cal-event-time">

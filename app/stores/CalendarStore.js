@@ -24,7 +24,6 @@ function _addEvent(event, type) {
         if (!_eventsIdMap[event.id.toString()]) {
             _eventsIdMap[event.id.toString()] = {};
         }
-        console.log(event.repeated_number);
         _eventsIdMap[event.id.toString()][event.repeated_number.toString()] = event;
     }
 
@@ -48,7 +47,6 @@ function _addEvent(event, type) {
     } else if (event.from_time > _eventRange.max) {
         _eventRange.max = event.from_time;
     }
-
 }
 
 function _addEvents(events) {
@@ -74,6 +72,13 @@ function _sortByFromTime(e1, e2) {
 }
 
 let CalendarStore = assign({}, BaseStore, {
+    getEvent(eventId, repeatedNumber) {
+        console.log(eventId);
+        if (_eventsIdMap[eventId]) {
+            return _eventsIdMap[eventId][repeatedNumber];
+        }
+        return null;
+    },
 
     getAllEvents() {
         return _events;
@@ -103,9 +108,14 @@ let CalendarStore = assign({}, BaseStore, {
         let type = payload.type;
         let data = payload.data;
 
+        let changed = true;
+
         switch (type) {
             case ActionTypes.CREATE_EVENT:
                 _addEvent(data, ActionTypes.CREATE_EVENT);
+                break;
+            case ActionTypes.RECEIVE_EVENT:
+                _addEvent(data);
                 break;
             case ActionTypes.RECEIVE_EVENTS:
                 _events = {};
@@ -132,10 +142,13 @@ let CalendarStore = assign({}, BaseStore, {
                 }
                 break;
             default:
+                changed = false;
                 break;
         }
 
-        CalendarStore.emitChange();
+        if (changed) {
+            CalendarStore.emitChange();
+        }
     })
 
 });

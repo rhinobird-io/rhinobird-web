@@ -27,11 +27,8 @@ module.exports = {
 
         let {
             hRestrict,
-            vRestrict,
             relatedTo
         } = this.props;
-
-        console.log(hRestrict);
 
         if (relatedTo && typeof relatedTo === "function") {
             base = relatedTo();
