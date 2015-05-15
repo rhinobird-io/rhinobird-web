@@ -107,7 +107,7 @@ export default React.createClass({
         let styles = {
             outer: {
                 zIndex: 9,
-                height: 200,
+                height: 250,
                 margin: -4,
                 display: this.state.visible ? "flex" : "none"
             },

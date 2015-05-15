@@ -73,7 +73,6 @@ function _sortByFromTime(e1, e2) {
 
 let CalendarStore = assign({}, BaseStore, {
     getEvent(eventId, repeatedNumber) {
-        console.log(eventId);
         if (_eventsIdMap[eventId]) {
             return _eventsIdMap[eventId][repeatedNumber];
         }
@@ -137,7 +136,6 @@ let CalendarStore = assign({}, BaseStore, {
                 break;
             case ActionTypes.LOAD_MORE_OLDER_EVENTS:
                 _addEvents(data);
-                console.log(_eventRange);
                 if (data.length === 0) {
                     _hasMoreOlderEvents = false;
                 }
