@@ -7,6 +7,8 @@ module.exports = {
         relatedTo: React.PropTypes.func
     },
 
+    position: "",
+
     getDefaultProps() {
         return {
             hRestrict: false,
@@ -73,8 +75,10 @@ module.exports = {
 
             if (innerHeight - baseBottom - selfHeight >= 0) {
                 selfTop = baseTop + baseHeight;
+                this.position = "bottom";
             } else if (baseTop - selfHeight >= 0) {
                 selfTop = baseTop - selfHeight;
+                this.position = "top";
             }
 
             if (innerWidth - baseRight - selfWidth >= 0) {

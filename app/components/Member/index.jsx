@@ -135,7 +135,7 @@ Member.MemberSelect = React.createClass({
             } = this.props;
 
         let users =
-            user ?
+            user && this.state.users.length > 0 ?
                 this.state.users.map((u) => {
                     return <div key={"user_" + u.id} value={"user_" + u.id} index={u.name}>
                         <Member.Avatar member={u} /> &ensp;
@@ -144,7 +144,7 @@ Member.MemberSelect = React.createClass({
                 }) : null;
 
         let teams =
-            team ?
+            team && this.state.teams.length > 0 ?
                 this.state.teams.map((t) => {
                     return <div key={"team_" + t.id} value={"team_" + t.id} index={t.name}>
                         <Member.Avatar member={t} /> &ensp;

@@ -196,6 +196,7 @@ export default React.createClass({
                         </div>
                     </MUI.Paper>
                     </form>
+
                     <MUI.Paper zDepth={2} style={styles.repeated} className="cal-create-event">
                         <div style={{padding: 20}}>
                             <Flex.Layout horizontal>

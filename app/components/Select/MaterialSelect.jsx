@@ -27,8 +27,6 @@ export default React.createClass({
         floatingLabelText: React.PropTypes.string
     },
 
-    focused: false,
-
     layoutUpdated: false,
 
     componentClickAway() {
@@ -36,17 +34,17 @@ export default React.createClass({
     },
 
     componentDidMount() {
-        this._updateLayout(this.focused);
+        this._updateLayout();
     },
 
     componentWillReceiveProps() {
-        this.setState({children: this.props.children});
+        //this.setState({children: this.props.children});
     },
 
     componentDidUpdate() {
         if (!this.layoutUpdated) {
             this.layoutUpdated = true;
-            this._updateLayout(this.focused);
+            this._updateLayout();
         } else {
             this.layoutUpdated = false;
         }
@@ -60,7 +58,7 @@ export default React.createClass({
 
     getInitialState() {
         return {
-            selected: [],
+            selected: {},
             children: this.props.children
         };
     },
@@ -72,24 +70,20 @@ export default React.createClass({
             };
     },
 
-    _delete(index) {
+    _delete(value) {
         let selected = this.state.selected;
-        if (index < 0 || index >= selected.length) {
-            return;
-        }
-        selected.splice(index, 1);
+        delete selected[value];
         this._updateLayout(false, selected);
-        this.setState({selected: selected});
+        this.setState({selected: selected, children: this._getFilteredChildren(this.refs.text.getValue())});
         if (this.props.valueLink || this.props.onChange) {
-            this.getValueLink(this.props).requestChange(selected);
+            this.getValueLink(this.props).requestChange(Object.keys(selected));
             if (this.props.onChange) {
-                this.props.onChange(selected);
+                this.props.onChange(Object.keys(selected));
             }
         }
     },
 
-    _updateLayout: function(focused) {
-        this.focused = focused;
+    _updateLayout: function() {
         let marginTop = 0;
         let paddingLeft = 0;
         let tokenWrapper = this.refs.tokenWrapper;
@@ -98,14 +92,14 @@ export default React.createClass({
             let lastToken = this.refs["token-" + (tokenWrapper.props.children.length - 1)];
             paddingLeft = lastToken.getDOMNode().offsetLeft + lastToken.getDOMNode().clientWidth + 4;
             marginTop = lastToken.getDOMNode().offsetTop;
-            if (containerWidth - paddingLeft < 100 && focused) {
+            if (containerWidth - paddingLeft < 100) {
                 paddingLeft = 0;
                 marginTop = tokenWrapper.getDOMNode().clientHeight;
             }
             this.refs.text.getDOMNode().style.marginTop = marginTop + "px";
             if (this.props.floatingLabelText) {
                 if (this.refs.text.state.isFocused) {
-                    this.refs.text.getDOMNode().children[0].style.marginLeft = paddingLeft + "px";
+                    //this.refs.text.getDOMNode().children[0].style.marginLeft = paddingLeft + "px";
                 }
                 //
                 //this.refs.text.getDOMNode().children[0].style.marginTop = marginTop + "px";
@@ -116,23 +110,22 @@ export default React.createClass({
 
     _addSelectedOption(value) {
         let selected = this.state.selected;
-        if (selected.length === 0) {
-            selected.push(value);
+
+        if (!this.props.multiple) {
+            selected = {};
+            selected[value] = true;
+        } else if (!selected[value]) {
+            selected[value] = true;
         } else {
-            if (!this.props.multiple) {
-                selected[0] = value;
-            } else if (selected.indexOf(value) < 0) {
-                selected.push(value);
-            } else {
-                return ;
-            }
+            return;
         }
-        this.setState({selected: selected});
+
+        this.setState({selected: selected, children: this._getFilteredChildren("")});
         this._updateLayout(true, selected);
         if (this.props.valueLink || this.props.onChange) {
-            this.getValueLink(this.props).requestChange(selected);
+            this.getValueLink(this.props).requestChange(Object.keys(selected));
             if (this.props.onChange) {
-                this.props.onChange(selected);
+                this.props.onChange(Object.keys(selected));
             }
         }
     },
@@ -140,13 +133,22 @@ export default React.createClass({
     _filter() {
         let keyword = this.refs.text.getValue();
         let children = this.props.children.filter((child) => {
-            if (keyword.length === 0 || !child.props.index) return true;
+            if (child.props.value && this.state.selected[child.props.value]) return false;
+            if (keyword.length === 0 || !child.props.index || !child.props.value) return true;
             return child.props.index.indexOf(keyword) >= 0;
         });
         if (children.length >= 0 && !this.refs.popupSelect.isShow()) {
             this.refs.popupSelect.show();
         }
         this.setState({children: children});
+    },
+
+    _getFilteredChildren(keyword) {
+        return this.props.children.filter((child) => {
+            if (child.props.value && this.state.selected[child.props.value]) return false;
+            if (keyword.length === 0 || !child.props.index || !child.props.value) return true;
+            return child.props.index.indexOf(keyword) >= 0;
+        });
     },
 
     render() {
@@ -195,16 +197,17 @@ export default React.createClass({
 
         let tokens = [];
 
+        let selectedValues = Object.keys(this.state.selected);
         let text =
             <TextField
                 ref="text"
                 type="text"
+                hintText={selectedValues.length === 0 ? hintText : undefined}
+                floatingLabelText={selectedValues.length === 0 ? floatingLabelText : " "}
                 style={styles.padding}
-                floatingLabelText={this.props.floatingLabelText}
                 className={this.props.className}
                 onChange={this._filter}
                 onFocus={() => {
-                    this.focused = true;
                     this.refs.popupSelect.show();
                     this._updateLayout();
                 }} />;
@@ -214,12 +217,14 @@ export default React.createClass({
                 hRestrict
                 ref="popupSelect"
                 relatedTo={() => this.refs.text}
+                position={this.refs.popupSelect ? this.refs.popupSelect.position : "bottom"}
                 style={{position: "absolute", top: "100%", left: 0, right: 0}}
-                onItemSelect={(value) => {
+                onItemSelect={(value, e) => {
                         this._addSelectedOption(value);
                         this.refs.text.setValue("");
-                        this._filter();
-                        this.refs.popupSelect.dismiss();
+                        if (!(e.type === "keydown" && e.keyCode === 13)) {
+                            this.refs.popupSelect.dismiss();
+                        }
                     }
                 }
                 onDismiss={() => {
@@ -229,17 +234,16 @@ export default React.createClass({
                 {this.state.children}
             </MaterialPopup>;
 
-        for (let i = 0; i < this.state.selected.length; i++) {
-            let selected = this.state.selected[i];
+        for (let i = 0; i < selectedValues.length; i++) {
+            let selected = selectedValues[i];
             let token = this.props.token ? this.props.token(selected) : selected;
             tokens.push(
                 <Paper key={"token_" + i} ref={"token-" + i} zDepth={1} style={styles.token}>
-
                     <span onClick={(e) => e.stopPropagation()}>
                         {token}
                     </span>
                     <span style={styles.tokenDelete} onClick={(e) => {
-                        this._delete(i);
+                        this._delete(selected);
                         e.stopPropagation();
                     }}>x</span>
                 </Paper>
