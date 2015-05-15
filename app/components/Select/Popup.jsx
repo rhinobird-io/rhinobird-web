@@ -192,8 +192,8 @@ export default React.createClass({
             }
             return false;
         });
-        this.setState({options: options, optionsMap: optionsMap, activeOptionIndex: 0});
-        this._updateScroll(0);
+        this.setState({options: options, optionsMap: optionsMap});
+        this._updateScroll(this.state.activeOptionIndex);
     },
 
     _parseChild(child, valueAttr, options) {

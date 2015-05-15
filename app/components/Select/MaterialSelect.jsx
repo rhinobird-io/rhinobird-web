@@ -58,6 +58,7 @@ export default React.createClass({
 
     getInitialState() {
         return {
+            toDelete: false,
             selected: {},
             children: this.props.children
         };
@@ -74,13 +75,18 @@ export default React.createClass({
         let selected = this.state.selected;
         delete selected[value];
         this._updateLayout(false, selected);
-        this.setState({selected: selected, children: this._getFilteredChildren(this.refs.text.getValue())});
+        this.setState({selected: selected, toDelete: false, children: this._getFilteredChildren(this.refs.text.getValue())});
         if (this.props.valueLink || this.props.onChange) {
             this.getValueLink(this.props).requestChange(Object.keys(selected));
             if (this.props.onChange) {
                 this.props.onChange(Object.keys(selected));
             }
         }
+    },
+
+    _deleteLast() {
+        let values = Object.keys(this.state.selected);
+        this._delete(values[values.length - 1]);
     },
 
     _updateLayout: function() {
@@ -195,7 +201,6 @@ export default React.createClass({
             }
         };
 
-        let tokens = [];
 
         let selectedValues = Object.keys(this.state.selected);
         let text =
@@ -207,6 +212,7 @@ export default React.createClass({
                 style={styles.padding}
                 className={this.props.className}
                 onChange={this._filter}
+                onKeyDown={this._keyDownListener}
                 onFocus={() => {
                     this.refs.popupSelect.show();
                     this._updateLayout();
@@ -234,11 +240,19 @@ export default React.createClass({
                 {this.state.children}
             </MaterialPopup>;
 
+        let tokens = [];
         for (let i = 0; i < selectedValues.length; i++) {
             let selected = selectedValues[i];
             let token = this.props.token ? this.props.token(selected) : selected;
+            let tokenStyle = styles.token;
+            let borderStyle = {};
+            if ((i === selectedValues.length - 1) && this.state.toDelete) {
+                borderStyle.border = "1px solid #D50000";
+            } else {
+                borderStyle.border = "1px solid transparent";
+            }
             tokens.push(
-                <Paper key={"token_" + i} ref={"token-" + i} zDepth={1} style={styles.token}>
+                <Paper key={"token_" + i} ref={"token-" + i} zDepth={1} styles={[tokenStyle, borderStyle]}>
                     <span onClick={(e) => e.stopPropagation()}>
                         {token}
                     </span>
@@ -266,5 +280,23 @@ export default React.createClass({
                 {popupSelect}
             </div>
         );
+    },
+
+    _keyDownListener(e) {
+        let keyCode = e.keyCode;
+        if (keyCode === 8) {    // Backspace
+
+            if (e.target.value.length === 0 && Object.keys(this.state.selected).length > 0) {
+                if (!this.state.toDelete) {
+                    this.setState({toDelete: true});
+                } else {
+                    this._deleteLast();
+                }
+            }
+        } else {
+            if (this.state.toDelete) {
+                this.setState({toDelete: false});
+            }
+        }
     }
 });
