@@ -172,7 +172,7 @@ const SmartEditor = React.createClass({
     let text = textarea.value, triggerPos = -1;
     for (let i = textarea.selectionEnd - 1; i >= 0; i--) {
       let ch = text.charAt(i);
-      if (/[\w\.-]/.test(ch)) {
+      if (/[^\s@#:]/.test(ch)) {
         continue;
       } else if (["@", "#", ":"].includes(ch)) {
         if (i === 0 || /\s/.test(text.charAt(i - 1))) triggerPos = i;
@@ -202,7 +202,7 @@ const SmartEditor = React.createClass({
   },
 
   _inputKeyDown(e){
-    if(!this.refs.popup.isShow()){
+    if (!this.refs.popup.isShow() && this.props.onKeyDown) {
       this.props.onKeyDown(e);
     }
   },

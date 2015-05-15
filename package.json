@@ -48,7 +48,7 @@
     "less-loader": "^2.0.0",
     "lodash": "^3.7.0",
     "markdown-it": "^4.2.0",
-    "markdown-it-emoji": "^1.0.0",
+    "markdown-it-emoji": "markdown-it/markdown-it-emoji",
     "markdown-loader": "^0.1.2",
     "material-ui": "=0.7.3",
     "moment": "^2.10.2",
