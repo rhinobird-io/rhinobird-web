@@ -2,6 +2,7 @@ const React       = require('react'),
       StyleSheet  = require('react-style'),
       MUI         = require('material-ui'),
       Paper       = MUI.Paper,
+      Flex        = require('../Flex'),
       TextField   = MUI.TextField,
       MaterialPopup = require('./MaterialPopup'),
       ClickAwayable = MUI.Mixins.ClickAwayable;
@@ -182,12 +183,6 @@ export default React.createClass({
                 padding: "2px 8px",
                 display: "block"
             },
-            tokenDelete: {
-                color: "#777",
-                marginLeft: 4,
-                float: "right",
-                fontWeight: "bold"
-            },
             tokenWrapper: {
                 position: "absolute",
                 cursor: "text",
@@ -200,7 +195,6 @@ export default React.createClass({
                 paddingLeft: this.state.paddingLeft || 0
             }
         };
-
 
         let selectedValues = Object.keys(this.state.selected);
         let text =
@@ -245,21 +239,24 @@ export default React.createClass({
             let selected = selectedValues[i];
             let token = this.props.token ? this.props.token(selected) : selected;
             let tokenStyle = styles.token;
-            let borderStyle = {};
+
+            let tokenClass = "token";
             if ((i === selectedValues.length - 1) && this.state.toDelete) {
-                borderStyle.border = "1px solid #D50000";
-            } else {
-                borderStyle.border = "1px solid transparent";
+                tokenClass += " token-to-delete";
             }
+
             tokens.push(
-                <Paper key={"token_" + i} ref={"token-" + i} zDepth={1} styles={[tokenStyle, borderStyle]}>
-                    <span onClick={(e) => e.stopPropagation()}>
+                <Paper className={tokenClass} key={"token_" + i} ref={"token-" + i} zDepth={1} styles={tokenStyle}>
+                    <Flex.Layout horizontal onClick={(e) => e.stopPropagation()}>
                         {token}
-                    </span>
-                    <span style={styles.tokenDelete} onClick={(e) => {
-                        this._delete(selected);
-                        e.stopPropagation();
-                    }}>x</span>
+                        <Flex.Layout vertical selfCenter>
+                            <span className="icon-highlight-remove token-delete" onClick={(e) => {
+                                this._delete(selected);
+                                e.stopPropagation();
+                            }}></span>
+                        </Flex.Layout>
+                    </Flex.Layout>
+
                 </Paper>
             );
         }

@@ -146,10 +146,12 @@ Member.MemberSelect = React.createClass({
         let teams =
             team && this.state.teams.length > 0 ?
                 this.state.teams.map((t) => {
-                    return <div key={"team_" + t.id} value={"team_" + t.id} index={t.name}>
-                        <Member.Avatar member={t} /> &ensp;
+                    return <Flex.Layout horizontal key={"team_" + t.id} value={"team_" + t.id} index={t.name}>
+                        <Flex.Layout vertical selfCenter>
+                            <span className="icon-group" style={{fontSize: "24px"}} />
+                        </Flex.Layout> &ensp;
                         <span style={{fontWeight: 500}}>{t.name}</span>
-                    </div>;
+                    </Flex.Layout>;
                 }) : null;
 
         let children = [];
@@ -180,11 +182,20 @@ Member.MemberSelect = React.createClass({
                         u = UserStore.getTeam(parseInt(v.substring(5)));
                     }
 
-                    if (u) {
-                        return <span key={"user_" + u.id} value={"user_" + u.id} index={u.name}>
-                            <Member.Avatar scale={0.5} member={u} /> &ensp;
+                    if (v.indexOf("user_") === 0) {
+                        return <Flex.Layout horizontal key={"user_" + u.id} value={"user_" + u.id} index={u.name}>
+                            <Flex.Layout vertical selfCenter>
+                                <Member.Avatar scale={0.5} member={u} />
+                            </Flex.Layout>&ensp;
                             <span>{u.name}</span>
-                        </span>;
+                        </Flex.Layout>;
+                    } else {
+                        return <Flex.Layout horizontal key={"team_" + u.id} value={"team_" + u.id} index={u.name}>
+                                <Flex.Layout vertical selfCenter>
+                                    <span className="icon-group" style={{fontSize: "12px"}} />
+                                </Flex.Layout>&ensp;
+                                <span style={{fontWeight: 500}}>{u.name}</span>
+                        </Flex.Layout>;
                     }
 
                     return null;
