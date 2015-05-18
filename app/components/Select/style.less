@@ -1,3 +1,6 @@
+@import "~material-ui/src/less/scaffolding.less";
+@import "~material-ui/src/less/components.less";
+
 .select-hint {
   position: absolute !important;
   z-index: 0;
@@ -26,13 +29,16 @@
 
 .token {
   border: 1px solid transparent;
+  .mui-z-depth-bottom {
+    box-shadow: none !important;
+  }
 }
 
 .token:hover,
 .token.token-to-delete {
-  border: 1px solid rgba(213, 0, 0, .8);
+  border: 1px solid @pink-400;
 }
 
 .token-delete:hover {
-  color: rgba(213, 0, 0, .7);
+  color: @pink-400;
 }

@@ -65,8 +65,10 @@ export default {
         parsedEvent.from_time = new Date(event.fromTime).toISOString();
         if (event.isPeriod) {
             parsedEvent.to_time = new Date(event.toTime).toISOString();
+            parsedEvent.period = true;
         } else {
             parsedEvent.to_time = parsedEvent.from_time;
+            parsedEvent.period = false;
         }
         parsedEvent.full_day = event.fullDay;
         parsedEvent.participants = event.participants;
