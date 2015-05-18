@@ -9,7 +9,7 @@ const React           = require("react"),
       PerfectScroll   = require('../../PerfectScroll'),
       CalendarActions = require("../../../actions/CalendarActions"),
       MemberSelect = require('../../Member').MemberSelect,
-      TSort = require('javascript-algorithms/src/graphs/others/topological-sort.js').topologicalSort;
+      UserStore = require('../../../stores/UserStore');
 
 require("./style.less");
 
@@ -60,9 +60,11 @@ export default React.createClass({
                                 className="create-team-textfield" />
                             <MemberSelect
                                 label='Parent teams'
+                                errorText={this.state.graphError}
                                 valueLink={this.linkState('parentTeams')} user={false} className="create-team-textfield"/>
                             <MemberSelect
                                 label='Subsidiary teams'
+                                errorText={this.state.graphError}
                                 valueLink={this.linkState('subTeams')}
                                 user={false} className="create-team-textfield"/>
                             <MemberSelect
@@ -82,33 +84,26 @@ export default React.createClass({
             </PerfectScroll>
         );
     },
-
-
     _handleSubmit(e) {
         e.preventDefault();
-        console.log(this.state);
-
-        var graph = {
-            v1: ['v2', 'v5'],
-            v2: ['v1'],
-            v3: ['v1', 'v2', 'v4', 'v5'],
-            v4: [],
-            v5: []
-        };
-        try{
-            var vertices = TSort(graph);
-        } catch(err){
-            if(err.message === 'The graph is not a DAG'){
-                console.log('not DAG');
-            } else{
-                throw err;
-            }
-        }
-        console.log(vertices);
+        this.setState({
+            nameError: undefined,
+            graphError: undefined
+        });
         if(!this.state.name) {
             this.setState({
                 nameError: 'Name should not be empty'
-            })
+            });
+            return;
+        }
+        if(!UserStore.checkDAG({
+                parentTeams: this.state.parentTeams,
+                teams: this.state.subTeams
+            })) {
+            this.setState({
+                graphError: 'Cyclic team structure detected'
+            });
+            return;
         }
     }
 });

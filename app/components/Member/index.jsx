@@ -214,7 +214,7 @@ Member.MemberSelect = React.createClass({
                     selected.forEach((s) => {
                         if (s.indexOf("user_") === 0) {
                             if (!team) {
-                                result.push(parseInt(s.substring(5)));
+                                results.push(parseInt(s.substring(5)));
                             } else {
                                 results.users.push(parseInt(s.substring(5)));
                             }

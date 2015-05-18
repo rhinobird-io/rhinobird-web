@@ -5,6 +5,8 @@ import BaseStore from './BaseStore';
 import assign from 'object-assign';
 import _ from 'lodash';
 
+const TSort = require('javascript-algorithms/src/graphs/others/topological-sort.js').topologicalSort;
+
 if ($.mockjax) {
     $.mockjax({
         url: '/platform/api/teams_users',
@@ -139,7 +141,7 @@ let UserStore = assign({}, BaseStore, {
         user.teams.forEach(team => {
             let parentResult = this.getTeamInvolvedTeams(team.id);
             result = new Set([...result, ...parentResult]);
-        })
+        });
         return Array.from(result);
     },
 
@@ -163,6 +165,37 @@ let UserStore = assign({}, BaseStore, {
     },
     getUserByName(name){
         return _username_users[name];
+    },
+    //Check whether team structure is still directed acyclic graph after new team add
+    checkDAG(newRelations){
+        if (!newRelations.parentTeams || !newRelations.teams) {
+            return true;
+        }
+        var graph = {};
+        Object.values(_teams).forEach(t => {
+            graph[t.id] = t.teams.map(st => st.id);
+        });
+        newRelations.parentTeams.forEach(t => {
+            if (graph[t]) {
+                graph[t].push('new');
+            } else {
+                graph[t] = ['new'];
+            }
+        });
+        graph['new'] = [];
+        newRelations.teams.forEach(t=> {
+            graph['new'].push(t);
+        });
+        try {
+            TSort(graph);
+            return true;
+        } catch (err) {
+            if (err.message === 'The graph is not a DAG') {
+                return false;
+            } else {
+                throw err;
+            }
+        }
     },
     dispatcherIndex: AppDispatcher.register(function (payload) {
         switch (payload.type) {
