@@ -11,6 +11,7 @@ const Member = require('../Member');
 const d3 = require('d3');
 const Link = require("react-router").Link;
 const UserAction = require('../../actions/UserAction');
+const dagreD3 = require('dagre-d3');
 
 require("./style.less");
 
