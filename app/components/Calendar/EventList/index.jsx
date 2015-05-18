@@ -7,6 +7,7 @@ const React                = require("react"),
       Select               = require("../../Select").Select,
       Avatar               = require("../../Member").Avatar,
       SmartTimeDisplay     = require("../../SmartTimeDisplay"),
+      SmartDisplay         = require('../../SmartEditor').SmartDisplay,
       CalendarStore        = require("../../../stores/CalendarStore"),
       CalendarActions      = require("../../../actions/CalendarActions"),
       UserStore            = require("../../../stores/UserStore"),
@@ -166,7 +167,7 @@ export default React.createClass({
                                     </div>
                                 </div>
                                 <div className="cal-event-detail">
-                                    {event.description}
+                                    <SmartDisplay value={event.description}/>
                                 </div>
                             </div>
                         </div>

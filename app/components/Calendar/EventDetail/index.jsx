@@ -49,9 +49,9 @@ export default React.createClass({
                 <div key="title" className="cal-event-detail-title">{event.title}</div>
             );
 
-            let formatTime = Moment(event.from_time).format("YYYY-MM-DD hh:mm");
+            let formatTime = Moment(event.from_time).format("YYYY-MM-DD HH:mm");
             if (event.period) {
-                formatTime += " ~ " + Moment(event.to_time).format("YYYY-MM-DD hh:mm")
+                formatTime += " ~ " + Moment(event.to_time).format("YYYY-MM-DD HH:mm")
             }
             eventContent.push(
                 <div key="time" className="cal-event-detail-time">{formatTime}</div>
@@ -66,15 +66,15 @@ export default React.createClass({
                     value={this.state.event.description} />
             );
 
-            eventContent.push(<br/>);
+            eventContent.push(<br key="br"/>);
 
             let members = [];
 
             event.participants.forEach(p => {
                 let u = UserStore.getUser(p.id);
                 members.push(
-                    <span style={{display: "inline-block", marginRight: 5}}>
-                        <Flex.Layout horizontal key={"user_" + u.id} value={"user_" + u.id} index={u.name}>
+                    <span key={"user_" + u.id} style={{display: "inline-block", marginRight: 5}}>
+                        <Flex.Layout horizontal value={"user_" + u.id} index={u.name}>
                             <Flex.Layout vertical selfCenter>
                                <Member.Avatar scale={0.5} member={u} />
                             </Flex.Layout>&ensp;
@@ -87,8 +87,8 @@ export default React.createClass({
             event.team_participants.forEach(p => {
                 let t = UserStore.getTeam(p.id);
                 members.push(
-                    <span style={{display: "inline-block", marginRight: 5}}>
-                        <Flex.Layout horizontal key={"team_" + t.id} value={"team_" + t.id} index={t.name}>
+                    <span key={"team_" + t.id} style={{display: "inline-block", marginRight: 5}}>
+                        <Flex.Layout horizontal  value={"team_" + t.id} index={t.name}>
                             <Flex.Layout vertical selfCenter>
                                 <span className="icon-group" style={{fontSize: "12px"}} />
                             </Flex.Layout>&ensp;
@@ -98,7 +98,7 @@ export default React.createClass({
                 );
             });
 
-            eventContent.push(<div>{members}</div>);
+            eventContent.push(<div key="members">{members}</div>);
 
         }
         return <PerfectScroll style={{height: "100%", position: "relative"}} className="cal-event-detail">

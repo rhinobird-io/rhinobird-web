@@ -144,6 +144,7 @@ export default React.createClass({
             let offsetTop = 0;
             let offsetParent = activeOptionDOM;
             let offsetHeight = activeOptionDOM.offsetHeight;
+
             while (offsetParent !== scroll && offsetParent !== null) {
                 if (!isNaN(offsetParent.offsetTop)) {
                     offsetTop += offsetParent.offsetTop;
@@ -158,6 +159,9 @@ export default React.createClass({
                 scroll.scrollTop = offsetTop - scroll.clientHeight + offsetHeight;
             } else if (offsetTop - scrollTop < 0) {
                 scroll.scrollTop = offsetTop;
+                if (offsetTop + offsetHeight <= clientHeight) {
+                    scroll.scrollTop = 0;
+                }
             }
         }
 
@@ -222,7 +226,8 @@ export default React.createClass({
     },
 
     _construct(children, valueAttr) {
-        return [].concat(children).map(child => {
+        let result = [];
+        return result.concat(children).map(child => {
             return this._constructChild(child, valueAttr);
         });
     },

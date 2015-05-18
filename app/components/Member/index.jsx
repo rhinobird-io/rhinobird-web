@@ -170,7 +170,6 @@ Member.MemberSelect = React.createClass({
             children = children.concat(teams);
         }
 
-
         return (
             <Select.Select
                 multiple
@@ -203,17 +202,26 @@ Member.MemberSelect = React.createClass({
                 className={className}
                 onChange={(selected) => {
                     let results = {};
-                    if (team) {
+                    if (team && user) {
                         results.teams = [];
-                    }
-                    if (user) {
                         results.users = [];
+                    } else {
+                        results = [];
                     }
+
                     selected.forEach((s) => {
                         if (s.indexOf("user_") === 0) {
-                            results.users.push(parseInt(s.substring(5)));
+                            if (!team) {
+                                result.push(parseInt(s.substring(5)));
+                            } else {
+                                results.users.push(parseInt(s.substring(5)));
+                            }
                         } else if (s.indexOf("team_") === 0) {
-                            results.teams.push(parseInt(s.substring(5)));
+                            if (!user) {
+                                results.push(parseInt(s.substring(5)));
+                            } else {
+                                results.teams.push(parseInt(s.substring(5)));
+                            }
                         }
                     });
                     if (this.props.valueLink || this.props.onChange) {
