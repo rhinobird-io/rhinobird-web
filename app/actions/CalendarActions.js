@@ -60,17 +60,30 @@ export default {
 
     create(event, success, fail) {
         let parsedEvent = {};
+        let fromTime = new Date(event.fromTime);
+        let toTime = new Date(event.toTime);
+
         parsedEvent.title = event.title;
         parsedEvent.description = event.description;
-        parsedEvent.from_time = new Date(event.fromTime).toISOString();
-        if (event.isPeriod) {
-            parsedEvent.to_time = new Date(event.toTime).toISOString();
-            parsedEvent.period = true;
-        } else {
-            parsedEvent.to_time = parsedEvent.from_time;
-            parsedEvent.period = false;
-        }
         parsedEvent.full_day = event.fullDay;
+
+        if (!parsedEvent.full_day) {
+            fromTime.setHours(event.fromHour);
+            fromTime.setMinutes(event.fromMinute);
+        }
+
+        if (event.isPeriod) {
+            parsedEvent.period = true;
+            toTime.setHours(event.toHour);
+            toTime.setMinutes(event.toMinute);
+        } else {
+            parsedEvent.period = false;
+            toTime = fromTime;
+        }
+
+        parsedEvent.from_time = fromTime.toISOString();
+        parsedEvent.to_time = toTime.toISOString();
+
         parsedEvent.participants = event.participants;
         if (event.repeated) {
             parsedEvent.repeated = true;

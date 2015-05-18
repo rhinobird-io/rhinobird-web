@@ -5,8 +5,9 @@ const React           = require("react"),
       Flex            = require("../../Flex"),
       Link            = Router.Link,
       Navigation      = Router.Navigation,
-      Selector        = require("../../Select").Selector,
-      MemberSelect    = require("../../Member").MemberSelect,
+      Input           = require('../../Input'),
+      Selector        = require('../../Select').Selector,
+      MemberSelect    = require('../../Member').MemberSelect,
       PerfectScroll   = require('../../PerfectScroll'),
       SmartEditor     = require('../../SmartEditor').SmartEditor,
       CalendarActions = require("../../../actions/CalendarActions");
@@ -64,6 +65,7 @@ export default React.createClass({
     },
 
     getInitialState() {
+        let now = new Date();
         return {
             title: "",
             titleError: "",
@@ -73,8 +75,12 @@ export default React.createClass({
                 teams: [],
                 users: []
             },
-            fromTime: new Date(),
-            toTime: new Date(),
+            fromTime: now,
+            fromHour: now.getHours(),
+            fromMinute: now.getMinutes(),
+            toTime: now,
+            toHour: now.getHours(),
+            toMinute: now.getMinutes(),
             editRepeated: false,
             repeated: false,
             repeatedType: "Daily",
@@ -139,12 +145,14 @@ export default React.createClass({
                                                     floatingLabelText="From"
                                                     onChange={this._onFromDateChange}
                                                     defaultDate={this.state.fromTime} />
-                                                <MUI.TextField
-                                                    style={{textAlign: "center"}}
-                                                    floatingLabelText=" " />
-                                                <MUI.TextField
-                                                    style={{textAlign: "center"}}
-                                                    floatingLabelText=" "/>
+                                                <Input
+                                                    pattern={/^([01]?\d|2[0-3])$/}
+                                                    floatingLabelText="Hour"
+                                                    valueLink={this.linkState("fromHour")}/>
+                                                <Input
+                                                    pattern={/^([0-5]?\d)$/}
+                                                    floatingLabelText="Minute"
+                                                    valueLink={this.linkState("fromMinute")}/>
                                             </Flex.Layout>
                                             <Flex.Layout horizontal justified>
                                                 <MUI.DatePicker
@@ -153,12 +161,14 @@ export default React.createClass({
                                                     floatingLabelText="To"
                                                     onChange={this._onToDateChange}
                                                     defaultDate={this.state.fromTime} />
-                                                <MUI.TextField
-                                                    style={{textAlign: "center"}}
-                                                    floatingLabelText=" "/>
-                                                <MUI.TextField
-                                                    style={{textAlign: "center"}}
-                                                    floatingLabelText=" "/>
+                                                <Input
+                                                    pattern={/^([01]?\d|2[0-3])$/}
+                                                    floatingLabelText="Hour"
+                                                    valueLink={this.linkState("toHour")}/>
+                                                <Input
+                                                    pattern={/^([0-5]?\d)$/}
+                                                    floatingLabelText="Minute"
+                                                    valueLink={this.linkState("toMinute")}/>
                                             </Flex.Layout>
                                         </Flex.Layout>
                                     </div>
@@ -250,7 +260,7 @@ export default React.createClass({
 
     },
 
-    _handleSubmit(e) {
+    _handleSubmit: function(e) {
         e.preventDefault();
         let errorMsg = this.errorMsg;
 

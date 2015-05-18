@@ -49,9 +49,9 @@ export default React.createClass({
                 <div key="title" className="cal-event-detail-title">{event.title}</div>
             );
 
-            let formatTime = Moment(event.from_time).format("YYYY-MM-DD hh:mm");
+            let formatTime = Moment(event.from_time).format("YYYY-MM-DD HH:mm");
             if (event.period) {
-                formatTime += " ~ " + Moment(event.to_time).format("YYYY-MM-DD hh:mm")
+                formatTime += " ~ " + Moment(event.to_time).format("YYYY-MM-DD HH:mm")
             }
             eventContent.push(
                 <div key="time" className="cal-event-detail-time">{formatTime}</div>
