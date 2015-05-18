@@ -94,7 +94,7 @@ Member.MemberSelect = React.createClass({
             requestChange: React.PropTypes.func.isRequired
         }),
         hintText: React.PropTypes.string,
-        floatingLabelText: React.PropTypes.string
+        label: React.PropTypes.string
     },
 
     getDefaultProps: function() {
@@ -171,6 +171,8 @@ Member.MemberSelect = React.createClass({
         }
 
         return (
+            <div>
+            <label style={{color:'rgba(0,0,0,0.5)'}}>{this.props.label}</label>
             <Select.Select
                 multiple
                 token={(v) => {
@@ -231,6 +233,7 @@ Member.MemberSelect = React.createClass({
                 {...other}>
                 {children}
             </Select.Select>
+                </div>
         );
     },
 

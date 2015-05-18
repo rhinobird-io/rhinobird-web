@@ -58,14 +58,14 @@ export default React.createClass({
                                 valueLink={this.linkState("name")}
                                 className="create-team-textfield" />
                             <MemberSelect
-                                floatingLabelText='Parent teams'
+                                label='Parent teams'
                                 valueLink={this.linkState('parentTeams')} user={false} className="create-team-textfield"/>
                             <MemberSelect
-                                floatingLabelText='Subsidiary teams'
+                                label='Subsidiary teams'
                                 valueLink={this.linkState('subTeams')}
                                 user={false} className="create-team-textfield"/>
                             <MemberSelect
-                                floatingLabelText='Direct members'
+                                label='Direct members'
                                 valueLink={this.linkState('members')}
                                 team={false} className="create-team-textfield"/>
                             <Flex.Layout horizontal justified>
