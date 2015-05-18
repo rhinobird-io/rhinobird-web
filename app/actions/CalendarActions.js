@@ -63,7 +63,11 @@ export default {
         parsedEvent.title = event.title;
         parsedEvent.description = event.description;
         parsedEvent.from_time = new Date(event.fromTime).toISOString();
-        parsedEvent.to_time = new Date(event.toTime).toISOString();
+        if (event.isPeriod) {
+            parsedEvent.to_time = new Date(event.toTime).toISOString();
+        } else {
+            parsedEvent.to_time = parsedEvent.from_time;
+        }
         parsedEvent.full_day = event.fullDay;
         parsedEvent.participants = event.participants;
         if (event.repeated) {

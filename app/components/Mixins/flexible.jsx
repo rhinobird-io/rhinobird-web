@@ -7,6 +7,8 @@ module.exports = {
         relatedTo: React.PropTypes.func
     },
 
+    position: "",
+
     getDefaultProps() {
         return {
             hRestrict: false,
@@ -17,6 +19,7 @@ module.exports = {
     componentDidMount() {
         this._updatePosition();
         window.addEventListener("resize", this._onWindowResize);
+        window.addEventListener("wheel", this._onWindowScroll)
     },
 
     componentDidUpdate() {
@@ -25,9 +28,14 @@ module.exports = {
 
     componentWillUnmount() {
         window.removeEventListener("resize", this._onWindowResize);
+        window.removeEventListener("wheel", this._onWindowScroll)
     },
 
     _onWindowResize() {
+        this._updatePosition();
+    },
+
+    _onWindowScroll() {
         this._updatePosition();
     },
 
@@ -67,8 +75,10 @@ module.exports = {
 
             if (innerHeight - baseBottom - selfHeight >= 0) {
                 selfTop = baseTop + baseHeight;
+                this.position = "bottom";
             } else if (baseTop - selfHeight >= 0) {
                 selfTop = baseTop - selfHeight;
+                this.position = "top";
             }
 
             if (innerWidth - baseRight - selfWidth >= 0) {

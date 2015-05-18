@@ -41,13 +41,6 @@ export default React.createClass({
         return this.state.visible;
     },
 
-    select(value) {
-        let onItemSelect = this.props.onItemSelect;
-        if (onItemSelect && typeof onItemSelect === "function") {
-            onItemSelect(value);
-        }
-    },
-
     render() {
         let {
             style,
@@ -57,18 +50,13 @@ export default React.createClass({
             ...other
         } = this.props;
 
-        let popup = {
-            zIndex: 9,
-            display: this.state.visible ? "block" : "none"
-        };
-
         return (
             <Popup
                 ref="popup"
                 style={style}
                 position={position}
                 valueAttr={valueAttr}
-                onItemSelect={this.select}
+                onItemSelect={onItemSelect}
                 normalClass="mui-menu-item"
                 wrapperClass="mui-paper mui-z-depth-2"
                 activeClass="mui-is-selected"

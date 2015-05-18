@@ -65,7 +65,6 @@ export default React.createClass({
 
     _loadMoreNewerEvents() {
         let eventRange = this.state.eventRange;
-        console.log(eventRange.max);
         if (eventRange.max && this.state.hasMoreNewerEvents) {
             CalendarActions.loadMoreNewerEvents(eventRange.max);
         }
@@ -198,7 +197,6 @@ export default React.createClass({
             !this.state.hasMoreNewerEvents && eventsDOM.length !== 0 ?
                 <div className="cal-event-no-more">No more events</div> : null;
 
-        console.log(this.state);
         return (
             <PerfectScroll className="cal-event-list">
                 <InfiniteScroll

@@ -36,7 +36,7 @@ const SmartDisplay = React.createClass({
     let value = markdown.render(this.props.value);
     value = this.removeNewline(value);
     return (
-      <div className="smart-display markdown-body">
+      <div className="smart-display markdown-body" style={this.props.style}>
         <span dangerouslySetInnerHTML={{__html: value}}></span>
       </div>
     );

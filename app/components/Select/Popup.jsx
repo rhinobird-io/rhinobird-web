@@ -107,7 +107,7 @@ export default React.createClass({
         let styles = {
             outer: {
                 zIndex: 9,
-                height: 200,
+                height: 250,
                 margin: -4,
                 display: this.state.visible ? "flex" : "none"
             },
@@ -163,15 +163,14 @@ export default React.createClass({
 
     },
 
-    _select() {
+    _select(activeIndex, e) {
         let optionsMap = this.state.optionsMap;
-        let activeIndex = this.state.activeOptionIndex;
         if (activeIndex >= 0 && activeIndex < optionsMap.length) {
             let options = this.state.options;
             let value = optionsMap[activeIndex];
             let onItemSelect = this.props.onItemSelect;
             if (onItemSelect && typeof onItemSelect === "function") {
-                onItemSelect(options[value].value);
+                onItemSelect(options[value].value, e);
             }
         }
     },
@@ -193,8 +192,8 @@ export default React.createClass({
             }
             return false;
         });
-        this.setState({options: options, optionsMap: optionsMap, activeOptionIndex: 0});
-        this._updateScroll(0);
+        this.setState({options: options, optionsMap: optionsMap});
+        this._updateScroll(this.state.activeOptionIndex);
     },
 
     _parseChild(child, valueAttr, options) {
@@ -247,7 +246,7 @@ export default React.createClass({
                 } else {
                     let option = this.state.options[key];
                     onMouseOver = () => this.setState({activeOptionIndex: option.index});
-                    onClick = () => this._select(option.index);
+                    onClick = (e) => this._select(option.index, e);
                     if (option && option["index"] === this.state.activeOptionIndex
                         && this.props.activeClass) {
                         style =  this.props.activeStyle;
@@ -291,7 +290,7 @@ export default React.createClass({
                     break;
                 case 13:    // Enter
                     e.preventDefault();
-                    this._select();
+                    this._select(this.state.activeOptionIndex, e);
                     break;
                 case 27:    // Escape
                     e.preventDefault();
