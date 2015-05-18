@@ -8,7 +8,8 @@ const React           = require("react"),
       Selector        = require("../../Select").Selector,
       PerfectScroll   = require('../../PerfectScroll'),
       CalendarActions = require("../../../actions/CalendarActions"),
-      MemberSelect = require('../../Member').MemberSelect;
+      MemberSelect = require('../../Member').MemberSelect,
+      TSort = require('javascript-algorithms/src/graphs/others/topological-sort.js').topologicalSort;
 
 require("./style.less");
 
@@ -86,6 +87,24 @@ export default React.createClass({
     _handleSubmit(e) {
         e.preventDefault();
         console.log(this.state);
+
+        var graph = {
+            v1: ['v2', 'v5'],
+            v2: ['v1'],
+            v3: ['v1', 'v2', 'v4', 'v5'],
+            v4: [],
+            v5: []
+        };
+        try{
+            var vertices = TSort(graph);
+        } catch(err){
+            if(err.message === 'The graph is not a DAG'){
+                console.log('not DAG');
+            } else{
+                throw err;
+            }
+        }
+        console.log(vertices);
         if(!this.state.name) {
             this.setState({
                 nameError: 'Name should not be empty'

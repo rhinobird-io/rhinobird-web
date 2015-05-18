@@ -171,7 +171,7 @@ Member.MemberSelect = React.createClass({
         }
 
         return (
-            <div>
+            <div style={{paddingTop:16}}>
             <label style={{color:'rgba(0,0,0,0.5)'}}>{this.props.label}</label>
             <Select.Select
                 multiple
