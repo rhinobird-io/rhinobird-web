@@ -209,6 +209,7 @@ export default React.createClass({
                 hintText={selectedValues.length === 0 ? hintText : undefined}
                 floatingLabelText={floatingText}
                 style={styles.padding}
+                errorText={this.props.errorText}
                 className={this.props.className}
                 onChange={this._filter}
                 onKeyDown={this._keyDownListener}
