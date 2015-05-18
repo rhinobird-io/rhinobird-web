@@ -50,6 +50,13 @@ function commandPlugin(state) {
     });
 }
 
+let emojifyDefs = {};
+EmojiPng.keys().map(k => {
+    let n = k.substr("./".length, k.length - "./.png".length);
+    // If `md.renderer.rules.emoji` is not defined, we need to assign the
+    // unicode of emoji to `emojifyDefs[n]`.
+    emojifyDefs[n] = n;
+});
 
 let md = MarkdownIt({
     highlight(str, lang) {
@@ -65,14 +72,13 @@ let md = MarkdownIt({
     md.inline.ruler.before("text", "at", atPlugin);
 }).use(md => {
     md.inline.ruler.before("text", "command", commandPlugin);
-}).use(Emoji);
+}).use(Emoji, {defs: emojifyDefs});
 
 md.renderer.rules.emoji = (token, i) => {
     let markup = token[i].markup;
     if (EmojiPng.keys().includes("./" + markup + ".png")) {
-        return '<img class="emoji" alt="$" src="$"></img>'
-            .replace("$", token[i].content)
-            .replace("$", EmojiPng("./" + markup + ".png"));
+        return '<img class="emoji" alt="' + token[i].content + '" src="' +
+            EmojiPng("./" + markup + ".png") + '"></img>';
     } else {
         return ":" + markup + ":";
     }
