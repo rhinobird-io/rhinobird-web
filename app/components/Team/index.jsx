@@ -208,56 +208,92 @@ let TeamGraph = React.createClass({
 
     _drawGraph(){
         let teams = this.props.teams;
-        let connections = this._buildConnections(teams);
-        let width = 960, height = 500;
         d3.select(".svgContainer").select('svg').remove();
-        let svg = d3.select(".svgContainer").append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .attr('viewBox', '0 0 960 500')
-            .attr('preserveAspectRatio', 'xMidYMid');
-        let primaryColor = '#e91e63', secondaryColor = '#00bcd4';
-        svg.append('circle').attr('r', 4).attr('stroke', primaryColor).attr('fill', primaryColor).attr('cx', 30).attr('cy', 10);
-        svg.append('text').text('Teams directly under').attr('x', 40).attr('y', 14);
-        svg.append('circle').attr('r', 4).attr('stroke', secondaryColor).attr('fill', secondaryColor).attr('cx', 30).attr('cy', 30);
-        svg.append('text').text('Teams indirectly under').attr('x', 40).attr('y', 34);
-        let force = d3.layout.force()
-            .gravity(0.05)
-            .linkDistance(100)
-            .charge(-300).size([width, height])
-            .nodes(teams)
-            .links(connections)
-            .start();
-        let link = svg.selectAll('.link').data(connections).enter().append('path').attr('class', 'link');
-        let node = svg.selectAll('.node').data(teams).enter().append('g').attr('class', function (d) {
-            if (d.users.find(u => u.id === LoginStore.getUser().id)) {
-                return 'highlight primary';
-            } else if(UserStore.getUsersByTeamId(d.id, true).find(u => u.id === LoginStore.getUser().id)){
-                return 'highlight secondary';
-            } else {
-                return '';
-            }
-        }).call(force.drag).on('click', this.props.onClickTeam);
-        let icon = node.append('text').attr('class', 'group-icon').attr('x', '-0.5em').attr('y', '.35em')
-            .style('font-size', function(d){
-                return 8 + 12 * d.level;
-            }).text("\ue8d8").on('click', this.props.onClickTeam);
-        let text = node.append('text').attr('x', function(d){
-            return 14 + 6 * d.level;
-        }).attr('y', '.31em').text(function (d) {
-            return d.name;
-        }).on('click', this.props.onClickTeam);
-        force.on("tick", function () {
-            link.attr("d", function (d) {
-                var dx = d.target.x - d.source.x,
-                    dy = d.target.y - d.source.y,
-                    dr = Math.sqrt(dx * dx + dy * dy);
-                return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+        if(this.props.traditionalView){
+
+            var g = new dagreD3.graphlib.Graph().setGraph({rankdir: 'LR'}).setDefaultEdgeLabel(function(){return {};});
+
+            teams.forEach(t=>{
+                g.setNode(t.name,  { label: t.name});
+            });
+            g.nodes().forEach(function(v) {
+                var node = g.node(v);
+                // Round the corners of the nodes
+                node.rx = node.ry = 5;
             });
 
-            icon.attr("transform", _transform);
-            text.attr("transform", _transform);
-        });
+            teams.forEach(t=>{
+                t.teams.forEach(st=>{
+                    g.setEdge(t.name, st.name);
+                });
+            });
+            var render = new dagreD3.render();
+
+            d3.select(".svgContainer").select('svg').remove();
+            let svg = d3.select(".svgContainer").append("svg");
+            let svgGroup = svg.append("g");
+
+            render(d3.select('svg g'), g);
+
+            var xCenterOffset = 20;
+            svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)");
+            svg.attr("height", g.graph().height + 40);
+            svg.attr("class", "traditional")
+            svg.attr('width', g.graph().width + 40);
+            svg.attr("viewBox", `0 0 ${g.graph().width + 40} ${g.graph().height + 40}`);
+        } else {
+            let connections = this._buildConnections(teams);
+            let width = 960, height = 500;
+            let svg = d3.select(".svgContainer").append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .attr('viewBox', '0 0 960 500')
+                .attr('class', 'd3')
+                .attr('preserveAspectRatio', 'xMidYMid');
+            let primaryColor = '#e91e63', secondaryColor = '#00bcd4';
+            svg.append('circle').attr('r', 4).attr('stroke', primaryColor).attr('fill', primaryColor).attr('cx', 30).attr('cy', 10);
+            svg.append('text').text('Teams directly under').attr('x', 40).attr('y', 14);
+            svg.append('circle').attr('r', 4).attr('stroke', secondaryColor).attr('fill', secondaryColor).attr('cx', 30).attr('cy', 30);
+            svg.append('text').text('Teams indirectly under').attr('x', 40).attr('y', 34);
+            let force = d3.layout.force()
+                .gravity(0.05)
+                .linkDistance(100)
+                .charge(-300).size([width, height])
+                .nodes(teams)
+                .links(connections)
+                .start();
+            let link = svg.selectAll('.link').data(connections).enter().append('path').attr('class', 'link');
+            let node = svg.selectAll('.node').data(teams).enter().append('g').attr('class', function (d) {
+                if (d.users.find(u => u.id === LoginStore.getUser().id)) {
+                    return 'highlight primary';
+                } else if(UserStore.getUsersByTeamId(d.id, true).find(u => u.id === LoginStore.getUser().id)){
+                    return 'highlight secondary';
+                } else {
+                    return '';
+                }
+            }).call(force.drag).on('click', this.props.onClickTeam);
+            let icon = node.append('text').attr('class', 'group-icon').attr('x', '-0.5em').attr('y', '.35em')
+                .style('font-size', function(d){
+                    return 8 + 12 * d.level;
+                }).text("\ue8d8").on('click', this.props.onClickTeam);
+            let text = node.append('text').attr('x', function(d){
+                return 14 + 6 * d.level;
+            }).attr('y', '.31em').text(function (d) {
+                return d.name;
+            }).on('click', this.props.onClickTeam);
+            force.on("tick", function () {
+                link.attr("d", function (d) {
+                    var dx = d.target.x - d.source.x,
+                        dy = d.target.y - d.source.y,
+                        dr = Math.sqrt(dx * dx + dy * dy);
+                    return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+                });
+
+                icon.attr("transform", _transform);
+                text.attr("transform", _transform);
+            });
+        }
+
     },
     componentDidMount(){
         this._drawGraph();
@@ -301,8 +337,13 @@ let TeamPage = React.createClass({
         return <Flex.Layout fit wrap perfectScroll className='teamPage'>
             <Flex.Item style={{flexBasis: 960, margin:24}}>
                 <Paper>
+                    <Flex.Layout center justified>
                     <h4 style={{paddingLeft:24}}>Team Graph</h4>
-                    <TeamGraph teams={this.state.teams} onClickTeam={this._onClickTeam}/>
+                        <div style={{width:200}}>
+                            <mui.Toggle label='Traditional view' onToggle={(e, toggled)=>{this.setState({traditionalView: toggled});}}/>
+                        </div>
+                    </Flex.Layout>
+                    <TeamGraph teams={this.state.teams} traditionalView={this.state.traditionalView} onClickTeam={this._onClickTeam}/>
                 </Paper>
             </Flex.Item>
             {this.state.selectedTeam ?
