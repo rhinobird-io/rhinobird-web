@@ -77,6 +77,10 @@ let TeamDisplay = React.createClass({
                     disabled={this.state.typedTeamName !== this.props.team.name}
                     onTouchTap={this._leaveTeam}/>
             ];
+            let showAddMemberIcon = false;
+            if(UserStore.getUserInvolvedTeams(LoginStore.getUser().id).indexOf(this.props.team) !== -1) {
+                showAddMemberIcon = true;
+            }
             return <div className='paper-outer-container'>
                 <Paper zDepth={1}>
                     <div className='paper-inner-container'>
@@ -136,10 +140,10 @@ let TeamDisplay = React.createClass({
                                     <div className='mui-font-style-subhead-1' style={{margin:0, lineHeight:'48px'}}>
                                         Members
                                     </div>
-                                    <mui.IconButton onClick={()=>{
+                                    {showAddMemberIcon? <mui.IconButton onClick={()=>{
                                         this.setState({addMember: true});
                                     }}
-                                                    className='add-member' iconClassName='icon-person-add'/>
+                                                                        className='add-member' iconClassName='icon-person-add'/> :undefined}
                                 </Flex.Layout>
                                 {this.props.team.teams.length !== 0?
                                     <div style={{width:300}}>
