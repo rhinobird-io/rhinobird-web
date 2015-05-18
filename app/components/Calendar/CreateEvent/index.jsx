@@ -8,6 +8,7 @@ const React           = require("react"),
       Selector        = require("../../Select").Selector,
       MemberSelect    = require("../../Member").MemberSelect,
       PerfectScroll   = require('../../PerfectScroll'),
+      SmartEditor     = require('../../SmartEditor').SmartEditor,
       CalendarActions = require("../../../actions/CalendarActions");
 
 require("./style.less");
@@ -113,7 +114,7 @@ export default React.createClass({
                                 valueLink={this.linkState("title")}
                                 className="cal-create-event-textfield" />
 
-                            <MUI.TextField
+                            <SmartEditor
                                 multiLine={true}
                                 ref="eventDescription"
                                 hintText="Description"
@@ -130,17 +131,35 @@ export default React.createClass({
                             <MUI.Tabs className="cal-create-event-tab">
                                 <MUI.Tab label="Period" onActive={() => this.setState({isPeriod: true})}>
                                     <div className="tab-template-container">
-                                        <Flex.Layout horizontal justified>
-                                            <MUI.DatePicker
-                                                ref="fromDate"
-                                                hintText="From Date"
-                                                onChange={this._onFromDateChange}
-                                                defaultDate={this.state.fromTime} />
-                                            <MUI.DatePicker
-                                                ref="toDate"
-                                                hintText="To Date"
-                                                onChange={this._onToDateChange}
-                                                defaultDate={this.state.fromTime} />
+                                        <Flex.Layout horizontal justified style={{marginTop: -10}}>
+                                            <Flex.Layout horizontal justified>
+                                                <MUI.DatePicker
+                                                    ref="fromDate"
+                                                    hintText="From Date"
+                                                    floatingLabelText="From"
+                                                    onChange={this._onFromDateChange}
+                                                    defaultDate={this.state.fromTime} />
+                                                <MUI.TextField
+                                                    style={{textAlign: "center"}}
+                                                    floatingLabelText=" " />
+                                                <MUI.TextField
+                                                    style={{textAlign: "center"}}
+                                                    floatingLabelText=" "/>
+                                            </Flex.Layout>
+                                            <Flex.Layout horizontal justified>
+                                                <MUI.DatePicker
+                                                    ref="toDate"
+                                                    hintText="To Date"
+                                                    floatingLabelText="To"
+                                                    onChange={this._onToDateChange}
+                                                    defaultDate={this.state.fromTime} />
+                                                <MUI.TextField
+                                                    style={{textAlign: "center"}}
+                                                    floatingLabelText=" "/>
+                                                <MUI.TextField
+                                                    style={{textAlign: "center"}}
+                                                    floatingLabelText=" "/>
+                                            </Flex.Layout>
                                         </Flex.Layout>
                                     </div>
                                 </MUI.Tab>

@@ -1,12 +1,50 @@
+@import "~material-ui/src/less/scaffolding.less";
+@import "~material-ui/src/less/components.less";
+
 .cal-event-detail {
-  margin: 20px auto;
+  margin: 0px auto;
+  padding: 20px;
 
   h3 {
     text-align: center;
   }
 
+  .cal-event-detail-title {
+    font-size: 2em;
+    margin-bottom: 0.2em;
+  }
+
+  .cal-event-detail-time {
+    font-size: 1em;
+    color: rgba(0, 0, 0, .6);
+  }
+
+  .cal-event-repeated-symbol {
+    width: 64px;
+    height: 64px;
+    color: white;
+    right: -32px;
+    bottom: -32px;
+    position: absolute;
+    border-radius: 50%;
+    text-align: left;
+    background-color: @red-300;
+
+    div {
+      width: 50%;
+      height: 50%;
+      margin-left: 3px;
+      font-size: 1.1em;
+      vertical-align: baseline;
+      line-height: 34px;
+      text-align: center;
+    }
+  }
+
   .mui-paper {
-    width: 500px;
+    width: 540px;
+    overflow: hidden;
+    position: relative;
   }
 
   .mui-text-field {

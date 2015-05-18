@@ -210,7 +210,6 @@ const SmartEditor = React.createClass({
   render() {
     let props = this.props;
     let style = {
-      padding: "0 0.5em 0.5em",
       boxSizing: "border-box"
     };
     Object.assign(style, props.style);

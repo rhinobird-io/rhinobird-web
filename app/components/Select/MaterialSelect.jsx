@@ -256,7 +256,6 @@ export default React.createClass({
                             }}></span>
                         </Flex.Layout>
                     </Flex.Layout>
-
                 </Paper>
             );
         }
@@ -282,7 +281,6 @@ export default React.createClass({
     _keyDownListener(e) {
         let keyCode = e.keyCode;
         if (keyCode === 8) {    // Backspace
-
             if (e.target.value.length === 0 && Object.keys(this.state.selected).length > 0) {
                 if (!this.state.toDelete) {
                     this.setState({toDelete: true});
