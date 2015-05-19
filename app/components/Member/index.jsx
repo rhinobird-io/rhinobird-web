@@ -97,6 +97,9 @@ Member.MemberSelect = React.createClass({
         label: React.PropTypes.string
     },
 
+    focus() {
+        this.refs.select.focus();
+    },
     getDefaultProps: function() {
         return {
             user: true,
@@ -173,7 +176,7 @@ Member.MemberSelect = React.createClass({
         return (
             <div style={{paddingTop:16}}>
             <label style={{color:'rgba(0,0,0,0.5)'}}>{this.props.label}</label>
-            <Select.Select
+            <Select.Select ref='select'
                 multiple
                 token={(v) => {
                     let u;

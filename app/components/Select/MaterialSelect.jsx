@@ -71,6 +71,9 @@ export default React.createClass({
                 requestChange: props.onChange
             };
     },
+    focus(){
+        this.refs.text.focus();
+    },
 
     _delete(value) {
         let selected = this.state.selected;

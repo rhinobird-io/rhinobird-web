@@ -41,8 +41,8 @@ let TeamDisplay = React.createClass({
         }
     },
     componentDidUpdate(){
-        if(this.refs.addMemberInput){
-            this.refs.addMemberInput.focus();
+        if(this.refs.memberSelect){
+            this.refs.memberSelect.focus();
         }
     },
     _teamItemClick(team){
@@ -176,7 +176,7 @@ let TeamDisplay = React.createClass({
                                 <div className='mui-font-style-subhead-1'>
                                     Add direct members
                                 </div>
-                                <MemberSelect team={false} valueLink={this.linkState('newMembers')} errorText={this.state.addMemberError}/>
+                                <MemberSelect ref='memberSelect' team={false} valueLink={this.linkState('newMembers')} errorText={this.state.addMemberError}/>
                                 <Flex.Layout endJustified>
                                     <mui.FlatButton label='cancel' onClick={()=>{this.setState({addMember: false})}}/>
                                     <mui.FlatButton primary label='Add members' onClick={this.addMember}/>
