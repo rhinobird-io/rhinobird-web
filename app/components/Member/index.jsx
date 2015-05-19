@@ -94,9 +94,12 @@ Member.MemberSelect = React.createClass({
             requestChange: React.PropTypes.func.isRequired
         }),
         hintText: React.PropTypes.string,
-        floatingLabelText: React.PropTypes.string
+        label: React.PropTypes.string
     },
 
+    focus() {
+        this.refs.select.focus();
+    },
     getDefaultProps: function() {
         return {
             user: true,
@@ -171,7 +174,9 @@ Member.MemberSelect = React.createClass({
         }
 
         return (
-            <Select.Select
+            <div style={{paddingTop:16}}>
+            <label style={{color:'rgba(0,0,0,0.5)'}}>{this.props.label}</label>
+            <Select.Select ref='select'
                 multiple
                 token={(v) => {
                     let u;
@@ -212,7 +217,7 @@ Member.MemberSelect = React.createClass({
                     selected.forEach((s) => {
                         if (s.indexOf("user_") === 0) {
                             if (!team) {
-                                result.push(parseInt(s.substring(5)));
+                                results.push(parseInt(s.substring(5)));
                             } else {
                                 results.users.push(parseInt(s.substring(5)));
                             }
@@ -231,6 +236,7 @@ Member.MemberSelect = React.createClass({
                 {...other}>
                 {children}
             </Select.Select>
+                </div>
         );
     },
 

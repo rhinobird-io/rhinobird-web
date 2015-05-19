@@ -71,6 +71,9 @@ export default React.createClass({
                 requestChange: props.onChange
             };
     },
+    focus(){
+        this.refs.text.focus();
+    },
 
     _delete(value) {
         let selected = this.state.selected;
@@ -197,13 +200,19 @@ export default React.createClass({
         };
 
         let selectedValues = Object.keys(this.state.selected);
+        let floatingText = floatingLabelText;
+        if(selectedValues.length !== 0 && floatingLabelText) {
+            floatingText = " ";
+        }
+
         let text =
             <TextField
                 ref="text"
                 type="text"
                 hintText={selectedValues.length === 0 ? hintText : undefined}
-                floatingLabelText={selectedValues.length === 0 ? floatingLabelText : " "}
+                floatingLabelText={floatingText}
                 style={styles.padding}
+                errorText={this.props.errorText}
                 className={this.props.className}
                 onChange={this._filter}
                 onKeyDown={this._keyDownListener}

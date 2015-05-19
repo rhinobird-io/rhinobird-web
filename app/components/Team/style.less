@@ -45,7 +45,7 @@
   .svgContainer {
   }
 
-  svg {
+  svg.d3 {
     width: 100%;
     height: 100%;
     g {
@@ -82,6 +82,31 @@
     .link {
       fill: none;
       stroke: rgba(0,0,0,12%);
+      stroke-width: 1.5px;
+    }
+  }
+  svg.traditional {
+    width: 100%;
+    height: 100%;
+    .node {
+      cursor: pointer;
+    }
+    .node rect {
+      stroke: #999;
+      fill: #fff;
+      stroke-width: 1.5px;
+    }
+
+    .node.highlight.primary rect{
+      stroke: @pink-500;
+    }
+
+    .node.highlight.secondary rect{
+      stroke: @cyan-500;
+    }
+
+    .edgePath path {
+      stroke: rgba(0,0,0,0.54);
       stroke-width: 1.5px;
     }
   }
