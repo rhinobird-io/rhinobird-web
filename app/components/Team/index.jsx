@@ -12,6 +12,7 @@ const d3 = require('d3');
 const Link = require("react-router").Link;
 const UserAction = require('../../actions/UserAction');
 const dagreD3 = require('dagre-d3');
+const MemberSelect = require('../Member').MemberSelect;
 
 require("./style.less");
 
@@ -79,7 +80,7 @@ let TeamDisplay = React.createClass({
                     onTouchTap={this._leaveTeam}/>
             ];
             let showAddMemberIcon = false;
-            if(UserStore.getUserInvolvedTeams(LoginStore.getUser().id).indexOf(this.props.team) !== -1) {
+            if(this.props.team.creator === LoginStore.getUser().id || UserStore.getUserInvolvedTeams(LoginStore.getUser().id).indexOf(this.props.team) !== -1) {
                 showAddMemberIcon = true;
             }
             return <div className='paper-outer-container'>
@@ -175,10 +176,10 @@ let TeamDisplay = React.createClass({
                                 <div className='mui-font-style-subhead-1'>
                                     Add direct members
                                 </div>
-                                <mui.TextField ref='addMemberInput'/>
+                                <MemberSelect team={false} valueLink={this.linkState('newMembers')} errorText={this.state.addMemberError}/>
                                 <Flex.Layout endJustified>
                                     <mui.FlatButton label='cancel' onClick={()=>{this.setState({addMember: false})}}/>
-                                    <mui.FlatButton primary label='Add members'/>
+                                    <mui.FlatButton primary label='Add members' onClick={this.addMember}/>
                                 </Flex.Layout>
                             </div> : undefined}
 
@@ -189,6 +190,20 @@ let TeamDisplay = React.createClass({
         } else {
             return null;
         }
+    },
+    addMember(){
+        this.setState({
+            addMemberError: undefined
+        });
+        if(!this.state.newMembers || this.state.newMembers.length===0) {
+            this.setState({
+                addMemberError: 'No member selected'
+            });
+            return;
+        }
+        $.post(`/platform/api/teams/${this.props.team.id}/users`, this.state.newMembers).then(()=>{
+            UserAction.updateUserData();
+        });
     }
 });
 function _transform(d) {
@@ -343,7 +358,7 @@ let TeamPage = React.createClass({
     _userChanged(){
         this.setState({
             teams: UserStore.getTeamsArray(),
-            selectedTeam: UserStore.getTeam(this.state.selectedTeam.id)
+            selectedTeam: this.state.selectedTeam ? UserStore.getTeam(this.state.selectedTeam.id) : undefined
         })
     },
 

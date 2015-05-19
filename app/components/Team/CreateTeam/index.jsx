@@ -9,12 +9,14 @@ const React           = require("react"),
       PerfectScroll   = require('../../PerfectScroll'),
       CalendarActions = require("../../../actions/CalendarActions"),
       MemberSelect = require('../../Member').MemberSelect,
-      UserStore = require('../../../stores/UserStore');
+      UserStore = require('../../../stores/UserStore'),
+      UserAction = require('../../../actions/UserAction');
 
 require("./style.less");
 
 export default React.createClass({
     mixins: [React.addons.LinkedStateMixin],
+
 
     contextTypes: {
         router: React.PropTypes.func.isRequired
@@ -105,5 +107,14 @@ export default React.createClass({
             });
             return;
         }
+
+        $.post('/platform/api/teams', {
+            name: this.state.name,
+            parentTeams: this.state.parentTeams,
+            teams: this.state.subTeams,
+            members: this.state.members}).then(()=>{
+            UserAction.updateUserData();
+            this.context.router.transitionTo('/platform/team');
+        }).fail(()=>{});
     }
 });
