@@ -93,8 +93,8 @@ Member.MemberSelect = React.createClass({
             value: React.PropTypes.array.isRequired,
             requestChange: React.PropTypes.func.isRequired
         }),
-        filteredUId: React.PropTypes.array,
-        filteredTId: React.PropTypes.array,
+        excludedUsers: React.PropTypes.array,
+        excludedTeams: React.PropTypes.array,
         hintText: React.PropTypes.string,
         label: React.PropTypes.string
     },
@@ -243,19 +243,19 @@ Member.MemberSelect = React.createClass({
     },
 
     _getUsersArray() {
-        let filteredUId = this.props.filteredUId || [];
-        let filteredUIdMap = {};
-        filteredUId.forEach(id => filteredUIdMap[id.toString()] = true);
+        let excludedUsers = this.props.excludedUsers || [];
+        let excludedUsersMap = {};
+        excludedUsers.forEach(id => excludedUsersMap[id.toString()] = true);
         let users = UserStore.getUsersArray();
-        return users.filter(user => !filteredUIdMap[user.id]);
+        return users.filter(user => !excludedUsersMap[user.id]);
     },
 
     _getTeamsArray() {
-        let filteredTId = this.props.filteredTId || [];
-        let filteredTIdMap = {};
-        filteredTId.forEach(id => filteredTIdMap[id.toString()] = true);
+        let excludedTeams = this.props.excludedTeams || [];
+        let excludedTeamsMap = {};
+        excludedTeams.forEach(id => excludedTeamsMap[id.toString()] = true);
         let teams = UserStore.getTeamsArray();
-        return teams.filter(team => !filteredTIdMap[team.id]);
+        return teams.filter(team => !excludedTeamsMap[team.id]);
 
     },
 
