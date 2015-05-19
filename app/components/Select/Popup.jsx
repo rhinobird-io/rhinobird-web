@@ -41,7 +41,7 @@ export default React.createClass({
             visible: false,
             options: {},
             optionsMap: [],
-            activeOptionIndex: -1
+            activeOptionIndex: 0
         }
     },
 

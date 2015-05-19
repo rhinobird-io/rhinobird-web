@@ -45,7 +45,8 @@ export default React.createClass({
                 offsetTop += offsetParent.offsetTop;
                 offsetParent = offsetParent.offsetParent;
             }
-            self.scrollTop = offsetTop + newCreated.offsetHeight - self.offsetHeight + 20;
+            self.scrollTop = offsetTop + newCreated.offsetHeight / 2 - self.offsetHeight / 2;
+            console.log(self.scrollTop);
         }
     },
 

@@ -1,4 +1,5 @@
 const React           = require("react"),
+      PureRenderMixin = require('react/addons').addons.PureRenderMixin,
       Router          = require("react-router"),
       MUI             = require('material-ui'),
       Moment          = require("moment"),
@@ -27,7 +28,7 @@ Date.prototype.weekOfMonth = function() {
 };
 
 export default React.createClass({
-    mixins: [React.addons.LinkedStateMixin],
+    mixins: [React.addons.LinkedStateMixin, PureRenderMixin],
 
     contextTypes: {
         router: React.PropTypes.func.isRequired
@@ -59,11 +60,14 @@ export default React.createClass({
         titleRequired: "Event title is required.",
         descriptionRequired: "Event description is required."
     },
-
-    componentDidMount() {
-        this.refs.eventTitle.focus();
+    componentWillMount() {
+        this.seconds = new Date().getTime();
     },
 
+    componentDidMount() {
+        console.log(new Date().getTime() - this.seconds);
+        this.refs.eventTitle.focus();
+    },
     getInitialState() {
         let now = new Date();
         return {
@@ -104,6 +108,7 @@ export default React.createClass({
                 height: "100%"
             }
         };
+        console.log("Render");
         return (
             <PerfectScroll style={{height: "100%", position: "relative"}}>
                 <Flex.Layout horizontal centerJustified wrap>
@@ -117,7 +122,6 @@ export default React.createClass({
                                 hintText="Event Title"
                                 errorText={this.state.titleError}
                                 floatingLabelText="Event Title"
-                                valueLink={this.linkState("title")}
                                 className="cal-create-event-textfield" />
 
                             <SmartEditor
@@ -126,8 +130,7 @@ export default React.createClass({
                                 hintText="Description"
                                 errorText={this.state.descriptionError}
                                 floatingLabelText="Description"
-                                className="cal-create-event-textfield"
-                                valueLink={this.linkState("description")} />
+                                className="cal-create-event-textfield" />
 
                             <Flex.Layout horizontal justified style={{marginTop: 24, marginBottom: 24}}>
                                 <label>Full Day</label>
@@ -262,23 +265,32 @@ export default React.createClass({
 
     _handleSubmit: function(e) {
         e.preventDefault();
+
         let errorMsg = this.errorMsg;
 
-        if (this.state.title.length === 0) {
+        let refs = this.refs;
+
+        let title = refs.eventTitle.getValue();
+        let description = refs.eventDescription.getValue();
+
+        if (title.length === 0) {
             this.setState({titleError: errorMsg.titleRequired});
             return;
         } else {
             this.setState({titleError: ""});
         }
 
-        if (this.state.description.length === 0) {
+        if (description.length === 0) {
             this.setState({descriptionError: errorMsg.descriptionRequired});
             return;
         } else {
             this.setState({descriptionError: ""});
         }
 
-        CalendarActions.create(this.state, () => this.context.router.transitionTo("event-list"));
+        let event = this.state;
+        event.title = title;
+        event.description = description;
+        CalendarActions.create(event, () => this.context.router.transitionTo("event-list"));
     },
 
     _getRepeatedInfoContent() {

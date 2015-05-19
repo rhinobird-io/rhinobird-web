@@ -78,7 +78,7 @@ export default React.createClass({
                             <Flex.Layout vertical selfCenter>
                                <Member.Avatar scale={0.5} member={u} />
                             </Flex.Layout>&ensp;
-                            <span style={{width: "100px", overflow: "hidden", textOverflow: "ellipsis"}}>{u.name}</span>
+                            <Member.Name style={{width: "100px", overflow: "hidden", textOverflow: "ellipsis"}} member={u}></Member.Name>
                         </Flex.Layout>
                     </span>
                 );

@@ -174,7 +174,7 @@ export default React.createClass({
         if (children.length >= 0 && !this.refs.popupSelect.isShow()) {
             this.refs.popupSelect.show();
         }
-        this.setState({children: children, activeOptionIndex: children.length > 0 ? 0 : -1});
+        this.setState({children: children});
     },
 
     _getFilteredChildren(keyword) {
