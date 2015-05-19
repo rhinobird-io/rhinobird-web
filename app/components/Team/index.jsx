@@ -209,12 +209,21 @@ let TeamGraph = React.createClass({
     _drawGraph(){
         let teams = this.props.teams;
         d3.select(".svgContainer").select('svg').remove();
+        let svg;
         if(this.props.traditionalView){
 
             var g = new dagreD3.graphlib.Graph().setGraph({rankdir: 'LR'}).setDefaultEdgeLabel(function(){return {};});
 
             teams.forEach(t=>{
-                g.setNode(t.name,  { label: t.name});
+                let classes;
+                if (t.users.find(u => u.id === LoginStore.getUser().id)) {
+                    classes = 'highlight primary';
+                } else if(UserStore.getUsersByTeamId(t.id, true).find(u => u.id === LoginStore.getUser().id)){
+                    classes = 'highlight secondary';
+                } else {
+                    classes = '';
+                }
+                g.setNode(t.id,  { label: t.name, class: classes});
             });
             g.nodes().forEach(function(v) {
                 var node = g.node(v);
@@ -224,13 +233,22 @@ let TeamGraph = React.createClass({
 
             teams.forEach(t=>{
                 t.teams.forEach(st=>{
-                    g.setEdge(t.name, st.name);
+                    g.setEdge(t.id, st.id);
                 });
             });
             var render = new dagreD3.render();
+            let oldCreateNodes = render.createNodes();
+            let self = this;
+            render.createNodes(function(g, svg, shapes){
+                let svgNodes = oldCreateNodes(g, svg, shapes);
+                svgNodes.on('click', (t)=>{
+                    self.props.onClickTeam(UserStore.getTeam(t));
+                });
+                return svgNodes;
+            });
 
             d3.select(".svgContainer").select('svg').remove();
-            let svg = d3.select(".svgContainer").append("svg");
+            svg = d3.select(".svgContainer").append("svg");
             let svgGroup = svg.append("g");
 
             render(d3.select('svg g'), g);
@@ -238,23 +256,20 @@ let TeamGraph = React.createClass({
             var xCenterOffset = 20;
             svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)");
             svg.attr("height", g.graph().height + 40);
-            svg.attr("class", "traditional")
+            svg.attr("class", "traditional");
             svg.attr('width', g.graph().width + 40);
             svg.attr("viewBox", `0 0 ${g.graph().width + 40} ${g.graph().height + 40}`);
+            svg.style('max-width', g.graph().width + 40);
+            svg.style('max-height', g.graph().height + 40);
         } else {
             let connections = this._buildConnections(teams);
             let width = 960, height = 500;
-            let svg = d3.select(".svgContainer").append("svg")
+            svg = d3.select(".svgContainer").append("svg")
                 .attr("width", width)
                 .attr("height", height)
                 .attr('viewBox', '0 0 960 500')
                 .attr('class', 'd3')
                 .attr('preserveAspectRatio', 'xMidYMid');
-            let primaryColor = '#e91e63', secondaryColor = '#00bcd4';
-            svg.append('circle').attr('r', 4).attr('stroke', primaryColor).attr('fill', primaryColor).attr('cx', 30).attr('cy', 10);
-            svg.append('text').text('Teams directly under').attr('x', 40).attr('y', 14);
-            svg.append('circle').attr('r', 4).attr('stroke', secondaryColor).attr('fill', secondaryColor).attr('cx', 30).attr('cy', 30);
-            svg.append('text').text('Teams indirectly under').attr('x', 40).attr('y', 34);
             let force = d3.layout.force()
                 .gravity(0.05)
                 .linkDistance(100)
@@ -293,7 +308,11 @@ let TeamGraph = React.createClass({
                 text.attr("transform", _transform);
             });
         }
-
+        let primaryColor = '#e91e63', secondaryColor = '#00bcd4';
+        svg.append('circle').attr('r', 4).attr('stroke', primaryColor).attr('fill', primaryColor).attr('cx', 30).attr('cy', 10);
+        svg.append('text').text('Teams directly under').attr('x', 40).attr('y', 14);
+        svg.append('circle').attr('r', 4).attr('stroke', secondaryColor).attr('fill', secondaryColor).attr('cx', 30).attr('cy', 30);
+        svg.append('text').text('Teams indirectly under').attr('x', 40).attr('y', 34);
     },
     componentDidMount(){
         this._drawGraph();
