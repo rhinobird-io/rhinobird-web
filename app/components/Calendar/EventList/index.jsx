@@ -156,6 +156,7 @@ export default React.createClass({
                                 <div className="cal-event-title">
                                     <Flex.Layout horizontal justified>
                                         <Link
+                                            tooltip={event.title}
                                             style={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}
                                             to="event-detail" params={{ id: event.id, repeatedNumber: event.repeated_number }}>
                                             <span title={event.title}>{event.title}</span>
@@ -169,7 +170,7 @@ export default React.createClass({
                                             start={event.from_time} />
                                     </div>
                                 </div>
-                                <div className="cal-event-detail">
+                                <div className="cal-event-description">
                                     <SmartDisplay value={event.description}/>
                                 </div>
                             </div>
