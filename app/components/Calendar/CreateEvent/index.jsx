@@ -71,9 +71,7 @@ export default React.createClass({
     getInitialState() {
         let now = new Date();
         return {
-            title: "",
             titleError: "",
-            description: "",
             fullDay: false,
             participants: {
                 teams: [],
