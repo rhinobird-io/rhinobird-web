@@ -140,17 +140,41 @@ export default React.createClass({
         }
     },
 
+    _contain(item, keyword) {
+        if (typeof item === 'object' && item !== null) {
+            item.visited = true;
+            for (let key in item) {
+                if (!item.hasOwnProperty(key) || (item[key] && item[key].visited)) {
+                    continue;
+                }
+                if (this._contain(item[key], keyword)) {
+                    return true;
+                }
+            }
+            item.visited = false;
+        } else if (typeof item === 'string' && item !== null) {
+            if (item.toLowerCase().indexOf(keyword) >= 0) {
+                return true;
+            }
+        } else if (item !== null) {
+            if (item.toString().toLowerCase().indexOf(keyword) >= 0) {
+                return true;
+            }
+        }
+        return false;
+    },
+
     _filter() {
         let keyword = this.refs.text.getValue();
         let children = this.props.children.filter((child) => {
             if (child.props.value && this.state.selected[child.props.value]) return false;
             if (keyword.length === 0 || !child.props.index || !child.props.value) return true;
-            return child.props.index.indexOf(keyword) >= 0;
+            return this._contain(child.props.index, keyword.toLowerCase());
         });
         if (children.length >= 0 && !this.refs.popupSelect.isShow()) {
             this.refs.popupSelect.show();
         }
-        this.setState({children: children});
+        this.setState({children: children, activeOptionIndex: children.length > 0 ? 0 : -1});
     },
 
     _getFilteredChildren(keyword) {
@@ -219,7 +243,8 @@ export default React.createClass({
                 onFocus={() => {
                     this.refs.popupSelect.show();
                     this._updateLayout();
-                }} />;
+                }}
+                onBlur={() => this.setState({toDelete: false})} />;
 
         let popupSelect =
             <MaterialPopup

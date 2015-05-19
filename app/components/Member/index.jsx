@@ -142,7 +142,7 @@ Member.MemberSelect = React.createClass({
         let users =
             user && this.state.users.length > 0 ?
                 this.state.users.map((u) => {
-                    return <div key={"user_" + u.id} value={"user_" + u.id} index={u.name}>
+                    return <div key={"user_" + u.id} value={"user_" + u.id} index={u}>
                         <Member.Avatar member={u} /> &ensp;
                         <span style={{fontWeight: 500}}>{u.realname}</span>
                     </div>;
@@ -151,7 +151,7 @@ Member.MemberSelect = React.createClass({
         let teams =
             team && this.state.teams.length > 0 ?
                 this.state.teams.map((t) => {
-                    return <Flex.Layout horizontal key={"team_" + t.id} value={"team_" + t.id} index={t.name}>
+                    return <Flex.Layout horizontal key={"team_" + t.id} value={"team_" + t.id} index={t}>
                         <Flex.Layout vertical selfCenter>
                             <span className="icon-group" style={{fontSize: "24px"}} />
                         </Flex.Layout> &ensp;
@@ -189,14 +189,14 @@ Member.MemberSelect = React.createClass({
                     }
 
                     if (v.indexOf("user_") === 0) {
-                        return <Flex.Layout horizontal key={"user_" + u.id} value={"user_" + u.id} index={u.name}>
+                        return <Flex.Layout horizontal key={"user_" + u.id} value={"user_" + u.id}>
                             <Flex.Layout vertical selfCenter>
                                 <Member.Avatar scale={0.5} member={u} />
                             </Flex.Layout>&ensp;
                             <span>{u.realname}</span>
                         </Flex.Layout>;
                     } else {
-                        return <Flex.Layout horizontal key={"team_" + u.id} value={"team_" + u.id} index={u.name}>
+                        return <Flex.Layout horizontal key={"team_" + u.id} value={"team_" + u.id}>
                                 <Flex.Layout vertical selfCenter>
                                     <span className="icon-group" style={{fontSize: "12px"}} />
                                 </Flex.Layout>&ensp;
