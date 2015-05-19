@@ -176,7 +176,7 @@ let TeamDisplay = React.createClass({
                                 <div className='mui-font-style-subhead-1'>
                                     Add direct members
                                 </div>
-                                <MemberSelect ref='memberSelect' team={false} valueLink={this.linkState('newMembers')} errorText={this.state.addMemberError}/>
+                                <MemberSelect ref='memberSelect' excludedUsers={this.props.team.users.map(u=>u.id)} team={false} valueLink={this.linkState('newMembers')} errorText={this.state.addMemberError}/>
                                 <Flex.Layout endJustified>
                                     <mui.FlatButton label='cancel' onClick={()=>{this.setState({addMember: false})}}/>
                                     <mui.FlatButton primary label='Add members' onClick={this.addMember}/>
