@@ -8,7 +8,7 @@ import $ from 'jquery';
 import MessageStore from '../stores/MessageStore';
 
 const {IM_HOST, IM_API} = IMConstants;
-const limit = 20;
+const limit = 40;
 export default {
 
     changeChannel(backEndChannelId, currentUser) {
