@@ -4,6 +4,7 @@ var React                = require("react"),
     SmartPreview = require("../SmartEditor").SmartPreview,
     Selector = require("../Select").Selector,
     MaterialSelect = require("../Select").Select,
+    MemberSelect = require('../Member').MemberSelect,
     SearchEverywhere = require("../SearchEverywhere");
 
 require("./style.less");
@@ -85,6 +86,7 @@ export default React.createClass({
 
                 <SmartEditor valueLink={this.linkState("editorValue")} hintText="Linked to SmartPreview" />
 
+                <MemberSelect />
                 <SmartEditor nohr hintText="I have no underline" />
                 <SmartEditor floatingLabelText="I have a Label" />
                 <br/>

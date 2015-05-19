@@ -93,6 +93,8 @@ Member.MemberSelect = React.createClass({
             value: React.PropTypes.array.isRequired,
             requestChange: React.PropTypes.func.isRequired
         }),
+        filteredUId: React.PropTypes.array,
+        filteredTId: React.PropTypes.array,
         hintText: React.PropTypes.string,
         label: React.PropTypes.string
     },
@@ -109,8 +111,8 @@ Member.MemberSelect = React.createClass({
 
     getInitialState() {
         return {
-            users: this.props.user ? UserStore.getUsersArray() : null,
-            teams: this.props.team ? UserStore.getTeamsArray() : null
+            users: this.props.user ? this._getUsersArray() : null,
+            teams: this.props.team ? this._getTeamsArray() : null
         }
     },
 
@@ -140,16 +142,16 @@ Member.MemberSelect = React.createClass({
         let users =
             user && this.state.users.length > 0 ?
                 this.state.users.map((u) => {
-                    return <div key={"user_" + u.id} value={"user_" + u.id} index={u.name}>
+                    return <div key={"user_" + u.id} value={"user_" + u.id} index={u}>
                         <Member.Avatar member={u} /> &ensp;
-                        <span style={{fontWeight: 500}}>{u.name}</span>
+                        <span style={{fontWeight: 500}}>{u.realname}</span>
                     </div>;
                 }) : null;
 
         let teams =
             team && this.state.teams.length > 0 ?
                 this.state.teams.map((t) => {
-                    return <Flex.Layout horizontal key={"team_" + t.id} value={"team_" + t.id} index={t.name}>
+                    return <Flex.Layout horizontal key={"team_" + t.id} value={"team_" + t.id} index={t}>
                         <Flex.Layout vertical selfCenter>
                             <span className="icon-group" style={{fontSize: "24px"}} />
                         </Flex.Layout> &ensp;
@@ -187,14 +189,14 @@ Member.MemberSelect = React.createClass({
                     }
 
                     if (v.indexOf("user_") === 0) {
-                        return <Flex.Layout horizontal key={"user_" + u.id} value={"user_" + u.id} index={u.name}>
+                        return <Flex.Layout horizontal key={"user_" + u.id} value={"user_" + u.id}>
                             <Flex.Layout vertical selfCenter>
                                 <Member.Avatar scale={0.5} member={u} />
                             </Flex.Layout>&ensp;
-                            <span>{u.name}</span>
+                            <span>{u.realname}</span>
                         </Flex.Layout>;
                     } else {
-                        return <Flex.Layout horizontal key={"team_" + u.id} value={"team_" + u.id} index={u.name}>
+                        return <Flex.Layout horizontal key={"team_" + u.id} value={"team_" + u.id}>
                                 <Flex.Layout vertical selfCenter>
                                     <span className="icon-group" style={{fontSize: "12px"}} />
                                 </Flex.Layout>&ensp;
@@ -240,10 +242,27 @@ Member.MemberSelect = React.createClass({
         );
     },
 
+    _getUsersArray() {
+        let filteredUId = this.props.filteredUId || [];
+        let filteredUIdMap = {};
+        filteredUId.forEach(id => filteredUIdMap[id.toString()] = true);
+        let users = UserStore.getUsersArray();
+        return users.filter(user => !filteredUIdMap[user.id]);
+    },
+
+    _getTeamsArray() {
+        let filteredTId = this.props.filteredTId || [];
+        let filteredTIdMap = {};
+        filteredTId.forEach(id => filteredTIdMap[id.toString()] = true);
+        let teams = UserStore.getTeamsArray();
+        return teams.filter(team => !filteredTIdMap[team.id]);
+
+    },
+
     _onChange() {
         this.setState({
-            users: this.props.user ? UserStore.getUsersArray() : null,
-            teams: this.props.team ? UserStore.getTeamsArray() : null
+            users: this.props.user ? this._getUsersArray() : null,
+            teams: this.props.team ? this._getTeamsArray() : null
         });
     }
 });
