@@ -92,6 +92,7 @@ class MessagesWrapper {
                 } else {
                     previousMsgSuite = [msg];
                     this.messageSuites.push(previousMsgSuite);
+                    _currentChannelMessageSuites = _currentChannelMessageSuites.push(previousMsgSuite);
                 }
                 conCount = previousMsgSuite.length;
                 previousMsg = msg;
@@ -155,9 +156,10 @@ class MessagesWrapper {
 }
 
 function addNewMessageToCurrentMessageSuite(message) {
-    // to update _currentChannelMessageSuite
     let array = _currentChannelMessageSuites.get(_currentChannelMessageSuites.size - 1).slice(0);
-    array.push(message);
+    if(array[array.length - 1] !== message){
+        array.push(message);
+    }
     _currentChannelMessageSuites = _currentChannelMessageSuites.set(_currentChannelMessageSuites.size - 1, array);
 }
 

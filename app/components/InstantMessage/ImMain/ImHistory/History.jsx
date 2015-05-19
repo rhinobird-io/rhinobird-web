@@ -88,7 +88,9 @@ module.exports = React.createClass({
             }}/>
                 <div style={{flex: 1}}>
                     {
-                        this.state.messageSuites.map((msg, idx) => <ImMessage key={`group${msg[0].id + '_'+ msg.length}`} messages={msg}></ImMessage>)
+                        this.state.messageSuites.map((msg, idx) => <ImMessage onLinkPreviewDidUpdate={this.componentDidUpdate.bind(this)}
+                                                                              onLinkPreviewWillUpdate={this.componentWillUpdate.bind(this)}
+                            key={`group${msg[0].id}`} messages={msg}></ImMessage>)
                     }
                 </div>
             </Flex.Layout>

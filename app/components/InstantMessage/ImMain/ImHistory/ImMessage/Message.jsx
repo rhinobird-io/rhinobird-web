@@ -21,9 +21,7 @@ module.exports = React.createClass({
   componentDidMount() {
 
   },
-
   render() {
-
     return (
       <div className='instant-message-message-item'>
         <Layout horizontal>
@@ -36,7 +34,8 @@ module.exports = React.createClass({
               <div className="time"><SmartTimeDisplay start={this.props.messages[0].createdAt} relative /></div>
             </Layout>
             {this.props.messages.map(msg=>{
-              return <SmartDisplay key={msg.id} value={msg.text}></SmartDisplay>
+              return <SmartDisplay key={msg.id} value={msg.text} onLinkPreviewWillUpdate={this.props.onLinkPreviewWillUpdate}
+                                   onLinkPreviewDidUpdate={this.props.onLinkPreviewDidUpdate}></SmartDisplay>
             })}
           </Layout>
         </Layout>
