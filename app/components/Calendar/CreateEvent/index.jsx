@@ -113,6 +113,35 @@ export default React.createClass({
                 height: "100%"
             }
         };
+
+        let fromHM = [];
+        fromHM.push(
+            <Input
+                key="fromHour"
+                pattern={/^([01]?\d|2[0-3])$/}
+                floatingLabelText="Hour"
+                valueLink={this.linkState("fromHour")}/>);
+        fromHM.push(
+            <Input
+                key="fromMinute"
+                pattern={/^([0-5]?\d)$/}
+                floatingLabelText="Minute"
+                valueLink={this.linkState("fromMinute")}/>);
+
+        let toHM = [];
+        toHM.push(
+            <Input
+                key="toHour"
+                pattern={/^([01]?\d|2[0-3])$/}
+                floatingLabelText="Hour"
+                valueLink={this.linkState("toHour")}/>);
+        toHM.push(
+            <Input
+                key="toMinute"
+                pattern={/^([0-5]?\d)$/}
+                floatingLabelText="Minute"
+                valueLink={this.linkState("toMinute")}/>);
+
         return (
             <PerfectScroll style={{height: "100%", position: "relative"}}>
                 <Flex.Layout horizontal centerJustified wrap>
@@ -138,7 +167,8 @@ export default React.createClass({
 
                             <Flex.Layout horizontal justified style={{marginTop: 24, marginBottom: 24}}>
                                 <label>Full Day</label>
-                                <MUI.Toggle />
+                                <MUI.Toggle
+                                    onToggle={this._onFullDayToggled}/>
                             </Flex.Layout>
 
                             <MUI.Tabs className="cal-create-event-tab">
@@ -152,14 +182,7 @@ export default React.createClass({
                                                     floatingLabelText="From"
                                                     onChange={this._onFromDateChange}
                                                     defaultDate={this.state.fromTime} />
-                                                <Input
-                                                    pattern={/^([01]?\d|2[0-3])$/}
-                                                    floatingLabelText="Hour"
-                                                    valueLink={this.linkState("fromHour")}/>
-                                                <Input
-                                                    pattern={/^([0-5]?\d)$/}
-                                                    floatingLabelText="Minute"
-                                                    valueLink={this.linkState("fromMinute")}/>
+                                                {!this.state.fullDay ? fromHM : null}
                                             </Flex.Layout>
                                             <Flex.Layout horizontal justified>
                                                 <MUI.DatePicker
@@ -168,14 +191,7 @@ export default React.createClass({
                                                     floatingLabelText="To"
                                                     onChange={this._onToDateChange}
                                                     defaultDate={this.state.fromTime} />
-                                                <Input
-                                                    pattern={/^([01]?\d|2[0-3])$/}
-                                                    floatingLabelText="Hour"
-                                                    valueLink={this.linkState("toHour")}/>
-                                                <Input
-                                                    pattern={/^([0-5]?\d)$/}
-                                                    floatingLabelText="Minute"
-                                                    valueLink={this.linkState("toMinute")}/>
+                                                {!this.state.fullDay ? toHM : null}
                                             </Flex.Layout>
                                         </Flex.Layout>
                                     </div>
@@ -188,14 +204,7 @@ export default React.createClass({
                                                 hintText="From Date"
                                                 floatingLabelText="From"
                                                 defaultDate={this.state.fromTime} />
-                                            <Input
-                                                pattern={/^([01]?\d|2[0-3])$/}
-                                                floatingLabelText="Hour"
-                                                valueLink={this.linkState("fromHour")}/>
-                                            <Input
-                                                pattern={/^([0-5]?\d)$/}
-                                                floatingLabelText="Minute"
-                                                valueLink={this.linkState("fromMinute")}/>
+                                                {!this.state.fullDay ? fromHM : null}
                                         </Flex.Layout>
                                     </div>
                                 </MUI.Tab>
@@ -551,6 +560,14 @@ export default React.createClass({
             summary += ", until " + this.refs.repeatedEndDate.getDate().toDateString();
         }
         return summary;
+    },
+
+    _onFullDayToggled(e, isInputChecked) {
+        if (isInputChecked) {
+            this.setState({fullDay: true});
+        } else {
+            this.setState({fullDay: false});
+        }
     },
 
     _onRepeatToggled(e, isInputChecked) {
