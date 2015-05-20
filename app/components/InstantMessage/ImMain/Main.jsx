@@ -17,6 +17,9 @@ const SocketStore = require('../../../stores/SocketStore');
 const Flex = require('../../Flex');
 import IMConstant from '../../../constants/IMConstants';
 
+if (Notification.permission !== 'granted'){
+  Notification.requestPermission();
+}
 
 require('./style.less');
 module.exports = React.createClass({
@@ -81,6 +84,7 @@ module.exports = React.createClass({
             channel : {
               created_at: user.created_at,
               name: user.name,
+              realname: user.realname,
               updated_at: user.updated_at,
               id: user.id
             }

@@ -5,6 +5,9 @@ export default {
     IM_API : 'http://localhost:3000/api/',
     LOCALSTORAGE_CHANNEL : 'localchannel',
     MSG_LIMIT: 40,
+    NOTIFICATION: {
+        STAY_SECONDS: 5
+    } ,
 
     EVENTS : {
         RECEIVE_MESSAGE : 'message-receive',
