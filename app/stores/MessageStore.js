@@ -19,6 +19,13 @@ class MessagesWrapper {
         this.channelId = channelId;
     }
 
+    /**
+     * get messages in order from old to new
+     *
+     * a bigger msgId means the id the newer
+     *
+     * @returns {*|Array} sort from old to new
+     */
     getMessagesArray(beforeMessageId, limit) {
         var toIndex = beforeMessageId < 0 ? 0 : _.findLastIndex(this.messages, msg => {
             return msg.id < beforeMessageId;
