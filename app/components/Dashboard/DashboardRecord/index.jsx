@@ -14,7 +14,7 @@ const DashboardRecord = React.createClass({
         let record = this.props.record;
         let member = UserStore.getUser(record.get('from_user_id'));
         let linkParam = JSON.parse(record.get('link_param'));
-        console.log(linkParam)
+
 		return <Flex.Layout className='dashboard-record'>
 			<div className='avatar'><Member.Avatar scale={1.5} member={member}/></div>
             <div className='text'>

@@ -1,4 +1,4 @@
-var React = require("react");
+const React = require("react");
 const mui = require('material-ui');
 const Member = require('../Member');
 const UserStore = require('../../stores/UserStore');
