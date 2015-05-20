@@ -17,7 +17,6 @@ import moment from 'moment';
 import Immutable from 'immutable';
 
 const { IconButton } = mui;
-const limit = 20;
 
 require('./style.less');
 module.exports = React.createClass({

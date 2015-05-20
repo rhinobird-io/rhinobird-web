@@ -11,7 +11,7 @@ import $ from 'jquery';
 require('./mockjax/messages');
 
 const {IM_HOST, IM_API} = IMConstants;
-const limit =  40;
+const limit =  IMConstants.MSG_LIMIT;
 export default {
 
     /**
