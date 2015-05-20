@@ -28,7 +28,7 @@ Date.prototype.weekOfMonth = function() {
 };
 
 export default React.createClass({
-    mixins: [React.addons.LinkedStateMixin, PureRenderMixin],
+    mixins: [React.addons.LinkedStateMixin],
 
     contextTypes: {
         router: React.PropTypes.func.isRequired
@@ -60,6 +60,11 @@ export default React.createClass({
         titleRequired: "Event title is required.",
         descriptionRequired: "Event description is required."
     },
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.state.participants == nextState.participants;
+    },
+
     componentWillMount() {
         this.seconds = new Date().getTime();
     },
@@ -68,8 +73,10 @@ export default React.createClass({
         console.log(new Date().getTime() - this.seconds);
         this.refs.eventTitle.focus();
     },
+
     getInitialState() {
         let now = new Date();
+        console.log(now.getMinutes());
         return {
             titleError: "",
             fullDay: false,
@@ -106,7 +113,6 @@ export default React.createClass({
                 height: "100%"
             }
         };
-        console.log("Render");
         return (
             <PerfectScroll style={{height: "100%", position: "relative"}}>
                 <Flex.Layout horizontal centerJustified wrap>
@@ -180,7 +186,16 @@ export default React.createClass({
                                             <MUI.DatePicker
                                                 ref="fromDate"
                                                 hintText="From Date"
+                                                floatingLabelText="From"
                                                 defaultDate={this.state.fromTime} />
+                                            <Input
+                                                pattern={/^([01]?\d|2[0-3])$/}
+                                                floatingLabelText="Hour"
+                                                valueLink={this.linkState("fromHour")}/>
+                                            <Input
+                                                pattern={/^([0-5]?\d)$/}
+                                                floatingLabelText="Minute"
+                                                valueLink={this.linkState("fromMinute")}/>
                                         </Flex.Layout>
                                     </div>
                                 </MUI.Tab>
