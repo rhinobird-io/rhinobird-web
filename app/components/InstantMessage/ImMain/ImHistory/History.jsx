@@ -17,7 +17,6 @@ import moment from 'moment';
 import Immutable from 'immutable';
 
 const { IconButton } = mui;
-const limit = 20;
 
 require('./style.less');
 module.exports = React.createClass({
@@ -71,7 +70,7 @@ module.exports = React.createClass({
     loadMoreOldMessages() {
         let oldestMessageId = undefined;
         if (this.state.messageSuites.size > 0) {
-            oldestMessageId = this.state.messageSuites.get(0)[0].id;
+            oldestMessageId = this.state.messageSuites.get(0).get(0).id;
         } else {
             oldestMessageId = (1 << 30);
         }
@@ -88,7 +87,9 @@ module.exports = React.createClass({
             }}/>
                 <div style={{flex: 1}}>
                     {
-                        this.state.messageSuites.map((msg, idx) => <ImMessage key={`group${msg[0].id + '_'+ msg.length}`} messages={msg}></ImMessage>)
+                        this.state.messageSuites.map((msg, idx) => <ImMessage onLinkPreviewDidUpdate={this.componentDidUpdate.bind(this)}
+                                                                              onLinkPreviewWillUpdate={this.componentWillUpdate.bind(this)}
+                            key={`group${msg.first().id}`} messages={msg}></ImMessage>)
                     }
                 </div>
             </Flex.Layout>

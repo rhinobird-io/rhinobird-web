@@ -13,7 +13,6 @@ import _ from 'lodash';
 require('./style.less');
 module.exports = React.createClass({
 
-  mixins: [React.addons.PureRenderMixin],
   contextTypes: {
     router: React.PropTypes.func.isRequired
   },
@@ -22,21 +21,24 @@ module.exports = React.createClass({
 
   },
 
+  shouldComponentUpdate(nextProps, nextState){
+    return nextProps.messages !== this.props.messages;
+  },
   render() {
-
     return (
       <div className='instant-message-message-item'>
         <Layout horizontal>
           <div className="avatar-wrapper" style={{flexShrink: 0}}>
-            <Avatar scale={1.6} member={UserStore.getUser(this.props.messages[0].userId)} />
+            <Avatar scale={1.6} member={UserStore.getUser(this.props.messages.first().userId)} />
           </div>
           <Layout vertical flex={1}>
             <Layout horizontal justified style={{marginBottom:8}}>
-              <div className="name"><Name member={UserStore.getUser(this.props.messages[0].userId)} /></div>
-              <div className="time"><SmartTimeDisplay start={this.props.messages[0].createdAt} relative /></div>
+              <div className="name"><Name member={UserStore.getUser(this.props.messages.first().userId)} /></div>
+              <div className="time"><SmartTimeDisplay start={this.props.messages.first().createdAt} relative /></div>
             </Layout>
             {this.props.messages.map(msg=>{
-              return <SmartDisplay key={msg.id} value={msg.text}></SmartDisplay>
+              return <SmartDisplay key={msg.id} value={msg.text} onLinkPreviewWillUpdate={this.props.onLinkPreviewWillUpdate}
+                                   onLinkPreviewDidUpdate={this.props.onLinkPreviewDidUpdate}></SmartDisplay>
             })}
           </Layout>
         </Layout>
