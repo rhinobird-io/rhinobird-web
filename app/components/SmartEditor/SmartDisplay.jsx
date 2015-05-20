@@ -58,21 +58,44 @@ const SmartDisplay = React.createClass({
                     previews[i] = urlMetadata;
                     count--;
                     if (count == 0) {
-                        this._showUrlPreviews(previews);
+                        this._showUrlPreviews(previews.filter(p=>p));
                     }
                 }).fail(()=> {
                     count--;
                     if (count == 0) {
-                        this._showUrlPreviews(previews);
+                        this._showUrlPreviews(previews.filter(p=>p));
                     }
                 });
             }
         }
     },
     _showUrlPreviews(previews){
-        this.setState({
-            urlPreviews: previews
-        })
+        let processedPreviews = previews.map(p => this._analysePreview(p));
+        let imagePreviews = [];
+        processedPreviews.forEach((p) => {
+            if(!p.videoURL && p.urlImage){
+                imagePreviews.push(p);
+            }
+        });
+        let count = imagePreviews.length;
+        if(count === 0){
+            this.setState({
+                urlPreviews: processedPreviews
+            });
+            return;
+        }
+        imagePreviews.forEach(p =>{
+            p.img = new Image();
+            p.img.src= p.urlImage;
+            p.img.onload = () => {
+                count --;
+                if(count === 0){
+                    this.setState({
+                        urlPreviews: processedPreviews
+                    });
+                }
+            }
+        });
     },
 
     _onClick(e) {
@@ -135,8 +158,7 @@ const SmartDisplay = React.createClass({
         return result;
     },
 
-    _renderOg(og, idx) {
-        let p = this._analysePreview(og);
+    _renderOg(p, idx) {
         let maxWidth = 580;
         return <Flex.Layout className='linkPreview' key={idx}>
             <div className='vertical-line'></div>
@@ -144,16 +166,16 @@ const SmartDisplay = React.createClass({
                 {p.urlSiteName ? <div className='site-name'>{p.urlSiteName}</div> : undefined}
                 {p.urlDescription ? <a style={{display:'block', color:'black'}} href={p.url} className='description'>{p.urlDescription}</a> : undefined}
                 {p.urlTitle ? <a style={{display:'block'}} href={p.url} className='title'>{p.urlTitle}</a> : undefined}
-                {p.videoURL ? <div style={{width:'100%', maxWidth: maxWidth}}><div style={{position: 'relative',
+                {p.videoURL ? <div style={{width: Math.min(p.videoWidth, maxWidth) ,maxWidth: '100%'}}><div style={{position: 'relative',
                                             width: '100%',
                                             height: 0,
                                             paddingBottom:`${100*p.videoHeight / p.videoWidth}%`}}>
                     <iframe style={{ position:'absolute', width: '100%', height:'100%', left:0, top: 0}} src={p.videoURL[0]}></iframe>
                     </div></div>: undefined}
-                {!p.videoURL && p.urlImage?<div style={{width:'100%', maxWidth: maxWidth}}><div style={{position: 'relative',
+                {!p.videoURL && p.urlImage?<div style={{width: Math.min(p.img.width, maxWidth) ,maxWidth: '100%'}}><div style={{position: 'relative',
                                             width: '100%',
                                             height: 0,
-                                            paddingBottom:`${100*p.urlImageHeight / p.urlImageWidth}%`}}>
+                                            paddingBottom:`${100*p.img.height / p.img.width}%`}}>
                     <img   style={{position:'absolute',width: '100%', height:'100%', left:0, top: 0}} src={p.urlImage}/>
                     </div></div>:undefined}
             </div>
@@ -166,7 +188,7 @@ const SmartDisplay = React.createClass({
         return (
             <div className="smart-display" style={this.props.style}>
                 <span className='markdown-body' dangerouslySetInnerHTML={{__html: value}}></span>
-                {this.state.urlPreviews.filter(p=> p).map((p, idx) => {
+                {this.state.urlPreviews.map((p, idx) => {
                     return this._renderOg(p, idx);
                 })}
             </div>
