@@ -137,25 +137,25 @@ const SmartDisplay = React.createClass({
 
     _renderOg(og, idx) {
         let p = this._analysePreview(og);
-        let maxWidth = 580, width, height;
-        if (p.videoURL) {
-            if (p.videoWidth > maxWidth) {
-                width = maxWidth;
-                height = width / p.videoWidth * p.videoHeight;
-            } else {
-                width = p.videoWidth;
-                height = p.videoHeight;
-            }
-        }
+        let maxWidth = 580;
         return <Flex.Layout className='linkPreview' key={idx}>
             <div className='vertical-line'></div>
-            <div className='content'>
+            <div style={{flexGrow: 1}} className='content'>
                 {p.urlSiteName ? <div className='site-name'>{p.urlSiteName}</div> : undefined}
                 {p.urlDescription ? <a style={{display:'block', color:'black'}} href={p.url} className='description'>{p.urlDescription}</a> : undefined}
                 {p.urlTitle ? <a style={{display:'block'}} href={p.url} className='title'>{p.urlTitle}</a> : undefined}
-                {p.videoURL ? <iframe style={{width:width, height:height}} src={p.videoURL[0]}></iframe>
-                    : undefined}
-                {!p.videoURL && p.urlImage? <img src={p.urlImage} width={p.urlImageWidth} height={p.urlImageHeight}/>:undefined}
+                {p.videoURL ? <div style={{width:'100%', maxWidth: maxWidth}}><div style={{position: 'relative',
+                                            width: '100%',
+                                            height: 0,
+                                            paddingBottom:`${100*p.videoHeight / p.videoWidth}%`}}>
+                    <iframe style={{ position:'absolute', width: '100%', height:'100%', left:0, top: 0}} src={p.videoURL[0]}></iframe>
+                    </div></div>: undefined}
+                {!p.videoURL && p.urlImage?<div style={{width:'100%', maxWidth: maxWidth}}><div style={{position: 'relative',
+                                            width: '100%',
+                                            height: 0,
+                                            paddingBottom:`${100*p.urlImageHeight / p.urlImageWidth}%`}}>
+                    <img   style={{position:'absolute',width: '100%', height:'100%', left:0, top: 0}} src={p.urlImage}/>
+                    </div></div>:undefined}
             </div>
         </Flex.Layout>;
     },
