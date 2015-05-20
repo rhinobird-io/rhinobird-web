@@ -31,7 +31,7 @@ module.exports = React.createClass({
           <div className="avatar-wrapper" style={{flexShrink: 0}}>
             <Avatar scale={1.6} member={UserStore.getUser(this.props.messages.first().userId)} />
           </div>
-          <Layout vertical flex={1}>
+          <Layout vertical flex={1} style={{minWidth:0}}>
             <Layout horizontal justified style={{marginBottom:8}}>
               <div className="name"><Name member={UserStore.getUser(this.props.messages.first().userId)} /></div>
               <div className="time"><SmartTimeDisplay start={this.props.messages.first().createdAt} relative /></div>
