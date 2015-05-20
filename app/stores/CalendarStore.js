@@ -61,7 +61,7 @@ function _formatDate(date) {
     var mm = (d.getMonth() + 1).toString();
     var dd  = d.getDate().toString();
     return yyyy + "-" + (mm[1] ? mm : "0" + mm[0]) + "-" + (dd[1] ? dd : "0" + dd[0]);
-}
+}SearchStore
 
 function _sortByFromTime(e1, e2) {
     let e1FromTime = new Date(e1.from_time);

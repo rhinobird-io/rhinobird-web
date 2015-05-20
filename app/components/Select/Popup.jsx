@@ -201,7 +201,7 @@ export default React.createClass({
     },
 
     _parseChild(child, valueAttr, options) {
-        if (!child.props) {
+        if (!child || !child.props) {
             return;
         }
         if (child.props[valueAttr]) {
@@ -233,7 +233,7 @@ export default React.createClass({
     },
 
     _constructChild(child, valueAttr) {
-        if (child.props) {
+        if (child && child.props) {
             if (child.props[valueAttr]) {
                 let key = child.props[valueAttr].toString();
                 let disabled = !!child.props.disabled;
