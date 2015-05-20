@@ -13,6 +13,7 @@ let _currentChannel;
 
 // key, backEndChannelId, value : users(channels)
 let _teamUserChannels = {};
+let _channels = {};
 
 let ChannelStore = assign({}, BaseStore, {
 
@@ -20,6 +21,9 @@ let ChannelStore = assign({}, BaseStore, {
         return _currentChannel;
     },
 
+    getChannel(name){
+        return _channels[name];
+    },
 
     getUserChannelsByTeamBackEndId(teamBackEndChannelId) {
         return _teamUserChannels[teamBackEndChannelId];
@@ -32,9 +36,11 @@ let ChannelStore = assign({}, BaseStore, {
                 let directMessageChannels = payload.directMessageChannels;
                 let _directMsgMap = {};
                 directMessageChannels.forEach( dmc => {
+                    _channels[dmc.backEndChannelId] = dmc;
                     _directMsgMap[dmc.channel.id] = _directMsgMap[dmc.channel.id] || dmc;
                 });
                 publicGroupChannels.forEach(pgc => {
+                    _channels[pgc.backEndChannelId] = pgc;
                     UserStore.getUsersByTeamId(pgc.channel.id, true).forEach( usr => {
                         _teamUserChannels[pgc.backEndChannelId] = _teamUserChannels[pgc.backEndChannelId] || [];
                         _directMsgMap[usr.id] && _teamUserChannels[pgc.backEndChannelId].push(_directMsgMap[usr.id]);

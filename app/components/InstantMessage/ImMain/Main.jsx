@@ -81,6 +81,7 @@ module.exports = React.createClass({
             channel : {
               created_at: user.created_at,
               name: user.name,
+              realname: user.realname,
               updated_at: user.updated_at,
               id: user.id
             }
