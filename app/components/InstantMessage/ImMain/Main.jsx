@@ -120,7 +120,7 @@ module.exports = React.createClass({
   render() {
     return (
         <Flex.Layout fit className="instant-message-container">
-          <Flex.Layout selfStretch flex vertical className="main" >
+          <Flex.Layout selfStretch flex vertical className="main" style={{minWidth:0}}>
             <ImHistory {...this.props} className="history" ></ImHistory>
             <ImSendBox {...this.props} className="send-box" ></ImSendBox>
           </Flex.Layout>
