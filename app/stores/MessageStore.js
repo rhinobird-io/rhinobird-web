@@ -97,6 +97,7 @@ class MessagesWrapper {
 }
 
 function appendToCurrentMessageSuite(messages) {
+    debugger;
     // generally new message only contains one message...
     let previousMsgSuite = _currentChannelMessageSuites.last();
     if(!previousMsgSuite){
@@ -178,6 +179,7 @@ let MessageStore = assign({}, BaseStore, {
         _messages[message.channelId] = _messages[message.channelId] || new MessagesWrapper(message.channelId);
         _messages[message.channelId].addMessages([message,], false);
 
+        this.emit(IMConstants.EVENTS.RECEIVE_NEW_MESSAGE, message);
         if (currentChannel.backEndChannelId === message.channelId) {
             this.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
         }
@@ -186,11 +188,13 @@ let MessageStore = assign({}, BaseStore, {
     dispatcherIndex: AppDispatcher.register(function (payload) {
         switch (payload.type) {
             case Constants.ChannelActionTypes.CHANGE_CHANNEL:
+                debugger;
                 AppDispatcher.waitFor([ChannelStore.dispatcherIndex]);
                 let currentChannel = ChannelStore.getCurrentChannel();
                 _currentChannelMessageSuites = new Immutable.List();
                 if(_messages[currentChannel.backEndChannelId]) {
                     appendToCurrentMessageSuite(_messages[currentChannel.backEndChannelId].getMessagesArray((1 << 30), IMConstants.MSG_LIMIT));
+                    MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
                 }
                 break;
             case Constants.MessageActionTypes.RECEIVE_INIT_MESSAGES:
@@ -212,13 +216,6 @@ let MessageStore = assign({}, BaseStore, {
                 prependToCurrentMessageSuite(
                     _messages[payload.channel.backEndChannelId].getMessagesArray(payload.oldestMessageId, IMConstants.MSG_LIMIT)
                 );
-                MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
-                break;
-            case Constants.MessageActionTypes.MESSAGE_READY:
-                currentChannel = ChannelStore.getCurrentChannel();
-                if(_messages[currentChannel.backEndChannelId]) {
-                    appendToCurrentMessageSuite(_messages[currentChannel.backEndChannelId].getMessagesArray((1 << 30), IMConstants.MSG_LIMIT));
-                }
                 MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
                 break;
             case Constants.MessageActionTypes.SEND_MESSAGE:

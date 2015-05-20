@@ -49,12 +49,6 @@ export default {
 
                 });
         } else {
-            AppDispatcher.dispatch({
-                type: Constants.MessageActionTypes.MESSAGE_READY,
-                channel: {
-                    backEndChannelId: backEndChannelId
-                }
-            });
 
             let messages = MessageStore.getMessages({backEndChannelId : backEndChannelId});
             if (messages && messages.length > 0) {

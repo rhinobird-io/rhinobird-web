@@ -17,6 +17,9 @@ const SocketStore = require('../../../stores/SocketStore');
 const Flex = require('../../Flex');
 import IMConstant from '../../../constants/IMConstants';
 
+if (Notification.permission !== 'granted'){
+  Notification.requestPermission();
+}
 
 require('./style.less');
 module.exports = React.createClass({
