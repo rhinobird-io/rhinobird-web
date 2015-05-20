@@ -161,7 +161,6 @@ const SmartDisplay = React.createClass({
     },
 
     render() {
-        console.log(' render sd ' + this.props.value);
         let value = markdown.render(this.props.value);
         value = this.removeNewline(value);
         return (

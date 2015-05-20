@@ -102,7 +102,7 @@ function appendToCurrentMessageSuite(messages) {
     for (let i = 0; i < messages.length; i++) {
         let msg = messages[i];
         let preMoment = moment(previousMsg.createdAt), curMoment = moment(msg.createdAt);
-        if (conCount <= 5 && msg.userId === previousMsg.userId && preMoment.diff(curMoment, 'minutes') <= 1) {
+        if (conCount <= 5 && msg.userId === previousMsg.userId && curMoment.diff(preMoment, 'minutes') <= 1) {
             conCount++;
             previousMsgSuite = previousMsgSuite.push(msg);
             _currentChannelMessageSuites = _currentChannelMessageSuites.set(_currentChannelMessageSuites.size - 1, previousMsgSuite);
@@ -123,7 +123,7 @@ function prependToCurrentMessageSuite(messages) {
     for (let i = messages.length - 2; i >= 0; i--) {
         let msg = messages[i];
         let preMoment = moment(previousMsg.createdAt), curMoment = moment(msg.createdAt);
-        if (conCount <= 5 && msg.userId === previousMsg.userId && curMoment.diff(preMoment, 'minutes') <= 1) {
+        if (conCount <= 5 && msg.userId === previousMsg.userId && preMoment.diff(curMoment, 'minutes') <= 1) {
             conCount++;
             currentSuite = currentSuite.unshift(msg);
         } else {
@@ -208,7 +208,6 @@ let MessageStore = assign({}, BaseStore, {
                 MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
                 break;
             case Constants.MessageActionTypes.MESSAGE_READY:
-                debugger;
                 currentChannel = ChannelStore.getCurrentChannel();
                 if(_messages[currentChannel.backEndChannelId]) {
                     appendToCurrentMessageSuite(_messages[currentChannel.backEndChannelId].getMessagesArray((1 << 30), IMConstants.MSG_LIMIT));

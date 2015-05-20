@@ -25,7 +25,6 @@ module.exports = React.createClass({
     return nextProps.messages !== this.props.messages;
   },
   render() {
-    console.log('render ' + this.props.messages);
     return (
       <div className='instant-message-message-item'>
         <Layout horizontal>
