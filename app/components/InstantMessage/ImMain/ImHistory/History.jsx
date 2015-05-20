@@ -71,7 +71,7 @@ module.exports = React.createClass({
     loadMoreOldMessages() {
         let oldestMessageId = undefined;
         if (this.state.messageSuites.size > 0) {
-            oldestMessageId = this.state.messageSuites.get(0)[0].id;
+            oldestMessageId = this.state.messageSuites.get(0).get(0).id;
         } else {
             oldestMessageId = (1 << 30);
         }
@@ -90,7 +90,7 @@ module.exports = React.createClass({
                     {
                         this.state.messageSuites.map((msg, idx) => <ImMessage onLinkPreviewDidUpdate={this.componentDidUpdate.bind(this)}
                                                                               onLinkPreviewWillUpdate={this.componentWillUpdate.bind(this)}
-                            key={`group${msg[0].id}`} messages={msg}></ImMessage>)
+                            key={`group${msg.first().id}`} messages={msg}></ImMessage>)
                     }
                 </div>
             </Flex.Layout>
