@@ -57,8 +57,7 @@ let UnreadStore = assign({}, BaseStore, {
                 Object.keys(latestAndLastSeen).forEach(backEndChannelId => {
                     _unread[backEndChannelId] = _unread[backEndChannelId] || {};
                     _unread[backEndChannelId].latestMessageId = latestAndLastSeen[backEndChannelId].latestMessageId;
-                    _unread[backEndChannelId].lastSeenMessageId = latestAndLastSeen[backEndChannelId].lastSeenMessageId;
-
+                    _unread[backEndChannelId].lastSeenMessageId = _unread[backEndChannelId].lastSeenMessageId || latestAndLastSeen[backEndChannelId].lastSeenMessageId;
                     _unreadBool = _unreadBool.set(backEndChannelId, _unread[backEndChannelId].latestMessageId > _unread[backEndChannelId].lastSeenMessageId);
                     if (_unreadBool.get(backEndChannelId)) {
                         UnreadStore.emit(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + backEndChannelId, {unread : true});

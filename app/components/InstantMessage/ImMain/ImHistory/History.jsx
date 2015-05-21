@@ -41,6 +41,9 @@ module.exports = React.createClass({
     componentDidMount() {
         MessageStore.on(IMConstant.EVENTS.RECEIVE_MESSAGE, this._onReceiveMessage);
         MessageStore.on(IMConstant.EVENTS.RECEIVE_NEW_MESSAGE, this._onReceiveNewMessage);
+
+        var node = this.getDOMNode();
+        node.scrollTop = node.scrollHeight;
     },
 
     componentWillUnmount() {

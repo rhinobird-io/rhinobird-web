@@ -78,7 +78,7 @@ module.exports = React.createClass({
 
   statics: {
     willTransitionTo: function (transition, params, query) {
-      if (LoginStore && !LoginStore.getUser()) {
+      if (!LoginStore.getUser()) {
         return;
       }
       let channelIdToGo = params.backEndChannelId;
