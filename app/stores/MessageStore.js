@@ -1,8 +1,10 @@
 'use strict';
+import router from 'react-router';
 import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
 import IMConstants from '../constants/IMConstants';
 import BaseStore from './BaseStore';
+import UserStore from './UserStore';
 import ChannelStore from './ChannelStore';
 import LoginStore from './LoginStore';
 import SocketStore from './SocketStore';
@@ -202,7 +204,8 @@ let MessageStore = assign({}, BaseStore, {
                 window.focus();
                 notification.close();
                 if(channel !== currentChannel) {
-                    this.context.router.transitionTo(`/platform/im/talk/${message.channelId}`);
+                    debugger;
+                    router.transitionTo(`/platform/im/talk/${message.channelId}`);
                 }
             };
             setTimeout(()=>{notification.close()}, IMConstants.NOTIFICATION.STAY_SECONDS * 1000);

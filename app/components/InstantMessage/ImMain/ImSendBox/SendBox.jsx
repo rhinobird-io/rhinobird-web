@@ -23,7 +23,8 @@ module.exports = React.createClass({
     getInitialState() {
         return  {
             ready : false,
-            messageValue : ''
+            messageValue : '',
+            currentChannel: ChannelStore.getCurrentChannel()
         }
     },
 

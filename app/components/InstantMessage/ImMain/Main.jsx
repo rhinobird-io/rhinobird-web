@@ -78,6 +78,9 @@ module.exports = React.createClass({
 
   statics: {
     willTransitionTo: function (transition, params, query) {
+      if (LoginStore && !LoginStore.getUser()) {
+        return;
+      }
       let channelIdToGo = params.backEndChannelId;
       if (channelIdToGo === 'default') {
         // load from localStorage
@@ -110,17 +113,10 @@ module.exports = React.createClass({
 
   componentDidMount() {
     ChannelStore.addChangeListener(this._onChannelChange);
-    //if (!SocketStore.getSocket()) {
-    //  // SocketStore.addChangeListener(this._onSocketReady);
-    //  // this._init();
-    //} else {
-    //  // this._onSocketReady();
-    //}
   },
 
   componentWillUnmount() {
     ChannelStore.removeChangeListener(this._onChannelChange);
-    // SocketStore.removeChangeListener(this._onSocketReady);
   },
 
   _onChannelChange() {
