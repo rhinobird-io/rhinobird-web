@@ -32,12 +32,19 @@ let SearchEverywhere = React.createClass({
     },
 
     open() {
+        if (this.isOpen()) {
+            return;
+        }
+
         this.setState({
             open: true
         }, () => this.refs.keyword.focus());
     },
 
     close() {
+        if (!this.isOpen()) {
+            return;
+        }
         this.refs.popup.dismiss();
         this.setState({
             open: false

@@ -98,7 +98,7 @@ export default React.createClass({
             repeatedBy: "Month",
             repeatedEndType: "Never",
             repeatedEndDate: "",
-            repeatedTimes: 1,
+            repeatedTimes: 2,
             isPeriod: true
         };
     },
@@ -116,13 +116,13 @@ export default React.createClass({
 
         let fromHM = [];
         fromHM.push(
-            <Input
+            <Input.RegexInput
                 key="fromHour"
                 pattern={/^([01]?\d|2[0-3])$/}
                 floatingLabelText="Hour"
                 valueLink={this.linkState("fromHour")}/>);
         fromHM.push(
-            <Input
+            <Input.RegexInput
                 key="fromMinute"
                 pattern={/^([0-5]?\d)$/}
                 floatingLabelText="Minute"
@@ -130,13 +130,13 @@ export default React.createClass({
 
         let toHM = [];
         toHM.push(
-            <Input
+            <Input.RegexInput
                 key="toHour"
                 pattern={/^([01]?\d|2[0-3])$/}
                 floatingLabelText="Hour"
                 valueLink={this.linkState("toHour")}/>);
         toHM.push(
-            <Input
+            <Input.RegexInput
                 key="toMinute"
                 pattern={/^([0-5]?\d)$/}
                 floatingLabelText="Minute"
@@ -423,7 +423,7 @@ export default React.createClass({
                     <label>Ends Way:</label>
                     <Selector
                         ref="repeatedEndType"
-                        valueLink={this.linkState("repeatedEndType")}
+                        value={this.state.repeatedEndType}
                         onSelectChange={this._repeatedEndTypeChange}>
                         <span className="cal-event-repeated-item" name="Never">Never</span>
                         <span className="cal-event-repeated-item" name="Occurrence">Occurrence</span>
@@ -480,10 +480,13 @@ export default React.createClass({
         }
     },
 
-    _repeatedEndTypeChange(repeatedEndType) {
-        if (repeatedEndType === "Occurrence") {
-            this.refs.repeatedTimes.focus();
-        }
+    _repeatedEndTypeChange: function(repeatedEndType) {
+        console.log(repeatedEndType);
+        this.setState({repeatedEndType: repeatedEndType}, () => {
+            if (repeatedEndType === "Occurrence") {
+                this.refs.repeatedTimes.focus();
+            }
+        });
     },
 
     _getSummary() {
@@ -552,7 +555,7 @@ export default React.createClass({
 
         // Repeat event ends way summary
         if (repeatedInfo.repeatedEndType == 'Occurrence') {
-            if (isNaN(event.repeatedTimes)) repeatedInfo.repeatedTimes = 1;
+            if (isNaN(repeatedInfo.repeatedTimes)) repeatedInfo.repeatedTimes = 1;
             else repeatedInfo.repeatedTimes = Math.floor(repeatedInfo.repeatedTimes);
 
             summary += ", " + repeatedInfo.repeatedTimes + " times";
