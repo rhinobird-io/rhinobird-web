@@ -86,7 +86,6 @@ module.exports = React.createClass({
     _onItemTap(item, e) {
         let currentChannel = ChannelStore.getCurrentChannel();
         if (!currentChannel || currentChannel.backEndChannelId !== item.backEndChannelId) {
-            ChannelAction.changeChannel(item.backEndChannelId, LoginStore.getUser());
             this.context.router.transitionTo('/platform/im/talk/' + item.backEndChannelId);
         } else {
             console.log('change channel : ' + !currentChannel || currentChannel.backEndChannelId !== item.backEndChannelId)

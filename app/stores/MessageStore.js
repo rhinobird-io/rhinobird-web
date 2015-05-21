@@ -182,6 +182,32 @@ let MessageStore = assign({}, BaseStore, {
         if (currentChannel.backEndChannelId === message.channelId) {
             this.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
         }
+
+        let channel = ChannelStore.getChannel(message.channelId),
+            user = UserStore.getUser(message.userId);
+        if(!document.hasFocus() || channel !== currentChannel) {
+            let channelName = channel.isGroup ? channel.channel.name: channel.channel.realname;
+
+            let body;
+            if(!channel.isGroup) {
+                body = message.text;
+            } else {
+                body = `${user.realname}: ${message.text}`;
+            }
+            let notification = new Notification(channelName, {
+                icon: `http://www.gravatar.com/avatar/${user.emailMd5}?d=identicon`,
+                body: body
+            });
+            notification.onclick= ()=>{
+                window.focus();
+                notification.close();
+                if(channel !== currentChannel) {
+                    this.context.router.transitionTo(`/platform/im/talk/${message.channelId}`);
+                }
+            };
+            setTimeout(()=>{notification.close()}, IMConstants.NOTIFICATION.STAY_SECONDS * 1000);
+        }
+
     },
 
     dispatcherIndex: AppDispatcher.register(function (payload) {

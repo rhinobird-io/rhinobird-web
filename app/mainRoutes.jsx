@@ -9,6 +9,8 @@ const Redirect = Router.Redirect;
 if(!Object.assign)
 	Object.assign = React.__spread;
 
+var Main = require("react-proxy!./components/InstantMessage/ImMain/Main");
+
 // export routes
 module.exports = (
     <Route name="app" path="/platform" handler={require("./components/Application")}>
@@ -26,7 +28,7 @@ module.exports = (
         </Route>
         <Route name="demo" path="demo" handler={require("react-proxy!./components/Demo")} />
         <Route name="im" path="im" handler={require("react-proxy!./components/InstantMessage")}>
-          <Route name="talk" key="imTalk" path="talk/:backEndChannelId" handler={require("react-proxy!./components/InstantMessage/ImMain/Main")}/>
+          <Route name="talk" key="imTalk" path="talk/:backEndChannelId" handler={ require("react-router-proxy!./components/InstantMessage/ImMain/Main") }/>
           <Route name="setting" path="setting" handler={require("react-proxy!./components/InstantMessage/ImSetting")} />
         </Route>
         <Redirect from="/platform" to="/platform/dashboard" />

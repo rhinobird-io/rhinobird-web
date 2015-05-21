@@ -34,7 +34,7 @@ module.exports = React.createClass({
         return {
             messages: [],
             upperThreshold: 100,
-            messageSuites : Immutable.List.of()
+            messageSuites : MessageStore.getCurrentChannelMessageSuites()
         }
     },
 
@@ -68,32 +68,7 @@ module.exports = React.createClass({
         });
     },
     _onReceiveNewMessage(message){
-        console.log(message);
-        let channel = ChannelStore.getChannel(message.channelId),
-            user = UserStore.getUser(message.userId), currentChannel = ChannelStore.getCurrentChannel();
-        if(!document.hasFocus() || channel !== currentChannel) {
-            let channelName = channel.isGroup ? channel.channel.name: channel.channel.realname;
 
-            let body;
-            if(!channel.isGroup) {
-                body = message.text;
-            } else {
-                body = `${user.realname}: ${message.text}`;
-            }
-            let notification = new Notification(channelName, {
-                icon: `http://www.gravatar.com/avatar/${user.emailMd5}?d=identicon`,
-                body: body
-            });
-            notification.onclick= ()=>{
-                window.focus();
-                notification.close();
-                if(channel !== currentChannel) {
-                    ChannelAction.changeChannel(message.channelId, LoginStore.getUser());
-                    this.context.router.transitionTo(`/platform/im/talk/${message.channelId}`);
-                }
-            };
-            setTimeout(()=>{notification.close()}, IMConstants.NOTIFICATION.STAY_SECONDS * 1000);
-        }
     },
 
     /**

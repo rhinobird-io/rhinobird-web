@@ -68,19 +68,20 @@ let UnreadStore = assign({}, BaseStore, {
                 break;
             case Constants.MessageActionTypes.CLEAR_UNREAD:
                 var backEndChannelId = payload.backEndChannelId;
-
                 _unread[backEndChannelId] = _unread[backEndChannelId] || {};
                 _unread[backEndChannelId].lastSeenMessageId = payload.lastSeenMessageId;
-                SocketStore.getSocket().emit('message:seen', {
-                    userId: LoginStore.getUser().id,
-                    messageId: _unread[backEndChannelId].lastSeenMessageId,
-                    channelId: backEndChannelId
-                });
                 _unreadBool = _unreadBool.set(backEndChannelId, false);
                 UnreadStore.emit(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + backEndChannelId, {unread : false});
-
-                // Clear unread wont change the order
-                // UnreadStore.emitChange();
+                break;
+            case Constants.SocketActionTypes.SOCKET_INIT:
+                let socket = payload.socket;// same socket as socket store
+                Object.keys(_unread).forEach(backEndChannelId => {
+                    socket.emit('message:seen', {
+                        userId: LoginStore.getUser().id,
+                        messageId: _unread[backEndChannelId].lastSeenMessageId,
+                        channelId: backEndChannelId
+                    });
+                });
                 break;
             default:
                 break;

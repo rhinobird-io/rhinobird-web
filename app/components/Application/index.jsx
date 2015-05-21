@@ -47,6 +47,7 @@ let FloatingContent = React.createClass({
 });
 
 let Application = React.createClass({
+
     getInitialState() {
         return {
             title: '',
