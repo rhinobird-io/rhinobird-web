@@ -84,7 +84,7 @@ Member.Name = React.createClass({
 });
 
 Member.MemberSelect = React.createClass({
-    mixins: [React.addons.LinkedStateMixin],
+    mixins: [React.addons.LinkedStateMixin, React.addons.PureRenderMixin],
 
     propTypes: {
         user: React.PropTypes.bool,
@@ -132,6 +132,7 @@ Member.MemberSelect = React.createClass({
     },
 
     render: function() {
+        console.log("MemberSelect render.");
         let {
             team,
             user,

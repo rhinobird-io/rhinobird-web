@@ -39,7 +39,7 @@ export default React.createClass({
     },
 
     componentWillReceiveProps() {
-        //this.setState({children: this.props.children});
+        this.setState({children: this.props.children});
     },
 
     componentDidUpdate() {
@@ -166,7 +166,9 @@ export default React.createClass({
 
     _filter() {
         let keyword = this.refs.text.getValue();
-        let children = this.props.children.filter((child) => {
+        let propsChildren = [].concat(this.props.children);
+
+        let children = propsChildren.filter((child) => {
             if (child.props.value && this.state.selected[child.props.value]) return false;
             if (keyword.length === 0 || !child.props.index || !child.props.value) return true;
             return this._contain(child.props.index, keyword.toLowerCase());
@@ -174,7 +176,7 @@ export default React.createClass({
         if (children.length >= 0 && !this.refs.popupSelect.isShow()) {
             this.refs.popupSelect.show();
         }
-        this.setState({children: children, activeOptionIndex: children.length > 0 ? 0 : -1});
+        this.setState({children: children});
     },
 
     _getFilteredChildren(keyword) {
@@ -235,7 +237,7 @@ export default React.createClass({
                 type="text"
                 hintText={selectedValues.length === 0 ? hintText : undefined}
                 floatingLabelText={floatingText}
-                style={styles.padding}
+                styles={[styles.padding, style]}
                 errorText={this.props.errorText}
                 className={this.props.className}
                 onChange={this._filter}
@@ -304,7 +306,7 @@ export default React.createClass({
                 </div> : null;
 
         return (
-            <div styles={[styles.select, style]}>
+            <div styles={[styles.select]}>
                 {tokenWrapperDOM}
                 {text}
                 {popupSelect}

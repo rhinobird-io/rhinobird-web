@@ -1,4 +1,5 @@
 const React           = require("react"),
+      PureRenderMixin = require('react/addons').addons.PureRenderMixin,
       Router          = require("react-router"),
       MUI             = require('material-ui'),
       Moment          = require("moment"),
@@ -60,16 +61,24 @@ export default React.createClass({
         descriptionRequired: "Event description is required."
     },
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.state.participants == nextState.participants;
+    },
+
+    componentWillMount() {
+        this.seconds = new Date().getTime();
+    },
+
     componentDidMount() {
+        console.log(new Date().getTime() - this.seconds);
         this.refs.eventTitle.focus();
     },
 
     getInitialState() {
         let now = new Date();
+        console.log(now.getMinutes());
         return {
-            title: "",
             titleError: "",
-            description: "",
             fullDay: false,
             participants: {
                 teams: [],
@@ -104,6 +113,35 @@ export default React.createClass({
                 height: "100%"
             }
         };
+
+        let fromHM = [];
+        fromHM.push(
+            <Input
+                key="fromHour"
+                pattern={/^([01]?\d|2[0-3])$/}
+                floatingLabelText="Hour"
+                valueLink={this.linkState("fromHour")}/>);
+        fromHM.push(
+            <Input
+                key="fromMinute"
+                pattern={/^([0-5]?\d)$/}
+                floatingLabelText="Minute"
+                valueLink={this.linkState("fromMinute")}/>);
+
+        let toHM = [];
+        toHM.push(
+            <Input
+                key="toHour"
+                pattern={/^([01]?\d|2[0-3])$/}
+                floatingLabelText="Hour"
+                valueLink={this.linkState("toHour")}/>);
+        toHM.push(
+            <Input
+                key="toMinute"
+                pattern={/^([0-5]?\d)$/}
+                floatingLabelText="Minute"
+                valueLink={this.linkState("toMinute")}/>);
+
         return (
             <PerfectScroll style={{height: "100%", position: "relative"}}>
                 <Flex.Layout horizontal centerJustified wrap>
@@ -117,7 +155,6 @@ export default React.createClass({
                                 hintText="Event Title"
                                 errorText={this.state.titleError}
                                 floatingLabelText="Event Title"
-                                valueLink={this.linkState("title")}
                                 className="cal-create-event-textfield" />
 
                             <SmartEditor
@@ -126,49 +163,35 @@ export default React.createClass({
                                 hintText="Description"
                                 errorText={this.state.descriptionError}
                                 floatingLabelText="Description"
-                                className="cal-create-event-textfield"
-                                valueLink={this.linkState("description")} />
+                                className="cal-create-event-textfield" />
 
                             <Flex.Layout horizontal justified style={{marginTop: 24, marginBottom: 24}}>
                                 <label>Full Day</label>
-                                <MUI.Toggle />
+                                <MUI.Toggle
+                                    onToggle={this._onFullDayToggled}/>
                             </Flex.Layout>
 
                             <MUI.Tabs className="cal-create-event-tab">
                                 <MUI.Tab label="Period" onActive={() => this.setState({isPeriod: true})}>
                                     <div className="tab-template-container">
                                         <Flex.Layout horizontal justified style={{marginTop: -10}}>
-                                            <Flex.Layout horizontal justified>
+                                            <Flex.Layout horizontal justified style={{minWidth: 0}}>
                                                 <MUI.DatePicker
                                                     ref="fromDate"
                                                     hintText="From Date"
                                                     floatingLabelText="From"
                                                     onChange={this._onFromDateChange}
                                                     defaultDate={this.state.fromTime} />
-                                                <Input
-                                                    pattern={/^([01]?\d|2[0-3])$/}
-                                                    floatingLabelText="Hour"
-                                                    valueLink={this.linkState("fromHour")}/>
-                                                <Input
-                                                    pattern={/^([0-5]?\d)$/}
-                                                    floatingLabelText="Minute"
-                                                    valueLink={this.linkState("fromMinute")}/>
+                                                {!this.state.fullDay ? fromHM : null}
                                             </Flex.Layout>
-                                            <Flex.Layout horizontal justified>
+                                            <Flex.Layout horizontal justified style={{minWidth: 0}}>
                                                 <MUI.DatePicker
                                                     ref="toDate"
                                                     hintText="To Date"
                                                     floatingLabelText="To"
                                                     onChange={this._onToDateChange}
                                                     defaultDate={this.state.fromTime} />
-                                                <Input
-                                                    pattern={/^([01]?\d|2[0-3])$/}
-                                                    floatingLabelText="Hour"
-                                                    valueLink={this.linkState("toHour")}/>
-                                                <Input
-                                                    pattern={/^([0-5]?\d)$/}
-                                                    floatingLabelText="Minute"
-                                                    valueLink={this.linkState("toMinute")}/>
+                                                {!this.state.fullDay ? toHM : null}
                                             </Flex.Layout>
                                         </Flex.Layout>
                                     </div>
@@ -179,7 +202,9 @@ export default React.createClass({
                                             <MUI.DatePicker
                                                 ref="fromDate"
                                                 hintText="From Date"
+                                                floatingLabelText="From"
                                                 defaultDate={this.state.fromTime} />
+                                                {!this.state.fullDay ? fromHM : null}
                                         </Flex.Layout>
                                     </div>
                                 </MUI.Tab>
@@ -262,23 +287,32 @@ export default React.createClass({
 
     _handleSubmit: function(e) {
         e.preventDefault();
+
         let errorMsg = this.errorMsg;
 
-        if (this.state.title.length === 0) {
+        let refs = this.refs;
+
+        let title = refs.eventTitle.getValue();
+        let description = refs.eventDescription.getValue();
+
+        if (title.length === 0) {
             this.setState({titleError: errorMsg.titleRequired});
             return;
         } else {
             this.setState({titleError: ""});
         }
 
-        if (this.state.description.length === 0) {
+        if (description.length === 0) {
             this.setState({descriptionError: errorMsg.descriptionRequired});
             return;
         } else {
             this.setState({descriptionError: ""});
         }
 
-        CalendarActions.create(this.state, () => this.context.router.transitionTo("event-list"));
+        let event = this.state;
+        event.title = title;
+        event.description = description;
+        CalendarActions.create(event, () => this.context.router.transitionTo("event-list"));
     },
 
     _getRepeatedInfoContent() {
@@ -526,6 +560,14 @@ export default React.createClass({
             summary += ", until " + this.refs.repeatedEndDate.getDate().toDateString();
         }
         return summary;
+    },
+
+    _onFullDayToggled(e, isInputChecked) {
+        if (isInputChecked) {
+            this.setState({fullDay: true});
+        } else {
+            this.setState({fullDay: false});
+        }
     },
 
     _onRepeatToggled(e, isInputChecked) {

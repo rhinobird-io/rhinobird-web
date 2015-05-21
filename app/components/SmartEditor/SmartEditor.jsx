@@ -17,7 +17,7 @@ require('./style.less');
 const COMMANDS = require('./commands').list;
 
 const SmartEditor = React.createClass({
-  mixins: [ClickAwayable],
+  mixins: [ClickAwayable, React.addons.PureRenderMixin],
 
   propTypes: {
     valueLink: React.PropTypes.shape({

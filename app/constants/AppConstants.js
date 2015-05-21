@@ -13,6 +13,10 @@ export default {
     READ_NOTIFI: null
   }),
 
+  SearchActionTypes: keyMirror({
+    SEARCH: null
+  }),
+
   CalendarActionTypes: keyMirror({
     CREATE_EVENT: null,
     RECEIVE_EVENT: null,

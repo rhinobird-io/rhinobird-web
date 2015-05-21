@@ -45,7 +45,8 @@ export default React.createClass({
                 offsetTop += offsetParent.offsetTop;
                 offsetParent = offsetParent.offsetParent;
             }
-            self.scrollTop = offsetTop + newCreated.offsetHeight - self.offsetHeight + 20;
+            self.scrollTop = offsetTop + newCreated.offsetHeight / 2 - self.offsetHeight / 2;
+            console.log(self.scrollTop);
         }
     },
 
@@ -154,7 +155,10 @@ export default React.createClass({
                             <div className={contentInnerClass}>
                                 <div className="cal-event-title">
                                     <Flex.Layout horizontal justified>
-                                        <Link to="event-detail" params={{ id: event.id, repeatedNumber: event.repeated_number }}>
+                                        <Link
+                                            tooltip={event.title}
+                                            style={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}
+                                            to="event-detail" params={{ id: event.id, repeatedNumber: event.repeated_number }}>
                                             <span title={event.title}>{event.title}</span>
                                         </Link>
                                         <DropDownAny ref="dropdown" control={control} menu={menu} />
@@ -166,7 +170,7 @@ export default React.createClass({
                                             start={event.from_time} />
                                     </div>
                                 </div>
-                                <div className="cal-event-detail">
+                                <div className="cal-event-description">
                                     <SmartDisplay value={event.description}/>
                                 </div>
                             </div>

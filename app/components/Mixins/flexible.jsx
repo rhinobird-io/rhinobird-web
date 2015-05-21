@@ -19,7 +19,7 @@ module.exports = {
     componentDidMount() {
         this._updatePosition();
         window.addEventListener("resize", this._onWindowResize);
-        window.addEventListener("wheel", this._onWindowScroll)
+        //window.addEventListener("wheel", this._onWindowScroll)
     },
 
     componentDidUpdate() {
@@ -28,7 +28,7 @@ module.exports = {
 
     componentWillUnmount() {
         window.removeEventListener("resize", this._onWindowResize);
-        window.removeEventListener("wheel", this._onWindowScroll)
+        //window.removeEventListener("wheel", this._onWindowScroll)
     },
 
     _onWindowResize() {
@@ -57,8 +57,8 @@ module.exports = {
             let baseRect = baseDOM.getBoundingClientRect();
 
             // Window client size
-            let innerWidth = window.innerWidth;
-            let innerHeight = window.innerHeight;
+            let innerWidth = document.body.clientWidth; //window.innerWidth;
+            let innerHeight = document.body.clientHeight; //window.innerHeight;
 
             let baseTop = baseRect.top;
             let baseLeft = baseRect.left;
