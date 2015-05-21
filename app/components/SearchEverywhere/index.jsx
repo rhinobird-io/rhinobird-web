@@ -44,12 +44,13 @@ let SearchEverywhere = React.createClass({
         };
 
         let results = this.state.results.map((result) => {
-            return <div value={result._source.id}>
+            return <div key={result._source.id} value={result._source.id}>
                 {result._source.title}
             </div>;
         });
+
         return (
-            <MUI.Paper className="search-everywhere" zDepth={2} style={styles.wrapper}>
+            <MUI.Paper ref="search" className="search-everywhere" zDepth={2} style={styles.wrapper}>
                 <MUI.TextField
                     ref="keyword"
                     className="mui-text-search"
@@ -59,7 +60,7 @@ let SearchEverywhere = React.createClass({
                 <PopupSelect
                     hRestrict
                     ref="popup"
-                    relatedTo={() => this}>
+                    relatedTo={() => this.refs.search}>
                     {results}
                 </PopupSelect>
             </MUI.Paper>

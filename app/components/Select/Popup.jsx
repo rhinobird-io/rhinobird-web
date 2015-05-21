@@ -103,6 +103,9 @@ export default React.createClass({
             position,
             ...other
         } = this.props;
+        console.log(this.state.optionsMap);
+        console.log(this.props.children);
+
         let children = this._construct(this.props.children, this.props.valueAttr);
         let styles = {
             outer: {
@@ -179,17 +182,18 @@ export default React.createClass({
         }
     },
 
-    _parse(props) {
+    _parse: function(props) {
         let children = [].concat(props.children);
         let valueAttr = props.valueAttr;
         let options = {};
+        let optionsSelectableSequence = [];
 
         for (let i = 0; i < children.length; i++) {
-            this._parseChild(children[i], valueAttr, options);
+            this._parseChild(children[i], valueAttr, options, optionsSelectableSequence);
         }
 
         let index = 0;
-        let optionsMap = Object.keys(options).filter((option) => {
+        let optionsMap = optionsSelectableSequence.filter((option) => {
             if (!options[option].disabled) {
                 options[option].index = index++;
                 return true;
@@ -200,7 +204,7 @@ export default React.createClass({
         this._updateScroll(this.state.activeOptionIndex);
     },
 
-    _parseChild(child, valueAttr, options) {
+    _parseChild: function(child, valueAttr, options, optionsSelectableSequence) {
         if (!child || !child.props) {
             return;
         }
@@ -213,26 +217,28 @@ export default React.createClass({
                 };
                 if (child.props.disabled) {
                     options[key].disabled = true;
+                } else {
+                    optionsSelectableSequence.push(key);
                 }
             }
         } else {
             if (child.props.children) {
                 let children = [].concat(child.props.children);
                 for (let i = 0; i < children.length; i++) {
-                    this._parseChild(children[i], valueAttr, options);
+                    this._parseChild(children[i], valueAttr, options, optionsSelectableSequence);
                 }
             }
         }
     },
 
-    _construct(children, valueAttr) {
+    _construct: function(children, valueAttr) {
         let result = [];
         return result.concat(children).map(child => {
             return this._constructChild(child, valueAttr);
         });
     },
 
-    _constructChild(child, valueAttr) {
+    _constructChild: function(child, valueAttr) {
         if (child && child.props) {
             if (child.props[valueAttr]) {
                 let key = child.props[valueAttr].toString();
