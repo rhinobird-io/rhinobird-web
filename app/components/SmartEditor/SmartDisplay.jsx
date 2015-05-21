@@ -164,8 +164,8 @@ const SmartDisplay = React.createClass({
             <div className='vertical-line'></div>
             <div style={{flexGrow: 1}} className='content'>
                 {p.urlSiteName ? <div className='site-name'>{p.urlSiteName}</div> : undefined}
-                {p.urlDescription ? <a target='_blank' style={{display:'block', color:'black'}} href={p.url} className='description'>{p.urlDescription}</a> : undefined}
                 {p.urlTitle ? <a target='_blank' style={{display:'block'}} href={p.url} className='title'>{p.urlTitle}</a> : undefined}
+                {p.urlDescription ? <a target='_blank' style={{display:'block', color:'black'}} href={p.url} className='description'>{p.urlDescription}</a> : undefined}
                 {p.videoURL ? <div style={{width: Math.min(p.videoWidth, maxWidth) ,maxWidth: '100%'}}><div style={{position: 'relative',
                                             width: '100%',
                                             height: 0,
