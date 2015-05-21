@@ -103,8 +103,6 @@ export default React.createClass({
             position,
             ...other
         } = this.props;
-        console.log(this.state.optionsMap);
-        console.log(this.props.children);
 
         let children = this._construct(this.props.children, this.props.valueAttr);
         let styles = {

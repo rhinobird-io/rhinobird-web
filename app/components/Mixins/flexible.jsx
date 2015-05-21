@@ -51,7 +51,6 @@ module.exports = {
             base = relatedTo();
         }
 
-        console.log(hRestrict);
         if (base) {
             let self = this.getDOMNode();
             let baseDOM = base.getDOMNode();

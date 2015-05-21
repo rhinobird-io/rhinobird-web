@@ -17,6 +17,7 @@ const TopNav = require('../TopNav');
 const SideNav = require('../SideNav');
 const FloatingContentStore = require('../../stores/FloatingContentStore');
 const PerfectScroll = require('../PerfectScroll');
+const SearchEverywhere = require('../SearchEverywhere');
 
 const closeButton = <mui.IconButton iconClassName="icon-close"/>;
 
@@ -53,14 +54,19 @@ let Application = React.createClass({
             floatingContent: FloatingContentStore.getFloatingContent()
         }
     },
+
     componentDidMount() {
         FloatingContentStore.addChangeListener(this._floatingContentChanged);
         this.getDOMNode().addEventListener("click", this._clickListener);
+        window.addEventListener("keydown", this._keyDownListener);
     },
+
     componentWillUnmount() {
         FloatingContentStore.removeChangeListener(this._floatingContentChanged);;
         this.getDOMNode().removeEventListener("click", this._clickListener);
+        window.removeEventListener("keydown", this._keyDownListener);
     },
+
     render() {
         return <div>
             <SideNav ref='sideNav'/>
@@ -75,20 +81,25 @@ let Application = React.createClass({
                     <RouteHandler setTitle={this._setTitle} showFloatingContent={this._showFloatingContent}/>
                 </div>
             </div>
+
+            <SearchEverywhere ref="search"/>
             <TopNav onMenuIconButtonTouchTap={this._onMenuIconButtonTouch} title={this.state.title}/>
         </div>;
     },
+
     _setTitle(title) {
         this.setState({
             title: title
         });
     },
+
     _clickListener(e) {
         let p = this.refs.floatingContent;
         if (p && this.state.showFloatingContent && !Dom.isDescendant(p.getDOMNode(), e.target)) {
             this.setState({showFloatingContent: false})
         }
     },
+
     _floatingContentChanged(){
         let content = FloatingContentStore.getFloatingContent();
 
@@ -98,8 +109,25 @@ let Application = React.createClass({
             showFloatingContent: content.showFloatingContent
         }, () => this.getDOMNode().addEventListener("click", this._clickListener));
     },
+
     _onMenuIconButtonTouch() {
         this.refs.sideNav.toggle();
+    },
+
+    lastTimestamp: 0,
+
+    lastKeyCode: -1,
+
+    _keyDownListener(e) {
+        let keyCode = e.keyCode;
+        let time = new Date().getTime();
+
+        if (keyCode === 16 && keyCode === this.lastKeyCode && time - this.lastTimestamp <= 500) {
+            this.refs.search.open();
+        }
+
+        this.lastKeyCode = keyCode;
+        this.lastTimestamp = time;
     }
 });
 module.exports = Application;

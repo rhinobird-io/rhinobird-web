@@ -22,7 +22,7 @@ const DashboardRecord = React.createClass({
                 <div>
                     <span>{record.get('content')} </span>
                     {record.get('has_link') ?
-                        <Router.Link to={record.get('link_to')} params={{id: linkParam.id, repeatedNumber: linkParam.repeated_number}}>
+                        <Router.Link to={record.get('link_url')} params={{id: linkParam.id, repeatedNumber: linkParam.repeated_number}}>
                             {record.get('link_title')}
                         </Router.Link>
                         : undefined}

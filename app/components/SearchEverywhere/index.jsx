@@ -14,12 +14,13 @@ let SearchEverywhere = React.createClass({
 
     getInitialState() {
         return {
+            open: false,
             results: []
         };
     },
 
     componentClickAway() {
-        this.refs.popup.dismiss();
+        this.close();
     },
 
     componentDidMount() {
@@ -30,16 +31,40 @@ let SearchEverywhere = React.createClass({
         SearchStore.removeChangeListener(this._onChange);
     },
 
+    open() {
+        this.setState({
+            open: true
+        }, () => this.refs.keyword.focus());
+    },
+
+    close() {
+        this.refs.popup.dismiss();
+        this.setState({
+            open: false
+        })
+    },
+
+    isOpen() {
+        return this.state.open;
+    },
+
     render() {
         let styles = {
-            wrapper: {
-                position: "fixed",
+            open: {
                 top: "30%",
                 width: 600,
                 left: "50%",
                 marginLeft: -300,
-                background: "rgba(0,0,0,.7)",
-                borderRadius: 0
+                borderRadius: 0,
+                background: "rgba(0, 0, 0, .9)"
+            },
+            close: {
+                height: 0,
+                width: 0,
+                left: 0,
+                top: "100%",
+                marginLeft: 0,
+                background: "transparent"
             }
         };
 
@@ -49,8 +74,10 @@ let SearchEverywhere = React.createClass({
             </div>;
         });
 
+        let style = this.state.open ? styles.open : styles.close;
+
         return (
-            <MUI.Paper ref="search" className="search-everywhere" zDepth={2} style={styles.wrapper}>
+            <MUI.Paper ref="search" className="search-everywhere" style={style} zDepth={3}>
                 <MUI.TextField
                     ref="keyword"
                     className="mui-text-search"
