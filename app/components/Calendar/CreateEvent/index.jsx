@@ -175,7 +175,7 @@ export default React.createClass({
                                 <MUI.Tab label="Period" onActive={() => this.setState({isPeriod: true})}>
                                     <div className="tab-template-container">
                                         <Flex.Layout horizontal justified style={{marginTop: -10}}>
-                                            <Flex.Layout horizontal justified>
+                                            <Flex.Layout horizontal justified style={{minWidth: 0}}>
                                                 <MUI.DatePicker
                                                     ref="fromDate"
                                                     hintText="From Date"
@@ -184,7 +184,7 @@ export default React.createClass({
                                                     defaultDate={this.state.fromTime} />
                                                 {!this.state.fullDay ? fromHM : null}
                                             </Flex.Layout>
-                                            <Flex.Layout horizontal justified>
+                                            <Flex.Layout horizontal justified style={{minWidth: 0}}>
                                                 <MUI.DatePicker
                                                     ref="toDate"
                                                     hintText="To Date"
