@@ -185,6 +185,8 @@ let MessageStore = assign({}, BaseStore, {
             this.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
         }
 
+        var self = this;
+
         let channel = ChannelStore.getChannel(message.channelId),
             user = UserStore.getUser(message.userId);
         if(!document.hasFocus() || channel !== currentChannel) {
@@ -204,8 +206,7 @@ let MessageStore = assign({}, BaseStore, {
                 window.focus();
                 notification.close();
                 if(channel !== currentChannel) {
-                    debugger;
-                    router.transitionTo(`/platform/im/talk/${message.channelId}`);
+                    self.emit(IMConstants.EVENTS.REQUEST_REDIRECT, `/platform/im/talk/${message.channelId}`);
                 }
             };
             setTimeout(()=>{notification.close()}, IMConstants.NOTIFICATION.STAY_SECONDS * 1000);

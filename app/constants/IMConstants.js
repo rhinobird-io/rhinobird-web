@@ -22,6 +22,8 @@ export default {
 
         CHANNEL_UNREAD_CHANGE_PREFIX : 'channel-unread-change-',
 
-        USER_ONLINE_PREFIX: 'user-online-'
+        USER_ONLINE_PREFIX: 'user-online-',
+
+        REQUEST_REDIRECT : 'request-redirect'
     }
 }
