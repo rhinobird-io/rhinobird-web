@@ -202,7 +202,6 @@ let MessageStore = assign({}, BaseStore, {
                 icon: `http://www.gravatar.com/avatar/${user.emailMd5}?d=identicon`,
                 body: body
             });
-            setTimeout(()=>{notification.close()}, IMConstants.NOTIFICATION.STAY_SECONDS * 1000);
             notification.onclick= ()=>{
                 window.focus();
                 notification.close();
@@ -210,6 +209,7 @@ let MessageStore = assign({}, BaseStore, {
                     self.emit(IMConstants.EVENTS.REQUEST_REDIRECT, `/platform/im/talk/${message.channelId}`);
                 }
             };
+            setTimeout(()=>{ notification.close()}, IMConstants.NOTIFICATION.STAY_SECONDS * 1000);
         }
 
     },
