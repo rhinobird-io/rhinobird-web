@@ -29,10 +29,10 @@ module.exports = React.createClass({
 
     getInitialState() {
         return {
-            _currentChannel : {},
+            _currentChannel : ChannelStore.getCurrentChannel(),
             _onlineStatus : false,
-            _imCurrentChannel : false,
-            _hasUnread : false
+            _imCurrentChannel : ChannelStore.getCurrentChannel().backEndChannelId === this.props.Channel.backEndChannelId,
+            _hasUnread : UnreadStore.hasUnread(this.props.Channel.backEndChannelId)
         }
     },
 
@@ -67,7 +67,7 @@ module.exports = React.createClass({
     _onChannelDeselect(channel) {
         this.setState({
             _imCurrentChannel : false,
-            _currentChannel : ChannelStore.getCurrentChannel
+            _currentChannel : ChannelStore.getCurrentChannel()
         })
     },
 
