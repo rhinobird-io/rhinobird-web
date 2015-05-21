@@ -45,7 +45,7 @@ module.exports = React.createClass({
 
     componentWillUnmount() {
         MessageStore.removeListener(IMConstant.EVENTS.RECEIVE_MESSAGE, this._onReceiveMessage);
-        MessageStore.on(IMConstant.EVENTS.RECEIVE_NEW_MESSAGE, this._onReceiveNewMessage);
+        MessageStore.removeListener(IMConstant.EVENTS.RECEIVE_NEW_MESSAGE, this._onReceiveNewMessage);
     },
     componentWillUpdate: function() {
         var node = this.getDOMNode();

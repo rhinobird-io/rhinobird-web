@@ -38,26 +38,27 @@ module.exports = React.createClass({
   },
 
   componentDidMount() {
-    UserStore.addChangeListener(this._onTeamUserChange);
     ChannelStore.addChangeListener(this._onChannelChange);
-    SocketStore.addChangeListener(this._onSocketReady);
+    if (!SocketStore.getSocket()) {
+      SocketStore.addChangeListener(this._onSocketReady);
+      this._init();
 
-    LoginAction.updateLogin(LoginStore.getUser());
+    } else {
+      this._onSocketReady();
+    }
   },
 
   componentWillUnmount() {
-    UserStore.removeChangeListener(this._onTeamUserChange);
     ChannelStore.removeChangeListener(this._onChannelChange);
     SocketStore.removeChangeListener(this._onSocketReady);
   },
 
-  _onTeamUserChange() {
-    var _allTeams = UserStore.getUserInvolvedTeams(LoginStore.getUser().id);
-    var _allUsers = UserStore.getUsersArray();
-
+  _init() {
+    this._allTeams = UserStore.getUserInvolvedTeams(LoginStore.getUser().id);
+    this._allUsers = UserStore.getUsersArray();
     var self = this;
     var channels = {
-      publicGroupChannels: _allTeams.map(team=> {
+      publicGroupChannels: self._allTeams.map(team=> {
         var backEndChannelId = self._buildBackEndChannelId(true, team);
           return {
           isGroup: true,
@@ -72,7 +73,7 @@ module.exports = React.createClass({
           }
         }
       }),
-      directMessageChannels: _allUsers.filter(user => {
+      directMessageChannels: self._allUsers.filter(user => {
         return '' + user.id !== '' + LoginStore.getUser().id;
       }).map(user => {
         var backEndChannelId = self._buildBackEndChannelId(false, user);
@@ -101,8 +102,8 @@ module.exports = React.createClass({
   },
 
   _onSocketReady() {
-    let channelIdToGo = this.state.backEndChannelId;
-    if (this.state.backEndChannelId === 'default') {
+    let channelIdToGo =this.context.router.getCurrentParams().backEndChannelId;
+    if (channelIdToGo === 'default') {
       // load from localStorage
       channelIdToGo = localStorage[IMConstant.LOCALSTORAGE_CHANNEL];
     }

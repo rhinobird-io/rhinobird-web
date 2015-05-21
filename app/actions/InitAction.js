@@ -15,6 +15,8 @@ export default {
     /**
      * Init socket
      * Init channels unread
+     *
+     * It should be called only once
      */
     init(channels, currentUser) {
         var channelIds = _.pluck(channels.publicGroupChannels, 'backEndChannelId').concat(_.pluck(channels.directMessageChannels, 'backEndChannelId'));
@@ -35,6 +37,7 @@ export default {
              */
             function(cb) {
                 $.getScript(IM_HOST + 'socket.io/socket.io.js').done(function () {
+                    debugger;
                     var socket = io(IM_HOST, {path: '/socket.io'}).connect();
                     cb(null, {
                         type: Constants.SocketActionTypes.SOCKET_INIT,

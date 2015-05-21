@@ -97,7 +97,6 @@ class MessagesWrapper {
 }
 
 function appendToCurrentMessageSuite(messages) {
-    debugger;
     // generally new message only contains one message...
     let previousMsgSuite = _currentChannelMessageSuites.last();
     if(!previousMsgSuite){
@@ -188,7 +187,6 @@ let MessageStore = assign({}, BaseStore, {
     dispatcherIndex: AppDispatcher.register(function (payload) {
         switch (payload.type) {
             case Constants.ChannelActionTypes.CHANGE_CHANNEL:
-                debugger;
                 AppDispatcher.waitFor([ChannelStore.dispatcherIndex]);
                 let currentChannel = ChannelStore.getCurrentChannel();
                 _currentChannelMessageSuites = new Immutable.List();

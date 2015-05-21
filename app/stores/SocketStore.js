@@ -26,6 +26,7 @@ let SocketStore = assign({}, BaseStore, {
     }),
 
     initSocket : function(channels) {
+        debugger;
         let self = this;
         _socket.removeAllListeners();
         window.onbeforeunload = function (e) {
@@ -35,6 +36,7 @@ let SocketStore = assign({}, BaseStore, {
         };
 
         _socket.on('message:send', function (message) {
+            debugger;
             const MessageStore = require('./MessageStore');
             MessageStore.receiveMessage(message);
             const UnreadStore = require('./MessageUnreadStore');
