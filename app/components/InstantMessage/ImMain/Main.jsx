@@ -16,6 +16,7 @@ const RecentChannelStore = require('../../../stores/RecentChannelStore');
 const SocketStore = require('../../../stores/SocketStore');
 const Flex = require('../../Flex');
 import IMConstant from '../../../constants/IMConstants';
+import _ from 'lodash';
 
 if (Notification.permission !== 'granted'){
   Notification.requestPermission();
@@ -72,7 +73,16 @@ function _init() {
   };
 
   InitAction.init(channels, LoginStore.getUser());
+  return channels;
 }
+
+function isChannelIdValid(channelIdToGo) {
+  var channelIds = _.pluck(_channels.publicGroupChannels, 'backEndChannelId').concat(_.pluck(_channels.directMessageChannels, 'backEndChannelId'));
+  return channelIds.indexOf(channelIdToGo) >= 0;
+}
+
+
+let _channels = {};
 
 module.exports = React.createClass({
 
@@ -89,9 +99,13 @@ module.exports = React.createClass({
         // redirect
       } else {
         if (!SocketStore.getSocket()) {
-          _init();
+          _channels = _init();
         }
-        ChannelAction.changeChannel(channelIdToGo, LoginStore.getUser());
+
+        // validate channelIdToGo
+        if (isChannelIdValid(channelIdToGo)) {
+          ChannelAction.changeChannel(channelIdToGo, LoginStore.getUser());
+        }
       }
     }
   },

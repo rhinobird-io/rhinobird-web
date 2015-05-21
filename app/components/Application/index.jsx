@@ -17,7 +17,7 @@ const TopNav = require('../TopNav');
 const SideNav = require('../SideNav');
 const FloatingContentStore = require('../../stores/FloatingContentStore');
 const MessageStore = require('../../stores/MessageStore');
-var ImConstants = require('../../constants/IMConstants');
+const ImConstants = require('../../constants/IMConstants');
 const PerfectScroll = require('../PerfectScroll');
 const SearchEverywhere = require('../SearchEverywhere');
 
