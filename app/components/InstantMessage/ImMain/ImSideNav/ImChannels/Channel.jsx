@@ -30,7 +30,7 @@ module.exports = React.createClass({
     getInitialState() {
         return {
             _currentChannel : ChannelStore.getCurrentChannel(),
-            _onlineStatus : false,
+            _onlineStatus : this.props.Channel.isDirect?OnlineStore.isOnline(this.props.Channel.channel.id):true,
             _imCurrentChannel : ChannelStore.getCurrentChannel().backEndChannelId === this.props.Channel.backEndChannelId,
             _hasUnread : UnreadStore.hasUnread(this.props.Channel.backEndChannelId)
         }
