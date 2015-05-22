@@ -83,17 +83,18 @@ class MessagesWrapper {
         });
         this.messages[idx] = message;
         if (this._isCurrentChannel()) {
-            let lastIndex;
-            let newSuiteIdx = _currentChannelMessageSuites.findLastIndex((suite)=> {
-                lastIndex = suite.findLastIndex((msg)=> {
-                    return msg.guid === message.guid;
-                });
-                if (lastIndex !== -1) {
-                    return true;
-                }
-            });
-            let newSuite = _currentChannelMessageSuites.get(newSuiteIdx).set(lastIndex, message);
-            _currentChannelMessageSuites = _currentChannelMessageSuites.set(newSuiteIdx, newSuite);
+            _messages[message.channelId].addMessages([message], false);
+            //let lastIndex;
+            //let newSuiteIdx = _currentChannelMessageSuites.findLastIndex((suite)=> {
+            //    lastIndex = suite.findLastIndex((msg)=> {
+            //        return msg.guid === message.guid;
+            //    });
+            //    if (lastIndex !== -1) {
+            //        return true;
+            //    }
+            //});
+            //let newSuite = _currentChannelMessageSuites.get(newSuiteIdx).set(lastIndex, message);
+            //_currentChannelMessageSuites = _currentChannelMessageSuites.set(newSuiteIdx, newSuite);
         }
     }
 }
@@ -261,8 +262,6 @@ let MessageStore = assign({}, BaseStore, {
                 MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
                 break;
             case Constants.MessageActionTypes.SEND_MESSAGE:
-                let message = payload.message;
-                _messages[message.channelId].addMessages([message], false);
                 SocketStore.getSocket().emit('message:send', payload.message, function (message) {
                     _messages[message.channelId].confirmMessageSent(message);
                     MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE, message);
