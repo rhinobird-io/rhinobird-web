@@ -99,7 +99,7 @@ const SmartDisplay = React.createClass({
     },
 
     _onClick(e) {
-        let user = UserStore.getUserByName(e.target.innerHTML.substr(1));
+        let user = UserStore.getUserByName(e.target.getAttribute('data-name'));
         if (user) Member.showMemberProfile(user.id);
         e.stopPropagation();
     },

@@ -107,7 +107,7 @@ md.renderer.rules.at = (token, i) => {
         return content;
     }
     else {
-        return `<a class="member-at">${content}</a>`
+        return `<a class="member-at" data-name="${user.name}">@${user.realname}</a>`
     }
 };
 
