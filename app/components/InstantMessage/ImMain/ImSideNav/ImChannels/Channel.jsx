@@ -102,7 +102,7 @@ module.exports = React.createClass({
                 <FlatButton className={this.state._imCurrentChannel?'instant-message-channel-item-selected instant-message-channel-item ':'instant-message-channel-item '}  onTouchTap={self._onItemTap.bind(self, this.props.Channel)}>
                     <div style={{overflowX: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         <span className={ this.props.Channel.isGroup ? 'icon-group' : ''}></span>
-                        <span className={(this.props.Channel.isDirect && !self.state._onlineStatus)?'instant-message-channel-item-offline':''}>{ this.props.Channel.channel.name}</span>
+                        <span className={(this.props.Channel.isDirect && !self.state._onlineStatus)?'instant-message-channel-item-offline':''}>{ this.props.Channel.isGroup? this.props.Channel.channel.name : this.props.Channel.channel.realname}</span>
                     </div>
                 </FlatButton>
                 <span className={ this.state._hasUnread?'instant-message-channel-item-unread icon-message':''}></span>

@@ -85,7 +85,7 @@ module.exports = React.createClass({
 
     render() {
 
-        let control = <IconButton iconClassName="icon-search" style={{ maxWidth : '48px'}}/>;
+        let control = <IconButton iconClassName="icon-more-vert" style={{ maxWidth : '48px'}}/>;
         let menu = this.state._channels.map((item,idx) => {
             return <ImChannel key={item.backEndChannelId} Channel={item}></ImChannel>
         });
