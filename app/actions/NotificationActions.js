@@ -3,6 +3,7 @@
 const AppDispatcher = require("../dispatchers/AppDispatcher");
 const ActionTypes = require("../constants/AppConstants").NotificationActionTypes;
 const LoginStore = require("../stores/LoginStore");
+const UserStore = require("../stores/UserStore");
 const NotificationStore = require("../stores/NotificationStore");
 const ReconnectingWebSocket = require('../../node_modules/ReconnectingWebSocket/reconnecting-websocket.js');
 
@@ -10,10 +11,22 @@ function _websocket() {
   try {
     let socket = new ReconnectingWebSocket("ws://" + window.location.host + "/platform/socket");
     socket.onmessage = msg => {
+      let data = JSON.parse(msg.data);
       AppDispatcher.dispatch({
         type: ActionTypes.RECEIVE_NOTIFI,
-        data: JSON.parse(msg.data)
-      });
+        data: data
+      });;
+      console.log(data);
+
+
+      if (LoginStore.getUser().id !== data.from_user_id) {
+        let user = UserStore.getUser(data.from_user_id);
+
+        let notification = new Notification("New Events", {
+          icon: `http://www.gravatar.com/avatar/${user.emailMd5}?d=identicon`,
+          body: `${user.realname.charAt(0).toUpperCase()}${user.realname.slice(1)} ${data.content}`
+        });
+      }
     };
     socket.onclose = () => {
     };

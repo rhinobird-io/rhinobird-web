@@ -145,7 +145,7 @@ export default React.createClass({
         return (
             <PerfectScroll style={{height: "100%", position: "relative"}}>
                 <Flex.Layout horizontal centerJustified wrap>
-                    <form onSubmit={this._handleSubmit}>
+                    <form onSubmit={(e) => e.preventDefault()}>
                     <MUI.Paper zDepth={3} className="cal-create-event">
                         <div style={{padding: 20}}>
                             <h3>Create Event</h3>
@@ -244,7 +244,7 @@ export default React.createClass({
                                 <Link to="event-list">
                                     <MUI.RaisedButton label="Cancel" />
                                 </Link>
-                                <MUI.RaisedButton type="submit" label="Create Event" primary={true} />
+                                <MUI.RaisedButton type="submit" label="Create Event" primary={true} onClick={this._handleSubmit} />
                             </Flex.Layout>
 
                         </div>
