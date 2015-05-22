@@ -1,7 +1,7 @@
 'use strict';
 
 export default {
-    IM_HOST : '/im',
+    IM_HOST : '/im/',
     IM_API : '/im/api/',
     LOCALSTORAGE_CHANNEL : 'localchannel',
     MSG_LIMIT: 40,
