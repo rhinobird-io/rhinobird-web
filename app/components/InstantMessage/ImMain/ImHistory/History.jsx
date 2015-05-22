@@ -40,7 +40,6 @@ module.exports = React.createClass({
 
     componentDidMount() {
         MessageStore.on(IMConstant.EVENTS.RECEIVE_MESSAGE, this._onReceiveMessage);
-        MessageStore.on(IMConstant.EVENTS.RECEIVE_NEW_MESSAGE, this._onReceiveNewMessage);
 
         var node = this.getDOMNode();
         node.scrollTop = node.scrollHeight;
@@ -48,7 +47,6 @@ module.exports = React.createClass({
 
     componentWillUnmount() {
         MessageStore.removeListener(IMConstant.EVENTS.RECEIVE_MESSAGE, this._onReceiveMessage);
-        MessageStore.removeListener(IMConstant.EVENTS.RECEIVE_NEW_MESSAGE, this._onReceiveNewMessage);
     },
     componentWillUpdate: function() {
         var node = this.getDOMNode();
@@ -70,10 +68,6 @@ module.exports = React.createClass({
             messageSuites: MessageStore.getCurrentChannelMessageSuites()
         });
     },
-    _onReceiveNewMessage(message){
-
-    },
-
     /**
      *
      * load more old messages on demand
