@@ -1,15 +1,20 @@
 const React = require('react');
 const MUI = require('material-ui');
 
-let Input = React.createClass({
+function Input() {
+
+}
+
+Input.RegexInput = React.createClass({
     render() {
         let {
+            ref,
             pattern,
             onKeyDown,
             ...other
         } = this.props;
 
-        return <MUI.TextField onKeyDown={(e) => this._onKeyDownListener(e, pattern)} {...other} />;
+        return <MUI.TextField ref={ref}  onKeyDown={(e) => this._onKeyDownListener(e, pattern)} {...other} />;
     },
 
     _onKeyDownListener(e, pattern) {

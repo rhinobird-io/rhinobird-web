@@ -78,7 +78,12 @@ export default React.createClass({
     componentWillReceiveProps(nextProps) {
         if (nextProps.children !== this.props.children) {
             let children = nextProps.children;
-            let selectedValue = nextProps.value || nextProps.valueLink.value;
+            let selectedValue = [];
+            if (nextProps.value) {
+                selectedValue = nextProps.value;
+            } else if (nextProps.valueLink) {
+                selectedValue = nextProps.valueLink.value;
+            }
             let selected = {};
 
             children = children.map((child, index) => {

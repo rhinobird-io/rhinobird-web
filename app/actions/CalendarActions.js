@@ -1,6 +1,7 @@
 'use strict';
 
 const AppDispatcher       = require('../dispatchers/AppDispatcher');
+const CalendarStore       = require('../stores/CalendarStore');
 const CalendarActionTypes = require("../constants/AppConstants").CalendarActionTypes;
 
 require("./mockjax/events.js");
@@ -21,14 +22,22 @@ export default {
     },
 
     receiveSingle(id, repeatedNumber) {
-        $.get("/platform/api/events/" + id + "/" + repeatedNumber).done(data => {
+        let event = CalendarStore.getEvent(id, repeatedNumber);
+        if (event !== null) {
             AppDispatcher.dispatch({
                 type: CalendarActionTypes.RECEIVE_EVENT,
-                data: data
+                data: event
             });
-        }).fail(e => {
-            console.error(e);
-        });
+        } else {
+            $.get("/platform/api/events/" + id + "/" + repeatedNumber).done(data => {
+                AppDispatcher.dispatch({
+                    type: CalendarActionTypes.RECEIVE_EVENT,
+                    data: data
+                });
+            }).fail(e => {
+                console.error(e);
+            });
+        }
     },
 
     loadMoreOlderEvents(time, success, error) {

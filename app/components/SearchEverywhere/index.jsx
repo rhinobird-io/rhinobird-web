@@ -32,12 +32,19 @@ let SearchEverywhere = React.createClass({
     },
 
     open() {
+        if (this.isOpen()) {
+            return;
+        }
+
         this.setState({
             open: true
         }, () => this.refs.keyword.focus());
     },
 
     close() {
+        if (!this.isOpen()) {
+            return;
+        }
         this.refs.popup.dismiss();
         this.setState({
             open: false
@@ -64,7 +71,7 @@ let SearchEverywhere = React.createClass({
                 left: 0,
                 top: "100%",
                 marginLeft: 0,
-                background: "transparent"
+                background: "rgba(0, 0, 0, .9)"
             }
         };
 
