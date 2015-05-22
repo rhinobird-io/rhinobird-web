@@ -117,7 +117,9 @@ let CalendarStore = assign({}, BaseStore, {
                 _addEvent(data);
                 break;
             case ActionTypes.RECEIVE_EVENTS:
-                _events = {};
+                if (Object.keys(_events).length === 0) {
+                    _events = {};
+                }
                 _addEvents(data);
                 let keys = Object.keys(_events);
                 if (keys.length === 0) {
