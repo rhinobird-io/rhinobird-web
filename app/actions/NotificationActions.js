@@ -53,11 +53,11 @@ export default {
     let user = LoginStore.getUser();
     if (!user) return;
     $.get("/platform/api/users/" + user.id + "/notifications/" + startIndex + "/10").done(data => {
+      NotificationStore.setTotal(data.total);
       AppDispatcher.dispatch({
         type: ActionTypes.RECEIVE_NOTIFI,
         data: data.notifications
       });
-      NotificationStore.setTotal(data.total);
       if (NotificationStore.getWebSocket() === null) {
         NotificationStore.setWebSocket(_websocket());
       }

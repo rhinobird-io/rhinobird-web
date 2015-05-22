@@ -89,6 +89,7 @@ export default React.createClass({
       let sender = UserStore.getUser(n.from_user_id);
       return <NotifiItem key={n.id} sender={sender} time={n.created_at} message={n.content} read={n.checked} />;
     });
+
     if (this.state.notifications.length >= NotificationStore.getTotal()) {
       menu.push(
         <div style={{textAlign: "center", color: "#888"}}>
