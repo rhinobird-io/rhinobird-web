@@ -37,7 +37,11 @@ let SearchEverywhere = React.createClass({
 
         this.setState({
             open: true
-        }, () => this.refs.keyword.focus());
+        }, () => {
+            this.refs.keyword.setValue('');
+            this.refs.keyword.focus();
+            this.refs.popup.show();
+        });
     },
 
     close() {
@@ -75,7 +79,7 @@ let SearchEverywhere = React.createClass({
         };
 
         let results = this.state.results.map((result) => {
-            return <div key={result._source.id} value={result._source.id}>
+            return <div key={result._index + result._id} value={result._source._id}>
                 {result._source.title}
             </div>;
         });
@@ -93,6 +97,9 @@ let SearchEverywhere = React.createClass({
                 <PopupSelect
                     hRestrict
                     ref="popup"
+                    onItemSelect={(value, e) => {
+                        console.log(value);
+                    }}
                     relatedTo={() => this.refs.search}>
                     {results}
                 </PopupSelect>

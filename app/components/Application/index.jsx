@@ -65,7 +65,7 @@ let Application = React.createClass({
     componentDidMount() {
         FloatingContentStore.addChangeListener(this._floatingContentChanged);
         this.getDOMNode().addEventListener("click", this._clickListener);
-        window.addEventListener("keydown", this._keyDownListener);
+        //window.addEventListener("keydown", this._keyDownListener);
 
         MessageStore.on(ImConstants.EVENTS.REQUEST_REDIRECT, this._onRequestRedirect);
     },
@@ -73,7 +73,7 @@ let Application = React.createClass({
     componentWillUnmount() {
         FloatingContentStore.removeChangeListener(this._floatingContentChanged);;
         this.getDOMNode().removeEventListener("click", this._clickListener);
-        window.removeEventListener("keydown", this._keyDownListener);
+        //window.removeEventListener("keydown", this._keyDownListener);
 
         MessageStore.removeListener(ImConstants.EVENTS.REQUEST_REDIRECT, this._onRequestRedirect);
     },
@@ -113,7 +113,6 @@ let Application = React.createClass({
 
     _floatingContentChanged(){
         let content = FloatingContentStore.getFloatingContent();
-
         this.getDOMNode().removeEventListener("click", this._clickListener);
         this.setState({
             floatingContent: content,
@@ -135,6 +134,8 @@ let Application = React.createClass({
 
         if (keyCode === 16 && keyCode === this.lastKeyCode && time - this.lastTimestamp <= 500) {
             this.refs.search.open();
+        } else if (keyCode === 27) {
+            this.refs.search.close();
         }
 
         this.lastKeyCode = keyCode;
