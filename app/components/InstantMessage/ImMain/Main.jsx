@@ -32,15 +32,15 @@ function _buildBackEndChannelId(isGroup, channel) {
 function _init() {
   var _allTeams = UserStore.getUserInvolvedTeams(LoginStore.getUser().id);
   var _allUsers = UserStore.getUsersArray();
-  var channels = {
+  return {
     publicGroupChannels: _allTeams.map(team=> {
       var backEndChannelId = _buildBackEndChannelId(true, team);
       return {
         isGroup: true,
         isDirect: false,
         backEndChannelId: backEndChannelId,
-        id : backEndChannelId,
-        channel : {
+        id: backEndChannelId,
+        channel: {
           created_at: team.created_at,
           name: team.name,
           updated_at: team.updated_at,
@@ -56,8 +56,8 @@ function _init() {
         isGroup: false,
         isDirect: true,
         backEndChannelId: backEndChannelId,
-        id : backEndChannelId,
-        channel : {
+        id: backEndChannelId,
+        channel: {
           created_at: user.created_at,
           name: user.name,
           realname: user.realname,
@@ -67,9 +67,6 @@ function _init() {
       }
     })
   };
-
-  InitAction.init(channels, LoginStore.getUser());
-  return channels;
 }
 
 function isChannelIdValid(channelIdToGo) {
@@ -96,6 +93,7 @@ module.exports = React.createClass({
       } else {
         if (!SocketStore.getSocket()) {
           _channels = _init();
+          InitAction.init(_channels, LoginStore.getUser());
         }
 
         // validate channelIdToGo
