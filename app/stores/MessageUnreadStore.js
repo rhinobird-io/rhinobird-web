@@ -6,6 +6,7 @@ import BaseStore from './BaseStore';
 import ChannelStore from './ChannelStore';
 import LoginStore from './LoginStore';
 import SocketStore from './SocketStore';
+import MessageStore from './MessageStore';
 import assign from 'object-assign';
 import _ from 'lodash';
 import Immutable from 'immutable';
@@ -57,7 +58,18 @@ let UnreadStore = assign({}, BaseStore, {
                 Object.keys(latestAndLastSeen).forEach(backEndChannelId => {
                     _unread[backEndChannelId] = _unread[backEndChannelId] || {};
                     _unread[backEndChannelId].latestMessageId = latestAndLastSeen[backEndChannelId].latestMessageId;
-                    _unread[backEndChannelId].lastSeenMessageId = _unread[backEndChannelId].lastSeenMessageId || latestAndLastSeen[backEndChannelId].lastSeenMessageId;
+                    if ( !_unreadBool.get(backEndChannelId)) {
+                        // the unread flag already been set, fix lastSeenMessageId to be the latest one and tell socket
+                        _unread[backEndChannelId].lastSeenMessageId = _unread[backEndChannelId].latestMessageId;
+                        SocketStore.getSocket().emit('message:seen', {
+                            userId: LoginStore.getUser().id,
+                            messageId: _unread[backEndChannelId].lastSeenMessageId,
+                            channelId: backEndChannelId
+                        });
+                    } else {
+                        _unread[backEndChannelId].lastSeenMessageId = latestAndLastSeen[backEndChannelId].lastSeenMessageId;
+                    }
+
                     _unreadBool = _unreadBool.set(backEndChannelId, _unread[backEndChannelId].latestMessageId > _unread[backEndChannelId].lastSeenMessageId);
                     if (_unreadBool.get(backEndChannelId)) {
                         UnreadStore.emit(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + backEndChannelId, {unread : true});
@@ -65,22 +77,10 @@ let UnreadStore = assign({}, BaseStore, {
                 });
                 UnreadStore.emitChange();
                 break;
-            case Constants.MessageActionTypes.CLEAR_UNREAD:
-                var backEndChannelId = payload.backEndChannelId;
-                _unread[backEndChannelId] = _unread[backEndChannelId] || {};
-                _unread[backEndChannelId].lastSeenMessageId = payload.lastSeenMessageId;
+            case Constants.ChannelActionTypes.CHANGE_CHANNEL:
+                let backEndChannelId = payload.backEndChannelId;
                 _unreadBool = _unreadBool.set(backEndChannelId, false);
                 UnreadStore.emit(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + backEndChannelId, {unread : false});
-                break;
-            case Constants.SocketActionTypes.SOCKET_INIT:
-                let socket = payload.socket;// same socket as socket store
-                Object.keys(_unread).forEach(backEndChannelId => {
-                    socket.emit('message:seen', {
-                        userId: LoginStore.getUser().id,
-                        messageId: _unread[backEndChannelId].lastSeenMessageId,
-                        channelId: backEndChannelId
-                    });
-                });
                 break;
             default:
                 break;

@@ -156,6 +156,15 @@ let MessageStore = assign({}, BaseStore, {
         return _currentChannelMessageSuites;
     },
 
+    getCurrentChannelLatestMessageId() {
+        let newestMessageSuite = _currentChannelMessageSuites.last();
+        if (newestMessageSuite) {
+            let newestMessage = newestMessageSuite.last();
+            return newestMessage?newestMessage.id:0;
+        }
+        return 0;
+    },
+
 
     /**
      * @warning get all messages, you should seldom use this

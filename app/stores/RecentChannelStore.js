@@ -50,7 +50,7 @@ let RecentChannelStore = assign({}, BaseStore, {
 
     dispatcherIndex: AppDispatcher.register(function (payload) {
         switch (payload.type) {
-            case Constants.RecentChannelAction.INIT_RECENT:
+            case Constants.MessageActionTypes.INIT_UNREAD:
                 let latestAndLastSeen = payload.latestAndLastSeen;
 
                 payload.publicGroupChannels.forEach(publicChannel => {

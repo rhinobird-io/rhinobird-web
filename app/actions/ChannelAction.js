@@ -38,26 +38,7 @@ export default {
                         messages: messages, // from oldest to newest
                         noMoreAtBack : messages.length < limit
                     });
-
-                    if (messages.length > 0) {
-                        AppDispatcher.dispatch({
-                            type: Constants.MessageActionTypes.CLEAR_UNREAD,
-                            backEndChannelId : backEndChannelId,
-                            lastSeenMessageId : messages[messages.length - 1].id
-                        });
-                    }
-
                 });
-        } else {
-
-            let messages = MessageStore.getMessages({backEndChannelId : backEndChannelId});
-            if (messages && messages.length > 0) {
-                AppDispatcher.dispatch({
-                    type: Constants.MessageActionTypes.CLEAR_UNREAD,
-                    backEndChannelId : backEndChannelId,
-                    lastSeenMessageId : messages[messages.length - 1].id
-                });
-            }
         }
     }
 };

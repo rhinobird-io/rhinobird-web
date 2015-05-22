@@ -29,7 +29,7 @@ export default {
             directMessageChannels:channels.directMessageChannels
         });
 
-        async.series([
+        async.parallel([
 
             /**
              * init socket first
@@ -37,12 +37,13 @@ export default {
              */
             function(cb) {
                 $.getScript(IM_HOST + 'socket.io/socket.io.js').done(function () {
-                    var socket = io({path: `${IM_HOST}socket.io`}).connect();
-                    cb(null, {
+                    var socket = io({path: '${IM_HOST}socket.io'}).connect();
+                    AppDispatcher.dispatch({
                         type: Constants.SocketActionTypes.SOCKET_INIT,
                         socket : socket,
                         channels : channels
                     });
+                    cb(null);
                 }).fail(cb);
             },
 
@@ -97,18 +98,10 @@ export default {
             });
             AppDispatcher.dispatch({
                 type: Constants.MessageActionTypes.INIT_UNREAD,
-                latestAndLastSeen : latestAndLastSeen
-            });
-
-            AppDispatcher.dispatch({
-                type: Constants.RecentChannelAction.INIT_RECENT,
                 publicGroupChannels: channels.publicGroupChannels,
                 directMessageChannels:channels.directMessageChannels,
                 latestAndLastSeen : latestAndLastSeen
             });
-
-            let socketPayload = results[0];
-            AppDispatcher.dispatch(socketPayload);
         });
     }
 };
