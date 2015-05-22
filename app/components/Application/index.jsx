@@ -134,6 +134,8 @@ let Application = React.createClass({
 
         if (keyCode === 16 && keyCode === this.lastKeyCode && time - this.lastTimestamp <= 500) {
             this.refs.search.open();
+        } else if (keyCode === 27) {
+            this.refs.search.close();
         }
 
         this.lastKeyCode = keyCode;

@@ -37,7 +37,11 @@ let SearchEverywhere = React.createClass({
 
         this.setState({
             open: true
-        }, () => this.refs.keyword.focus());
+        }, () => {
+            this.refs.keyword.setValue('');
+            this.refs.keyword.focus();
+            this.refs.popup.show();
+        });
     },
 
     close() {
