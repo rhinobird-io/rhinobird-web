@@ -37,7 +37,7 @@ export default {
              */
             function(cb) {
                 $.getScript(IM_HOST + 'socket.io/socket.io.js').done(function () {
-                    var socket = io({path: '${IM_HOST}socket.io'}).connect();
+                    var socket = io({path: `${IM_HOST}socket.io`}).connect();
                     AppDispatcher.dispatch({
                         type: Constants.SocketActionTypes.SOCKET_INIT,
                         socket : socket,
