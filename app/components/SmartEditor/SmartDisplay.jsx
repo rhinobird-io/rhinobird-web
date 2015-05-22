@@ -99,9 +99,9 @@ const SmartDisplay = React.createClass({
     },
 
     _onClick(e) {
-        e.preventDefault();
         let user = UserStore.getUserByName(e.target.innerHTML.substr(1));
         if (user) Member.showMemberProfile(user.id);
+        e.stopPropagation();
     },
 
     removeNewline(value) {
