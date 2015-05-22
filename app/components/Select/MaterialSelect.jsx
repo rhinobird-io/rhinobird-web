@@ -233,7 +233,7 @@ export default React.createClass({
         if (style === undefined || style === null) {
             style = {};
         }
-        style.paddingLeft = padding.paddingLeft;
+        style.paddingLeft = styles.padding.paddingLeft;
 
         let text =
             <TextField
