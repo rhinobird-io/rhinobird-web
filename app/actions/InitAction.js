@@ -15,6 +15,8 @@ export default {
     /**
      * Init socket
      * Init channels unread
+     *
+     * It should be called only once
      */
     init(channels, currentUser) {
         var channelIds = _.pluck(channels.publicGroupChannels, 'backEndChannelId').concat(_.pluck(channels.directMessageChannels, 'backEndChannelId'));

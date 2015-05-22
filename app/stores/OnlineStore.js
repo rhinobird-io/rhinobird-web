@@ -8,7 +8,7 @@ import MessageStore from './MessageStore';
 import assign from 'object-assign';
 import _ from 'lodash';
 
-let _onlineList;
+let _onlineList = {};
 
 let OnlineStore = assign({}, BaseStore, {
 
@@ -18,6 +18,10 @@ let OnlineStore = assign({}, BaseStore, {
             OnlineStore.emit(IMConstants.EVENTS.USER_ONLINE_PREFIX + onlineUserId, { online : true});
         });
         OnlineStore.emitChange();
+    },
+
+    isOnline : (userId) => {
+        return _onlineList[userId]?true:false;
     },
 
     userJoin : (userStatus) => {

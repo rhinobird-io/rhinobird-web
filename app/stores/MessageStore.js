@@ -1,8 +1,10 @@
 'use strict';
+import router from 'react-router';
 import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/AppConstants';
 import IMConstants from '../constants/IMConstants';
 import BaseStore from './BaseStore';
+import UserStore from './UserStore';
 import ChannelStore from './ChannelStore';
 import LoginStore from './LoginStore';
 import SocketStore from './SocketStore';
@@ -97,7 +99,6 @@ class MessagesWrapper {
 }
 
 function appendToCurrentMessageSuite(messages) {
-    debugger;
     // generally new message only contains one message...
     let previousMsgSuite = _currentChannelMessageSuites.last();
     if(!previousMsgSuite){
@@ -183,12 +184,39 @@ let MessageStore = assign({}, BaseStore, {
         if (currentChannel.backEndChannelId === message.channelId) {
             this.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
         }
+
+        var self = this;
+
+        let channel = ChannelStore.getChannel(message.channelId),
+            user = UserStore.getUser(message.userId);
+        if(!document.hasFocus() || channel !== currentChannel) {
+            let channelName = channel.isGroup ? channel.channel.name: channel.channel.realname;
+
+            let body;
+            if(!channel.isGroup) {
+                body = message.text;
+            } else {
+                body = `${user.realname}: ${message.text}`;
+            }
+            let notification = new Notification(channelName, {
+                icon: `http://www.gravatar.com/avatar/${user.emailMd5}?d=identicon`,
+                body: body
+            });
+            notification.onclick= ()=>{
+                window.focus();
+                notification.close();
+                if(channel !== currentChannel) {
+                    self.emit(IMConstants.EVENTS.REQUEST_REDIRECT, `/platform/im/talk/${message.channelId}`);
+                }
+            };
+            setTimeout(()=>{ notification.close()}, IMConstants.NOTIFICATION.STAY_SECONDS * 1000);
+        }
+
     },
 
     dispatcherIndex: AppDispatcher.register(function (payload) {
         switch (payload.type) {
             case Constants.ChannelActionTypes.CHANGE_CHANNEL:
-                debugger;
                 AppDispatcher.waitFor([ChannelStore.dispatcherIndex]);
                 let currentChannel = ChannelStore.getCurrentChannel();
                 _currentChannelMessageSuites = new Immutable.List();

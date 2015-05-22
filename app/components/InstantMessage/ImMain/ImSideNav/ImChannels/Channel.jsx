@@ -29,10 +29,10 @@ module.exports = React.createClass({
 
     getInitialState() {
         return {
-            _currentChannel : {},
-            _onlineStatus : false,
-            _imCurrentChannel : false,
-            _hasUnread : false
+            _currentChannel : ChannelStore.getCurrentChannel(),
+            _onlineStatus : this.props.Channel.isDirect?OnlineStore.isOnline(this.props.Channel.channel.id):true,
+            _imCurrentChannel : ChannelStore.getCurrentChannel().backEndChannelId === this.props.Channel.backEndChannelId,
+            _hasUnread : UnreadStore.hasUnread(this.props.Channel.backEndChannelId)
         }
     },
 
@@ -67,7 +67,7 @@ module.exports = React.createClass({
     _onChannelDeselect(channel) {
         this.setState({
             _imCurrentChannel : false,
-            _currentChannel : ChannelStore.getCurrentChannel
+            _currentChannel : ChannelStore.getCurrentChannel()
         })
     },
 
@@ -86,7 +86,6 @@ module.exports = React.createClass({
     _onItemTap(item, e) {
         let currentChannel = ChannelStore.getCurrentChannel();
         if (!currentChannel || currentChannel.backEndChannelId !== item.backEndChannelId) {
-            ChannelAction.changeChannel(item.backEndChannelId, LoginStore.getUser());
             this.context.router.transitionTo('/platform/im/talk/' + item.backEndChannelId);
         } else {
             console.log('change channel : ' + !currentChannel || currentChannel.backEndChannelId !== item.backEndChannelId)

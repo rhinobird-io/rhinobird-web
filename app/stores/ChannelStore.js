@@ -9,7 +9,9 @@ import _ from 'lodash';
 
 import React from 'react';
 
-let _currentChannel;
+let _currentChannel = {
+    backEndChannelId : 'unknow'
+};
 
 // key, backEndChannelId, value : users(channels)
 let _teamUserChannels = {};
@@ -57,7 +59,7 @@ let ChannelStore = assign({}, BaseStore, {
                 };
                 ChannelStore.emitChange();
                 ChannelStore.emit(IMConstants.EVENTS.CHANNEL_SELECT_PREFIX + _currentChannel.backEndChannelId, _currentChannel);
-                if (prevChannel) {
+                if (prevChannel && prevChannel.backEndChannelId !== _currentChannel.backEndChannelId) {
                     ChannelStore.emit(IMConstants.EVENTS.CHANNEL_DESELECT_PREFIX + prevChannel.backEndChannelId, prevChannel);
                 }
 

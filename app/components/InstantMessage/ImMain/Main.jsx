@@ -16,13 +16,100 @@ const RecentChannelStore = require('../../../stores/RecentChannelStore');
 const SocketStore = require('../../../stores/SocketStore');
 const Flex = require('../../Flex');
 import IMConstant from '../../../constants/IMConstants';
+import _ from 'lodash';
 
 if (Notification.permission !== 'granted'){
   Notification.requestPermission();
 }
 
 require('./style.less');
+
+function _buildBackEndChannelId(isGroup, channel) {
+  if (isGroup) {
+    return 'team_' + channel.id;
+  } else {
+    var user = LoginStore.getUser();
+    return 'user_' + Math.min(user.id, channel.id) + '_' + Math.max(user.id, channel.id);
+  }
+}
+
+function _init() {
+  var _allTeams = UserStore.getUserInvolvedTeams(LoginStore.getUser().id);
+  var _allUsers = UserStore.getUsersArray();
+  var channels = {
+    publicGroupChannels: _allTeams.map(team=> {
+      var backEndChannelId = _buildBackEndChannelId(true, team);
+      return {
+        isGroup: true,
+        isDirect: false,
+        backEndChannelId: backEndChannelId,
+        id : backEndChannelId,
+        channel : {
+          created_at: team.created_at,
+          name: team.name,
+          updated_at: team.updated_at,
+          id: team.id
+        }
+      }
+    }),
+    directMessageChannels: _allUsers.filter(user => {
+      return '' + user.id !== '' + LoginStore.getUser().id;
+    }).map(user => {
+      var backEndChannelId = _buildBackEndChannelId(false, user);
+      return {
+        isGroup: false,
+        isDirect: true,
+        backEndChannelId: backEndChannelId,
+        id : backEndChannelId,
+        channel : {
+          created_at: user.created_at,
+          name: user.name,
+          realname: user.realname,
+          updated_at: user.updated_at,
+          id: user.id
+        }
+      }
+    })
+  };
+
+  InitAction.init(channels, LoginStore.getUser());
+  return channels;
+}
+
+function isChannelIdValid(channelIdToGo) {
+  var channelIds = _.pluck(_channels.publicGroupChannels, 'backEndChannelId').concat(_.pluck(_channels.directMessageChannels, 'backEndChannelId'));
+  return channelIds.indexOf(channelIdToGo) >= 0;
+}
+
+
+let _channels = {};
+
 module.exports = React.createClass({
+
+  statics: {
+    willTransitionTo: function (transition, params, query) {
+      if (!LoginStore.getUser()) {
+        return;
+      }
+      let channelIdToGo = params.backEndChannelId;
+      if (channelIdToGo === 'default') {
+        // load from localStorage
+        channelIdToGo = localStorage[IMConstant.LOCALSTORAGE_CHANNEL];
+        transition.redirect('/platform/im/talk/' + channelIdToGo);
+        // redirect
+      } else {
+        if (!SocketStore.getSocket()) {
+          _channels = _init();
+        }
+
+        // validate channelIdToGo
+        if (isChannelIdValid(channelIdToGo)) {
+          ChannelAction.changeChannel(channelIdToGo, LoginStore.getUser());
+        }
+      }
+    }
+  },
+
   contextTypes: {
     router: React.PropTypes.func.isRequired
   },
@@ -32,93 +119,23 @@ module.exports = React.createClass({
   },
 
   getInitialState() {
+
     return  {
       backEndChannelId : this.context.router.getCurrentParams().backEndChannelId
     }
   },
 
   componentDidMount() {
-    UserStore.addChangeListener(this._onTeamUserChange);
     ChannelStore.addChangeListener(this._onChannelChange);
-    SocketStore.addChangeListener(this._onSocketReady);
-
-    LoginAction.updateLogin(LoginStore.getUser());
   },
 
   componentWillUnmount() {
-    UserStore.removeChangeListener(this._onTeamUserChange);
     ChannelStore.removeChangeListener(this._onChannelChange);
-    SocketStore.removeChangeListener(this._onSocketReady);
-  },
-
-  _onTeamUserChange() {
-    var _allTeams = UserStore.getUserInvolvedTeams(LoginStore.getUser().id);
-    var _allUsers = UserStore.getUsersArray();
-
-    var self = this;
-    var channels = {
-      publicGroupChannels: _allTeams.map(team=> {
-        var backEndChannelId = self._buildBackEndChannelId(true, team);
-          return {
-          isGroup: true,
-          isDirect: false,
-          backEndChannelId: backEndChannelId,
-          id : backEndChannelId,
-          channel : {
-            created_at: team.created_at,
-            name: team.name,
-            updated_at: team.updated_at,
-            id: team.id
-          }
-        }
-      }),
-      directMessageChannels: _allUsers.filter(user => {
-        return '' + user.id !== '' + LoginStore.getUser().id;
-      }).map(user => {
-        var backEndChannelId = self._buildBackEndChannelId(false, user);
-          return {
-          isGroup: false,
-          isDirect: true,
-          backEndChannelId: backEndChannelId,
-          id : backEndChannelId,
-            channel : {
-              created_at: user.created_at,
-              name: user.name,
-              realname: user.realname,
-              updated_at: user.updated_at,
-              id: user.id
-            }
-        }
-      })
-    };
-
-    InitAction.init(channels, LoginStore.getUser());
   },
 
   _onChannelChange() {
     var currentChannel = ChannelStore.getCurrentChannel();
     this.props.setTitle("Instant Message - Talk - " + (currentChannel.isGroup?currentChannel.channel.name:currentChannel.channel.realname));
-  },
-
-  _onSocketReady() {
-    let channelIdToGo = this.state.backEndChannelId;
-    if (this.state.backEndChannelId === 'default') {
-      // load from localStorage
-      channelIdToGo = localStorage[IMConstant.LOCALSTORAGE_CHANNEL];
-    }
-    if (channelIdToGo) {
-      ChannelAction.changeChannel(channelIdToGo, LoginStore.getUser());
-      this.context.router.transitionTo('/platform/im/talk/' + channelIdToGo);
-    }
-  },
-
-  _buildBackEndChannelId(isGroup, channel) {
-    if (isGroup) {
-      return 'team_' + channel.id;
-    } else {
-      var user = LoginStore.getUser();
-      return 'user_' + Math.min(user.id, channel.id) + '_' + Math.max(user.id, channel.id);
-    }
   },
 
   render() {
@@ -128,7 +145,7 @@ module.exports = React.createClass({
             <ImHistory {...this.props} className="history" ></ImHistory>
             <ImSendBox {...this.props} className="send-box" ></ImSendBox>
           </Flex.Layout>
-          <ImSideNav {...this.props} buildBackEndChannelId={this._buildBackEndChannelId} ></ImSideNav>
+          <ImSideNav {...this.props} buildBackEndChannelId={_buildBackEndChannelId} ></ImSideNav>
         </Flex.Layout>
     );
   }

@@ -7,8 +7,8 @@ import assign from 'object-assign';
 import _ from 'lodash';
 import Immutable from 'immutable';
 
-let _orderedRecentPublicChannels;
-let _orderedRecentDirectChannels;
+let _orderedRecentPublicChannels = [];
+let _orderedRecentDirectChannels = [];
 
 // record the channel id => channel
 let publicGroupChannelsMap = {};

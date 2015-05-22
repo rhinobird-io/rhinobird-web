@@ -37,10 +37,9 @@ module.exports = React.createClass({
 
     getInitialState() {
         return {
-            _channels: [],
-            _onlineStatus: {},
-            _unread: undefined,
-            _currentChannel: {}
+            _channels: this.props.isGroup?RecentChannelStore.getOrderedRecentPublicChannels():RecentChannelStore.getOrderedRecentDirectChannels(),
+            _currentChannel : ChannelStore.getCurrentChannel()
+
         };
     },
 

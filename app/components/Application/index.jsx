@@ -16,6 +16,8 @@ const ClickAwayable = mui.Mixins.ClickAwayable;
 const TopNav = require('../TopNav');
 const SideNav = require('../SideNav');
 const FloatingContentStore = require('../../stores/FloatingContentStore');
+const MessageStore = require('../../stores/MessageStore');
+const ImConstants = require('../../constants/IMConstants');
 const PerfectScroll = require('../PerfectScroll');
 const SearchEverywhere = require('../SearchEverywhere');
 
@@ -47,6 +49,11 @@ let FloatingContent = React.createClass({
 });
 
 let Application = React.createClass({
+
+    contextTypes: {
+        router: React.PropTypes.func.isRequired
+    },
+
     getInitialState() {
         return {
             title: '',
@@ -59,12 +66,16 @@ let Application = React.createClass({
         FloatingContentStore.addChangeListener(this._floatingContentChanged);
         this.getDOMNode().addEventListener("click", this._clickListener);
         window.addEventListener("keydown", this._keyDownListener);
+
+        MessageStore.on(ImConstants.EVENTS.REQUEST_REDIRECT, this._onRequestRedirect);
     },
 
     componentWillUnmount() {
         FloatingContentStore.removeChangeListener(this._floatingContentChanged);;
         this.getDOMNode().removeEventListener("click", this._clickListener);
         window.removeEventListener("keydown", this._keyDownListener);
+
+        MessageStore.removeListener(ImConstants.EVENTS.REQUEST_REDIRECT, this._onRequestRedirect);
     },
 
     render() {
@@ -128,6 +139,10 @@ let Application = React.createClass({
 
         this.lastKeyCode = keyCode;
         this.lastTimestamp = time;
+    },
+
+    _onRequestRedirect(path) {
+        this.context.router.transitionTo(path);
     }
 });
 module.exports = Application;
