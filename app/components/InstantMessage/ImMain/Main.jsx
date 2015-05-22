@@ -88,8 +88,9 @@ module.exports = React.createClass({
       if (channelIdToGo === 'default') {
         // load from localStorage
         channelIdToGo = localStorage[IMConstant.LOCALSTORAGE_CHANNEL];
-        transition.redirect('/platform/im/talk/' + channelIdToGo);
         // redirect
+        channelIdToGo && transition.redirect('/platform/im/talk/' + channelIdToGo);
+
       } else {
         if (!SocketStore.getSocket()) {
           _channels = _init();
