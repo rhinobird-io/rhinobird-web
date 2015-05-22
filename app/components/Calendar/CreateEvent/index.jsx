@@ -364,7 +364,7 @@ export default React.createClass({
                 <MUI.TextField
                     type="text"
                     ref="repeatedTimes"
-                    styles={styles.textfield}
+                    style={styles.textfield}
                     className="cal-event-repeated-every"
                     valueLink={this.linkState("repeatedTimes")}/>
                 <Flex.Layout vertical selfCenter>
@@ -408,7 +408,7 @@ export default React.createClass({
                         <MUI.TextField
                             type="text"
                             ref="repeatedFrequency"
-                            styles={styles.textfield}
+                            style={styles.textfield}
                             className="cal-event-repeated-every"
                             valueLink={this.linkState("repeatedFrequency")} />
                         {this.repeatedEvery[this.state.repeatedType]}
