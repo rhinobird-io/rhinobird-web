@@ -99,6 +99,11 @@ class MessagesWrapper {
 }
 
 function appendToCurrentMessageSuite(messages) {
+    //
+    if (messages.length === 0) {
+        return;
+    }
+
     // generally new message only contains one message...
     let previousMsgSuite = _currentChannelMessageSuites.last();
     if(!previousMsgSuite){
