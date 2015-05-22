@@ -84,7 +84,7 @@ module.exports = React.createClass({
 
     render() {
         return (
-            <Flex.Layout vertical perfectScroll className="history" style={this.props.style}>
+            <Flex.Layout vertical perfectScroll noScrollX className="history" style={this.props.style}>
                 <InfiniteScroll upperThreshold={this.state.upperThreshold} onUpperTrigger={()=>{
                 this.loadMoreOldMessages()
             }} scrollTarget={()=>{
