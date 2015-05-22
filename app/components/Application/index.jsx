@@ -65,7 +65,7 @@ let Application = React.createClass({
     componentDidMount() {
         FloatingContentStore.addChangeListener(this._floatingContentChanged);
         this.getDOMNode().addEventListener("click", this._clickListener);
-        window.addEventListener("keydown", this._keyDownListener);
+        //window.addEventListener("keydown", this._keyDownListener);
 
         MessageStore.on(ImConstants.EVENTS.REQUEST_REDIRECT, this._onRequestRedirect);
     },
@@ -73,7 +73,7 @@ let Application = React.createClass({
     componentWillUnmount() {
         FloatingContentStore.removeChangeListener(this._floatingContentChanged);;
         this.getDOMNode().removeEventListener("click", this._clickListener);
-        window.removeEventListener("keydown", this._keyDownListener);
+        //window.removeEventListener("keydown", this._keyDownListener);
 
         MessageStore.removeListener(ImConstants.EVENTS.REQUEST_REDIRECT, this._onRequestRedirect);
     },
