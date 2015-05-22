@@ -4,10 +4,11 @@ const AppDispatcher = require("../dispatchers/AppDispatcher");
 const ActionTypes = require("../constants/AppConstants").NotificationActionTypes;
 const LoginStore = require("../stores/LoginStore");
 const NotificationStore = require("../stores/NotificationStore");
+const ReconnectingWebSocket = require('../../node_modules/ReconnectingWebSocket/reconnecting-websocket.js');
 
 function _websocket() {
   try {
-    let socket = new WebSocket("ws://" + window.location.host + "/platform/socket");
+    let socket = new ReconnectingWebSocket("ws://" + window.location.host + "/platform/socket");
     socket.onmessage = msg => {
       AppDispatcher.dispatch({
         type: ActionTypes.RECEIVE_NOTIFI,
