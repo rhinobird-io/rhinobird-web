@@ -85,7 +85,7 @@ module.exports = React.createClass({
         return;
       }
       let channelIdToGo = params.backEndChannelId;
-      if (channelIdToGo === 'default') {
+      if (channelIdToGo === 'default' && localStorage[IMConstant.LOCALSTORAGE_CHANNEL]) {
         // load from localStorage
         channelIdToGo = localStorage[IMConstant.LOCALSTORAGE_CHANNEL];
         // redirect
