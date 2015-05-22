@@ -79,7 +79,7 @@ export default React.createClass({
 
         if (relative) {
             timeFormat = Moment(start).fromNow();
-            tip = <Tooltip ref="tip" styles={styles.tooltip} show={this.state.tipShow} label={time}/>
+            tip = <Tooltip ref="tip" style={styles.tooltip} show={this.state.tipShow} label={time}/>
         } else {
             timeFormat = time;
         }
@@ -89,7 +89,7 @@ export default React.createClass({
 
         return (
             <span ref="wrapper"
-                styles={styles.time}
+                style={styles.time}
                 onMouseOver={() => {
                     this.setState({tipShow: true});
                     //if (this.props.relative) {

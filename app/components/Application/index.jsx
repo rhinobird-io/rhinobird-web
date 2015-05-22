@@ -113,7 +113,6 @@ let Application = React.createClass({
 
     _floatingContentChanged(){
         let content = FloatingContentStore.getFloatingContent();
-
         this.getDOMNode().removeEventListener("click", this._clickListener);
         this.setState({
             floatingContent: content,

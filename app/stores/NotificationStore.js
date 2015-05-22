@@ -14,7 +14,7 @@ let NotificationStore = assign({}, BaseStore, {
 
   getWebSocket() { return _websocket; },
 
-  setWebSocket(socket) { _websocket = socket; },
+  setWebSocket(socket) { _websocket = socket; console.log(_websocket); },
 
   getTotal() { return _total; },
 

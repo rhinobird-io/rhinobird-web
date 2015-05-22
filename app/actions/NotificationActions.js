@@ -10,8 +10,14 @@ const ReconnectingWebSocket = require('../../node_modules/ReconnectingWebSocket/
 function _websocket() {
   try {
     let socket = new ReconnectingWebSocket("ws://" + window.location.host + "/platform/socket");
-    socket.onmessage = msg => {
+    console.log(socket);
+    socket.onopen = (e) => {
+      console.log("open");
+    };
+
+    socket.onmessage = (msg) => {
       let data = JSON.parse(msg.data);
+      console.log(data);
       AppDispatcher.dispatch({
         type: ActionTypes.RECEIVE_NOTIFI,
         data: data
@@ -19,16 +25,19 @@ function _websocket() {
       console.log(data);
 
 
-      if (LoginStore.getUser().id !== data.from_user_id) {
-        let user = UserStore.getUser(data.from_user_id);
+      let user = UserStore.getUser(data.from_user_id);
 
-        let notification = new Notification("New Events", {
-          icon: `http://www.gravatar.com/avatar/${user.emailMd5}?d=identicon`,
-          body: `${user.realname.charAt(0).toUpperCase()}${user.realname.slice(1)} ${data.content}`
-        });
-      }
+      let notification = new Notification("New Events", {
+        icon: `http://www.gravatar.com/avatar/${user.emailMd5}?d=identicon`,
+        body: `${user.realname.charAt(0).toUpperCase()}${user.realname.slice(1)} ${data.content}`
+      });
+    };
+
+    socket.onerror = () => {
+      console.log("onerror");
     };
     socket.onclose = () => {
+      console.log("onclose");
     };
     return socket;
   } catch (ex) {
