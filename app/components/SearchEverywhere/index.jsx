@@ -71,7 +71,7 @@ let SearchEverywhere = React.createClass({
                 left: 0,
                 top: "100%",
                 marginLeft: 0,
-                background: "transparent"
+                background: "rgba(0, 0, 0, .9)"
             }
         };
 

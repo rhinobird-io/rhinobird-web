@@ -1,4 +1,5 @@
 const React = require('react');
+const StyleSheet = require('react-style');
 const PerfectScroll = require('../PerfectScroll');
 const Layout = require("../Flex").Layout;
 
