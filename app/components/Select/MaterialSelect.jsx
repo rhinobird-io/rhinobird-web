@@ -1,5 +1,4 @@
 const React       = require('react'),
-      StyleSheet  = require('react-style'),
       MUI         = require('material-ui'),
       Paper       = MUI.Paper,
       Flex        = require('../Flex'),
@@ -231,13 +230,18 @@ export default React.createClass({
             floatingText = " ";
         }
 
+        if (style === undefined || style === null) {
+            style = {};
+        }
+        style.paddingLeft = padding.paddingLeft;
+
         let text =
             <TextField
                 ref="text"
                 type="text"
                 hintText={selectedValues.length === 0 ? hintText : undefined}
                 floatingLabelText={floatingText}
-                styles={[styles.padding, style]}
+                style={style}
                 errorText={this.props.errorText}
                 className={this.props.className}
                 onChange={this._filter}
@@ -282,7 +286,7 @@ export default React.createClass({
             }
 
             tokens.push(
-                <Paper className={tokenClass} key={"token_" + i} ref={"token-" + i} zDepth={1} styles={tokenStyle}>
+                <Paper className={tokenClass} key={"token_" + i} ref={"token-" + i} zDepth={1} style={tokenStyle}>
                     <Flex.Layout horizontal onClick={(e) => e.stopPropagation()}>
                         {token}
                         <Flex.Layout vertical selfCenter>
@@ -306,7 +310,7 @@ export default React.createClass({
                 </div> : null;
 
         return (
-            <div styles={[styles.select]}>
+            <div style={styles.select}>
                 {tokenWrapperDOM}
                 {text}
                 {popupSelect}

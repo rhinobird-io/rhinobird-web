@@ -1,5 +1,4 @@
 const React = require('react');
-const StyleSheet = require('react-style');
 const PerfectScroll = require('../PerfectScroll');
 const Layout = require("../Flex").Layout;
 
@@ -120,16 +119,24 @@ export default React.createClass({
             }
         };
 
+        if (style === undefined || style === null) {
+            style = {};
+        }
+        style.zIndex = 9;
+        style.height = 250;
+        style.margin = -4;
+        style.display = this.state.visible ? "flex" : "none";
+
         let padding = <div style={{flex: 1}}></div>;
         let topPadding = position === "top" ? padding : null;
         let bottomPadding = position === "bottom" ? padding : null;
 
         return (
-            <Layout vertical styles={[styles.outer, style]}>
+            <Layout vertical style={style}>
                 {topPadding}
                 <PerfectScroll
                     ref="scroll"
-                    styles={[styles.popup, this.props.wrapperStyle]}
+                    style={styles.popup}
                     className={this.props.wrapperClass || ""} alwaysVisible>
                     {children}
                 </PerfectScroll>

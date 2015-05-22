@@ -18,10 +18,6 @@ const Flex = require('../../Flex');
 import IMConstant from '../../../constants/IMConstants';
 import _ from 'lodash';
 
-if (Notification.permission !== 'granted'){
-  Notification.requestPermission();
-}
-
 require('./style.less');
 
 function _buildBackEndChannelId(isGroup, channel) {

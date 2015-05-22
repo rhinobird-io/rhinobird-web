@@ -117,3 +117,7 @@ $.get('/platform/api/login').done(function (data) {
     loginLoaded = true;
     render();
 });
+
+if (Notification.permission !== 'granted'){
+    Notification.requestPermission();
+}

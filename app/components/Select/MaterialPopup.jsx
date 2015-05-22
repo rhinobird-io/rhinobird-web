@@ -1,5 +1,4 @@
 const React      = require('react'),
-      ReactStyle = require('react-style'),
       MUI        = require('material-ui'),
       Popup      = require('./Popup'),
       Flex       = require('../Flex'),

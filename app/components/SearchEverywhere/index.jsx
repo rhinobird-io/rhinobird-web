@@ -1,5 +1,4 @@
 const React = require('react');
-const StyleSheet = require('react-style');
 const MUI = require('material-ui');
 const Flex = require('../Flex');
 const PopupSelect = require('../Select').PopupSelect;
