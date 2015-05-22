@@ -39,25 +39,25 @@ export default {
                         noMoreAtBack : messages.length < limit
                     });
 
-                    if (messages.length > 0) {
-                        AppDispatcher.dispatch({
-                            type: Constants.MessageActionTypes.CLEAR_UNREAD,
-                            backEndChannelId : backEndChannelId,
-                            lastSeenMessageId : messages[messages.length - 1].id
-                        });
-                    }
+                    //if (messages.length > 0) {
+                    //    AppDispatcher.dispatch({
+                    //        type: Constants.MessageActionTypes.CLEAR_UNREAD,
+                    //        backEndChannelId : backEndChannelId,
+                    //        lastSeenMessageId : messages[messages.length - 1].id
+                    //    });
+                    //}
 
                 });
         } else {
 
-            let messages = MessageStore.getMessages({backEndChannelId : backEndChannelId});
-            if (messages && messages.length > 0) {
-                AppDispatcher.dispatch({
-                    type: Constants.MessageActionTypes.CLEAR_UNREAD,
-                    backEndChannelId : backEndChannelId,
-                    lastSeenMessageId : messages[messages.length - 1].id
-                });
-            }
+            //let messages = MessageStore.getMessages({backEndChannelId : backEndChannelId});
+            //if (messages && messages.length > 0) {
+            //    AppDispatcher.dispatch({
+            //        type: Constants.MessageActionTypes.CLEAR_UNREAD,
+            //        backEndChannelId : backEndChannelId,
+            //        lastSeenMessageId : messages[messages.length - 1].id
+            //    });
+            //}
         }
     }
 };

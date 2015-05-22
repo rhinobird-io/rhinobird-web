@@ -105,7 +105,7 @@ module.exports = React.createClass({
                         <span className={(this.props.Channel.isDirect && !self.state._onlineStatus)?'instant-message-channel-item-offline':''}>{ this.props.Channel.isGroup? this.props.Channel.channel.name : this.props.Channel.channel.realname}</span>
                     </div>
                 </FlatButton>
-                <span className={ this.state._hasUnread?'instant-message-channel-item-unread icon-message':''}></span>
+                <span className={ (!this.state._imCurrentChannel && this.state._hasUnread)?'instant-message-channel-item-unread icon-message':''}></span>
             </div>
         );
     }
