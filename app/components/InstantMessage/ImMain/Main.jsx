@@ -88,8 +88,9 @@ module.exports = React.createClass({
       if (channelIdToGo === 'default') {
         // load from localStorage
         channelIdToGo = localStorage[IMConstant.LOCALSTORAGE_CHANNEL];
-        transition.redirect('/platform/im/talk/' + channelIdToGo);
         // redirect
+        channelIdToGo && transition.redirect('/platform/im/talk/' + channelIdToGo);
+
       } else {
         if (!SocketStore.getSocket()) {
           _channels = _init();
@@ -130,6 +131,7 @@ module.exports = React.createClass({
   _onChannelChange() {
     var currentChannel = ChannelStore.getCurrentChannel();
     this.props.setTitle("Instant Message - Talk - " + (currentChannel.isGroup?currentChannel.channel.name:currentChannel.channel.realname));
+    localStorage[IMConstant.LOCALSTORAGE_CHANNEL] = currentChannel.backEndChannelId;
   },
 
   render() {
