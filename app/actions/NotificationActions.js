@@ -16,7 +16,6 @@ function _websocket() {
       });
     };
     socket.onclose = () => {
-      console.error("Notification websocket closed");
     };
     return socket;
   } catch (ex) {
