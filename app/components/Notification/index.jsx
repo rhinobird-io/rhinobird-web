@@ -50,14 +50,21 @@ let NotifiItem = React.createClass({
 });
 
 export default React.createClass({
+  contextTypes: {
+    router: React.PropTypes.func.isRequired
+  },
+
   getInitialState() {
-    return { notifications: [] };
+    return { notifications: [], transitionTo: null };
   },
 
   componentDidMount() {
     LoginStore.addChangeListener(this._onLoginChange);
     NotificationStore.addChangeListener(this._onChange);
     NotificationActions.receive(this.state.notifications.length);
+    if (this.state.transitionTo) {
+      this.context.router.transitionTo(this.state.transitionTo)
+    }
   },
 
   componentWillUnmount() {

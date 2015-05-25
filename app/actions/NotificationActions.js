@@ -27,10 +27,26 @@ function _websocket() {
       if (self.id !== user.id) {
         content = user.realname.charAt(0).toUpperCase() + user.realname.slice(1) + content;
       }
-      let notification = new Notification("New Events", {
+      let title = "";
+
+      console.log(data);
+      /* TODO: dirty code, notification need to be migrated to have types. */
+      if (content.indexOf("You have created an event") >= 0 || content.indexOf("Invited you to the event") >= 0) {
+        title = "New Event";
+      } else if (content.indexOf("You have canceled the event") >= 0 || content.indexOf("has canceled the event ") >= 0) {
+        title = "Event Canceled";
+      } else {
+        title = "Event Up To Come"
+      }
+
+      let notification = new Notification(title, {
         icon: `http://www.gravatar.com/avatar/${user.emailMd5}?d=identicon`,
         body: content
       });
+
+      notification.onclick = () => {
+
+      };
     };
 
     socket.onerror = () => {
