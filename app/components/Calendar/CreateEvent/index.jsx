@@ -198,7 +198,7 @@ export default React.createClass({
                                 </MUI.Tab>
                                 <MUI.Tab label="Point" onActive={() => this.setState({isPeriod: false})}>
                                     <div className="tab-template-container">
-                                        <Flex.Layout horizontal justified>
+                                        <Flex.Layout horizontal justified style={{marginTop: -10}}>
                                             <MUI.DatePicker
                                                 ref="fromDate"
                                                 hintText="From Date"
