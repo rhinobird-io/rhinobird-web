@@ -91,6 +91,8 @@ module.exports = React.createClass({
             }} scrollTarget={()=>{
                 return this.getDOMNode();
             }}/>
+                <h5 style={{paddingLeft:54}}>This is the very beginning of this channel, you can start to talk freely.</h5>
+                <hr style={{width:'100%'}}/>
                 <div style={{flex: 1}}>
                     {
                         this.state.messageSuites.map((msg, idx) => <ImMessage onLinkPreviewDidUpdate={this.componentDidUpdate.bind(this)}
