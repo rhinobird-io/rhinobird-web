@@ -63,8 +63,12 @@ function _deleteEvent(data) {
     if (repeatedNumber === undefined || repeatedNumber === null) {
         let event = _eventsIdMap[id]["1"];
         if (event !== null) {
-            delete _events[_formatDate(event.from_time)][event.id.toString()];
+            let formatDate = _formatDate(event.from_time);
+            delete _events[formatDate][event.id.toString()];
             delete _eventsIdMap[id];
+            if (Object.keys(_events[formatDate]).length === 0) {
+                delete _events[formatDate]
+            }
         }
         _lastDeleted = {id: id}
     } else {
