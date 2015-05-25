@@ -40,6 +40,55 @@ export default {
         }
     },
 
+    deleteNoRepeatEvent(id, success) {
+        $.ajax({
+            url: "/platform/api/events/" + id,
+            type: "delete"
+        }).done(() => {
+            //console.log("haha");
+            AppDispatcher.dispatch({
+                type: CalendarActionTypes.DELETE_EVENT,
+                data: {
+                    id: id
+                }
+            });
+            if (success && typeof success === "function") {
+                success();
+            }
+        }).fail((e) => {
+            console.log(e);
+        }).always(() => {
+            console.log("always");
+        });
+    },
+
+    undoLastDeletion(lastDeletion, success) {
+        let id = lastDeletion.id;
+        let repeatedNumber = lastDeletion.repeatedNumber;
+        if (id) {
+            let url = `/platform/api/events/restore/${id}`;
+            if (repeatedNumber) {
+                url += `/${repeatedNumber}`;
+            }
+            $.ajax({
+                url: url,
+                type: "put"
+            }).done(data => {
+                AppDispatcher.dispatch({
+                    type: CalendarActionTypes.RESTORE_DELETED_EVENT,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success();
+                }
+            }).fail((e) => {
+                console.log(e);
+            }).always(() => {
+                console.log("always");
+            });
+        }
+    },
+
     loadMoreOlderEvents(time, success, error) {
         $.get("/platform/api/events/before/" + time).done(data => {
             AppDispatcher.dispatch({

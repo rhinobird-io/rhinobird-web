@@ -84,7 +84,6 @@ export default React.createClass({
   },
 
   render() {
-    console.log(NotificationStore.getUncheckedCount());
     let control = <IconButton iconClassName={NotificationStore.getUncheckedCount() === 0 ? 'icon-notifications' : 'icon-notifications-on'} />;
     let menu = this.state.notifications.map(n => {
       let sender = UserStore.getUser(n.from_user_id);
@@ -99,7 +98,6 @@ export default React.createClass({
       );
     }
 
-    console.log(NotificationStore.getUncheckedCount());
     return (
       <span>
         <DropDownAny ref="dropdown" control={control} menu={menu} menuClasses={'notification-menu'}

@@ -9,6 +9,7 @@ const React           = require("react"),
       Member          = require('../../Member'),
       SmartDisplay    = require('../../SmartEditor').SmartDisplay,
       UserStore       = require('../../../stores/UserStore'),
+      LoginStore      = require('../../../stores/LoginStore'),
       CalendarStore   = require('../../../stores/CalendarStore'),
       CalendarActions = require('../../../actions/CalendarActions');
 
@@ -16,6 +17,10 @@ require('./style.less');
 
 export default React.createClass({
     mixins: [React.addons.LinkedStateMixin],
+
+    contextTypes: {
+        router: React.PropTypes.func.isRequired
+    },
 
     componentDidMount() {
         CalendarStore.addChangeListener(this._onChange);
@@ -38,11 +43,29 @@ export default React.createClass({
     },
 
     render() {
+        let eventActions = null;
         let eventContent = null;
         let event = this.state.event;
-        if (this.state.notFound || this.state.event === null) {
+        if (this.state.notFound || event === null || event === undefined) {
             eventContent = <h3>Event not found</h3>
         } else {
+            let deleteEvent = LoginStore.getUser().id === event.creator_id ?
+                <MUI.IconButton iconClassName="icon-delete" onClick={this._onEventDelete}/> : null;
+
+            eventActions = <Flex.Layout horizontal justified>
+                <Link to="event-list">
+                    <MUI.IconButton iconClassName="icon-arrow-back" tooltip="Back"/>
+                </Link>
+                {deleteEvent}
+                {
+                    event && event.repeated ?
+                        <div className="cal-event-repeated-symbol">
+                            <div>{event.repeated_number}</div>
+                        </div> :
+                        null
+                }
+            </Flex.Layout>;
+
             eventContent = [];
 
             eventContent.push(
@@ -104,18 +127,7 @@ export default React.createClass({
         return <PerfectScroll style={{height: "100%", position: "relative"}} className="cal-event-detail">
             <Flex.Layout horizontal centerJustified wrap>
                 <MUI.Paper zDepth={3} style={{paddingTop: 20}}>
-                    <Flex.Layout horizontal justified>
-                        <Link to="event-list">
-                            <MUI.IconButton iconClassName="icon-arrow-back" tooltip="Back"/>
-                        </Link>
-                        {
-                            event && event.repeated ?
-                                <div className="cal-event-repeated-symbol">
-                                    <div>{event.repeated_number}</div>
-                                </div> :
-                                null
-                        }
-                    </Flex.Layout>
+                    {eventActions}
                     <div style={{padding: "0 20px 20px 20px"}}>
                         {eventContent}
                     </div>
@@ -129,5 +141,11 @@ export default React.createClass({
         this.setState({
             event: CalendarStore.getEvent(params.id, params.repeatedNumber)
         });
+    },
+
+    _onEventDelete() {
+        if (confirm("Are you sure to delete this event?")) {
+            CalendarActions.deleteNoRepeatEvent(this.state.event.id, () => this.context.router.transitionTo("event-list"));
+        }
     }
 });
