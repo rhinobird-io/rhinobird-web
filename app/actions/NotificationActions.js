@@ -29,6 +29,7 @@ function _websocket() {
       }
       let title = "";
 
+      console.log(data);
       /* TODO: dirty code, notification need to be migrated to have types. */
       if (content.indexOf("You have created an event") >= 0 || content.indexOf("Invited you to the event") >= 0) {
         title = "New Event";
@@ -42,6 +43,10 @@ function _websocket() {
         icon: `http://www.gravatar.com/avatar/${user.emailMd5}?d=identicon`,
         body: content
       });
+
+      notification.onclick = () => {
+
+      };
     };
 
     socket.onerror = () => {
