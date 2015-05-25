@@ -4,6 +4,8 @@ const InfiniteScroll = require('../InfiniteScroll');
 const PerfectScroll = require('../PerfectScroll');
 const LoginStore = require('../../stores/LoginStore');
 const Immutable = require('immutable');
+const MUI = require('material-ui');
+const Flex = require('../Flex');
 
 if ($.mockjax) {
     $.mockjax({
@@ -50,6 +52,7 @@ module.exports = React.createClass({
         this.props.setTitle("Dashboard");
     },
     render: function () {
+        let records = this.state.dashboardRecords;
         return <PerfectScroll className="dashboard">
             <InfiniteScroll lowerThreshold={this.state.noMore? undefined : 300} onLowerTrigger={()=>{
                 let userId = LoginStore.getUser().id;
@@ -69,12 +72,15 @@ module.exports = React.createClass({
                 return this.getDOMNode();
             }}/>
             <hr />
-            {this.state.dashboardRecords.map((record, index)=> {
+            {records.length > 0 ? records.map((record, index)=> {
                 return <div key={index}>
                     <DashboardRecord record={record}/>
                     <hr/>
                 </div>
-            })}
+            }) :<div style={{marginTop: 100}}>
+                    <h2 style={{textAlign: "center"}}>Welcome to RhinoBird!</h2>
+                    <h3 style={{textAlign: "center"}}>Click <span className="icon-menu" style={{fontSize: "1.2em"}}/> on the left top to get start.</h3>
+                </div>}
             {this.state.noMore? <div style={{textAlign:'center'}}>No more dashboard records</div>: undefined}
         </PerfectScroll>;
     }
