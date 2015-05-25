@@ -43,9 +43,11 @@ module.exports = React.createClass({
             },
             {
                 payload: '2', text: 'Logout', iconClassName:'icon-exit-to-app', action: ()=> {
+                document.cookie = 'Auth=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                LoginAction.updateLogin(undefined);
+                this.context.router.transitionTo('/platform/signin');
+                //TODO logout
                 $.post('/api/logout').then(()=>{
-                    LoginAction.updateLogin(undefined);
-                    this.context.router.transitionTo('/platform/signin');
                 })
             }
             }
