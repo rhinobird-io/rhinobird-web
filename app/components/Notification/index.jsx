@@ -84,7 +84,8 @@ export default React.createClass({
   },
 
   render() {
-    let control = <IconButton iconClassName="icon-notifications" />;
+    console.log(NotificationStore.getUncheckedCount());
+    let control = <IconButton iconClassName={NotificationStore.getUncheckedCount() === 0 ? 'icon-notifications' : 'icon-notifications-on'} />;
     let menu = this.state.notifications.map(n => {
       let sender = UserStore.getUser(n.from_user_id);
       return <NotifiItem key={n.id} sender={sender} time={n.created_at} message={n.content} read={n.checked} />;
@@ -98,9 +99,10 @@ export default React.createClass({
       );
     }
 
+    console.log(NotificationStore.getUncheckedCount());
     return (
       <span>
-        <DropDownAny ref="dropdown" control={control} menu={menu} menuClasses="notification-menu"
+        <DropDownAny ref="dropdown" control={control} menu={menu} menuClasses={'notification-menu'}
           onClickAway={this._onClickAway} style={{top: 12, right: 12}} />
         <InfiniteScroll scrollTarget={() => this.refs.dropdown.refs.scroll.getDOMNode()}
           lowerThreshold={5} onLowerTrigger={this._loadMore} />

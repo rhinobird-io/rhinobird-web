@@ -22,6 +22,14 @@ let NotificationStore = assign({}, BaseStore, {
 
   getAll() { return _notifications; },
 
+  getUncheckedCount() {
+    let count = 0;
+    _notifications.forEach(n => {
+      if (!n.checked) count++;
+    });
+    return count;
+  },
+
   clear() {
     _notifications = [];
     _total = MAX_INT;
