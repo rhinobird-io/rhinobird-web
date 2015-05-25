@@ -25,16 +25,15 @@ const SmartDisplay = React.createClass({
             enableLinkPreview: true
         };
     },
-
     shouldComponentUpdate(nextProps, nextState){
         return nextProps.value !== this.props.value || nextState.urlPreviews !== this.state.urlPreviews;
     },
-    componentWillUpdate(){
-        if(this.state.urlPreviews.length !== 0 && this.props.onLinkPreviewWillUpdate) {
-            this.props.onLinkPreviewWillUpdate();
+    componentWillUpdate(nextProps, nextState){
+        if(nextState.urlPreviews.length !== 0 && nextProps.onLinkPreviewWillUpdate) {
+            nextProps.onLinkPreviewWillUpdate();
         }
     },
-    componentDidUpdate(){
+    componentDidUpdate(prevProps, prevState){
         if(this.state.urlPreviews.length !== 0 && this.props.onLinkPreviewDidUpdate) {
             this.props.onLinkPreviewDidUpdate();
         }

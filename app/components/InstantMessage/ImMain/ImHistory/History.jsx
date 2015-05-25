@@ -50,7 +50,8 @@ module.exports = React.createClass({
     },
     componentWillUpdate: function() {
         var node = this.getDOMNode();
-        this.shouldScrollBottom = node.scrollTop + node.clientHeight > node.scrollHeight - 1;
+        //Don't know the reason of '-5', need research
+        this.shouldScrollBottom = node.scrollTop + node.clientHeight > node.scrollHeight - 5;
         this.scrollHeight = node.scrollHeight;
         this.scrollTop = node.scrollTop;
     },
