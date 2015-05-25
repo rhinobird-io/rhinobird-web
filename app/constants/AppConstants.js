@@ -22,6 +22,7 @@ export default {
     RECEIVE_EVENT: null,
     RECEIVE_EVENTS: null,
     DELETE_EVENT: null,
+    RESTORE_DELETED_EVENT: null,
     LOAD_MORE_NEWER_EVENTS: null,
     LOAD_MORE_OLDER_EVENTS: null
   }),

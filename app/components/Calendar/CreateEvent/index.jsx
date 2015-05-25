@@ -75,8 +75,10 @@ export default React.createClass({
     },
 
     getInitialState() {
-        let now = new Date();
-        console.log(now.getMinutes());
+        let fromDate = new Date();
+        let toDate = new Date(fromDate);
+        toDate.setHours(toDate.getHours() + 1);
+
         return {
             titleError: "",
             fullDay: false,
@@ -84,12 +86,12 @@ export default React.createClass({
                 teams: [],
                 users: []
             },
-            fromTime: now,
-            fromHour: now.getHours(),
-            fromMinute: now.getMinutes(),
-            toTime: now,
-            toHour: now.getHours(),
-            toMinute: now.getMinutes(),
+            fromTime: fromDate,
+            fromHour: fromDate.getHours(),
+            fromMinute: fromDate.getMinutes(),
+            toTime: toDate,
+            toHour: toDate.getHours(),
+            toMinute: toDate.getMinutes(),
             editRepeated: false,
             repeated: false,
             repeatedType: "Daily",
@@ -120,12 +122,14 @@ export default React.createClass({
                 key="fromHour"
                 pattern={/^([01]?\d|2[0-3])$/}
                 floatingLabelText="Hour"
+                onChange={this._onFromHourChange}
                 valueLink={this.linkState("fromHour")}/>);
         fromHM.push(
             <Input.RegexInput
                 key="fromMinute"
                 pattern={/^([0-5]?\d)$/}
                 floatingLabelText="Minute"
+                onChange={this._onFromMinuteChange}
                 valueLink={this.linkState("fromMinute")}/>);
 
         let toHM = [];
@@ -179,7 +183,7 @@ export default React.createClass({
                                                 <MUI.DatePicker
                                                     ref="fromDate"
                                                     hintText="From Date"
-                                                    floatingLabelText="From"
+                                                    floatingLabelText="From Date"
                                                     onChange={this._onFromDateChange}
                                                     defaultDate={this.state.fromTime} />
                                                 {!this.state.fullDay ? fromHM : null}
@@ -188,7 +192,7 @@ export default React.createClass({
                                                 <MUI.DatePicker
                                                     ref="toDate"
                                                     hintText="To Date"
-                                                    floatingLabelText="To"
+                                                    floatingLabelText="To Date"
                                                     onChange={this._onToDateChange}
                                                     defaultDate={this.state.fromTime} />
                                                 {!this.state.fullDay ? toHM : null}
@@ -198,11 +202,11 @@ export default React.createClass({
                                 </MUI.Tab>
                                 <MUI.Tab label="Point" onActive={() => this.setState({isPeriod: false})}>
                                     <div className="tab-template-container">
-                                        <Flex.Layout horizontal justified>
+                                        <Flex.Layout horizontal justified style={{marginTop: -10}}>
                                             <MUI.DatePicker
                                                 ref="fromDate"
-                                                hintText="From Date"
-                                                floatingLabelText="From"
+                                                hintText="Date"
+                                                floatingLabelText="Date"
                                                 defaultDate={this.state.fromTime} />
                                                 {!this.state.fullDay ? fromHM : null}
                                         </Flex.Layout>
@@ -282,6 +286,14 @@ export default React.createClass({
             this.refs.fromDate.setDate(newDate);
         }
         this.setState(state);
+
+    },
+
+    _onFromHourChange(e, newHour) {
+
+    },
+
+    _onFromMinuteChange(e, newMinute) {
 
     },
 

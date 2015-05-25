@@ -6,21 +6,22 @@ const BaseStore = require("./BaseStore");
 const assign = require("object-assign");
 
 let _eventsIdMap = {};
-let _events = {};
+let _events = {};       /* Events arranged by date. */
 let _eventRange = {};
 let _hasMoreNewerEvents = true;
 let _hasMoreOlderEvents = true;
 let _hasReceived = false;
 let _newCreated = null;
+let _lastDeleted = null;
 
 function _addEvent(event, type) {
     let dateFormat = _formatDate(event.from_time);
     if (!_events[dateFormat]) {
-        _events[dateFormat] = [];
+        _events[dateFormat] = {};
     }
 
     if (!_eventsIdMap[event.id.toString()] || !_eventsIdMap[event.id.toString()][event.repeated_number.toString()]) {
-        _events[dateFormat].push(event);
+        _events[dateFormat][event.id.toString()] = event;
         if (!_eventsIdMap[event.id.toString()]) {
             _eventsIdMap[event.id.toString()] = {};
         }
@@ -55,6 +56,26 @@ function _addEvents(events) {
     }
 }
 
+function _deleteEvent(data) {
+    let id = data.id;
+    let repeatedNumber = data.repeatedNumber;
+
+    if (repeatedNumber === undefined || repeatedNumber === null) {
+        let event = _eventsIdMap[id]["1"];
+        if (event !== null) {
+            let formatDate = _formatDate(event.from_time);
+            delete _events[formatDate][event.id.toString()];
+            delete _eventsIdMap[id];
+            if (Object.keys(_events[formatDate]).length === 0) {
+                delete _events[formatDate]
+            }
+        }
+        _lastDeleted = {id: id}
+    } else {
+        _lastDeleted = {id: id, repeatedNumber: repeatedNumber};
+    }
+}
+
 function _formatDate(date) {
     let d = new Date(date);
     var yyyy = d.getFullYear().toString();
@@ -80,15 +101,26 @@ let CalendarStore = assign({}, BaseStore, {
     },
 
     getAllEvents() {
-        return _events;
+        let events = {};
+        Object.keys(_events).forEach(key => {
+            events[key] = [];
+            Object.keys(_events[key]).forEach(id => {
+                events[key].push(_events[key][id]);
+            });
+        });
+        return events;
     },
 
     getEventTimeRange() {
         return _eventRange;
     },
 
-    getNewCreated() {
+    getLastCreated() {
         return _newCreated;
+    },
+
+    getLastDeleted() {
+        return _lastDeleted;
     },
 
     hasMoreNewerEvents() {
@@ -113,8 +145,15 @@ let CalendarStore = assign({}, BaseStore, {
             case ActionTypes.CREATE_EVENT:
                 _addEvent(data, ActionTypes.CREATE_EVENT);
                 break;
+            case ActionTypes.RESTORE_DELETED_EVENT:
+                _addEvent(data, ActionTypes.CREATE_EVENT);
+                _lastDeleted = null;
+                break;
             case ActionTypes.RECEIVE_EVENT:
                 _addEvent(data);
+                break;
+            case ActionTypes.DELETE_EVENT:
+                _deleteEvent(data);
                 break;
             case ActionTypes.RECEIVE_EVENTS:
                 if (Object.keys(_events).length === 0) {

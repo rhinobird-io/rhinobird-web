@@ -26,7 +26,8 @@ export default React.createClass({
             hasReceived: CalendarStore.hasReceived(),
             hasMoreNewerEvents: CalendarStore.hasMoreNewerEvents(),
             hasMoreOlderEvents: CalendarStore.hasMoreOlderEvents(),
-            newCreated: CalendarStore.getNewCreated()
+            newCreated: CalendarStore.getLastCreated(),
+            lastDeleted: CalendarStore.getLastDeleted()
         }
     },
 
@@ -38,15 +39,7 @@ export default React.createClass({
         }
 
         if (this.refs.newCreated) {
-            let self = this.getDOMNode();
-            let newCreated = this.refs.newCreated.getDOMNode();
-            let offsetTop = 0, offsetParent = newCreated;
-            while (offsetParent !== self && offsetParent !== null) {
-                offsetTop += offsetParent.offsetTop;
-                offsetParent = offsetParent.offsetParent;
-            }
-            self.scrollTop = offsetTop + newCreated.offsetHeight / 2 - self.offsetHeight / 2;
-            console.log(self.scrollTop);
+            this._scrollTo(this.refs.newCreated);
         }
     },
 
@@ -61,8 +54,22 @@ export default React.createClass({
             hasReceived: CalendarStore.hasReceived(),
             hasMoreNewerEvents: CalendarStore.hasMoreNewerEvents(),
             hasMoreOlderEvents: CalendarStore.hasMoreOlderEvents(),
-            newCreated: CalendarStore.getNewCreated()
+            newCreated: CalendarStore.getLastCreated(),
+            lastDeleted: CalendarStore.getLastDeleted()
         });
+    },
+
+    _scrollTo(ref) {
+        if (ref) {
+            let self = this.getDOMNode();
+            let newCreated = this.refs.newCreated.getDOMNode();
+            let offsetTop = 0, offsetParent = newCreated;
+            while (offsetParent !== self && offsetParent !== null) {
+                offsetTop += offsetParent.offsetTop;
+                offsetParent = offsetParent.offsetParent;
+            }
+            self.scrollTop = offsetTop + newCreated.offsetHeight / 2 - self.offsetHeight / 2;
+        }
     },
 
     _loadMoreNewerEvents() {
@@ -80,6 +87,10 @@ export default React.createClass({
             let oldScrollHeight = container.scrollHeight;
             CalendarActions.loadMoreOlderEvents(eventRange.min, () => container.scrollTop = container.scrollHeight - oldScrollHeight);
         }
+    },
+
+    _undoEventDeletion(lastDeletion) {
+        CalendarActions.undoLastDeletion(lastDeletion, () => this._scrollTo(this.refs.newCreated));
     },
 
     render: function() {
@@ -202,6 +213,14 @@ export default React.createClass({
             !this.state.hasMoreNewerEvents && eventsDOM.length !== 0 ?
                 <div className="cal-event-no-more">No more events</div> : null;
 
+        let lastDeleted = this.state.lastDeleted;
+        let snackBar = lastDeleted ? <MUI.Snackbar
+            ref="snack"
+            openOnMount
+            message="Event has been deleted"
+            action="Undo"
+            onActionTouchTap={() => this._undoEventDeletion(lastDeleted)}/> : null;
+
         return (
             <PerfectScroll className="cal-event-list">
                 <InfiniteScroll
@@ -224,6 +243,7 @@ export default React.createClass({
                         className="add-event"
                         iconClassName="icon-add" />
                 </Link>
+                {snackBar}
             </PerfectScroll>
         );
     }
