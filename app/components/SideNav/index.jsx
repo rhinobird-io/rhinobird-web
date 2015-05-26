@@ -70,7 +70,7 @@ module.exports = React.createClass({
             {route: '/platform/dashboard', iconClassName: 'icon-dashboard', text: 'Dashboard'},
             {route: '/platform/calendar', iconClassName: 'icon-event-note', text: 'Calendar'},
             {route: '/platform/team', iconClassName: 'icon-group', text: 'Team'},
-            {route: '/platform/im/talk/default', iconClassName: 'icon-group', text: 'Instant Message'}
+            {route: '/platform/im/talk/default', iconClassName: 'icon-message', text: 'Instant Message'}
         ];
 
         return <LeftNav
