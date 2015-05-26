@@ -120,10 +120,7 @@ module.exports = React.createClass({
   },
 
   componentDidMount() {
-    var currentChannel = ChannelStore.getCurrentChannel();
-    this.props.setTitle("Instant Message - Talk - " + (currentChannel.isGroup?currentChannel.channel.name:currentChannel.channel.realname));
-    localStorage[IMConstant.LOCALSTORAGE_CHANNEL] = currentChannel.backEndChannelId;
-    
+    this._onChannelChange();
     ChannelStore.addChangeListener(this._onChannelChange);
   },
 
@@ -132,7 +129,9 @@ module.exports = React.createClass({
   },
 
   _onChannelChange() {
-
+    var currentChannel = ChannelStore.getCurrentChannel();
+    this.props.setTitle("Instant Message - Talk - " + (currentChannel.isGroup?currentChannel.channel.name:currentChannel.channel.realname));
+    localStorage[IMConstant.LOCALSTORAGE_CHANNEL] = currentChannel.backEndChannelId;
   },
 
   render() {
