@@ -31,7 +31,8 @@ export default {
     RECEIVE_ALL: null,
     RECEIVE_CURRENT_CHANNEL : null,
     CHANGE_CHANNEL : null,
-    INIT_CHANNELS : null
+    INIT_CHANNELS : null,
+    LEAVE_IM : null
   }),
 
   SocketActionTypes : keyMirror({

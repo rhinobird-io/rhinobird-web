@@ -64,6 +64,14 @@ let ChannelStore = assign({}, BaseStore, {
                 }
 
                 break;
+            case Constants.ChannelActionTypes.LEAVE_IM:
+              _currentChannel = {
+                isDirect: false,
+                isGroup: false,
+                backEndChannelId: payload.backEndChannelId,
+                channel : undefined
+              };
+              break;
             default:
                 break;
         }

@@ -40,6 +40,13 @@ export default {
                     });
                 });
         }
+    },
+
+    leaveIM(){
+      AppDispatcher.dispatch({
+        type: Constants.ChannelActionTypes.LEAVE_IM,
+        backEndChannelId: 'default'
+      });
     }
 };
 
