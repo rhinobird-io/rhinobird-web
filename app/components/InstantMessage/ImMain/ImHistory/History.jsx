@@ -51,9 +51,10 @@ module.exports = React.createClass({
     componentWillUpdate: function() {
         var node = this.getDOMNode();
         //Don't know the reason of '-5', need research
-        this.shouldScrollBottom = node.scrollTop + node.clientHeight > node.scrollHeight - 5;
+        this.shouldScrollBottom = this.newChannel || node.scrollTop + node.clientHeight > node.scrollHeight - 5;
         this.scrollHeight = node.scrollHeight;
         this.scrollTop = node.scrollTop;
+        this.newChannel = false;
     },
     componentDidUpdate: function() {
         var node = this.getDOMNode();
@@ -64,7 +65,8 @@ module.exports = React.createClass({
         }
     },
 
-    _onReceiveMessage() {
+    _onReceiveMessage(newChannel) {
+        this.newChannel = newChannel;
         this.setState({
             messageSuites: MessageStore.getCurrentChannelMessageSuites()
         });

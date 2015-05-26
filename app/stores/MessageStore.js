@@ -237,7 +237,7 @@ let MessageStore = assign({}, BaseStore, {
                 _currentChannelMessageSuites = new Immutable.List();
                 if(_messages[currentChannel.backEndChannelId]) {
                     appendToCurrentMessageSuite(_messages[currentChannel.backEndChannelId].getMessagesArray((1 << 30), IMConstants.MSG_LIMIT));
-                    MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
+                    MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE, true);
                 }
                 break;
             case Constants.MessageActionTypes.RECEIVE_INIT_MESSAGES:
@@ -246,7 +246,7 @@ let MessageStore = assign({}, BaseStore, {
                 _messages[channel.backEndChannelId] = new MessagesWrapper(channel.backEndChannelId);
                 _messages[channel.backEndChannelId].addMessages(messages, false);
                 _messages[channel.backEndChannelId].setNoMoreAtBack(payload.noMoreAtBack);
-                MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
+                MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE, true);
                 break;
             case Constants.MessageActionTypes.RECEIVE_OLDER_MESSAGES:
                 // this was loaded from backEnd, that means there is no more he can fetch from the front end, currentsuite should sync with messagesWrapper
