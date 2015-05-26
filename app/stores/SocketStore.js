@@ -72,7 +72,7 @@ let SocketStore = assign({}, BaseStore, {
             OnlineStore.userLeft(data);
         });
         _socket.on('disconnect', function () {
-            self.connectinStatus = "disconnected.";
+            console.log('socket was disconnected');
         });
 
         _socket.on('reconnecting', function (number) {
@@ -82,21 +82,25 @@ let SocketStore = assign({}, BaseStore, {
             self.connectinStatus = "reconnecting failed.";
         });
         _socket.on('reconnect', function () {
-            self.connectinStatus = "connected";
+          console.log('socket reconnected');
+          emitInit(channels);
         });
 
-        let currentUser = LoginStore.getUser();
-        _socket.emit('init', {
-            userId: currentUser.id,
-            publicChannels: channels.publicGroupChannels,
-            privateChannels: [],
-            teamMemberChannels: channels.directMessageChannels
-        }, function (onlineList) {
-            OnlineStore.setOnlineList(onlineList);
-            SocketStore.emitChange();
-        });
+        emitInit(channels);
     }
-
 });
+
+function emitInit(channels) {
+  let currentUser = LoginStore.getUser();
+  _socket.emit('init', {
+    userId: currentUser.id,
+    publicChannels: channels.publicGroupChannels,
+    privateChannels: [],
+    teamMemberChannels: channels.directMessageChannels
+  }, function (onlineList) {
+    OnlineStore.setOnlineList(onlineList);
+    SocketStore.emitChange();
+  });
+}
 
 export default SocketStore;
