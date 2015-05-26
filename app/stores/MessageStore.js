@@ -232,9 +232,11 @@ let MessageStore = assign({}, BaseStore, {
     dispatcherIndex: AppDispatcher.register(function (payload) {
         switch (payload.type) {
             case Constants.ChannelActionTypes.CHANGE_CHANNEL:
+                _currentChannelMessageSuites = new Immutable.List();
+                MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
                 AppDispatcher.waitFor([ChannelStore.dispatcherIndex]);
                 let currentChannel = ChannelStore.getCurrentChannel();
-                _currentChannelMessageSuites = new Immutable.List();
+
                 if(_messages[currentChannel.backEndChannelId]) {
                     appendToCurrentMessageSuite(_messages[currentChannel.backEndChannelId].getMessagesArray((1 << 30), IMConstants.MSG_LIMIT));
                     MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE, true);
