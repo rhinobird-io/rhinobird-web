@@ -38,6 +38,8 @@ export default {
                         messages: messages, // from oldest to newest
                         noMoreAtBack : messages.length < limit
                     });
+                }).fail(err => {
+                    console.log(err);
                 });
         }
     },
