@@ -96,7 +96,6 @@ module.exports = React.createClass({
           _channels = _init();
           InitAction.init(_channels, LoginStore.getUser());
         }
-
         // validate channelIdToGo
         if (isChannelIdValid(channelIdToGo)) {
           ChannelAction.changeChannel(channelIdToGo, LoginStore.getUser());
@@ -121,6 +120,7 @@ module.exports = React.createClass({
   },
 
   componentDidMount() {
+    this._onChannelChange();
     ChannelStore.addChangeListener(this._onChannelChange);
   },
 
