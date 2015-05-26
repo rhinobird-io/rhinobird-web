@@ -126,6 +126,7 @@ module.exports = React.createClass({
 
   componentWillUnmount() {
     ChannelStore.removeChangeListener(this._onChannelChange);
+    ChannelAction.leaveIM();
   },
 
   _onChannelChange() {
