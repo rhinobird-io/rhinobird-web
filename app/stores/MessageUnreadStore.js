@@ -14,6 +14,7 @@ import Immutable from 'immutable';
 // key channelid, value, true or false
 let _unread = {};
 let _unreadBool = Immutable.Map({});
+let _latestReceiveMessageId = 0;
 
 let UnreadStore = assign({}, BaseStore, {
 
@@ -26,6 +27,8 @@ let UnreadStore = assign({}, BaseStore, {
     },
 
     onSendMessage(message) {
+        _latestReceiveMessageId =  Math.max(_latestReceiveMessageId, message.id);
+
         _unread[message.channelId] = _unread[message.channelId] || {};
         _unread[message.channelId].lastSeenMessageId = message.id;
         _unread[message.channelId].latestMessageId = message.id;
@@ -33,7 +36,16 @@ let UnreadStore = assign({}, BaseStore, {
         UnreadStore.emit(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + message.channelId, {unread : false});
     },
 
+  /**
+   * full scope latest received messageId
+   */
+    getLatestReceiveMessageId() {
+      return _latestReceiveMessageId;
+    },
+
     receiveMessageFromSocket(message){
+        _latestReceiveMessageId =  Math.max(_latestReceiveMessageId, message.id);
+
         var currentChannel = ChannelStore.getCurrentChannel();
         _unread[message.channelId] = _unread[message.channelId] || {};
         if (currentChannel.backEndChannelId === message.channelId) {
@@ -58,7 +70,7 @@ let UnreadStore = assign({}, BaseStore, {
                 Object.keys(latestAndLastSeen).forEach(backEndChannelId => {
                     _unread[backEndChannelId] = _unread[backEndChannelId] || {};
                     _unread[backEndChannelId].latestMessageId = latestAndLastSeen[backEndChannelId].latestMessageId;
-                    if ( !_unreadBool.get(backEndChannelId)) {
+                    if ( _unreadBool.get(backEndChannelId) === false) {
                         // the unread flag already been set, fix lastSeenMessageId to be the latest one and tell socket
                         _unread[backEndChannelId].lastSeenMessageId = _unread[backEndChannelId].latestMessageId;
                         SocketStore.getSocket().emit('message:seen', {
@@ -70,10 +82,16 @@ let UnreadStore = assign({}, BaseStore, {
                         _unread[backEndChannelId].lastSeenMessageId = latestAndLastSeen[backEndChannelId].lastSeenMessageId;
                     }
 
+                    if ('user_1_8' === backEndChannelId) {
+                      debugger;
+                    }
+
                     _unreadBool = _unreadBool.set(backEndChannelId, _unread[backEndChannelId].latestMessageId > _unread[backEndChannelId].lastSeenMessageId);
                     if (_unreadBool.get(backEndChannelId)) {
                         UnreadStore.emit(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + backEndChannelId, {unread : true});
                     }
+
+                    _latestReceiveMessageId =  Math.max(_latestReceiveMessageId, _unread[backEndChannelId].lastSeenMessageId);
                 });
                 UnreadStore.emitChange();
                 break;

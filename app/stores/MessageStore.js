@@ -189,7 +189,7 @@ let MessageStore = assign({}, BaseStore, {
         }
     },
 
-    // this method was called by SocketStoreq
+    // this method was called by SocketStore
     receiveMessage(message) {
         var currentChannel = ChannelStore.getCurrentChannel();
         _messages[message.channelId] = _messages[message.channelId] || new MessagesWrapper(message.channelId);
