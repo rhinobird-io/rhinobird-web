@@ -1,17 +1,16 @@
-@import "~material-ui/src/less/scaffolding.less";
-@import "~material-ui/src/less/components.less";
+
 
 @calEventBg: white;
 @arrowBg: white;
 @arrowZIndex: 1;
 @eventBg: white;
 @triangle-size: 6px;
-@event-expired-bg: @indigo-200;
-@event-icon-wrapper-bg: @indigo-300;
+@event-expired-bg: indigo;
+@event-icon-wrapper-bg: indigo;
 @day-divider-radius: 22px;
 @expired-event-bg: grey;
-@active-event-bg: @pink-500;
-@future-event-bg: @indigo-500;
+@active-event-bg: indigo;
+@future-event-bg: indigo;
 
 .cal-event-list {
   height: 100%;
@@ -53,7 +52,7 @@
   font-size: 1.1em;
   text-align: center;
   vertical-align: middle;
-  background-color: @pink-300;
+  background-color: pink;
 
   label {
     line-height: @day-divider-radius * 2;
@@ -89,7 +88,7 @@
   line-height: 36px;
   text-align: center;
   color: white;
-  background-color: @indigo-300;
+  background-color: indigo;
 }
 
 .cal-event-icon.expired {
@@ -97,7 +96,7 @@
 }
 
 .cal-event-icon.active {
-  *background-color: @pink-500;
+  *background-color: pink;
 }
 
 .cal-event-icon span {
@@ -117,7 +116,7 @@
 }
 
 .cal-event-content-inner.highlight {
-  box-shadow: 0px 0px 6px 0 @pink-500;
+  box-shadow: 0px 0px 6px 0 pink;
   transition: box-shadow 1s;
 }
 

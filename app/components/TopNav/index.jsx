@@ -17,7 +17,7 @@ module.exports = React.createClass({
         let rightElement = mainPage ? <Flex.Layout reverse className="top-nav-right"><Notification /></Flex.Layout> : undefined;
         return <Paper className='topNav' rounded={false}>
             <mui.AppBar
-                onMenuIconButtonTouchTap={this.props.onMenuIconButtonTouchTap}
+                onLeftIconButtonTouchTap={this.props.onLeftIconButtonTouchTap}
                 iconClassNameLeft="icon-menu"
                 title={this.props.title}
                 showMenuIconButton={mainPage}

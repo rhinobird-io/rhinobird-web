@@ -2,6 +2,8 @@ const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
 const injectTapEventPlugin = require("react-tap-event-plugin");
 const Flex = require('../Flex');
+const ThemeManager = require('material-ui/lib/styles/theme-manager')();
+const Colors = require('material-ui/lib/styles/colors');
 //Needed for onTouchTap
 //Can go away when react 1.0 release
 //Check this repo:
@@ -50,6 +52,14 @@ let FloatingContent = React.createClass({
 
 let Application = React.createClass({
 
+    childContextTypes: {
+        muiTheme: React.PropTypes.object
+    },
+    getChildContext: function() {
+        return {
+            muiTheme: ThemeManager.getCurrentTheme()
+        };
+    },
     contextTypes: {
         router: React.PropTypes.func.isRequired
     },
@@ -79,7 +89,8 @@ let Application = React.createClass({
     },
 
     render() {
-        return <div>
+        return <mui.AppCanvas predefinedLayout={1}>
+            <TopNav onLeftIconButtonTouchTap={this._onMenuIconButtonTouch} title={this.state.title}/>
             <SideNav ref='sideNav'/>
 
             <div className={this.state.showFloatingContent? 'mainContainer floating' : 'mainContainer'}>
@@ -94,8 +105,7 @@ let Application = React.createClass({
             </div>
 
             <SearchEverywhere ref="search"/>
-            <TopNav onMenuIconButtonTouchTap={this._onMenuIconButtonTouch} title={this.state.title}/>
-        </div>;
+        </mui.AppCanvas>;
     },
 
     _setTitle(title) {

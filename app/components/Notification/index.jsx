@@ -2,7 +2,7 @@
 
 const React = require("react");
 const mui = require("material-ui"),
-      IconButton = mui.IconButton;
+    IconButton = mui.IconButton;
 
 const DropDownAny = require("../DropDownAny");
 const InfiniteScroll = require("../InfiniteScroll");
@@ -18,100 +18,119 @@ const SmartTimeDisplay = require("../SmartTimeDisplay");
 require("./style.less");
 
 let NotifiItem = React.createClass({
-  propTypes: {
-    sender: React.PropTypes.object.isRequired,
-    time: React.PropTypes.string.isRequired,
-    message: React.PropTypes.string.isRequired,
-    read: React.PropTypes.bool
-  },
+    propTypes: {
+        sender: React.PropTypes.object.isRequired,
+        time: React.PropTypes.string.isRequired,
+        message: React.PropTypes.string.isRequired,
+        read: React.PropTypes.bool
+    },
 
-  render() {
-    let messageStyle = {
-      lineHeight: "1.2em",
-      wordWrap: "break-word",
-      whiteSpace: "pre-line",
-      color: this.props.read ? "#888" : "#000"
-    };
-    return (
-      <Layout horizontal>
-        <div className="avatar-wrapper">
-          <Avatar scale={1.6} member={this.props.sender} />
-        </div>
-        <Layout vertical style={{width: "100%"}}>
-          <Layout horizontal justified>
-            <div className="name"><Name member={this.props.sender} /></div>
-            <div className="time"><SmartTimeDisplay start={this.props.time} relative /></div>
-          </Layout>
-          <div style={messageStyle}>{this.props.message}</div>
-        </Layout>
-      </Layout>
-    );
-  }
+    render() {
+        let messageStyle = {
+            lineHeight: "1.2em",
+            wordWrap: "break-word",
+            whiteSpace: "pre-line",
+            color: this.props.read ? "#888" : "#000"
+        };
+        return (
+            <Layout horizontal>
+                <div className="avatar-wrapper">
+                    <Avatar scale={1.6} member={this.props.sender}/>
+                </div>
+                <Layout vertical style={{width: "100%"}}>
+                    <Layout horizontal justified>
+                        <div className="name"><Name member={this.props.sender}/></div>
+                        <div className="time"><SmartTimeDisplay start={this.props.time} relative/></div>
+                    </Layout>
+
+                    <div style={messageStyle}>{this.props.message}</div>
+                </Layout>
+            </Layout>
+        );
+    }
 });
 
-export default React.createClass({
-  contextTypes: {
-    router: React.PropTypes.func.isRequired
-  },
+let Notification = React.createClass({
+    contextTypes: {
+        router: React.PropTypes.func.isRequired,
+        muiTheme: React.PropTypes.object
+    },
 
-  getInitialState() {
-    return { notifications: [], transitionTo: null };
-  },
+    getInitialState() {
+        return {notifications: [], transitionTo: null};
+    },
 
-  componentDidMount() {
-    LoginStore.addChangeListener(this._onLoginChange);
-    NotificationStore.addChangeListener(this._onChange);
-    NotificationActions.receive(this.state.notifications.length);
-    if (this.state.transitionTo) {
-      this.context.router.transitionTo(this.state.transitionTo)
-    }
-  },
+    componentDidMount() {
+        LoginStore.addChangeListener(this._onLoginChange);
+        NotificationStore.addChangeListener(this._onChange);
+        NotificationActions.receive(this.state.notifications.length);
+        if (this.state.transitionTo) {
+            this.context.router.transitionTo(this.state.transitionTo)
+        }
+    },
 
-  componentWillUnmount() {
-    LoginStore.removeChangeListener(this._onLoginChange);
-    NotificationStore.removeChangeListener(this._onChange);
-  },
+    componentWillUnmount() {
+        LoginStore.removeChangeListener(this._onLoginChange);
+        NotificationStore.removeChangeListener(this._onChange);
+    },
 
-  _onLoginChange() {
-    NotificationActions.receive(0);
-  },
+    _onLoginChange() {
+        NotificationActions.receive(0);
+    },
 
-  _onChange() {
-    this.setState({
-      notifications: NotificationStore.getAll()
-    });
-  },
+    _onChange() {
+        this.setState({
+            notifications: NotificationStore.getAll()
+        });
+    },
 
-  _loadMore() {
-    NotificationActions.receive(this.state.notifications.length);
-  },
+    _loadMore() {
+        NotificationActions.receive(this.state.notifications.length);
+    },
 
-  _onClickAway() {
-    NotificationActions.markAsRead();
-  },
+    _onClickAway() {
+        NotificationActions.markAsRead();
+    },
 
-  render() {
-    let control = <IconButton iconClassName={NotificationStore.getUncheckedCount() === 0 ? 'icon-notifications' : 'icon-notifications-on'} />;
-    let menu = this.state.notifications.map(n => {
-      let sender = UserStore.getUser(n.from_user_id);
-      return <NotifiItem key={n.id} sender={sender} time={n.created_at} message={n.content} read={n.checked} />;
-    });
+    render() {
 
-    if (this.state.notifications.length >= NotificationStore.getTotal()) {
-      menu.push(
-        <div style={{textAlign: "center", color: "#888"}}>
-          {`All ${this.state.notifications.length} notifications are listed`}
-        </div>
-      );
-    }
+        let themeVariables = this.context.muiTheme.component.appBar;
+        let iconStyle = {
+            fill: themeVariables.textColor,
+            color: themeVariables.textColor
+        };
+        let iconClassName = 'icon-notifications';
+        if(NotificationStore.getUncheckedCount() !== 0){
+            iconStyle = {
+                fill: this.context.muiTheme.getPalette().accent3Color,
+                color: this.context.muiTheme.getPalette().accent3Color
+            };
+            iconClassName = 'icon-notifications-on';
+        }
+        let control = <IconButton iconStyle={iconStyle}
+                                  iconClassName={iconClassName}/>;
+        let menu = this.state.notifications.map(n => {
+            let sender = UserStore.getUser(n.from_user_id);
+            return <NotifiItem key={n.id} sender={sender} time={n.created_at} message={n.content} read={n.checked}/>;
+        });
 
-    return (
-      <span>
+        if (this.state.notifications.length >= NotificationStore.getTotal()) {
+            menu.push(
+                <div style={{textAlign: "center", color: "#888"}}>
+                    {`All ${this.state.notifications.length} notifications are listed`}
+                </div>
+            );
+        }
+
+        return (
+            <span>
         <DropDownAny ref="dropdown" control={control} menu={menu} menuClasses={'notification-menu'}
-          onClickAway={this._onClickAway} style={{top: 12, right: 12}} />
+                     onClickAway={this._onClickAway} style={{top: 12, right: 12}}/>
         <InfiniteScroll scrollTarget={() => this.refs.dropdown.refs.scroll.getDOMNode()}
-          lowerThreshold={5} onLowerTrigger={this._loadMore} />
+                        lowerThreshold={5} onLowerTrigger={this._loadMore}/>
       </span>
-    );
-  }
+        );
+    }
 });
+
+export default Notification;
