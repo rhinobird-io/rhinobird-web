@@ -47,7 +47,7 @@ export default React.createClass({
         let eventContent = null;
         let event = this.state.event;
         if (this.state.notFound || event === null || event === undefined) {
-            eventContent = <h3>Event not found</h3>
+            eventContent = <h3 style={{textAlign: "center"}}>Event not found</h3>
         } else {
             let deleteEvent = LoginStore.getUser().id === event.creator_id ?
                 <MUI.IconButton iconClassName="icon-delete" onClick={this._onEventDelete}/> : null;
