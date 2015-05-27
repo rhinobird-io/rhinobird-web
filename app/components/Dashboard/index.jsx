@@ -6,6 +6,7 @@ const LoginStore = require('../../stores/LoginStore');
 const Immutable = require('immutable');
 const MUI = require('material-ui');
 const Flex = require('../Flex');
+const Common = require('../Common');
 
 if ($.mockjax) {
     $.mockjax({
@@ -71,11 +72,11 @@ module.exports = React.createClass({
             }} scrollTarget={()=>{
                 return this.getDOMNode();
             }}/>
-            <hr />
+            <Common.Hr />
             {records.length > 0 ? records.map((record, index)=> {
                 return <div key={index}>
                     <DashboardRecord record={record}/>
-                    <hr/>
+                    <Common.Hr />
                 </div>
             }) :<div style={{marginTop: 100}}>
                     <h2 style={{textAlign: "center"}}>Welcome to RhinoBird!</h2>

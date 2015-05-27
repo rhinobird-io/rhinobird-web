@@ -4,6 +4,7 @@ const FloatingContentAction = require('../../actions/FloatingContentAction');
 const Select = require('../Select');
 const Flex = require('../Flex');
 const UserStore = require("../../stores/UserStore");
+const Common = require('../Common');
 
 function Member() {
 
@@ -48,9 +49,9 @@ Member.Avatar = React.createClass({
             let display = <img className='avatar' width={size} height={size} {...this.props}
                                src={`http://www.gravatar.com/avatar/${this.props.member.emailMd5}?d=identicon`}/>;
             if (this.props.link) {
-                return <a onClick={_showMemberProfile.bind(this)}>
+                return <Common.Link onClick={_showMemberProfile.bind(this)}>
                     {display}
-                </a>;
+                </Common.Link>;
             } else {
                 return display;
             }
@@ -71,9 +72,9 @@ Member.Name = React.createClass({
         if (this.props.member) {
             let display = <span className={this.props.className} style={this.props.style}>{this.props.member.realname}</span>;
             if (this.props.link) {
-                return <a onClick={_showMemberProfile.bind(this)}>
+                return <Common.Link onClick={_showMemberProfile.bind(this)}>
                     {display}
-                </a>;
+                </Common.Link>;
             } else {
                 return display;
             }
