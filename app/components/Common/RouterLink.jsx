@@ -4,7 +4,7 @@ const Link = require('react-router').Link;
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 const RouterLink = React.createClass({
-    mixins: [React.addons.PureRenderMixin, StylePropable],
+    mixins: [StylePropable],
     contextTypes: {
         muiTheme: React.PropTypes.object
     },

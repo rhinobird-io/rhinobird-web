@@ -27,7 +27,9 @@ const closeButton = <mui.IconButton iconClassName="icon-close"/>;
 
 let FloatingContent = React.createClass({
     mixins: [ClickAwayable],
-
+    contextTypes: {
+        muiTheme: React.PropTypes.object
+    },
     render() {
         let {
             title,
@@ -37,11 +39,9 @@ let FloatingContent = React.createClass({
 
         return <mui.Paper className='floatingContent'
                           zDepth={1}>
-            <Flex.Layout className='header' justified center>
+            <Flex.Layout className='header' style={{backgroundColor: this.context.muiTheme.palette.borderColor}} justified center>
                 <div className='title'>{title}</div>
-                <div className='right'>
-                    <mui.IconButton className='icon-close' onClick={onClose}/>
-                </div>
+                <mui.IconButton iconClassName='icon-close' onClick={onClose}/>
             </Flex.Layout>
             <PerfectScroll style={{position:'absolute', top:60, bottom:0, right:0, left: 0}}>
                 {content}

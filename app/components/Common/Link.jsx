@@ -3,7 +3,7 @@ const React = require('react/addons');
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 const Link = React.createClass({
-    mixins: [React.addons.PureRenderMixin, StylePropable],
+    mixins: [StylePropable],
     contextTypes: {
         muiTheme: React.PropTypes.object
     },
