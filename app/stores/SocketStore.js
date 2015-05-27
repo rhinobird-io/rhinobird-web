@@ -60,10 +60,10 @@ let SocketStore = assign({}, BaseStore, {
         });
 
         _socket.on('reconnecting', function (number) {
-            self.connectinStatus = "reconnecting... (" + number + ")";
+            console.log('reconnecting : ' + number);
         });
         _socket.on('reconnecting_failed', function () {
-            self.connectinStatus = "reconnecting failed.";
+          console.log('reconnecting fail');
         });
         _socket.on('reconnect', function () {
           console.log('socket reconnected');

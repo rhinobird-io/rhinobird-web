@@ -241,6 +241,7 @@ let MessageStore = assign({}, BaseStore, {
                 MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
                 break;
             case Constants.MessageActionTypes.RECEIVE_INIT_MESSAGES:
+                // TODO this block can be done by socket
                 let channel = payload.channel; // current Channel
                 let messages = payload.messages; // from older to newer
                 _messages[channel.backEndChannelId] = new MessagesWrapper(channel.backEndChannelId);
@@ -264,6 +265,8 @@ let MessageStore = assign({}, BaseStore, {
             case Constants.MessageActionTypes.SEND_MESSAGE:
                 SocketStore.getSocket().emit('message:send', payload.message, function (message) {
                     _messages[message.channelId].confirmMessageSent(message);
+                    let UnreadStore = require('./MessageUnreadStore');
+                    UnreadStore.onSendMessage(message);
                     MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE, message);
                 });
                 break;
