@@ -124,6 +124,29 @@ export default React.createClass({
             eventContent.push(<div key="members">{members}</div>);
 
         }
+
+        let confirmDeleteDialog = null;
+
+        if (this.state.event && this.state.event.repeated) {
+            var dialogActions = [
+                {text: "Cancel"},
+                <MUI.FlatButton
+                    label="All events in the series"
+                    primary={true}
+                    onTouchTap={() => CalendarActions.deleteEvent({id: this.state.event.id}, () => this.context.router.transitionTo("event-list"))} />,
+                <MUI.FlatButton
+                    label="Only this instance"
+                    primary={true}
+                    onTouchTap={() => CalendarActions.deleteEvent({id: this.state.event.id, repeatedNumber: this.state.event.repeated_number}, () => this.context.router.transitionTo("event-list"))} />
+
+            ];
+            confirmDeleteDialog = <MUI.Dialog
+                ref="deleteConfirmDialog"
+                title="Deleting recurring event"
+                actions={dialogActions}>
+                <p style={{margin: 0}}>Would you like to delete only this event or all events in the series?</p>
+            </MUI.Dialog>
+        }
         return <PerfectScroll style={{height: "100%", position: "relative"}} className="cal-event-detail">
             <Flex.Layout horizontal centerJustified wrap>
                 <MUI.Paper zDepth={3} style={{paddingTop: 20}}>
@@ -131,8 +154,10 @@ export default React.createClass({
                     <div style={{padding: "0 20px 20px 20px"}}>
                         {eventContent}
                     </div>
+                    {confirmDeleteDialog}
                 </MUI.Paper>
             </Flex.Layout>
+
         </PerfectScroll>;
     },
 
@@ -144,8 +169,12 @@ export default React.createClass({
     },
 
     _onEventDelete() {
-        if (confirm("Are you sure to delete this event?")) {
-            CalendarActions.deleteNoRepeatEvent(this.state.event.id, () => this.context.router.transitionTo("event-list"));
+        if (this.state.event.repeated) {
+            this.refs.deleteConfirmDialog.show();
+        } else {
+            if (confirm("Are you sure to delete this event?")) {
+                CalendarActions.deleteEvent({id: this.state.event.id}, () => this.context.router.transitionTo("event-list"));
+            }
         }
     }
 });
