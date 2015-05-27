@@ -6,6 +6,7 @@ import assign from 'object-assign';
 
 let _user;
 
+const md5 = require('blueimp-md5');
 let LoginStore = assign({}, BaseStore, {
 
   getUser() {
@@ -16,6 +17,7 @@ let LoginStore = assign({}, BaseStore, {
     switch (payload.type) {
       case Constants.ActionTypes.LOGIN_UPDATE:
         _user = data;
+        _user.emailMd5 = _user.emailMd5 || md5(_user.email);
         LoginStore.emitChange();
         break;
       default:

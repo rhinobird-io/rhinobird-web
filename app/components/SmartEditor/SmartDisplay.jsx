@@ -11,6 +11,7 @@ let UserStore = require("../../stores/UserStore");
 let markdown = require('./markdown');
 
 let Flex = require('../Flex');
+let Ps = require('perfect-scrollbar');
 
 
 const SmartDisplay = React.createClass({
@@ -43,6 +44,13 @@ const SmartDisplay = React.createClass({
         for (let i = 0; i < memberLinks.length; i++) {
             memberLinks[i].addEventListener("click", this._onClick);
         }
+
+        let codeBlocks = this.getDOMNode().querySelectorAll("pre");
+        for (let i = 0; i < codeBlocks.length; i++) {
+            codeBlocks[i].style.position = 'relative';
+            Ps.initialize(codeBlocks[i], {useBothWheelAxes: true});
+        }
+
 
         if (this.props.enableLinkPreview) {
             let linkifyLinks = this.getDOMNode().querySelectorAll('a[linkify]');
