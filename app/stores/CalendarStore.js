@@ -135,6 +135,11 @@ let CalendarStore = assign({}, BaseStore, {
         return _hasReceived;
     },
 
+    reset() {
+        _newCreated = null;
+        _lastDeleted = null;
+    },
+
     dispatcherIndex: AppDispatcher.register(payload => {
         let type = payload.type;
         let data = payload.data;
@@ -193,4 +198,4 @@ let CalendarStore = assign({}, BaseStore, {
 
 });
 
-export default CalendarStore;
+module.exports = CalendarStore;
