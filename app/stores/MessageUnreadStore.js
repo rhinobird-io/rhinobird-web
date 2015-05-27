@@ -32,7 +32,7 @@ let UnreadStore = assign({}, BaseStore, {
         _unread[message.channelId] = _unread[message.channelId] || {};
         _unread[message.channelId].lastSeenMessageId = message.id;
         _unread[message.channelId].latestMessageId = message.id;
-        _unreadBool = _unreadBool.set(backEndChannelId, false);
+        _unreadBool = _unreadBool.set(message.channelId, false);
         UnreadStore.emit(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + message.channelId, {unread : false});
     },
 
