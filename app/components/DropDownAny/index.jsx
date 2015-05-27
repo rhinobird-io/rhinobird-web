@@ -33,7 +33,7 @@ let DropDownPopup = React.createClass({
   }
 });
 
-export default React.createClass({
+const DropDownAny = React.createClass({
   mixins: [Classable, ClickAwayable],
 
   propTypes: {
@@ -61,15 +61,14 @@ export default React.createClass({
     let dropClasses = this.getClasses("mui-drop-down-menu", {
       "mui-open": this.state.open
     });
-    let controlClasses = "mui-menu-control " + (this.props.controlClasses || "");
     let menuClasses = this.getClasses("mui-menu ", {
       "mui-menu-hideable": true,
       "mui-visible": this.state.open,
       "dropdownany-hidden": !this.state.open
     });
     return (
-      <div className={dropClasses} style={{height: "auto"}}>
-        <div ref="control" className={controlClasses} onClick={this._onControlClick}>
+      <div>
+        <div ref="control" onClick={this._onControlClick}>
           {this.props.control}
         </div>
         <DropDownPopup
@@ -81,3 +80,5 @@ export default React.createClass({
     );
   }
 });
+
+export default DropDownAny;
