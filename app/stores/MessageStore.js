@@ -58,7 +58,7 @@ class MessagesWrapper {
                 appendToCurrentMessageSuite(messages);
             }
         } else {
-            this.messages = this.messages.concat(messages);
+            this.messages = messages.concat(this.messages);
             if (this._isCurrentChannel()) {
                 prependToCurrentMessageSuite(messages);
             }
