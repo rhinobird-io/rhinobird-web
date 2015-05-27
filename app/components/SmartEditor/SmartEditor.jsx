@@ -10,11 +10,14 @@ const Item = require("../Flex").Item;
 const PopupSelect = require("../Select").PopupSelect;
 const UserStore = require("../../stores/UserStore");
 const ClickAwayable = MUI.Mixins.ClickAwayable;
+const StylePropable = require('material-ui/lib/mixins/style-propable');
+const Flex = require('../Flex');
+const FileUploadStatus = require('./FileUploadStatus');
 import _ from 'lodash';
 
 require('./style.less');
 
-const COMMANDS = require('./commands').list;
+const commands = require('./commands'), COMMANDS = commands.list;
 
 const SmartEditor = React.createClass({
   mixins: [ClickAwayable, React.addons.PureRenderMixin],
@@ -37,7 +40,7 @@ const SmartEditor = React.createClass({
 
   getDefaultProps() {
     return {
-      popupWidth: 240,
+      popupWidth: 'auto',
       popupMaxHeight: 280,
       popupMarginTop: 24,  // Magic number in `TextField` source code
       popupMinusTop: -4
@@ -49,7 +52,8 @@ const SmartEditor = React.createClass({
       options: [],
       position: "top",
       popupPosition: {},
-      popupJustified: false
+      popupJustified: false,
+      uploadingFiles: []
     };
   },
 
@@ -110,6 +114,7 @@ const SmartEditor = React.createClass({
           <div key={c.name} value={[keyword, "#" + c.name + ":"]} style={style}>
             <span style={{fontWeight: 500}}>{c.name}</span>
             <span>{c.manual}</span>
+            <span style={{marginLeft:12, fontStyle:'italic'}}>{c.hint}</span>
           </div>
       );
     } else if (keyword.charAt(0) === ":" && keyword.length > 1) {
@@ -191,14 +196,61 @@ const SmartEditor = React.createClass({
   },
 
   _onItemSelect([keyword, replace]) {
-    let textarea = this._getInputNode();
-    let text = textarea.value;
-    let end = textarea.selectionEnd - keyword.length + replace.length;
-    textarea.value = text.substr(0, textarea.selectionEnd - keyword.length) +
+    let callback = (replace)=>{
+      let textarea = this._getInputNode();
+      let text = textarea.value;
+      let end = textarea.selectionEnd - keyword.length + replace.length;
+      textarea.value = text.substr(0, textarea.selectionEnd - keyword.length) +
       replace + text.substr(textarea.selectionEnd);
-    textarea.selectionEnd = end;
-    this.hidePopup();
-    this._updateValueLink();
+      textarea.selectionEnd = end;
+      this.hidePopup();
+      this._updateValueLink();
+    };
+    let commandName = replace.substr(1, replace.length - 2);
+    if(commandName === 'file') {
+      this._uploadFile(callback);
+    } else {
+      callback(replace);
+    }
+  },
+
+  _handleUploadProgress(fileId){
+    return ()=>{
+
+    };
+  },
+  _uploadFile(callback) {
+    let uploadingFiles = this.state.uploadingFiles || [];
+    //uploadingFiles = uploadingFiles.slice(0);
+    let self =  this;
+    var input = $(document.createElement('input'));
+    input.attr("type", "file");
+    let progressHandlingFunction = this._handleUploadProgress;
+    input.change(function(e) {
+      let file = e.target.files[0];
+      let formData = new FormData();
+      formData.append('file', file);
+      $.post('/file/files', {name: file.name}).done((newFile)=>{
+        let uploadingFile = {id: newFile.id, name: newFile.name, progress:0};
+        uploadingFiles.push(uploadingFile);
+        self.setState({
+           uploadingFiles: uploadingFiles
+        });
+        $.ajax({
+            url: `/file/files/${newFile.id}`,
+            type: 'PUT',
+            xhr: function(){
+              let fileXhr = $.ajaxSettings.xhr();
+              if(fileXhr.upload){ // Check if upload property exists
+                fileXhr.upload.addEventListener('progress',(progress)=>{uploadingFile.progress = progress}, false); // For handling the progress of the upload
+              }
+              return fileXhr;
+            }
+        });
+        callback(`#file:${newFile.id}`);
+      });
+    });
+    input.trigger('click'); // opening dialog
   },
 
   _inputKeyDown(e){
@@ -266,7 +318,14 @@ const SmartEditor = React.createClass({
     // Apply `style` to TextField seems no effect, so just apply to Item
     return (
       <Item flex style={style} className={"smart-editor" + (props.nohr ? " nohr" : "")}>
-        <TextField {...tfProps} onKeyDown={this._inputKeyDown} ref="textfield"
+      <div style={{position: 'relative', height:0}}>
+          <Flex.Layout wrap style={{position: 'absolute', bottom:0}}>
+              {this.state.uploadingFiles.map((f)=>{
+                  return <FileUploadStatus file={f} />
+              })}
+          </Flex.Layout>
+      </div>
+        <TextField {...tfProps} style={this.mergeAndPrefix({width:'100%'}, this.props.inputStyle)} onKeyDown={this._inputKeyDown} ref="textfield"
                                 onChange={this._onInputChange}/>
         <PopupSelect ref="popup"
                      position={this.state.position}

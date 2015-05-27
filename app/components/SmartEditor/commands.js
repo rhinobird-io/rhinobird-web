@@ -8,6 +8,7 @@ const commands = [
     {
         name: 'vity',
         manual: ":room_name",
+        hint: "Link to a Vity room",
         render: function(value){
             let user = LoginStore.getUser().realname;
             return iconLink('icon-videocam', `vity:${value}`, `https://46.137.243.49:5151/index.html#${value}@${user}`);
@@ -16,6 +17,7 @@ const commands = [
     {
         name: 'file',
         manual: ":file_id",
+        hint: "Select to upload a file",
         render: function(value){
             return iconLink('icon-file-download', `file:${value}`, `/file/files/${value}/download`);
         }
