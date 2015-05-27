@@ -26,16 +26,6 @@ let UnreadStore = assign({}, BaseStore, {
         return _unreadBool;
     },
 
-    onSendMessage(message) {
-        _latestReceiveMessageId =  Math.max(_latestReceiveMessageId, message.id);
-
-        _unread[message.channelId] = _unread[message.channelId] || {};
-        _unread[message.channelId].lastSeenMessageId = message.id;
-        _unread[message.channelId].latestMessageId = message.id;
-        _unreadBool = _unreadBool.set(message.channelId, false);
-        UnreadStore.emit(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + message.channelId, {unread : false});
-    },
-
   /**
    * full scope latest received messageId
    */
@@ -43,7 +33,24 @@ let UnreadStore = assign({}, BaseStore, {
       return _latestReceiveMessageId;
     },
 
-    receiveMessageFromSocket(message){
+  /**
+   * called when the user send message with confirmation
+   */
+  onSendMessage(message) {
+    _latestReceiveMessageId =  Math.max(_latestReceiveMessageId, message.id);
+
+    _unread[message.channelId] = _unread[message.channelId] || {};
+    _unread[message.channelId].lastSeenMessageId = message.id;
+    _unread[message.channelId].latestMessageId = message.id;
+    _unreadBool = _unreadBool.set(message.channelId, false);
+    UnreadStore.emit(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + message.channelId, {unread : false});
+  },
+
+
+  /**
+   * called when the user receive message from socket
+   */
+  onReceiveMessage(message){
         _latestReceiveMessageId =  Math.max(_latestReceiveMessageId, message.id);
 
         var currentChannel = ChannelStore.getCurrentChannel();

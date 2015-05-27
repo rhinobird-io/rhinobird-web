@@ -90,7 +90,7 @@ function receiveMessage(message) {
   const MessageStore = require('./MessageStore');
   MessageStore.receiveMessage(message);
   const UnreadStore = require('./MessageUnreadStore');
-  UnreadStore.receiveMessageFromSocket(message);
+  UnreadStore.onReceiveMessage(message);
   const RecentChannelStore = require('./RecentChannelStore');
   RecentChannelStore.onRecentChange(message);
 }
