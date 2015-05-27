@@ -189,7 +189,7 @@ let MessageStore = assign({}, BaseStore, {
         }
     },
 
-    // this method was called by SocketStoreq
+    // this method was called by SocketStore
     receiveMessage(message) {
         var currentChannel = ChannelStore.getCurrentChannel();
         _messages[message.channelId] = _messages[message.channelId] || new MessagesWrapper(message.channelId);
@@ -233,14 +233,15 @@ let MessageStore = assign({}, BaseStore, {
         switch (payload.type) {
             case Constants.ChannelActionTypes.CHANGE_CHANNEL:
                 AppDispatcher.waitFor([ChannelStore.dispatcherIndex]);
-                let currentChannel = ChannelStore.getCurrentChannel();
                 _currentChannelMessageSuites = new Immutable.List();
+                let currentChannel = ChannelStore.getCurrentChannel();
                 if(_messages[currentChannel.backEndChannelId]) {
                     appendToCurrentMessageSuite(_messages[currentChannel.backEndChannelId].getMessagesArray((1 << 30), IMConstants.MSG_LIMIT));
-                    MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE, true);
                 }
+                MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
                 break;
             case Constants.MessageActionTypes.RECEIVE_INIT_MESSAGES:
+                // TODO this block can be done by socket
                 let channel = payload.channel; // current Channel
                 let messages = payload.messages; // from older to newer
                 _messages[channel.backEndChannelId] = new MessagesWrapper(channel.backEndChannelId);
@@ -264,6 +265,8 @@ let MessageStore = assign({}, BaseStore, {
             case Constants.MessageActionTypes.SEND_MESSAGE:
                 SocketStore.getSocket().emit('message:send', payload.message, function (message) {
                     _messages[message.channelId].confirmMessageSent(message);
+                    let UnreadStore = require('./MessageUnreadStore');
+                    UnreadStore.onSendMessage(message);
                     MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE, message);
                 });
                 break;

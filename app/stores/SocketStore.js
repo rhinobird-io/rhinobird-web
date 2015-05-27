@@ -34,35 +34,19 @@ let SocketStore = assign({}, BaseStore, {
             _socket = null;
         };
 
-        _socket.on('message:send', function (message) {
-            const MessageStore = require('./MessageStore');
-            MessageStore.receiveMessage(message);
-            const UnreadStore = require('./MessageUnreadStore');
-            UnreadStore.receiveMessageFromSocket(message);
-            const RecentChannelStore = require('./RecentChannelStore');
-            RecentChannelStore.onRecentChange(message);
-        });
+        _socket.on('message:send', receiveMessage);
 
         _socket.on('channel:created', function (channel) {
-            self.$.imChannels.init();
+
         });
 
         _socket.on('channel:deleted', function (event) {
-            var channel = event.channel;
-            console.log('admin delete:' + channel.id);
-            if (self.channel.id === channel.id) {
-                self.channelName = defaultChannel;
-                delete self.imGlobals.currentChannel;
-                history.pushState(null, null, '#' + '/' + self.pluginName + '/channels/' + defaultChannel);
-                self.$.imChannels.init();
-            } else {
-                self.$.imChannels.init();
-            }
+
         });
 
-        _socket.on('user:dead', function (data) {
-            self.socket.emit('user:alive', {});
-        });
+        //_socket.on('user:dead', function (data) {
+        //    self.socket.emit('user:alive', {});
+        //});
 
         _socket.on('user:join', function (data) {
             OnlineStore.userJoin(data);
@@ -72,31 +56,56 @@ let SocketStore = assign({}, BaseStore, {
             OnlineStore.userLeft(data);
         });
         _socket.on('disconnect', function () {
-            self.connectinStatus = "disconnected.";
+            console.log('socket was disconnected');
         });
 
         _socket.on('reconnecting', function (number) {
-            self.connectinStatus = "reconnecting... (" + number + ")";
+            console.log('reconnecting : ' + number);
         });
         _socket.on('reconnecting_failed', function () {
-            self.connectinStatus = "reconnecting failed.";
+          console.log('reconnecting fail');
         });
         _socket.on('reconnect', function () {
-            self.connectinStatus = "connected";
+          console.log('socket reconnected');
+          emitInit(channels);
+
+          // send unsend message confirm unsend message
+
+          // TODO load un-receive messages, it should be pushed from server side
+          const UnreadStore = require('./MessageUnreadStore');
+          _socket.emit('message:sync', {
+            latestReceiveMessageId : UnreadStore.getLatestReceiveMessageId()
+          } ,function(messages){
+            messages.forEach(receiveMessage);
+            console.log('receive sync messages : ' + messages.length);
+            console.log(messages);
+          })
         });
 
-        let currentUser = LoginStore.getUser();
-        _socket.emit('init', {
-            userId: currentUser.id,
-            publicChannels: channels.publicGroupChannels,
-            privateChannels: [],
-            teamMemberChannels: channels.directMessageChannels
-        }, function (onlineList) {
-            OnlineStore.setOnlineList(onlineList);
-            SocketStore.emitChange();
-        });
+        emitInit(channels);
     }
-
 });
+
+function receiveMessage(message) {
+  const MessageStore = require('./MessageStore');
+  MessageStore.receiveMessage(message);
+  const UnreadStore = require('./MessageUnreadStore');
+  UnreadStore.onReceiveMessage(message);
+  const RecentChannelStore = require('./RecentChannelStore');
+  RecentChannelStore.onRecentChange(message);
+}
+
+function emitInit(channels) {
+  let currentUser = LoginStore.getUser();
+  _socket.emit('init', {
+    userId: currentUser.id,
+    publicChannels: channels.publicGroupChannels,
+    privateChannels: [],
+    teamMemberChannels: channels.directMessageChannels
+  }, function (onlineList) {
+    OnlineStore.setOnlineList(onlineList);
+    SocketStore.emitChange();
+  });
+}
 
 export default SocketStore;
