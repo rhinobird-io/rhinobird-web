@@ -12,6 +12,7 @@ const UserStore = require("../../stores/UserStore");
 const ClickAwayable = MUI.Mixins.ClickAwayable;
 const Flex = require('../Flex');
 const StylePropable = require('material-ui/lib/mixins/style-propable');
+const Flex = require('../Flex');
 
 import _ from 'lodash';
 
@@ -53,7 +54,8 @@ const SmartEditor = React.createClass({
       options: [],
       position: "top",
       popupPosition: {},
-      popupJustified: false
+      popupJustified: false,
+      uploadingFiles: []
     };
   },
 
@@ -217,6 +219,7 @@ const SmartEditor = React.createClass({
   _uploadFile(callback) {
     var input = $(document.createElement('input'));
     input.attr("type", "file");
+
     input.change(function(e) {
       let file = e.target.files[0];
       let formData = new FormData();
@@ -302,6 +305,13 @@ const SmartEditor = React.createClass({
     // Apply `style` to TextField seems no effect, so just apply to Item
     return (
       <Item flex style={style} className={"smart-editor" + (props.nohr ? " nohr" : "")}>
+      <div style={{position: 'relative', height:0}}>
+          <Flex.Layout wrap style={{position: 'absolute', bottom:0}}>
+              {this.state.uploadingFiles.map((f)=>{
+                  return <FileUploadStatus file={f} />
+              })}
+          </Flex.Layout>
+      </div>
         <TextField {...tfProps} style={this.mergeAndPrefix({width:'100%'}, this.props.inputStyle)} onKeyDown={this._inputKeyDown} ref="textfield"
                                 onChange={this._onInputChange}/>
         <PopupSelect ref="popup"
