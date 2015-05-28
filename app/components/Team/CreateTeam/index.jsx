@@ -54,24 +54,30 @@ export default React.createClass({
                         <div style={{padding: 24, width: 400}}>
                             <h3>Create Team</h3>
                             <MUI.TextField
+                                style={{width:'100%'}}
                                 ref="teamName"
                                 hintText="Team name"
                                 floatingLabelText="Name"
                                 errorText={this.state.nameError}
-                                valueLink={this.linkState("name")}
+                                onChange={(e)=>{this.name = e.target.value}}
                                 className="create-team-textfield" />
                             <MemberSelect
+                                style={{width:'100%'}}
                                 label='Parent teams'
                                 errorText={this.state.graphError}
-                                valueLink={this.linkState('parentTeams')} user={false} className="create-team-textfield"/>
-                            <MemberSelect
-                                label='Subsidiary teams'
-                                errorText={this.state.graphError}
-                                valueLink={this.linkState('subTeams')}
+                                onChange = {(result)=>{this.parentTeams = result;}}
                                 user={false} className="create-team-textfield"/>
                             <MemberSelect
+                                style={{width:'100%'}}
+                                label='Subsidiary teams'
+                                errorText={this.state.graphError}
+                                onChange = {(result)=>{this.subTeams = result;}}
+                                user={false} className="create-team-textfield"/>
+                            <MemberSelect
+                                style={{width:'100%'}}
                                 label='Direct members'
                                 valueLink={this.linkState('members')}
+                                onChange = {(result)=>{this.members = result;}}
                                 team={false} className="create-team-textfield"/>
                             <Flex.Layout horizontal justified>
                                 <Link to="team">
@@ -92,15 +98,15 @@ export default React.createClass({
             nameError: undefined,
             graphError: undefined
         });
-        if(!this.state.name) {
+        if(!this.name) {
             this.setState({
                 nameError: 'Name should not be empty'
             });
             return;
         }
         if(!UserStore.checkDAG({
-                parentTeams: this.state.parentTeams,
-                teams: this.state.subTeams
+                parentTeams: this.parentTeams,
+                teams: this.subTeams
             })) {
             this.setState({
                 graphError: 'Cyclic team structure detected'
@@ -109,10 +115,10 @@ export default React.createClass({
         }
 
         $.post('/platform/api/teams', {
-            name: this.state.name,
-            parentTeams: this.state.parentTeams,
-            teams: this.state.subTeams,
-            members: this.state.members}).then(()=>{
+            name: this.name,
+            parentTeams: this.parentTeams,
+            teams: this.subTeams,
+            members: this.members}).then(()=>{
             UserAction.updateUserData();
             this.context.router.transitionTo('/platform/team');
         }).fail(()=>{});

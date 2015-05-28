@@ -99,7 +99,6 @@ Member.MemberSelect = React.createClass({
         hintText: React.PropTypes.string,
         label: React.PropTypes.string
     },
-
     focus() {
         this.refs.select.focus();
     },
@@ -138,6 +137,7 @@ Member.MemberSelect = React.createClass({
             team,
             user,
             className,
+            onChange,
             ...other
             } = this.props;
 
