@@ -20,7 +20,9 @@ export default React.createClass({
         relative: React.PropTypes.bool,
         container: React.PropTypes.object
     },
-
+    contextTypes: {
+        muiTheme: React.PropTypes.object
+    },
     getInitialState() {
         return {
             tipShow: false
@@ -59,7 +61,8 @@ export default React.createClass({
             time: {
                 display: "inline",
                 cursor: "pointer",
-                position: "relative"
+                position: "relative",
+                color: this.context.muiTheme.palette.disabledColor
             },
             triangleDown: {
                 position: "absolute",

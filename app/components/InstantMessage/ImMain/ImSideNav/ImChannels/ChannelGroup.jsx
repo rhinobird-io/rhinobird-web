@@ -91,15 +91,13 @@ module.exports = React.createClass({
         });
         return (
             <Flex.Layout vertical className={'instant-message-channels ' + this.props.className}>
-                <div className="mui-font-style-subhead-1 instant-message-channel-brand">
-                    <div style={{ flexGrow : 1 }}>{this.props.channelGroup}</div>
-                    <div style={{ display : 'inline-block'}}>
-                        {
-                            !this.props.isGroup?<DropDownAny ref="directMessageMenu" control={control} menu={menu} menuClasses="instant-message-channels-menu" style={{ top : '12px', right : '12px'}}/>:undefined
-                        }
-                    </div>
+                <Flex.Layout style={{padding:12}} center justified>
+                    <Flex.Item flex={1} style={{fontSize:'1.2em', fontWeight: 'bold'}}>{this.props.channelGroup}</Flex.Item>
+                    {
+                        !this.props.isGroup?<DropDownAny style={{width:48}} ref="directMessageMenu" control={control} menu={menu} menuClasses="instant-message-channels-menu" />:undefined
+                    }
 
-                </div>
+                </Flex.Layout>
                 {
                    <PerfectScroll className="instant-message-channel-items">
                     {
