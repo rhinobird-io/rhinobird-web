@@ -1,7 +1,11 @@
 const React = require('react');
 
-export default React.createClass({
+let Selector = React.createClass({
     mixins: [React.addons.LinkedStateMixin],
+
+    contextTypes: {
+        muiTheme: React.PropTypes.object
+    },
 
     propTypes: {
         multiple: React.PropTypes.bool,
@@ -36,9 +40,9 @@ export default React.createClass({
 
     getValueLink(props) {
         return props.valueLink || {
-            value: props.value,
-            requestChange: props.onChange
-        };
+                value: props.value,
+                requestChange: props.onChange
+            };
     },
 
     select(id) {
@@ -62,7 +66,6 @@ export default React.createClass({
             selected[id] = true;
             selectedValue = this.state.children[id].value;
         }
-        console.log(selectedValue);
 
         this.setState({selected: selected});
 
@@ -107,7 +110,20 @@ export default React.createClass({
 
     render: function() {
         let styles = {
-            selected: this.props.selectedStyle
+            selected: {
+                cursor: "pointer",
+                padding: "6px 8px",
+                verticalAlign: "middle",
+                boxSizing: "border-box",
+                backgroundColor: this.context.muiTheme.palette.primary1Color
+            },
+            normal: {
+                cursor: "pointer",
+                padding: "6px 8px",
+                verticalAlign: "middle",
+                boxSizing: "border-box",
+                backgroundColor: this.context.muiTheme.palette.primary3Color
+            }
         };
 
         let selected = this.state.selected;
@@ -117,7 +133,7 @@ export default React.createClass({
                 key: count,
                 onClick: () => this.select(count),
                 className: child.element.props.className + (selected[count] ? " " + this.props.selectedClass : ""),
-                style: selected[count] ? styles.selected : undefined
+                style: selected[count] ? styles.selected : styles.normal
             });
         });
 
@@ -125,5 +141,6 @@ export default React.createClass({
             <div>{children}</div>
         );
     }
-})
+});
 
+module.exports = Selector;

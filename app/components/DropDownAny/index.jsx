@@ -4,7 +4,8 @@ const React = require("react");
 const mui = require("material-ui"),
       Classable = mui.Mixins.Classable,
       ClickAwayable = mui.Mixins.ClickAwayable,
-      Paper = mui.Paper;
+      Paper = mui.Paper,
+      MenuItem = mui.MenuItem;
 const PerfectScroll = require('../PerfectScroll');
 const Flexible = require('../Mixins').Flexible;
 
@@ -29,7 +30,7 @@ let DropDownPopup = React.createClass({
 
   _getMenuItems(list) {
     let key = 0;
-    return list.map(item => <div key={key += 1} className="mui-menu-item">{item}</div>);
+    return list.map(item => <MenuItem key={key += 1}>{item}</MenuItem>);
   }
 });
 

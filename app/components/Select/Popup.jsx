@@ -259,7 +259,6 @@ export default React.createClass({
 
                 if (disabled) {
                     style = this.props.disabledStyle;
-                    className += " " + this.props.disabledClass;
                 } else {
                     let option = this.state.options[key];
                     onMouseOver = () => this.setState({activeOptionIndex: option.index});
