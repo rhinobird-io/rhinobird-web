@@ -293,4 +293,4 @@ function buildIndex(teams_users) {
     }
 }
 
-export default UserStore;
+module.exports = UserStore;

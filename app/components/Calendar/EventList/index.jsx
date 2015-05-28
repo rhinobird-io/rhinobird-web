@@ -241,7 +241,7 @@ export default React.createClass({
                 {noMoreNewerEvents}
                 <Link to="create-event">
                     <MUI.FloatingActionButton
-                        className="add-event"
+                        style={{position: "fixed", bottom: 24, right: 24}}
                         iconClassName="icon-add" />
                 </Link>
                 {snackBar}

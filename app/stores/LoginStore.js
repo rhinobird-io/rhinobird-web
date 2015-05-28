@@ -4,7 +4,7 @@ import Constants from '../constants/AppConstants';
 import BaseStore from './BaseStore';
 import assign from 'object-assign';
 
-let _user;
+let _user = null;
 
 const md5 = require('blueimp-md5');
 let LoginStore = assign({}, BaseStore, {
@@ -27,4 +27,4 @@ let LoginStore = assign({}, BaseStore, {
 
 });
 
-export default LoginStore;
+module.exports = LoginStore;

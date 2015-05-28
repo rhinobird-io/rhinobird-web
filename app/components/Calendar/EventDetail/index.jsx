@@ -3,23 +3,19 @@ const React           = require("react"),
       MUI             = require('material-ui'),
       Moment          = require("moment"),
       Flex            = require("../../Flex"),
-      Link            = Router.Link,
-      Navigation      = Router.Navigation,
       PerfectScroll   = require('../../PerfectScroll'),
       Member          = require('../../Member'),
       SmartDisplay    = require('../../SmartEditor').SmartDisplay,
       UserStore       = require('../../../stores/UserStore'),
       LoginStore      = require('../../../stores/LoginStore'),
       CalendarStore   = require('../../../stores/CalendarStore'),
-      CalendarActions = require('../../../actions/CalendarActions');
-
-require('./style.less');
+      CalendarActions = require('../../../actions/CalendarActions'),
+      RouterLink      = require('../../Common').RouterLink;
 
 export default React.createClass({
-    mixins: [React.addons.LinkedStateMixin],
-
     contextTypes: {
-        router: React.PropTypes.func.isRequired
+        router: React.PropTypes.func.isRequired,
+        muiTheme: React.PropTypes.object
     },
 
     componentDidMount() {
@@ -43,9 +39,43 @@ export default React.createClass({
     },
 
     render() {
+        let styles = {
+            eventTitle: {
+                fontSize: "2em",
+                lineHeight: "1.2em",
+                marginBottom: "0.2em",
+                wordBreak: "break-all"
+            },
+            eventTime: {
+                fontSize: "1em",
+                color: "rgba(0, 0, 0, .6)"
+            },
+            repeatSymbol: {
+                width: "64px",
+                height: "64px",
+                color: "white",
+                right: "-32px",
+                bottom: "-32px",
+                position: "absolute",
+                borderRadius: "50%",
+                textAlign: "left",
+                backgroundColor: this.context.muiTheme.palette.accent1Color
+            },
+            repeatSymbolInner: {
+                width: "50%",
+                height: "50%",
+                marginLeft: "3px",
+                fontSize: "1.1em",
+                verticalAlign: "baseline",
+                lineHeight: "34px",
+                textAlign: "center"
+            }
+        };
+
         let eventActions = null;
         let eventContent = null;
         let event = this.state.event;
+
         if (this.state.notFound || event === null || event === undefined) {
             eventContent = <h3 style={{textAlign: "center"}}>Event not found</h3>
         } else {
@@ -53,14 +83,14 @@ export default React.createClass({
                 <MUI.IconButton iconClassName="icon-delete" onClick={this._onEventDelete}/> : null;
 
             eventActions = <Flex.Layout horizontal justified>
-                <Link to="event-list">
+                <RouterLink to="event-list">
                     <MUI.IconButton iconClassName="icon-arrow-back" tooltip="Back"/>
-                </Link>
+                </RouterLink>
                 {deleteEvent}
                 {
                     event && event.repeated ?
-                        <div className="cal-event-repeated-symbol">
-                            <div>{event.repeated_number}</div>
+                        <div style={styles.repeatSymbol}>
+                            <div style={styles.repeatSymbolInner}>{event.repeated_number}</div>
                         </div> :
                         null
                 }
@@ -69,7 +99,7 @@ export default React.createClass({
             eventContent = [];
 
             eventContent.push(
-                <div key="title" className="cal-event-detail-title">{event.title}</div>
+                <div key="title" style={styles.eventTitle}>{event.title}</div>
             );
 
             let formatTime = Moment(event.from_time).format("YYYY-MM-DD HH:mm");
@@ -77,7 +107,7 @@ export default React.createClass({
                 formatTime += " ~ " + Moment(event.to_time).format("YYYY-MM-DD HH:mm")
             }
             eventContent.push(
-                <div key="time" className="cal-event-detail-time">{formatTime}</div>
+                <div key="time"  style={styles.eventTime}>{formatTime}</div>
             );
 
             eventContent.push(
@@ -122,7 +152,6 @@ export default React.createClass({
             });
 
             eventContent.push(<div key="members">{members}</div>);
-
         }
 
         let confirmDeleteDialog = null;
@@ -147,18 +176,20 @@ export default React.createClass({
                 <p style={{margin: 0}}>Would you like to delete only this event or all events in the series?</p>
             </MUI.Dialog>
         }
-        return <PerfectScroll style={{height: "100%", position: "relative"}} className="cal-event-detail">
-            <Flex.Layout horizontal centerJustified wrap>
-                <MUI.Paper zDepth={3} style={{paddingTop: 20}}>
-                    {eventActions}
-                    <div style={{padding: "0 20px 20px 20px"}}>
-                        {eventContent}
-                    </div>
-                    {confirmDeleteDialog}
-                </MUI.Paper>
-            </Flex.Layout>
+        return (
+            <PerfectScroll style={{height: "100%", position: "relative", margin: "0 auto", padding: 20}}>
+                <Flex.Layout horizontal centerJustified wrap>
+                    <MUI.Paper zDepth={3} style={{position: "relative", paddingTop: 20, width: 600, overflow: "hidden"}}>
+                        {eventActions}
+                        <div style={{padding: "0 20px 20px 20px"}}>
+                            {eventContent}
+                        </div>
+                        {confirmDeleteDialog}
+                    </MUI.Paper>
+                </Flex.Layout>
 
-        </PerfectScroll>;
+            </PerfectScroll>
+        );
     },
 
     _onChange() {
@@ -173,7 +204,7 @@ export default React.createClass({
             this.refs.deleteConfirmDialog.show();
         } else {
             if (confirm("Are you sure to delete this event?")) {
-                CalendarActions.deleteEvent({id: this.state.event.id}, () => this.context.router.transitionTo("event-list"));
+                CalendarActions.deleteNoRepeatEvent(this.state.event.id, () => this.context.router.transitionTo("event-list"));
             }
         }
     }
