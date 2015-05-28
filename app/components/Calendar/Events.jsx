@@ -32,7 +32,7 @@ let EventRect = React.createClass({
 
             let time = fromTime.getHours() * 3600 + fromTime.getMinutes() * 60 + fromTime.getSeconds();
             let range = (toTime - fromTime) / 1000;
-            console.log(time);
+
             let top = `${time / 864}%`;
             let height = `${range / 864}%`;
             let minHeight = "20px";
@@ -42,7 +42,10 @@ let EventRect = React.createClass({
             style.minHeight = minHeight;
         }
         return (
-            <div style={style} {...other}>{`${event.from_time}~${event.to_time}`}</div>
+            <div style={style} {...other}>
+                <div>{`${event.from_time}~${event.to_time}`}</div>
+                <div>{event.title}</div>
+            </div>
         );
     }
 });
@@ -150,7 +153,6 @@ let Events = React.createClass({
     },
 
     render() {
-        console.log(this.state.events);
         return (
             <div style={{height: "100%", overflow: "auto"}}>
                 <table style={{width: "100%"}}>
