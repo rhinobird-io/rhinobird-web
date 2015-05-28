@@ -1,6 +1,6 @@
 'use strict';
 
-const React = require("react");
+const React = require("react/addons");
 const RouteHandler = require("react-router").RouteHandler;
 const mui = require("material-ui");
 
@@ -23,6 +23,7 @@ const {Layout} = Flex;
 require('./style.less');
 module.exports = React.createClass({
 
+    mixins: [React.addons.PureRenderMixin],
     contextTypes: {
         router: React.PropTypes.func.isRequired
     },
