@@ -56,10 +56,6 @@ export default React.createClass({
                 position={position}
                 valueAttr={valueAttr}
                 onItemSelect={onItemSelect}
-                normalClass="mui-menu-item"
-                wrapperClass="mui-paper mui-z-depth-2"
-                activeClass="mui-is-selected"
-                disabledClass="mui-is-disabled"
                 {...other}>
                 {this.props.children}
             </Popup>
