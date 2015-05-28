@@ -1,10 +1,10 @@
-const React = require('react');
+const React = require('react/addons');
 const Paper = require('material-ui').Paper;
 const Flexible = require('../Mixins').Flexible;
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 let Popup = React.createClass({
-    mixins: [Flexible, StylePropable],
+    mixins: [Flexible, StylePropable, React.addons.PureRenderMixin],
 
     getInitialState() {
         return {
