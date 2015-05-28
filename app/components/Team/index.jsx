@@ -13,6 +13,7 @@ const Link = require("react-router").Link;
 const UserAction = require('../../actions/UserAction');
 const dagreD3 = require('dagre-d3');
 const MemberSelect = require('../Member').MemberSelect;
+const Common = require('../Common');
 
 require("./style.less");
 
@@ -84,11 +85,10 @@ let TeamDisplay = React.createClass({
                 showAddMemberIcon = true;
             }
             return <div className='paper-outer-container'>
-                <Paper zDepth={1}>
-                    <div className='paper-inner-container'>
-                        <Flex.Layout justified center>
-                            <Flex.Layout center className='mui-font-style-title'>
-                                <mui.FontIcon className='icon-group'/>
+                <Paper zDepth={1} style={{padding: 24}}>
+                        <Flex.Layout justified center >
+                            <Flex.Layout center style={{fontSize: '1.5em', lineHeight: '48px'}}>
+                                <mui.FontIcon style={{fontSize: '1.5em'}} className='icon-group'/>
                                 <div style={{marginLeft: 8}}>{this.props.team.name}</div>
                             </Flex.Layout>
                             {loginUserTeam ?
@@ -106,7 +106,7 @@ let TeamDisplay = React.createClass({
 
                         {this.props.team.parentTeams.length > 0 ?
                             <div>
-                                <hr/>
+                                <Common.Hr style={{marginBottom: 24}}/>
                                 <div className='mui-font-style-subhead-1'>Parent teams</div>
                                 <Flex.Layout wrap>
                                     {this.props.team.parentTeams.map((parent)=> {
@@ -117,12 +117,12 @@ let TeamDisplay = React.createClass({
                                         </mui.FlatButton>;
                                     })}
                                 </Flex.Layout>
-                                <hr/>
                             </div>
                             : undefined}
 
                         {this.props.team.teams.length > 0 ?
                             <div>
+                                <Common.Hr style={{marginBottom: 24}}/>
                                 <div className='mui-font-style-subhead-1'>Subsidiary teams</div>
                                 <Flex.Layout wrap>
                                     {this.props.team.teams.map((team)=> {
@@ -133,10 +133,10 @@ let TeamDisplay = React.createClass({
                                         </mui.FlatButton>;
                                     })}
                                 </Flex.Layout>
-                                <hr/>
                             </div>
                             : undefined}
                         <div>
+                            <Common.Hr style={{marginBottom: 24}}/>
                             <Flex.Layout center justified>
                                 <Flex.Layout center>
                                     <div className='mui-font-style-subhead-1' style={{margin:0, lineHeight:'48px'}}>
@@ -172,19 +172,16 @@ let TeamDisplay = React.createClass({
                         </div>
                         {this.state.addMember ?
                             <div>
-                                <hr/>
+                                <Common.Hr style={{marginBottom: 24}}/>
                                 <div className='mui-font-style-subhead-1'>
                                     Add direct members
                                 </div>
-                                <MemberSelect ref='memberSelect' excludedUsers={this.props.team.users.map(u=>u.id)} team={false} valueLink={this.linkState('newMembers')} errorText={this.state.addMemberError}/>
+                                <MemberSelect style={{width:'100%'}} ref='memberSelect' excludedUsers={this.props.team.users.map(u=>u.id)} team={false} valueLink={this.linkState('newMembers')} errorText={this.state.addMemberError}/>
                                 <Flex.Layout endJustified>
                                     <mui.FlatButton label='cancel' onClick={()=>{this.setState({addMember: false})}}/>
                                     <mui.FlatButton primary label='Add members' onClick={this.addMember}/>
                                 </Flex.Layout>
                             </div> : undefined}
-
-
-                    </div>
                 </Paper>
             </div>
         } else {
@@ -211,6 +208,9 @@ function _transform(d) {
 }
 let TeamGraph = React.createClass({
     mixins: [React.addons.PureRenderMixin],
+    contextTypes: {
+        muiTheme: React.PropTypes.object
+    },
     _buildConnections(teams){
         let connections = [];
         teams.forEach((team, index) => {
@@ -230,15 +230,18 @@ let TeamGraph = React.createClass({
             var g = new dagreD3.graphlib.Graph().setGraph({rankdir: 'LR'}).setDefaultEdgeLabel(function(){return {};});
 
             teams.forEach(t=>{
-                let classes;
+                let fill, color;
                 if (t.users.find(u => u.id === LoginStore.getUser().id)) {
-                    classes = 'highlight primary';
+                    color = this.context.muiTheme.palette.canvasColor;
+                    fill = this.context.muiTheme.palette.accent1Color;
                 } else if(UserStore.getUsersByTeamId(t.id, true).find(u => u.id === LoginStore.getUser().id)){
-                    classes = 'highlight secondary';
+                    color = this.context.muiTheme.palette.canvasColor;
+                    fill = this.context.muiTheme.palette.primary1Color;
                 } else {
-                    classes = '';
+                    color = this.context.muiTheme.palette.textColor;
+                    fill = this.context.muiTheme.textColor;
                 }
-                g.setNode(t.id,  { label: t.name, class: classes});
+                g.setNode(t.id,  { label: t.name, labelStyle: `fill: ${color}`, style: `fill: ${fill}; stroke: ${fill};` });
             });
             g.nodes().forEach(function(v) {
                 var node = g.node(v);
@@ -293,14 +296,17 @@ let TeamGraph = React.createClass({
                 .links(connections)
                 .start();
             let link = svg.selectAll('.link').data(connections).enter().append('path').attr('class', 'link');
-            let node = svg.selectAll('.node').data(teams).enter().append('g').attr('class', function (d) {
-                if (d.users.find(u => u.id === LoginStore.getUser().id)) {
-                    return 'highlight primary';
-                } else if(UserStore.getUsersByTeamId(d.id, true).find(u => u.id === LoginStore.getUser().id)){
-                    return 'highlight secondary';
+            let getColor = (t) => {
+                if (t.users.find(u => u.id === LoginStore.getUser().id)) {
+                    return this.context.muiTheme.palette.accent1Color;
+                } else if(UserStore.getUsersByTeamId(t.id, true).find(u => u.id === LoginStore.getUser().id)){
+                    return this.context.muiTheme.palette.primary1Color;
                 } else {
-                    return '';
+                    return this.context.muiTheme.textColor;
                 }
+            };
+            let node = svg.selectAll('.node').data(teams).enter().append('g').style('fill', function (t) {
+                return getColor(t);
             }).call(force.drag).on('click', this.props.onClickTeam);
             let icon = node.append('text').attr('class', 'group-icon').attr('x', '-0.5em').attr('y', '.35em')
                 .style('font-size', function(d){
@@ -372,7 +378,7 @@ let TeamPage = React.createClass({
             <Flex.Item style={{flexBasis: 960, margin:24}}>
                 <Paper>
                     <Flex.Layout center justified>
-                    <h4 style={{paddingLeft:24}}>Team Graph</h4>
+                    <h2 style={{margin: 24}}>Team Graph</h2>
                         <div style={{width:200}}>
                             <mui.Toggle label='Traditional view' onToggle={(e, toggled)=>{this.setState({traditionalView: toggled});}}/>
                         </div>
@@ -383,7 +389,7 @@ let TeamPage = React.createClass({
             {this.state.selectedTeam ?
                 <TeamDisplay onClickTeam={this._onClickTeam} team={this.state.selectedTeam}></TeamDisplay> : undefined}
             <Link to='create-team'>
-                <mui.FloatingActionButton className='add-team' iconClassName="icon-group-add"/>
+                <mui.FloatingActionButton style={{position:'fixed', right: 24, bottom: 24, zIndex:100}} iconClassName="icon-group-add"/>
             </Link>
         </Flex.Layout>;
     }
