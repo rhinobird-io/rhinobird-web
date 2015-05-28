@@ -53,8 +53,30 @@ module.exports = {
 
         if (base) {
             let self = this.getDOMNode();
-            let baseDOM = base.getDOMNode();
-            let baseRect = baseDOM.getBoundingClientRect();
+            let baseRect = null;
+
+            if (base.getDOMNode) {
+                let baseDOM = base.getDOMNode();
+                baseRect = baseDOM.getBoundingClientRect();
+            } else {
+                if (isNaN(base.left) || isNaN(base.top) ||
+                    (isNaN(base.right) && isNaN(base.width)) ||
+                    (isNaN(base.bottom) && isNaN(base.height))) {
+                    return;
+                }
+                if (isNaN(base.right)) {
+                    base.right = base.left + base.width;
+                } else if (isNaN(base.width)) {
+                    base.width = base.right - base.left;
+                }
+
+                if (isNaN(base.bottom)) {
+                    base.bottom = base.top + base.height;
+                } else if (isNaN(base.height)) {
+                    base.height = base.bottom - base.top;
+                }
+                baseRect = base;
+            }
 
             // Window client size
             let innerWidth = document.body.clientWidth; //window.innerWidth;
@@ -97,16 +119,16 @@ module.exports = {
             self.style.zIndex = "1000";
             self.style.top = selfTop + "px";
 
-            if (selfLeft) {
-                self.style.left = selfLeft + "px";
-            } else {
+            if (isNaN(selfLeft)) {
                 self.style.left = "auto";
+            } else {
+                self.style.left = selfLeft + "px";
             }
 
-            if (selfRight) {
-                self.style.right = selfRight + "px";
-            } else {
+            if (isNaN(selfRight)) {
                 self.style.right = "auto";
+            } else {
+                self.style.right = selfRight + "px";
             }
         }
     }

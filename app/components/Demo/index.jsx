@@ -1,11 +1,13 @@
 var React                = require("react"),
+    MUI = require('material-ui'),
     SmartTimeDisplay     = require("../SmartTimeDisplay"),
     SmartEditor = require("../SmartEditor").SmartEditor,
     SmartPreview = require("../SmartEditor").SmartPreview,
     Selector = require("../Select").Selector,
     MaterialSelect = require("../Select").Select,
     MemberSelect = require('../Member').MemberSelect,
-    SearchEverywhere = require("../SearchEverywhere");
+    SearchEverywhere = require("../SearchEverywhere"),
+    Popup = require('../Popup');
 
 require("./style.less");
 
@@ -80,10 +82,17 @@ export default React.createClass({
                     <span className="item" name="Saturday">Sat</span>
                 </Selector>
 
-                <br/>
-                <SearchEverywhere />
-                <br/>
+                <MUI.TextField ref="text" onFocus={() => this.refs.popup.show()} onBlur={() => this.refs.popup.dismiss()}/>
 
+                <Popup hRestrict zDepth={3} ref="popup" relatedTo={() => this.refs.text}>
+                    <div>Oh my god</div>
+                    <div>Oh my god</div>
+                    <div>Oh my god</div>
+                    <div>Oh my god</div>
+                    <div>Oh my god</div>
+                    <div>Oh my god</div>
+                    <div>Oh my god</div>
+                </Popup>
                 <SmartEditor valueLink={this.linkState("editorValue")} hintText="Linked to SmartPreview" />
 
                 <MemberSelect />
