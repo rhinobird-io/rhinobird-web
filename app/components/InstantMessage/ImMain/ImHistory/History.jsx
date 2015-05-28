@@ -68,8 +68,8 @@ module.exports = React.createClass({
         }
     },
 
-    _onReceiveMessage(newChannel) {
-        this.newChannel = newChannel;
+    _onReceiveMessage(newCh) {
+        this.newChannel = newCh;
         this.setState({
             messageSuites: MessageStore.getCurrentChannelMessageSuites()
         });
@@ -97,7 +97,7 @@ module.exports = React.createClass({
                 return this.getDOMNode();
             }}/>
                 <div style={{paddingLeft:54,
-                fontSize:18,
+                fontSize:16,
                 marginBottom: 12}}>This is the very beginning of this channel, you can start to talk freely.</div>
                 <Common.Hr style={{width:'100%'}}/>
                 <div style={{flex: 1}}>
