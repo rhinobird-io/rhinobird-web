@@ -3,6 +3,9 @@ const RouteHandler = require("react-router").RouteHandler;
 const ImMessage = require('./ImMessage').Message;
 const mui = require("material-ui");
 
+
+import Common from '../../../Common';
+
 import MessageAction from '../../../../actions/MessageAction.js';
 import MessageStore from '../../../../stores/MessageStore.js';
 import ChannelStore from '../../../../stores/ChannelStore.js';
@@ -93,8 +96,10 @@ module.exports = React.createClass({
             }} scrollTarget={()=>{
                 return this.getDOMNode();
             }}/>
-                <h5 style={{paddingLeft:54}}>This is the very beginning of this channel, you can start to talk freely.</h5>
-                <hr style={{width:'100%'}}/>
+                <div style={{paddingLeft:54,
+                fontSize:18,
+                marginBottom: 12}}>This is the very beginning of this channel, you can start to talk freely.</div>
+                <Common.Hr style={{width:'100%'}}/>
                 <div style={{flex: 1}}>
                     {
                         this.state.messageSuites.map((msg, idx) => <ImMessage onLinkPreviewDidUpdate={this.componentDidUpdate.bind(this)}

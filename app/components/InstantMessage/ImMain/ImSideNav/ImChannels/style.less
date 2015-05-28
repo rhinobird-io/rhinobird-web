@@ -6,7 +6,6 @@
     font-weight: bold;
     padding : 15px;
     margin: 0;
-    background-color: white;
     display: flex;
     flex-direction: row;
     align-items : center;
@@ -14,13 +13,11 @@
 
   .instant-message-channel-container {
     width: 100%;
-    background-color: transparent;
     display: flex;
     align-items: center;
 
     .instant-message-channel-item-selected {
       background: pink;
-      color :  white;
     }
 
     .instant-message-channel-item {
@@ -28,24 +25,14 @@
       padding: 5px;
       float : left;
       flex: 5;
-      text-transform: none;
 
       span {
         padding: 5px;
-      }
-
-      .instant-message-channel-item-online {
-
-      }
-
-      .instant-message-channel-item-offline {
-        color: grey;
       }
     }
 
     .instant-message-channel-item-unread {
       flex: 1;
-      color : red;
     }
   }
 }

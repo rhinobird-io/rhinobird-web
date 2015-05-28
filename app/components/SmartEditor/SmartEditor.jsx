@@ -297,12 +297,12 @@ const SmartEditor = React.createClass({
     // Apply `style` to TextField seems no effect, so just apply to Item
     return (
       <Item flex style={style} className={"smart-editor" + (props.nohr ? " nohr" : "")}>
-        <TextField {...tfProps} onKeyDown={this._inputKeyDown} ref="textfield"
+        <TextField {...tfProps} style={{width:'100%'}} onKeyDown={this._inputKeyDown} ref="textfield"
                                 onChange={this._onInputChange}/>
         <PopupSelect ref="popup"
                      position={this.state.position}
                      onItemSelect={this._onItemSelect}
-            style={popupStyle}>
+                     style={popupStyle}>
           {this.state.options}
         </PopupSelect>
       </Item>

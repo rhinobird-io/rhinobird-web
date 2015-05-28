@@ -25,7 +25,8 @@ module.exports = React.createClass({
 
     mixins: [React.addons.PureRenderMixin],
     contextTypes: {
-        router: React.PropTypes.func.isRequired
+        router: React.PropTypes.func.isRequired,
+        muiTheme: React.PropTypes.object
     },
 
     getInitialState() {
@@ -98,12 +99,25 @@ module.exports = React.createClass({
         let style = {
            display : this.props.hide?'none':''
         };
+
+        let textColor = this.context.muiTheme.palette.textColor;
+        if(this.state._imCurrentChannel){
+            textColor = this.context.muiTheme.palette.canvasColor;
+        } else if(this.props.Channel.isDirect && !self.state._onlineStatus) {
+            textColor = this.context.muiTheme.palette.disabledColor;
+        }
         return (
             <div className="instant-message-channel-container" style={style}>
-                <FlatButton className={this.state._imCurrentChannel?'instant-message-channel-item-selected instant-message-channel-item ':'instant-message-channel-item '}  onTouchTap={self._onItemTap.bind(self, this.props.Channel)}>
+                <FlatButton style={{
+                backgroundColor: this.state._imCurrentChannel?   this.context.muiTheme.palette.accent1Color : undefined,
+                color: this.state._imCurrentChannel? this.context.muiTheme.palette.canvasColor : this.context.muiTheme.palette.textColor,
+                padding:6
+                }} className={this.state._imCurrentChannel?'instant-message-channel-item-selected instant-message-channel-item ':'instant-message-channel-item '}  onTouchTap={self._onItemTap.bind(self, this.props.Channel)}>
                     <div style={{overflowX: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         <span className={ this.props.Channel.isGroup ? 'icon-group' : ''}></span>
-                        <span className={(this.props.Channel.isDirect && !self.state._onlineStatus)?'instant-message-channel-item-offline':''}>{ this.props.Channel.isGroup? this.props.Channel.channel.name : this.props.Channel.channel.realname}</span>
+                        <span style={{
+                        textTransform: 'none',
+                        color: textColor}}>{ this.props.Channel.isGroup? this.props.Channel.channel.name : this.props.Channel.channel.realname}</span>
                     </div>
                 </FlatButton>
                 <span className={ (!this.state._imCurrentChannel && this.state._hasUnread)?'instant-message-channel-item-unread icon-message':''}></span>
