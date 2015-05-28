@@ -70,8 +70,17 @@ module.exports = React.createClass({
 
     _onReceiveMessage(newCh) {
         this.newChannel = newCh;
+        let messagesSuites = MessageStore.getCurrentChannelMessageSuites();
+        let latestMessage;
+        if (!messagesSuites || messagesSuites.size === 0) {
+            latestMessage = (1 << 30);
+        } else {
+            latestMessage = messagesSuites.first().first();
+        }
+        let hasMore = MessageStore.hasOlderMessages(ChannelStore.getCurrentChannel(), latestMessage.id);
         this.setState({
-            messageSuites: MessageStore.getCurrentChannelMessageSuites()
+            messageSuites: messagesSuites,
+            noMore: !hasMore.atBack && !hasMore.atFront
         });
     },
     /**
@@ -96,10 +105,10 @@ module.exports = React.createClass({
             }} scrollTarget={()=>{
                 return this.getDOMNode();
             }}/>
-                <div style={{paddingLeft:54,
+                {this.state.noMore?<div><div style={{paddingLeft:54,
                 fontSize:16,
                 marginBottom: 12}}>This is the very beginning of this channel, you can start to talk freely.</div>
-                <Common.Hr style={{width:'100%'}}/>
+                <Common.Hr style={{width:'100%'}}/></div> : undefined}
                 <div style={{flex: 1}}>
                     {
                         this.state.messageSuites.map((msg, idx) => <ImMessage onLinkPreviewDidUpdate={this.componentDidUpdate.bind(this)}

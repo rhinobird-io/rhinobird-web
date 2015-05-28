@@ -49,7 +49,6 @@ class MessagesWrapper {
             throw new Error('' + messages + ' is not a array');
         }
         if (messages.length === 0) {
-            this.noMore = true;
             return;
         }
         if (!isOld) {
@@ -183,6 +182,12 @@ let MessageStore = assign({}, BaseStore, {
     },
 
     hasOlderMessages(channel, oldestMessageId) {
+        if (!_messages[channel.backEndChannelId]){
+            return {
+                atFront: true,
+                atBack: true
+            }
+        }
         return {
             atFront: _messages[channel.backEndChannelId].getMessagesArray(oldestMessageId, 1).length > 0,
             atBack: !_messages[channel.backEndChannelId].noMoreAtBack
@@ -250,12 +255,18 @@ let MessageStore = assign({}, BaseStore, {
                 MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE, true);
                 break;
             case Constants.MessageActionTypes.RECEIVE_OLDER_MESSAGES:
+                if(!_messages[payload.channel.backEndChannelId]){
+                    break;
+                }
                 // this was loaded from backEnd, that means there is no more he can fetch from the front end, currentsuite should sync with messagesWrapper
                 _messages[payload.channel.backEndChannelId].addMessages(payload.messages, true);
                 _messages[payload.channel.backEndChannelId].setNoMoreAtBack(payload.noMoreAtBack);
                 MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
                 break;
             case Constants.MessageActionTypes.RECEIVE_OLDER_MESSAGES_AT_FRONT:
+                if(!_messages[payload.channel.backEndChannelId]){
+                    break;
+                }
                 // this was loaded from frontEnd
                 prependToCurrentMessageSuite(
                     _messages[payload.channel.backEndChannelId].getMessagesArray(payload.oldestMessageId, IMConstants.MSG_LIMIT)
