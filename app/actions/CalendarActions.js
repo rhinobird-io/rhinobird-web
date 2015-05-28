@@ -7,6 +7,18 @@ const CalendarActionTypes = require("../constants/AppConstants").CalendarActionT
 require("./mockjax/events.js");
 
 export default {
+    getByDate(date) {
+
+    },
+
+    getByWeek(date) {
+
+    },
+
+    getByMonth(date) {
+
+    },
+
     receive(success) {
         $.get("/platform/api/events").done(data => {
             AppDispatcher.dispatch({
