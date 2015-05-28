@@ -62,7 +62,6 @@ module.exports = React.createClass({
                     this.refs.leftNav.close();
                     payload.action();
                 }}
-                className="headerDropdown"
                 iconClassName="icon-expand-more"
                 menuItems={iconMenuItems} />
         </Flex.Layout>;
