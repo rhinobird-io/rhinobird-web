@@ -44,6 +44,7 @@ export default React.createClass({
     },
 
     componentWillUnmount() {
+        CalendarStore.reset();
         CalendarStore.removeChangeListener(this._onChange);
     },
 
@@ -194,9 +195,9 @@ export default React.createClass({
 
         let emptyMessage = "";
 
-        if (this.state.hasMoreOlderEvents || this.state.hasMoreNewerEvents) {
+        if (!this.state.hasReceived) {
             emptyMessage = "Loading";
-        } else {
+        } else if (eventKeys.length === 0) {
             emptyMessage = "Empty Calendar";
         }
 

@@ -60,20 +60,34 @@ function _deleteEvent(data) {
     let id = data.id;
     let repeatedNumber = data.repeatedNumber;
 
+    let formatDate;
     if (repeatedNumber === undefined || repeatedNumber === null) {
         let event = _eventsIdMap[id]["1"];
         if (event !== null) {
-            let formatDate = _formatDate(event.from_time);
+            formatDate = _formatDate(event.from_time);
             delete _events[formatDate][event.id.toString()];
             delete _eventsIdMap[id];
-            if (Object.keys(_events[formatDate]).length === 0) {
-                delete _events[formatDate]
-            }
+
         }
         _lastDeleted = {id: id}
     } else {
+        let event = _eventsIdMap[id][repeatedNumber];
+        if (event !== null) {
+            formatDate = _formatDate(event.from_time);
+            delete _events[formatDate][event.id.toString()];
+            delete _eventsIdMap[id][repeatedNumber];
+
+            if (Object.keys(_eventsIdMap[id]).length === 0) {
+                delete _eventsIdMap[id];
+            }
+        }
         _lastDeleted = {id: id, repeatedNumber: repeatedNumber};
     }
+    if (Object.keys(_events[formatDate]).length === 0) {
+        delete _events[formatDate];
+    }
+
+
 }
 
 function _formatDate(date) {
@@ -135,6 +149,11 @@ let CalendarStore = assign({}, BaseStore, {
         return _hasReceived;
     },
 
+    reset() {
+        _newCreated = null;
+        _lastDeleted = null;
+    },
+
     dispatcherIndex: AppDispatcher.register(payload => {
         let type = payload.type;
         let data = payload.data;
@@ -193,4 +212,4 @@ let CalendarStore = assign({}, BaseStore, {
 
 });
 
-export default CalendarStore;
+module.exports = CalendarStore;

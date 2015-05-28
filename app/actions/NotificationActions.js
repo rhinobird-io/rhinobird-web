@@ -8,6 +8,7 @@ const NotificationStore = require("../stores/NotificationStore");
 const ReconnectingWebSocket = require('../../node_modules/ReconnectingWebSocket/reconnecting-websocket.js');
 
 function _websocket() {
+  console.log("websocket")
   try {
     let socket = new ReconnectingWebSocket("ws://" + window.location.host + "/platform/socket");
     socket.onopen = (e) => {
@@ -16,6 +17,7 @@ function _websocket() {
 
     socket.onmessage = (msg) => {
       let data = JSON.parse(msg.data);
+
       AppDispatcher.dispatch({
         type: ActionTypes.RECEIVE_NOTIFI,
         data: data
@@ -52,6 +54,7 @@ function _websocket() {
     socket.onerror = () => {
       //console.log("onerror");
     };
+
     socket.onclose = () => {
       //console.log("onclose");
     };

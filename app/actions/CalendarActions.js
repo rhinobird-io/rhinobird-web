@@ -7,6 +7,18 @@ const CalendarActionTypes = require("../constants/AppConstants").CalendarActionT
 require("./mockjax/events.js");
 
 export default {
+    getByDate(date) {
+
+    },
+
+    getByWeek(date) {
+
+    },
+
+    getByMonth(date) {
+
+    },
+
     receive(success) {
         $.get("/platform/api/events").done(data => {
             AppDispatcher.dispatch({
@@ -40,17 +52,27 @@ export default {
         }
     },
 
-    deleteNoRepeatEvent(id, success) {
+    deleteEvent(data, success) {
+        let id = data.id;
+        let repeatedNumber = data.repeatedNumber;
+
+        if (id === null || id === undefined) {
+            return;
+        }
+
+        let url = `/platform/api/events/${id}`;
+        if (repeatedNumber) {
+            url += `/${repeatedNumber}`;
+        }
+
         $.ajax({
-            url: "/platform/api/events/" + id,
+            url: url,
             type: "delete"
         }).done(() => {
             //console.log("haha");
             AppDispatcher.dispatch({
                 type: CalendarActionTypes.DELETE_EVENT,
-                data: {
-                    id: id
-                }
+                data: data
             });
             if (success && typeof success === "function") {
                 success();
