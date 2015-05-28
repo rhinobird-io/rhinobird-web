@@ -156,7 +156,7 @@ let TeamDisplay = React.createClass({
                             </Flex.Layout>
                             <Flex.Layout wrap>
                                 {users.map((user, index)=> {
-                                    return <div style={{margin: 6, flex: '0 1 100px'}} key={index}>
+                                    return <div style={{margin: 6, flex: '0 1 100px', whiteSpace:'nowrap', textOverflow:'ellipsis', overflow:'hidden'}} key={index}>
                                         <Member.Avatar member={user}/>
                                         <Member.Name style={{marginLeft: 4}} member={user}/>
                                     </div>;
