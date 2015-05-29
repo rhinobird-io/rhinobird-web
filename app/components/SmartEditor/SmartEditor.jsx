@@ -54,8 +54,7 @@ const SmartEditor = React.createClass({
       options: [],
       position: "top",
       popupPosition: {},
-      popupJustified: false,
-      uploadingFiles: []
+      popupJustified: false
     };
   },
 
@@ -305,13 +304,6 @@ const SmartEditor = React.createClass({
     // Apply `style` to TextField seems no effect, so just apply to Item
     return (
       <Item flex style={style} className={"smart-editor" + (props.nohr ? " nohr" : "")}>
-      <div style={{position: 'relative', height:0}}>
-          <Flex.Layout wrap style={{position: 'absolute', bottom:0}}>
-              {this.state.uploadingFiles.map((f)=>{
-                  return <FileUploadStatus file={f} />
-              })}
-          </Flex.Layout>
-      </div>
         <TextField {...tfProps} style={this.mergeAndPrefix({width:'100%'}, this.props.inputStyle)} onKeyDown={this._inputKeyDown} ref="textfield"
                                 onChange={this._onInputChange}/>
         <PopupSelect ref="popup"
