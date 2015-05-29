@@ -34,10 +34,8 @@ let Popup = React.createClass({
         let styles = {
             popupWrapper: {
                 position: "relative",
-                transition: "all 500ms",
-                zIndex: 9,
-                margin: -4,
-                display: this.state.shown ? "flex" : "none"
+                transition: "all 300ms",
+                zIndex: 9
             },
             scroll: {
                 position: "relative",
@@ -46,15 +44,10 @@ let Popup = React.createClass({
             }
         };
 
-        if (!style) {
-            style = {};
-        }
-        style.zIndex = 9;
-        style.maxHeight = 250;
-        style.margin = -4;
-
         if (!this.state.shown) {
             styles.popupWrapper.height = 0;
+        } else {
+            styles.popupWrapper.height = style && style.height ? style.height : 250;
         }
 
         let padding = <div style={{flex: 1}}></div>;
@@ -62,9 +55,9 @@ let Popup = React.createClass({
         let bottomPadding = position === "bottom" ? padding : null;
 
         return (
-            <Layout vertical style={this.mergeStyles(style, styles.popupWrapper)}>
+            <Layout vertical style={this.mergeStyles(style || {}, styles.popupWrapper)}>
                 {topPadding}
-                <PerfectScroll style={styles.scroll} alwaysVisible>
+                <PerfectScroll style={styles.scroll} {...other} alwaysVisible>
                     {children}
                 </PerfectScroll>
                 {bottomPadding}

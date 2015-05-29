@@ -36,7 +36,7 @@ let PopupSelect = React.createClass({
 
     getInitialState() {
         return {
-            visible: false,
+            shown: false,
             options: {},
             optionsMap: [],
             activeOptionIndex: 0
@@ -85,7 +85,7 @@ let PopupSelect = React.createClass({
     },
 
     dismiss() {
-        this.setState({visible: false});
+        this.setState({shown: false});
         if (this.props.onDismiss && typeof this.props.onDismiss === "function") {
             this.props.onDismiss();
         }
@@ -93,11 +93,11 @@ let PopupSelect = React.createClass({
 
     show() {
         this.updatePosition();
-        setTimeout(() => this.setState({visible: true}), 0);
+        setTimeout(() => this.setState({shown: true}), 0);
     },
 
     isShow() {
-        return this.state.visible;
+        return this.state.shown;
     },
 
     render: function() {
@@ -108,15 +108,14 @@ let PopupSelect = React.createClass({
             ...other
         } = this.props;
 
-
         let childrenDOM = this._construct(children, this.props.valueAttr);
+
         let styles = {
-            outer: {
+            popupWrapper: {
+                transition: "all 300ms",
                 zIndex: 9,
-                margin: -4,
-                display: this.state.visible ? "flex" : "none"
-            },
-            popup: {
+                height: style && style.height ? style.height : 250,
+                display: this.state.shown ? "flex" : "none"
             },
             scroll: {
                 position: "relative",
@@ -125,24 +124,17 @@ let PopupSelect = React.createClass({
             }
         };
 
-        if (style === undefined || style === null) {
-            style = {};
-        }
-        style.zIndex = 9;
-        style.height = 250;
-        style.margin = -4;
-        style.display = this.state.visible ? "flex" : "none";
-
         let padding = <div style={{flex: 1}}></div>;
         let topPadding = position === "top" ? padding : null;
         let bottomPadding = position === "bottom" ? padding : null;
 
         return (
-            <Layout vertical style={style}>
+            <Layout vertical style={this.mergeStyles(style || {}, styles.popupWrapper)}>
                 {topPadding}
                 <PerfectScroll
                     ref="scroll"
-                    style={styles.scroll} alwaysVisible>
+                    style={styles.scroll}
+                    alwaysVisible>
                     {childrenDOM}
                 </PerfectScroll>
                 {bottomPadding}
@@ -168,12 +160,9 @@ let PopupSelect = React.createClass({
         }
     },
 
-
     _updateScroll: function(activeOptionIndex) {
         let scroll = this.refs.scroll.getDOMNode();
         let optionsMap = this.state.optionsMap;
-        console.log(optionsMap);
-        console.log(this.refs);
         if (activeOptionIndex >= 0 && activeOptionIndex < optionsMap.length) {
             let activeOptionDOM = this.refs[optionsMap[activeOptionIndex]].getDOMNode();
             let offsetTop = 0;
@@ -294,7 +283,6 @@ let PopupSelect = React.createClass({
                     }
                 }
 
-                console.log(key);
                 return React.cloneElement(child, {
                     key: key,
                     ref: key,
@@ -317,7 +305,7 @@ let PopupSelect = React.createClass({
     },
 
     _windowKeyDownListener: function(e) {
-        if (this.state.visible) {
+        if (this.state.shown) {
             let keyCode = e.keyCode;
             switch (keyCode) {
                 case 38:    // Up
@@ -330,6 +318,7 @@ let PopupSelect = React.createClass({
                     break;
                 case 13:    // Enter
                     e.preventDefault();
+                    console.log("haha");
                     this._select(this.state.activeOptionIndex, e);
                     break;
                 case 27:    // Escape

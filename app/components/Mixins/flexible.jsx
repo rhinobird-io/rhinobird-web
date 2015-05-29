@@ -70,10 +70,9 @@ module.exports = {
                 }
                 baseRect = base;
             }
-
             // Window client size
-            let innerWidth = document.body.clientWidth; //window.innerWidth;
-            let innerHeight = document.body.clientHeight; //window.innerHeight;
+            let innerWidth = window.innerWidth;
+            let innerHeight = window.innerHeight;
 
             let baseTop = baseRect.top;
             let baseLeft = baseRect.left;
@@ -88,6 +87,8 @@ module.exports = {
             let selfLeft = null;
             let selfRight = null;
 
+            console.log(innerHeight - baseBottom - selfHeight);
+            console.log("selfHeight: " + selfHeight);
             if (innerHeight - baseBottom - selfHeight >= 0) {
                 selfTop = baseTop + baseHeight;
                 this.position = "bottom";
@@ -96,6 +97,7 @@ module.exports = {
                 this.position = "top";
             }
 
+            console.log(this.position);
             if (innerWidth - baseRight - selfWidth >= 0) {
                 selfLeft = baseLeft;
                 if (hRestrict) {
