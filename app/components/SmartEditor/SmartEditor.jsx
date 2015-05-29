@@ -11,6 +11,8 @@ const PopupSelect = require("../Select").PopupSelect;
 const UserStore = require("../../stores/UserStore");
 const ClickAwayable = MUI.Mixins.ClickAwayable;
 const Flex = require('../Flex');
+const StylePropable = require('material-ui/lib/mixins/style-propable');
+
 import _ from 'lodash';
 
 require('./style.less');
@@ -18,13 +20,14 @@ require('./style.less');
 const commands = require('./commands'), COMMANDS = commands.list;
 
 const SmartEditor = React.createClass({
-  mixins: [ClickAwayable, React.addons.PureRenderMixin],
+  mixins: [ClickAwayable, React.addons.PureRenderMixin, StylePropable],
 
   propTypes: {
     valueLink: React.PropTypes.shape({
       value: React.PropTypes.string.isRequired,
       requestChange: React.PropTypes.func.isRequired
     }),
+    inputStyle: React.PropTypes.object,
     nohr: React.PropTypes.bool,
     popupWidth: React.PropTypes.number,
     popupMaxHeight: React.PropTypes.number,
@@ -243,6 +246,8 @@ const SmartEditor = React.createClass({
     let style = {
       boxSizing: "border-box"
     };
+    style = this.mergeAndPrefix(style, this.props.style);
+    console.log(style);
     Object.assign(style, props.style);
 
     let popupStyle = {
@@ -297,7 +302,7 @@ const SmartEditor = React.createClass({
     // Apply `style` to TextField seems no effect, so just apply to Item
     return (
       <Item flex style={style} className={"smart-editor" + (props.nohr ? " nohr" : "")}>
-        <TextField {...tfProps} style={{width:'100%'}} onKeyDown={this._inputKeyDown} ref="textfield"
+        <TextField {...tfProps} style={this.mergeAndPrefix({width:'100%'}, this.props.inputStyle)} onKeyDown={this._inputKeyDown} ref="textfield"
                                 onChange={this._onInputChange}/>
         <PopupSelect ref="popup"
                      position={this.state.position}

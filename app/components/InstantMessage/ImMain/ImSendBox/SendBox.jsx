@@ -80,6 +80,9 @@ public static void main(String[] args) {
 let SendBox = React.createClass({
 
     mixins: [React.addons.LinkedStateMixin],
+    contextTypes: {
+        muiTheme: React.PropTypes.object
+    },
 
     getInitialState() {
         return  {
@@ -139,7 +142,7 @@ let SendBox = React.createClass({
             <div className="send-box" style={this.props.style}>
                 <HelpDialog ref='infoDialog'/>
                 <Layout style={{marginLeft: 52}} center>
-                    <SmartEditor ref="sEditor" nohr multiLine valueLink={this.linkState('messageValue')} className="instant-message-smart-editor" onKeyDown={this.handleKeyDown}></SmartEditor>
+                    <SmartEditor inputStyle={{borderColor: this.context.muiTheme.palette.borderColor}} ref="sEditor" nohr multiLine valueLink={this.linkState('messageValue')} className="instant-message-smart-editor" onKeyDown={this.handleKeyDown}></SmartEditor>
                     <IconButton iconClassName="icon-info-outline" style={{ fontSize:'2em',marginBottom: '6.5px' }} onClick={this.showInfoDialog}></IconButton>
                 </Layout>
             </div>
