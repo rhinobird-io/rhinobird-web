@@ -12,7 +12,6 @@ const UserStore = require("../../stores/UserStore");
 const ClickAwayable = MUI.Mixins.ClickAwayable;
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 const Flex = require('../Flex');
-const FileUploadStatus = require('./FileUploadStatus');
 import _ from 'lodash';
 
 require('./style.less');
@@ -52,8 +51,7 @@ const SmartEditor = React.createClass({
       options: [],
       position: "top",
       popupPosition: {},
-      popupJustified: false,
-      uploadingFiles: []
+      popupJustified: false
     };
   },
 
@@ -214,38 +212,20 @@ const SmartEditor = React.createClass({
     }
   },
 
-  _handleUploadProgress(fileId){
-    return ()=>{
-
-    };
-  },
   _uploadFile(callback) {
-    let uploadingFiles = this.state.uploadingFiles || [];
-    //uploadingFiles = uploadingFiles.slice(0);
-    let self =  this;
     var input = $(document.createElement('input'));
     input.attr("type", "file");
-    let progressHandlingFunction = this._handleUploadProgress;
     input.change(function(e) {
       let file = e.target.files[0];
       let formData = new FormData();
       formData.append('file', file);
       $.post('/file/files', {name: file.name}).done((newFile)=>{
-        let uploadingFile = {id: newFile.id, name: newFile.name, progress:0};
-        uploadingFiles.push(uploadingFile);
-        self.setState({
-           uploadingFiles: uploadingFiles
-        });
         $.ajax({
             url: `/file/files/${newFile.id}`,
             type: 'PUT',
-            xhr: function(){
-              let fileXhr = $.ajaxSettings.xhr();
-              if(fileXhr.upload){ // Check if upload property exists
-                fileXhr.upload.addEventListener('progress',(progress)=>{uploadingFile.progress = progress}, false); // For handling the progress of the upload
-              }
-              return fileXhr;
-            }
+            processData: false,
+            contentType: false,
+            data: formData
         });
         callback(`#file:${newFile.id}`);
       });
@@ -318,13 +298,6 @@ const SmartEditor = React.createClass({
     // Apply `style` to TextField seems no effect, so just apply to Item
     return (
       <Item flex style={style} className={"smart-editor" + (props.nohr ? " nohr" : "")}>
-      <div style={{position: 'relative', height:0}}>
-          <Flex.Layout wrap style={{position: 'absolute', bottom:0}}>
-              {this.state.uploadingFiles.map((f)=>{
-                  return <FileUploadStatus file={f} />
-              })}
-          </Flex.Layout>
-      </div>
         <TextField {...tfProps} style={this.mergeAndPrefix({width:'100%'}, this.props.inputStyle)} onKeyDown={this._inputKeyDown} ref="textfield"
                                 onChange={this._onInputChange}/>
         <PopupSelect ref="popup"

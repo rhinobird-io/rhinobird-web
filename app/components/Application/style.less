@@ -66,6 +66,10 @@ a {
   text-decoration: none;
   cursor: pointer;
 }
+a[disabled] {
+  pointer-events: none;
+  color: rgba(0, 0, 0, 54%) !important;
+}
 
 a:hover {
   text-decoration: underline;

@@ -19,7 +19,10 @@ const commands = [
         manual: ":file_id",
         hint: "Select to upload a file",
         render: function(value){
-            return iconLink('icon-file-download', `file:${value}`, `/file/files/${value}/download`);
+            return `<a class="file-link" disabled data-file-id="${value}" target="_blank" href="/file/files/${value}/download">
+                <span class="icon-attach-file"></span>
+            </a>`;
+
         }
     }
 ];

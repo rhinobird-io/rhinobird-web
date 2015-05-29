@@ -40,10 +40,36 @@ const SmartDisplay = React.createClass({
         }
     },
     componentDidMount() {
-        let memberLinks = this.getDOMNode().querySelectorAll("a.member-at");
-        for (let i = 0; i < memberLinks.length; i++) {
-            memberLinks[i].addEventListener("click", this._onClick);
-        }
+        let self = this;
+        $(this.getDOMNode()).find("a").each(function(){
+            let elem = $(this);
+            elem.css('color', self.context.muiTheme.palette.accent1Color);
+            if(elem.hasClass('member-at')){
+                elem.click(self._onClick);
+            }
+            if(elem.hasClass('file-link')){
+                let fileSource = new EventSource(`/file/files/${elem.data('file-id')}`);
+                fileSource.addEventListener('message', (e)=>{
+                    let message = JSON.parse(e.data);
+                    switch (message.type){
+                        case "name":
+                            elem.append(`<span>${message.content}</span>`);
+                            break;
+                        case "done":
+                            if(message.content === "uploaded") {
+                                elem.removeAttr('disabled');
+                            }
+                    }
+                }, false);
+                fileSource.addEventListener('error', (e)=>{
+                    console.log("error");
+                    console.log(e);
+                }, false);
+                fileSource.addEventListener('open', (e)=>{
+                    console.log("open");
+                }, false);
+            }
+        });
 
         let codeBlocks = this.getDOMNode().querySelectorAll("pre");
         for (let i = 0; i < codeBlocks.length; i++) {
