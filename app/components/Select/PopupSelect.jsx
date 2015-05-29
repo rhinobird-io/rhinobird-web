@@ -92,8 +92,7 @@ let PopupSelect = React.createClass({
     },
 
     show() {
-        this.updatePosition();
-        setTimeout(() => this.setState({shown: true}), 0);
+        this.setState({shown: true});
     },
 
     isShow() {
@@ -110,12 +109,13 @@ let PopupSelect = React.createClass({
 
         let childrenDOM = this._construct(children, this.props.valueAttr);
 
+        console.log(childrenDOM);
         let styles = {
             popupWrapper: {
-                transition: "all 300ms",
-                zIndex: 9,
-                height: style && style.height ? style.height : 250,
-                display: this.state.shown ? "flex" : "none"
+                transition: "all 500ms",
+                zIndex: this.state.shown ? 10 : -1,
+                height: 250,
+                opacity: this.state.shown ? 1 : 0
             },
             scroll: {
                 position: "relative",

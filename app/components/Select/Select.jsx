@@ -96,6 +96,7 @@ let Select = React.createClass({
     },
 
     _updateLayout: function() {
+        return;
         let marginTop = 0;
         let paddingLeft = 0;
         let tokenWrapper = this.refs.tokenWrapper;
@@ -215,7 +216,7 @@ let Select = React.createClass({
                 display: "block"
             },
             tokenWrapper: {
-                position: "absolute",
+                position: "relative",
                 cursor: "text",
                 zIndex: 2,
                 top: floatingLabelText ? 34 : 10,
@@ -249,7 +250,7 @@ let Select = React.createClass({
                 onKeyDown={this._keyDownListener}
                 onFocus={() => {
                     this.refs.popupSelect.show();
-                    this._updateLayout();
+                    //this._updateLayout();
                 }}
                 onBlur={() => this.setState({toDelete: false})} />;
 
@@ -257,8 +258,7 @@ let Select = React.createClass({
             <PopupSelect
                 hRestrict
                 ref="popupSelect"
-                relatedTo={() => this.refs.text}
-                position={this.refs.popupSelect ? this.refs.popupSelect.position : "bottom"}
+                relatedTo={() => this.refs.text.getDOMNode().getBoundingClientRect()}
                 onItemSelect={(value, e) => {
                         this._addSelectedOption(value);
                         this.refs.text.setValue("");

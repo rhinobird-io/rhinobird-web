@@ -24,13 +24,15 @@ module.exports = {
 
     componentDidUpdate() {
         this.updatePosition();
+        //let height = this.getDOMNode().clientHeight;
+        //this.getDOMNode().style.height = 0 + "px";
+        //setTimeout(() => this.getDOMNode().style.height = height  + "px", 100);
     },
 
     componentWillUnmount() {
         window.removeEventListener("resize", this._onWindowResize);
         //window.removeEventListener("wheel", this._onWindowScroll)
     },
-
 
     updatePosition() {
         let base = null;
@@ -47,10 +49,10 @@ module.exports = {
         if (base) {
             let self = this.getDOMNode();
             let baseRect = null;
-
             if (base.getDOMNode) {
                 let baseDOM = base.getDOMNode();
                 baseRect = baseDOM.getBoundingClientRect();
+                console.log(baseRect);
             } else {
                 if (isNaN(base.left) || isNaN(base.top) ||
                     (isNaN(base.right) && isNaN(base.width)) ||
@@ -89,11 +91,15 @@ module.exports = {
 
             console.log(innerHeight - baseBottom - selfHeight);
             console.log("selfHeight: " + selfHeight);
+            console.log("innerHeight: " + innerHeight);
+            console.log("baseBottom: " + baseBottom);
             if (innerHeight - baseBottom - selfHeight >= 0) {
                 selfTop = baseTop + baseHeight;
                 this.position = "bottom";
             } else if (baseTop - selfHeight >= 0) {
                 selfTop = baseTop - selfHeight;
+                console.log("baseTop: " + baseTop);
+                console.log("selfTop: " + selfTop);
                 this.position = "top";
             }
 
@@ -111,7 +117,6 @@ module.exports = {
             }
 
             self.style.position = "fixed";
-            self.style.zIndex = "1000";
             self.style.top = selfTop + "px";
 
             if (isNaN(selfLeft)) {
