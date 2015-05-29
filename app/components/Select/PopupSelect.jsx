@@ -1,9 +1,21 @@
 const React = require('react');
-const PerfectScroll = require('../PerfectScroll');
-const Layout = require("../Flex").Layout;
 const Popup = require('../Popup');
+const MUI = require('material-ui');
+const Layout = require("../Flex").Layout;
+const Flexible = require('../Mixins').Flexible;
+const PerfectScroll = require('../PerfectScroll');
+const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+const StylePropable = require('material-ui/lib/mixins/style-propable');
+
+import uuid from 'node-uuid';
 
 let PopupSelect = React.createClass({
+    mixins: [Flexible, StylePropable, PureRenderMixin],
+
+    contextTypes: {
+        muiTheme: React.PropTypes.object
+    },
+
     propTypes: {
         onShow: React.PropTypes.func,
         onDismiss: React.PropTypes.func,
@@ -12,21 +24,13 @@ let PopupSelect = React.createClass({
         onItemSelect: React.PropTypes.func,
         normalStyle: React.PropTypes.object,
         activeStyle: React.PropTypes.object,
-        disabledStyle: React.PropTypes.object,
+        disabledStyle: React.PropTypes.object
     },
 
     getDefaultProps: function() {
         return {
             position: "bottom",
-            valueAttr: "value",
-            activeStyle: {
-                fontWeight: "bold"
-            },
-            disabledStyle: {
-                color: "#888"
-            },
-            activeClass: "active",
-            disabledClass: "disabled"
+            valueAttr: "value"
         };
     },
 
@@ -88,28 +92,36 @@ let PopupSelect = React.createClass({
     },
 
     show() {
-        this.setState({visible: true});
+        this.updatePosition();
+        setTimeout(() => this.setState({visible: true}), 0);
+    },
+
+    isShow() {
+        return this.state.visible;
     },
 
     render: function() {
         let {
             style,
             position,
+            children,
             ...other
-            } = this.props;
+        } = this.props;
 
-        let children = this._construct(this.props.children, this.props.valueAttr);
+
+        let childrenDOM = this._construct(children, this.props.valueAttr);
         let styles = {
             outer: {
                 zIndex: 9,
-                height: 250,
                 margin: -4,
                 display: this.state.visible ? "flex" : "none"
             },
             popup: {
-                background: "white",
+            },
+            scroll: {
                 position: "relative",
-                margin: 4
+                background: "white",
+                boxShadow: "0 3px 10px rgba(0, 0, 0, 0.16), 0 3px 10px rgba(0, 0, 0, 0.23)"
             }
         };
 
@@ -130,18 +142,38 @@ let PopupSelect = React.createClass({
                 {topPadding}
                 <PerfectScroll
                     ref="scroll"
-                    style={styles.popup}
-                    className={this.props.wrapperClass || ""} alwaysVisible>
-                    {children}
+                    style={styles.scroll} alwaysVisible>
+                    {childrenDOM}
                 </PerfectScroll>
                 {bottomPadding}
             </Layout>
         );
     },
 
+
+    _getDefaultStyle: function() {
+        return {
+            normalStyle: {
+                paddingLeft: 24,
+                paddingRight: 24,
+                cursor: "pointer",
+                lineHeight: "48px"
+            },
+            activeStyle: {
+                color: this.context.muiTheme.palette.accent1Color
+            },
+            disabledStyle: {
+                color: this.context.muiTheme.palette.disabledColor
+            }
+        }
+    },
+
+
     _updateScroll: function(activeOptionIndex) {
         let scroll = this.refs.scroll.getDOMNode();
         let optionsMap = this.state.optionsMap;
+        console.log(optionsMap);
+        console.log(this.refs);
         if (activeOptionIndex >= 0 && activeOptionIndex < optionsMap.length) {
             let activeOptionDOM = this.refs[optionsMap[activeOptionIndex]].getDOMNode();
             let offsetTop = 0;
@@ -239,37 +271,35 @@ let PopupSelect = React.createClass({
     },
 
     _constructChild: function(child, valueAttr) {
+        let defaultStyles = this._getDefaultStyle();
+        let normalStyle = this.props.normalStyle || defaultStyles.normalStyle;
+        let activeStyle = this.props.activeStyle || defaultStyles.activeStyle;
+        let disabledStyle = this.props.disabledStyle || defaultStyles.disabledStyle;
+
         if (child && child.props) {
             if (child.props[valueAttr]) {
                 let key = child.props[valueAttr].toString();
                 let disabled = !!child.props.disabled;
-                let style;
-                let className = "";
+                let style = normalStyle;
                 let onMouseOver, onClick;
 
-                if (this.props.normalClass) {
-                    className += this.props.normalClass;
-                }
-
                 if (disabled) {
-                    style = this.props.disabledStyle;
+                    style = this.mergeStyles(style, disabledStyle);
                 } else {
                     let option = this.state.options[key];
                     onMouseOver = () => this.setState({activeOptionIndex: option.index});
                     onClick = (e) => this._select(option.index, e);
-                    if (option && option["index"] === this.state.activeOptionIndex
-                        && this.props.activeClass) {
-                        style =  this.props.activeStyle;
-                        className += " " + this.props.activeClass;
+                    if (option && option["index"] === this.state.activeOptionIndex) {
+                        style = this.mergeStyles(style, activeStyle);
                     }
                 }
 
+                console.log(key);
                 return React.cloneElement(child, {
                     key: key,
                     ref: key,
                     style: style,
                     onClick: onClick,
-                    className: className,
                     onMouseOver: onMouseOver
                 });
             } else if (child.props.children) {
@@ -321,3 +351,4 @@ let PopupSelect = React.createClass({
     }
 });
 
+module.exports = PopupSelect;

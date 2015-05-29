@@ -3,13 +3,15 @@ const React       = require('react'),
       Paper       = MUI.Paper,
       Flex        = require('../Flex'),
       TextField   = MUI.TextField,
-      MaterialPopup = require('./MaterialPopup'),
-      ClickAwayable = MUI.Mixins.ClickAwayable;
+      PopupSelect = require('./PopupSelect'),
+      ClickAwayable = MUI.Mixins.ClickAwayable,
+      PureRenderMixin = require('react/addons').addons.PureRenderMixin,
+      StylePropable = require('material-ui/lib/mixins/style-propable');
 
 require('./style.less');
 
-export default React.createClass({
-    mixins: [ClickAwayable, React.addons.LinkedStateMixin],
+let Select = React.createClass({
+    mixins: [ClickAwayable, PureRenderMixin, StylePropable],
 
     propTypes: {
         valueLink: React.PropTypes.shape({
@@ -70,6 +72,7 @@ export default React.createClass({
                 requestChange: props.onChange
             };
     },
+
     focus(){
         this.refs.text.focus();
     },
@@ -226,14 +229,13 @@ export default React.createClass({
 
         let selectedValues = Object.keys(this.state.selected);
         let floatingText = floatingLabelText;
-        if(selectedValues.length !== 0 && floatingLabelText) {
+        if (selectedValues.length !== 0 && floatingLabelText) {
             floatingText = " ";
         }
 
-        if (style === undefined || style === null) {
+        if (!style) {
             style = {};
         }
-        style.paddingLeft = styles.padding.paddingLeft;
 
         let text =
             <TextField
@@ -241,9 +243,8 @@ export default React.createClass({
                 type="text"
                 hintText={selectedValues.length === 0 ? hintText : undefined}
                 floatingLabelText={floatingText}
-                style={style}
+                style={this.mergeStyles(style, styles.padding)}
                 errorText={this.props.errorText}
-                className={this.props.className}
                 onChange={this._filter}
                 onKeyDown={this._keyDownListener}
                 onFocus={() => {
@@ -253,12 +254,11 @@ export default React.createClass({
                 onBlur={() => this.setState({toDelete: false})} />;
 
         let popupSelect =
-            <MaterialPopup
+            <PopupSelect
                 hRestrict
                 ref="popupSelect"
                 relatedTo={() => this.refs.text}
                 position={this.refs.popupSelect ? this.refs.popupSelect.position : "bottom"}
-                style={{position: "absolute", top: "100%", left: 0, right: 0}}
                 onItemSelect={(value, e) => {
                         this._addSelectedOption(value);
                         this.refs.text.setValue("");
@@ -272,7 +272,7 @@ export default React.createClass({
                 }}
             >
                 {this.state.children}
-            </MaterialPopup>;
+            </PopupSelect>;
 
         let tokens = [];
         for (let i = 0; i < selectedValues.length; i++) {
@@ -335,3 +335,5 @@ export default React.createClass({
         }
     }
 });
+
+module.exports = Select;

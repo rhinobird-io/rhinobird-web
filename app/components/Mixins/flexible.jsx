@@ -17,13 +17,13 @@ module.exports = {
     },
 
     componentDidMount() {
-        this._updatePosition();
+        this.updatePosition();
         window.addEventListener("resize", this._onWindowResize);
         //window.addEventListener("wheel", this._onWindowScroll)
     },
 
     componentDidUpdate() {
-        this._updatePosition();
+        this.updatePosition();
     },
 
     componentWillUnmount() {
@@ -31,21 +31,14 @@ module.exports = {
         //window.removeEventListener("wheel", this._onWindowScroll)
     },
 
-    _onWindowResize() {
-        this._updatePosition();
-    },
 
-    _onWindowScroll() {
-        this._updatePosition();
-    },
-
-    _updatePosition() {
+    updatePosition() {
         let base = null;
 
         let {
             hRestrict,
             relatedTo
-        } = this.props;
+            } = this.props;
 
         if (relatedTo && typeof relatedTo === "function") {
             base = relatedTo();
@@ -131,5 +124,13 @@ module.exports = {
                 self.style.right = selfRight + "px";
             }
         }
+    },
+
+    _onWindowResize() {
+        this.updatePosition();
+    },
+
+    _onWindowScroll() {
+        this.updatePosition();
     }
 };

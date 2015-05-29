@@ -1,7 +1,6 @@
 let Select = {
-    Popup: require('./Popup'),
-    PopupSelect: require('./MaterialPopup'),
-    Select: require('./MaterialSelect'),
+    PopupSelect: require('./PopupSelect'),
+    Select: require('./Select'),
     Selector: require('./Selector')
 };
 

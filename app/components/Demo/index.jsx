@@ -82,18 +82,11 @@ export default React.createClass({
                     <span className="item" name="Saturday">Sat</span>
                 </Selector>
 
-                <MUI.TextField ref="text" onFocus={() => this.refs.popup.show()}/>
+                <MUI.TextField ref="text" onFocus={() => this.refs.popup.show()} onBlur={() => this.refs.popup.dismiss()}/>
 
-                <Popup hRestrict zDepth={5} ref="popup" style={{height: 150}} relatedTo={() => this.refs.text}>
-                    <div>1 Oh my god</div>
-                    <div>2 Oh my god</div>
-                    <div>3 Oh my god</div>
-                    <div>4 Oh my god</div>
-                    <div>5 Oh my god</div>
-                    <div>6 Oh my god</div>
-                    <div>7 Oh my god</div>
-                    <div>8 Oh my god</div>
-                    <div>9 Oh my god</div>
+                <Popup hRestrict ref="popup" relatedTo={() => this.refs.text}>
+                    <div value="1">1 Oh my god</div>
+                    <div value="2">2 Oh my god</div>
                 </Popup>
                 <SmartEditor valueLink={this.linkState("editorValue")} hintText="Linked to SmartPreview" />
 

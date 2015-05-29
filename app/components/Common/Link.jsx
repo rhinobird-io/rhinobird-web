@@ -19,4 +19,4 @@ const Link = React.createClass({
     }
 });
 
-export default Link;
+module.exports = Link;

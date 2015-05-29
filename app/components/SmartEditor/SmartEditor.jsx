@@ -103,7 +103,7 @@ const SmartEditor = React.createClass({
         u.name.indexOf(keyword.substr(1)) >= 0
       ).map(u =>
           <div key={u.id} value={[keyword, "@" + u.name + " "]} style={style}>
-            <Avatar member={u} /> &ensp;
+            <Avatar member={u} link={false} /> &ensp;
             <span style={{fontWeight: 500}}>{u.name}</span>
           </div>
       );

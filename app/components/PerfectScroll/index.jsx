@@ -35,10 +35,13 @@ module.exports = React.createClass({
             ...other
         } = this.props;
 
-        if(this.props.fit){
+        if (this.props.fit){
             style = {position:'absolute', top:0, bottom:0, left:0, right:0};
         }
         if (this.props.alwaysVisible) {
+            if (!className) {
+                className = "";
+            }
             className += " always-visible";
         }
         return <div ref='container' className={className} style={style} {...other}>

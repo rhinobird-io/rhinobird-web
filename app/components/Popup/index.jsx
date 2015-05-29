@@ -1,6 +1,7 @@
 const React = require('react/addons');
 const Paper = require('material-ui').Paper;
 const Flexible = require('../Mixins').Flexible;
+const Layout = require('../Flex').Layout;
 const PerfectScroll = require('../PerfectScroll');
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 
@@ -18,32 +19,56 @@ let Popup = React.createClass({
     },
 
     show() {
-        this.setState({shown: true});
+        this.updatePosition();
+        setTimeout(() => this.setState({shown: true}));
     },
 
     render() {
         let {
             style,
-            zDepth,
+            position,
             children,
-            relatedTo,
             ...other
         } = this.props;
 
         let styles = {
             popupWrapper: {
                 position: "relative",
-                opacity: this.state.shown ? 1 : 0,
-                transition: "all 500ms"
+                transition: "all 500ms",
+                zIndex: 9,
+                margin: -4,
+                display: this.state.shown ? "flex" : "none"
+            },
+            scroll: {
+                position: "relative",
+                background: "white",
+                boxShadow: "0 3px 10px rgba(0, 0, 0, 0.16), 0 3px 10px rgba(0, 0, 0, 0.23)"
             }
         };
 
+        if (!style) {
+            style = {};
+        }
+        style.zIndex = 9;
+        style.maxHeight = 250;
+        style.margin = -4;
+
+        if (!this.state.shown) {
+            styles.popupWrapper.height = 0;
+        }
+
+        let padding = <div style={{flex: 1}}></div>;
+        let topPadding = position === "top" ? padding : null;
+        let bottomPadding = position === "bottom" ? padding : null;
+
         return (
-            <Paper style={this.mergeAndPrefix(styles.popupWrapper, style)} zDepth={zDepth} relatedTo={relatedTo} {...other}>
-                <PerfectScroll style={{position: "relative", height: "100%"}} alwaysVisible>
+            <Layout vertical style={this.mergeStyles(style, styles.popupWrapper)}>
+                {topPadding}
+                <PerfectScroll style={styles.scroll} alwaysVisible>
                     {children}
                 </PerfectScroll>
-            </Paper>
+                {bottomPadding}
+            </Layout>
         );
     }
 });
