@@ -19,8 +19,14 @@ const commands = [
         manual: ":file_id",
         hint: "Select to upload a file",
         render: function(value){
-            return `<a class="file-link" disabled data-file-id="${value}" target="_blank" href="/file/files/${value}/download">
-                <span class="icon-attach-file"></span>
+            return `<a style="display:inline-flex; flex-direction: column" class="file-link" disabled data-file-id="${value}" target="_blank" href="/file/files/${value}/download">
+                <span>
+                    <span class="icon-attach-file"></span>
+                    <span class="name"></span>
+                </span>
+                <span class="progress-holder" style="display:none; position: relative; height:4px;background-color: #b2ebf2;">
+                    <span class="progress" style="display:block; height: 100%;background-color: #0097a7;"></span>
+                </span>
             </a>`;
 
         }

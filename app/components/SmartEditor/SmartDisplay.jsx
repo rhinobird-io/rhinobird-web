@@ -53,12 +53,19 @@ const SmartDisplay = React.createClass({
                     let message = JSON.parse(e.data);
                     switch (message.type){
                         case "name":
-                            elem.append(`<span>${message.content}</span>`);
+                            elem.find(`span.name`).text(message.content);
                             break;
                         case "done":
+                            elem.find('.progress-holder').css('display', 'none');
                             if(message.content === "uploaded") {
                                 elem.removeAttr('disabled');
                             }
+                            fileSource.close();
+                            break;
+                        case "progress":
+                            elem.find('.progress-holder').css('display', 'block');
+                            elem.find('.progress').css('width', `${message.content}%`)
+                            break;
                     }
                 }, false);
                 fileSource.addEventListener('error', (e)=>{
