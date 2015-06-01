@@ -13,6 +13,7 @@ const React                = require("react"),
       UserStore            = require("../../../stores/UserStore"),
       PerfectScroll        = require('../../PerfectScroll'),
       InfiniteScroll       = require('../../InfiniteScroll'),
+      RouterLink           = require('../../Common').RouterLink,
       StylePropable        = require('material-ui/lib/mixins/style-propable');
 
 require("./style.less");
@@ -185,12 +186,12 @@ export default React.createClass({
                             <div className={contentInnerClass}>
                                 <div className="cal-event-title">
                                     <Flex.Layout horizontal justified>
-                                        <Link
+                                        <RouterLink
                                             tooltip={event.title}
                                             style={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}
                                             to="event-detail" params={{ id: event.id, repeatedNumber: event.repeated_number }}>
                                             <span title={event.title}>{event.title}</span>
-                                        </Link>
+                                        </RouterLink>
                                         <DropDownAny ref="dropdown" control={control} menu={menu} />
                                     </Flex.Layout>
                                     <div className="cal-event-time">
