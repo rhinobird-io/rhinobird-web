@@ -37,12 +37,12 @@ let NotifiItem = React.createClass({
             color: this.props.read ? this.context.muiTheme.palette.disabledColor : this.context.muiTheme.palette.textColor
         };
         return (
-            <Layout horizontal center>
-                <div className="avatar-wrapper">
+            <Layout horizontal style={{padding: "4px 6px 4px 6px"}}>
+                <Layout vertical selfCenter className="avatar-wrapper" style={{marginRight: 10}}>
                     <Avatar scale={1.6} member={this.props.sender}/>
-                </div>
-                <Layout vertical style={{width: "100%"}}>
-                    <Layout horizontal justified style={{lineHeight:'36px'}}>
+                </Layout>
+                <Layout vertical flex={1}>
+                    <Layout horizontal justified>
                         <div className="name"><Name member={this.props.sender}/></div>
                         <div className="time"><SmartTimeDisplay start={this.props.time} relative/></div>
                     </Layout>
@@ -129,11 +129,11 @@ let Notification = React.createClass({
 
         return (
             <span>
-        <DropDownAny ref="dropdown" control={control} menu={menu} menuClasses={'notification-menu'}
-                     onClickAway={this._onClickAway}/>
-        <InfiniteScroll scrollTarget={() => this.refs.dropdown.refs.scroll.getDOMNode()}
+                <DropDownAny ref="dropdown" control={control} menu={menu} menuClasses={'notification-menu'}
+                     onClickAway={this._onClickAway} style={{width: 400}}/>
+                <InfiniteScroll scrollTarget={() => this.refs.dropdown.refs.scroll.getDOMNode()}
                         lowerThreshold={5} onLowerTrigger={this._loadMore}/>
-      </span>
+            </span>
         );
     }
 });

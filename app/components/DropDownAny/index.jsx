@@ -10,11 +10,12 @@ const PerfectScroll = require('../PerfectScroll');
 const Flexible = require('../Mixins').Flexible;
 const Popup = require('../Popup');
 const PopupSelect = require('../Select').PopupSelect;
+const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 require("./style.less");
 
 let DropDownPopup = React.createClass({
-  mixins: [Flexible],
+  mixins: [Flexible, StylePropable],
 
   render() {
     let {
@@ -37,7 +38,7 @@ let DropDownPopup = React.createClass({
 });
 
 const DropDownAny = React.createClass({
-  mixins: [Classable, ClickAwayable],
+  mixins: [Classable, ClickAwayable, StylePropable],
 
   propTypes: {
     control: React.PropTypes.element.isRequired,
@@ -65,6 +66,7 @@ const DropDownAny = React.createClass({
   },
 
   _onControlClick() {
+    this.refs.scroll.updatePosition();
     if (this.refs.scroll.isShown()) {
       this.refs.scroll.dismiss();
     } else {
@@ -79,7 +81,7 @@ const DropDownAny = React.createClass({
           <Popup
               selfAlignOrigin="rt"
               relatedAlignOrigin="rt"
-              ref="scroll" style={{paddingTop: 5, paddingBottom: 5}}
+              ref="scroll" style={this.mergeStyles({paddingTop: 5, paddingBottom: 5}, this.props.style || {})}
               relatedTo={() => this.refs.control}>
             {this.props.menu}
           </Popup>
