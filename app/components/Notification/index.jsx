@@ -1,6 +1,6 @@
 "use strict";
 
-const React = require("react");
+const React = require("react/addons");
 const mui = require("material-ui"),
     IconButton = mui.IconButton;
 
@@ -25,21 +25,24 @@ let NotifiItem = React.createClass({
         message: React.PropTypes.string.isRequired,
         read: React.PropTypes.bool
     },
+    contextTypes: {
+        muiTheme: React.PropTypes.object
+    },
 
     render() {
         let messageStyle = {
             lineHeight: "1.2em",
             wordWrap: "break-word",
             whiteSpace: "pre-line",
-            color: this.props.read ? "#888" : "#000"
+            color: this.props.read ? this.context.muiTheme.palette.disabledColor : this.context.muiTheme.palette.textColor
         };
         return (
-            <Layout horizontal>
+            <Layout horizontal center>
                 <div className="avatar-wrapper">
                     <Avatar scale={1.6} member={this.props.sender}/>
                 </div>
                 <Layout vertical style={{width: "100%"}}>
-                    <Layout horizontal justified>
+                    <Layout horizontal justified style={{lineHeight:'36px'}}>
                         <div className="name"><Name member={this.props.sender}/></div>
                         <div className="time"><SmartTimeDisplay start={this.props.time} relative/></div>
                     </Layout>
@@ -53,7 +56,6 @@ let NotifiItem = React.createClass({
 
 let Notification = React.createClass({
     mixins: [PureRenderMixin],
-    
     contextTypes: {
         router: React.PropTypes.func.isRequired,
         muiTheme: React.PropTypes.object
@@ -128,7 +130,7 @@ let Notification = React.createClass({
         return (
             <span>
         <DropDownAny ref="dropdown" control={control} menu={menu} menuClasses={'notification-menu'}
-                     onClickAway={this._onClickAway} style={{top: 12, right: 12}}/>
+                     onClickAway={this._onClickAway}/>
         <InfiniteScroll scrollTarget={() => this.refs.dropdown.refs.scroll.getDOMNode()}
                         lowerThreshold={5} onLowerTrigger={this._loadMore}/>
       </span>
