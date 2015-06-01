@@ -8,6 +8,7 @@ const mui = require("material-ui"),
       MenuItem = mui.MenuItem;
 const PerfectScroll = require('../PerfectScroll');
 const Flexible = require('../Mixins').Flexible;
+const PopupSelect = require('../Select').PopupSelect;
 
 require("./style.less");
 
@@ -50,8 +51,10 @@ const DropDownAny = React.createClass({
   },
 
   componentClickAway() {
-    this.setState({ open: false });
-    if (this.props.onClickAway) this.props.onClickAway();
+    if (this.state.open) {
+      this.setState({ open: false });
+      if (this.props.onClickAway) this.props.onClickAway();
+    }
   },
 
   _onControlClick() {

@@ -6,11 +6,12 @@ const Flexible = require('../Mixins').Flexible;
 const PerfectScroll = require('../PerfectScroll');
 const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 const StylePropable = require('material-ui/lib/mixins/style-propable');
+const ClickAwayable = MUI.Mixins.ClickAwayable;
 
 import uuid from 'node-uuid';
 
 let PopupSelect = React.createClass({
-    mixins: [Flexible, StylePropable, PureRenderMixin],
+    mixins: [Flexible, StylePropable, PureRenderMixin, ClickAwayable],
 
     contextTypes: {
         muiTheme: React.PropTypes.object
@@ -24,13 +25,15 @@ let PopupSelect = React.createClass({
         onItemSelect: React.PropTypes.func,
         normalStyle: React.PropTypes.object,
         activeStyle: React.PropTypes.object,
-        disabledStyle: React.PropTypes.object
+        disabledStyle: React.PropTypes.object,
+        clickAwayToDismiss: React.PropTypes.bool
     },
 
     getDefaultProps: function() {
         return {
             position: "bottom",
-            valueAttr: "value"
+            valueAttr: "value",
+            clickAwayToDismiss: false
         };
     },
 
@@ -40,6 +43,15 @@ let PopupSelect = React.createClass({
             options: {},
             optionsMap: [],
             activeOptionIndex: 0
+        }
+    },
+
+    componentClickAway() {
+        if (this.props.clickAwayToDismiss && this.state.shown) {
+            this.setState({ shown: false });
+            if (this.props.onClickAway && typeof this.props.onClickAway === "function") {
+                this.props.onClickAway();
+            }
         }
     },
 
@@ -302,6 +314,8 @@ let PopupSelect = React.createClass({
                         return this._constructChild(c, valueAttr)
                     })
                 });
+            } else {
+                return child;
             }
         } else {
             return child;

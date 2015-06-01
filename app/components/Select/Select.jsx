@@ -287,6 +287,8 @@ let Select = React.createClass({
 
         let tokens = [];
         for (let i = 0; i < selectedValues.length; i++) {
+
+
             let selected = selectedValues[i];
             let token = this.props.token ? this.props.token(selected) : selected;
             let tokenStyle = styles.token;

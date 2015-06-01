@@ -4,7 +4,9 @@ module.exports = {
     propTypes: {
         hRestrict: React.PropTypes.bool,
         vRestrict: React.PropTypes.bool,
-        relatedTo: React.PropTypes.func
+        relatedTo: React.PropTypes.func,
+        selfAlignOrigin: React.PropTypes.oneOf(['lt', 'rt', 'rb', 'lb']),
+        relatedAlignOrigin: React.PropTypes.oneOf(['lt', 'rt', 'rb', 'lb'])
     },
 
     position: "",
@@ -24,9 +26,6 @@ module.exports = {
 
     componentDidUpdate() {
         this.updatePosition();
-        //let height = this.getDOMNode().clientHeight;
-        //this.getDOMNode().style.height = 0 + "px";
-        //setTimeout(() => this.getDOMNode().style.height = height  + "px", 100);
     },
 
     componentWillUnmount() {

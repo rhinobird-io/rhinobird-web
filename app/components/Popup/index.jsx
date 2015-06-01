@@ -33,13 +33,15 @@ let Popup = React.createClass({
 
         let styles = {
             popupWrapper: {
-                position: "relative",
                 transition: "opacity 300ms",
-                zIndex: 9
+                zIndex: this.state.shown ? 100 : -1,
+                height: 250,
+                opacity: this.state.shown ? 1 : 0
             },
             scroll: {
                 position: "relative",
                 background: "white",
+                color: "black",
                 boxShadow: "0 3px 10px rgba(0, 0, 0, 0.16), 0 3px 10px rgba(0, 0, 0, 0.23)"
             }
         };

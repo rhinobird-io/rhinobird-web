@@ -9,7 +9,8 @@ const React = require('react'),
     FontIcon = mui.FontIcon,
     DropDownIcon = mui.DropDownIcon,
     Member = require('../Member'),
-    Flex = require('../Flex');
+    Flex = require('../Flex'),
+    PopupSelect = require('../Select').PopupSelect;
 
 require('./style.less');
 
@@ -57,13 +58,10 @@ module.exports = React.createClass({
                 <Member.Avatar scale={1.5} member={this.state.user} link={false}/>
                 <Member.Name member={this.state.user} link={false} />
             </div>
-            <DropDownIcon
-                onChange={(e, key, payload)=> {
-                    this.refs.leftNav.close();
-                    payload.action();
-                }}
-                iconClassName="icon-expand-more"
-                menuItems={iconMenuItems} />
+            <mui.FontIcon ref="expand" onClick={() => this.refs.popup.show()} style={{color: "white", cursor: "pointer"}} className="icon-expand-more"/>
+            <PopupSelect ref="popup" relatedTo={() => this.refs.expand} clickAwayToDismiss>
+                <div value="hahaha">Halalal123123asdfasdf</div>
+            </PopupSelect>
         </Flex.Layout>;
         var menuItems = [
             {route: '/platform/dashboard', iconClassName: 'icon-dashboard', text: 'Dashboard'},
@@ -77,6 +75,7 @@ module.exports = React.createClass({
             ref='leftNav'
             header={header}
             menuItems={menuItems}
+            style={{overflow: "visible"}}
             docked={false}
             onChange={this._onLeftNavChange} />;
     },
