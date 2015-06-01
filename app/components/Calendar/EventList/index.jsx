@@ -108,6 +108,9 @@ export default React.createClass({
             eventIcon: {
                 backgroundColor: this.context.muiTheme.palette.primary1Color
             },
+            eventParticipant: {
+                padding: "6px 8px"
+            },
             eventWrapper: {
 
             }
@@ -154,18 +157,18 @@ export default React.createClass({
                     contentInnerClass += " highlight";
                 }
 
-                let control = <span title="Event Members" className="cal-event-member icon-group"></span>;
+                let control = <span title="Event Members" className="cal-event-member icon-group" style={{cursor: "pointer"}}></span>;
                 let menu = event.participants.map((p) => {
                     let u = UserStore.getUser(p.id);
-                    return <Flex.Layout key={u.id} horizontal>
+                    return <Flex.Layout key={u.id} horizontal justified style={styles.eventParticipant}>
                         <Avatar member={u} style={{borderRadius: "50%"}} /> &ensp;&ensp;
-                        <span style={{fontWeight: 500}}>{u.name}</span>
+                        <Flex.Layout center style={{fontWeight: 500}}>{u.name}</Flex.Layout>
                     </Flex.Layout>;
                 });
 
                 let teamMenu = event.team_participants.map(t => {
                     let t = UserStore.getTeam(t.id);
-                    return <Flex.Layout key={t.id} horizontal>
+                    return <Flex.Layout horizontal justified key={t.id} style={styles.eventParticipant}>
                         <Avatar member={t} style={{borderRadius: "50%"}} /> &ensp;&ensp;
                         <span style={{fontWeight: 500}}>{t.name}</span>
                     </Flex.Layout>;

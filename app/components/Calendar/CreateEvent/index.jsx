@@ -170,8 +170,8 @@ export default React.createClass({
                                 className="cal-create-event-textfield" />
 
                             <Flex.Layout horizontal justified style={{marginTop: 24, marginBottom: 24}}>
-                                <label>Full Day</label>
                                 <MUI.Toggle
+                                    label="Full Day"
                                     onToggle={this._onFullDayToggled}/>
                             </Flex.Layout>
 
