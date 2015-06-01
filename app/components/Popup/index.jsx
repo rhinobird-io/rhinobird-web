@@ -34,7 +34,7 @@ let Popup = React.createClass({
         let styles = {
             popupWrapper: {
                 position: "relative",
-                transition: "all 300ms",
+                transition: "opacity 300ms",
                 zIndex: 9
             },
             scroll: {
