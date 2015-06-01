@@ -116,7 +116,7 @@ let PopupSelect = React.createClass({
         let styles = {
             popupWrapper: {
                 transition: "opacity 300ms",
-                zIndex: this.state.shown ? 10 : -1,
+                zIndex: this.state.shown ? 100 : -1,
                 height: 250,
                 opacity: this.state.shown ? 1 : 0
             },

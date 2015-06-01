@@ -21,7 +21,7 @@ export default React.createClass({
     mixins: [React.addons.LinkedStateMixin, StylePropable],
 
     contextTypes: {
-        router: React.PropTypes.func.isRequired
+        muiTheme: React.PropTypes.object
     },
 
     getInitialState() {
@@ -100,6 +100,18 @@ export default React.createClass({
     },
 
     render: function() {
+        let styles = {
+            dayLabel: {
+                backgroundColor: this.context.muiTheme.palette.accent1Color
+            },
+            eventIcon: {
+                backgroundColor: this.context.muiTheme.palette.primary1Color
+            },
+            eventWrapper: {
+
+            }
+        };
+
         let eventKeys = Object.keys(this.state.events).sort();
         let eventsDOM = eventKeys.map((key, index) => {
             let direction = index % 2 === 0 ? "left" : "right";
@@ -114,7 +126,7 @@ export default React.createClass({
 
             dayEvents.push(
                 <div className={dayDividerClass}>
-                    <div className="cal-day-divider-label">
+                    <div className="cal-day-divider-label" style={styles.dayLabel}>
                         <span>{Moment.weekdaysShort()[Moment(key).day()]}</span>
                         <label>{Moment(key).format("M/D")}</label>
                     </div>
@@ -128,6 +140,7 @@ export default React.createClass({
                 let now = new Date();
                 let fromTime = new Date(event.from_time);
                 let toTime = event.to_time ? new Date(event.to_time) : fromTime;
+
                 if (toTime < now) {
                     eventIconClass += " expired";
                 } else if (now > fromTime && now < toTime) {
@@ -164,7 +177,7 @@ export default React.createClass({
                 }
                 return (
                     <div ref={ref} className="cal-event">
-                        <div className={eventIconClass}>
+                        <div className={eventIconClass} style={styles.eventIcon}>
                             <span style={{fontSize: 20}} className="icon-event"></span>
                         </div>
 
