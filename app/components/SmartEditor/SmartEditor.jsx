@@ -10,7 +10,6 @@ const Item = require("../Flex").Item;
 const PopupSelect = require("../Select").PopupSelect;
 const UserStore = require("../../stores/UserStore");
 const ClickAwayable = MUI.Mixins.ClickAwayable;
-const StylePropable = require('material-ui/lib/mixins/style-propable');
 const Flex = require('../Flex');
 import _ from 'lodash';
 
@@ -298,7 +297,7 @@ const SmartEditor = React.createClass({
     // Apply `style` to TextField seems no effect, so just apply to Item
     return (
       <Item flex style={style} className={"smart-editor" + (props.nohr ? " nohr" : "")}>
-        <TextField {...tfProps} style={this.mergeAndPrefix({width:'100%'}, this.props.inputStyle)} onKeyDown={this._inputKeyDown} ref="textfield"
+        <TextField {...tfProps} onKeyDown={this._inputKeyDown} ref="textfield"
                                 onChange={this._onInputChange}/>
         <PopupSelect ref="popup"
                      position={this.state.position}

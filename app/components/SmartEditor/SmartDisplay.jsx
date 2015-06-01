@@ -43,7 +43,6 @@ const SmartDisplay = React.createClass({
         let self = this;
         $(this.getDOMNode()).find("a").each(function(){
             let elem = $(this);
-            elem.css('color', self.context.muiTheme.palette.accent1Color);
             if(elem.hasClass('member-at')){
                 elem.click(self._onClick);
             }
