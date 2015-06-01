@@ -92,6 +92,9 @@ let PopupSelect = React.createClass({
     },
 
     show() {
+        //this.updatePosition();
+        //console.log("Hahasdfasfdaer");
+        //console.log(this.props.relatedTo());
         this.setState({shown: true});
     },
 
@@ -112,7 +115,7 @@ let PopupSelect = React.createClass({
         console.log(childrenDOM);
         let styles = {
             popupWrapper: {
-                transition: "all 500ms",
+                transition: "opacity 500ms",
                 zIndex: this.state.shown ? 10 : -1,
                 height: 250,
                 opacity: this.state.shown ? 1 : 0

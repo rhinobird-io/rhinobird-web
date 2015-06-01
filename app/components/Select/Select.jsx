@@ -13,6 +13,10 @@ require('./style.less');
 let Select = React.createClass({
     mixins: [ClickAwayable, PureRenderMixin, StylePropable],
 
+    contextTypes: {
+        muiTheme: React.PropTypes.object
+    },
+
     propTypes: {
         valueLink: React.PropTypes.shape({
             value: React.PropTypes.oneOfType([
@@ -37,6 +41,9 @@ let Select = React.createClass({
 
     componentDidMount() {
         this._updateLayout();
+        console.log("Client Rect: ");
+        console.log(this.refs.text.getDOMNode());
+        console.log(this.refs.text.getDOMNode().getBoundingClientRect());
     },
 
     componentWillReceiveProps() {
@@ -213,7 +220,8 @@ let Select = React.createClass({
                 marginBottom: 4,
                 cursor: "pointer",
                 padding: "2px 8px",
-                display: "block"
+                display: "block",
+                border: "1px solid transparent"
             },
             tokenWrapper: {
                 position: "relative",
@@ -222,6 +230,9 @@ let Select = React.createClass({
                 top: floatingLabelText ? 34 : 10,
                 left: 0,
                 right: 0
+            },
+            tokenToDelete: {
+                border: "1px solid " + this.context.muiTheme.palette.accent1Color
             },
             padding: {
                 paddingLeft: this.state.paddingLeft || 0
@@ -280,13 +291,12 @@ let Select = React.createClass({
             let token = this.props.token ? this.props.token(selected) : selected;
             let tokenStyle = styles.token;
 
-            let tokenClass = "token";
             if ((i === selectedValues.length - 1) && this.state.toDelete) {
-                tokenClass += " token-to-delete";
+                tokenStyle = this.mergeStyles(tokenStyle, styles.tokenToDelete);
             }
 
             tokens.push(
-                <Paper className={tokenClass} key={"token_" + i} ref={"token-" + i} zDepth={1} style={tokenStyle}>
+                <Paper key={"token_" + i} ref={"token-" + i} zDepth={1} style={tokenStyle}>
                     <Flex.Layout horizontal onClick={(e) => e.stopPropagation()}>
                         {token}
                         <Flex.Layout vertical selfCenter>

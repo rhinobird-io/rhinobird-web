@@ -34,7 +34,7 @@ module.exports = {
         //window.removeEventListener("wheel", this._onWindowScroll)
     },
 
-    updatePosition() {
+    updatePosition(callback) {
         let base = null;
 
         let {
@@ -130,6 +130,10 @@ module.exports = {
             } else {
                 self.style.right = selfRight + "px";
             }
+        }
+
+        if (callback && typeof callback === "function") {
+            callback();
         }
     },
 
