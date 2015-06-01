@@ -81,7 +81,7 @@ const DropDownAny = React.createClass({
           <Popup
               selfAlignOrigin="rt"
               relatedAlignOrigin="rt"
-              ref="scroll" style={this.mergeStyles({paddingTop: 5, paddingBottom: 5}, this.props.style || {})}
+              ref="scroll" style={this.mergeStyles({paddingTop: 8, paddingBottom: 8}, this.props.style || {})}
               relatedTo={() => this.refs.control}>
             {this.props.menu}
           </Popup>

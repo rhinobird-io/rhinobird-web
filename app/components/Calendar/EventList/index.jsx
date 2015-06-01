@@ -112,7 +112,16 @@ export default React.createClass({
                 padding: "6px 8px"
             },
             eventWrapper: {
-
+            },
+            eventContentInner: {
+                position: "relative",
+                boxShadow: "0px 0px 6px 0 rgba(0, 0, 0, .4)",
+                backgroundColor: this.context.muiTheme.palette.canvasColor,
+                transition: "box-shadow 1000ms"
+            },
+            eventContentInnerHighlight: {
+                boxShadow: "0px 0px 6px 0 " + this.context.muiTheme.palette.accent1Color,
+                transition: "box-shadow 1000ms"
             }
         };
 
@@ -140,6 +149,7 @@ export default React.createClass({
             dayEvents.push(events.map((event) => {
                 let contentClass = "cal-event-content " + direction;
                 let eventIconClass = "cal-event-icon";
+                let eventIconStyle = styles.eventIcon;
 
                 let now = new Date();
                 let fromTime = new Date(event.from_time);
@@ -153,8 +163,11 @@ export default React.createClass({
 
                 let ref = event.id.toString() === this.state.newCreated ? "newCreated" : undefined;
                 let contentInnerClass = "cal-event-content-inner";
+                let contentInnerStyle = styles.eventContentInner;
                 if (event.id.toString() === this.state.newCreated) {
-                    contentInnerClass += " highlight";
+                    //contentInnerClass += " highlight";
+                    contentInnerStyle = this.mergeStyles(styles.eventContentInner, styles.eventContentInnerHighlight);
+                    //console.log(eventIconStyle);
                 }
 
                 let control = <span title="Event Members" className="cal-event-member icon-group" style={{cursor: "pointer"}}></span>;
@@ -181,12 +194,12 @@ export default React.createClass({
                 }
                 return (
                     <div ref={ref} className="cal-event">
-                        <div className={eventIconClass} style={styles.eventIcon}>
+                        <div className={eventIconClass} style={eventIconStyle}>
                             <span style={{fontSize: 20}} className="icon-event"></span>
                         </div>
 
                         <div className={contentClass}>
-                            <div className={contentInnerClass}>
+                            <div style={contentInnerStyle} className={contentInnerClass}>
                                 <div className="cal-event-title">
                                     <Flex.Layout horizontal justified>
                                         <RouterLink

@@ -16,8 +16,6 @@ const UserStore = require("../../stores/UserStore");
 const SmartTimeDisplay = require("../SmartTimeDisplay");
 const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
-require("./style.less");
-
 let NotifiItem = React.createClass({
     propTypes: {
         sender: React.PropTypes.object.isRequired,
@@ -31,9 +29,11 @@ let NotifiItem = React.createClass({
 
     render() {
         let messageStyle = {
-            lineHeight: "1.3em",
             wordWrap: "break-word",
-            whiteSpace: "pre-line",
+            whiteSpace: "nowrap",
+            maxWidth: "100%",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
             color: this.props.read ? this.context.muiTheme.palette.disabledColor : this.context.muiTheme.palette.textColor
         };
         let nameStyle = {
@@ -45,11 +45,11 @@ let NotifiItem = React.createClass({
             whiteSpace: "nowrap"
         }
         return (
-            <Layout horizontal style={{padding: "6px 8px 6px 8px"}}>
-                <Layout vertical selfCenter className="avatar-wrapper" style={{marginRight: 10}}>
+            <Layout horizontal style={{padding: "8px 24px"}}>
+                <Layout vertical selfCenter className="avatar-wrapper" style={{marginRight: 12, minWidth: 38}}>
                     <Avatar scale={1.6} member={this.props.sender}/>
                 </Layout>
-                <Layout vertical flex={1}>
+                <Layout vertical flex={1} style={{lineHeight: "1.5em"}}>
                     <Layout horizontal justified>
                         <div className="name" style={nameStyle}><Name member={this.props.sender}/></div>
                         <div className="time" flex={1}><SmartTimeDisplay start={this.props.time} relative/></div>
@@ -137,7 +137,7 @@ let Notification = React.createClass({
         return (
             <span>
                 <DropDownAny ref="dropdown" control={control} menu={menu} menuClasses={'notification-menu'}
-                     onClickAway={this._onClickAway} style={{width: 400}}/>
+                     onClickAway={this._onClickAway} style={{width: 400, height: 500, fontSize: "15px"}}/>
                 <InfiniteScroll scrollTarget={() => this.refs.dropdown.refs.scroll.getDOMNode()}
                         lowerThreshold={5} onLowerTrigger={this._loadMore}/>
             </span>
