@@ -255,7 +255,6 @@ const SmartEditor = React.createClass({
     let popupStyle = {
       width: props.popupWidth,
       maxHeight: props.popupMaxHeight,
-      overflow: "auto",
       zIndex: 20
     };
     for (let k in this.state.popupPosition) {

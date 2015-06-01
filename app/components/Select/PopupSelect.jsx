@@ -115,7 +115,7 @@ let PopupSelect = React.createClass({
         console.log(childrenDOM);
         let styles = {
             popupWrapper: {
-                transition: "opacity 500ms",
+                transition: "opacity 300ms",
                 zIndex: this.state.shown ? 10 : -1,
                 height: 250,
                 opacity: this.state.shown ? 1 : 0
@@ -131,6 +131,7 @@ let PopupSelect = React.createClass({
         let topPadding = position === "top" ? padding : null;
         let bottomPadding = position === "bottom" ? padding : null;
 
+        console.log(this.mergeStyles(style || {}, styles.popupWrapper));
         return (
             <Layout vertical style={this.mergeStyles(style || {}, styles.popupWrapper)}>
                 {topPadding}

@@ -24,7 +24,7 @@ const DashboardRecord = React.createClass({
                 <div>
                     <span>{record.get('content')} </span>
                     {record.get('has_link') ?
-                        <Common.RouterLink to={record.get('link_url')} params={{id: linkParam.id, repeatedNumber: linkParam.repeated_number}}>
+                        <Common.RouterLink to={record.get('link_url')} params={{id: linkParam.id, repeatedNumber: linkParam.repeated_number || 1}}>
                             {record.get('link_title')}
                         </Common.RouterLink>
                         : undefined}

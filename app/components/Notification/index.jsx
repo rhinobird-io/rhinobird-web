@@ -14,6 +14,7 @@ const NotificationActions = require("../../actions/NotificationActions");
 const NotificationStore = require("../../stores/NotificationStore");
 const UserStore = require("../../stores/UserStore");
 const SmartTimeDisplay = require("../SmartTimeDisplay");
+const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 require("./style.less");
 
@@ -51,6 +52,8 @@ let NotifiItem = React.createClass({
 });
 
 let Notification = React.createClass({
+    mixins: [PureRenderMixin],
+    
     contextTypes: {
         router: React.PropTypes.func.isRequired,
         muiTheme: React.PropTypes.object
@@ -102,8 +105,8 @@ let Notification = React.createClass({
         let iconClassName = 'icon-notifications';
         if(NotificationStore.getUncheckedCount() !== 0){
             iconStyle = {
-                fill: this.context.muiTheme.getPalette().accent3Color,
-                color: this.context.muiTheme.getPalette().accent3Color
+                fill: this.context.muiTheme.palette.accent3Color,
+                color: this.context.muiTheme.palette.accent3Color
             };
             iconClassName = 'icon-notifications-on';
         }

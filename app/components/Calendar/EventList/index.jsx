@@ -12,12 +12,17 @@ const React                = require("react"),
       CalendarActions      = require("../../../actions/CalendarActions"),
       UserStore            = require("../../../stores/UserStore"),
       PerfectScroll        = require('../../PerfectScroll'),
-      InfiniteScroll       = require('../../InfiniteScroll');
+      InfiniteScroll       = require('../../InfiniteScroll'),
+      StylePropable        = require('material-ui/lib/mixins/style-propable');
 
 require("./style.less");
 
 export default React.createClass({
-    mixins: [React.addons.LinkedStateMixin],
+    mixins: [React.addons.LinkedStateMixin, StylePropable],
+
+    contextTypes: {
+        router: React.PropTypes.func.isRequired
+    },
 
     getInitialState() {
         return {
