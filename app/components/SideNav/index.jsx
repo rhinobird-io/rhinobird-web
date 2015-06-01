@@ -10,6 +10,7 @@ const React = require('react'),
     DropDownIcon = mui.DropDownIcon,
     Member = require('../Member'),
     Flex = require('../Flex'),
+    DropDownAny = require('../DropDownAny'),
     PopupSelect = require('../Select').PopupSelect;
 
 require('./style.less');
@@ -17,6 +18,7 @@ require('./style.less');
 module.exports = React.createClass({
 
     contextTypes: {
+        muiTheme: React.PropTypes.object,
         router: React.PropTypes.func.isRequired
     },
     getInitialState() {
@@ -44,24 +46,52 @@ module.exports = React.createClass({
             },
             {
                 payload: '2', text: 'Logout', iconClassName:'icon-exit-to-app', action: ()=> {
-                document.cookie = 'Auth=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-                LoginAction.updateLogin(undefined);
-                this.context.router.transitionTo('/platform/signin');
-                //TODO logout
-                $.post('/api/logout').then(()=>{
-                })
+
             }
             }
         ];
-        let header = <Flex.Layout center justified className='header'>
+
+        let control = <mui.IconButton iconStyle={{color: this.context.muiTheme.palette.canvasColor}}
+                                  iconClassName="icon-expand-more"/>;
+        let menus = [];
+        menus.push(<mui.MenuItem onClick={() => {
+            this.context.router.transitionTo('/platform/profile');
+            this.refs.dropdown.dismiss();
+        }}>
+            <Flex.Layout horizontal  style={{paddingRight: 36}}>
+                <Flex.Layout vertical selfCenter style={{marginRight: 24}}>
+                    <mui.FontIcon className="icon-person"/>
+                </Flex.Layout>
+                <span>Profile</span>
+            </Flex.Layout>
+        </mui.MenuItem>);
+        menus.push(<mui.MenuItem onClick={() => {
+            document.cookie = 'Auth=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            LoginAction.updateLogin(undefined);
+            this.context.router.transitionTo('/platform/signin');
+            //TODO logout
+
+            this.refs.dropdown.dismiss();
+            $.post('/api/logout').then(()=>{
+            })
+        }}>
+            <Flex.Layout horizontal style={{paddingRight: 36}}>
+                <Flex.Layout vertical selfCenter style={{marginRight: 24}}>
+                    <mui.FontIcon className="icon-exit-to-app"/>
+                </Flex.Layout>
+                <span>Logout</span>
+            </Flex.Layout>
+        </mui.MenuItem>);
+
+        let header = <Flex.Layout horizontal center justified className='header'>
             <div className='member-info'>
                 <Member.Avatar scale={1.5} member={this.state.user} link={false}/>
                 <Member.Name member={this.state.user} link={false} />
             </div>
-            <mui.FontIcon ref="expand" onClick={() => this.refs.popup.show()} style={{color: "white", cursor: "pointer"}} className="icon-expand-more"/>
-            <PopupSelect ref="popup" relatedTo={() => this.refs.expand} clickAwayToDismiss>
-                <div value="hahaha">Halalal123123asdfasdf</div>
-            </PopupSelect>
+            <Flex.Layout vertical centerJustified>
+                <DropDownAny ref="dropdown" control={control} menu={menus} menuClasses={'notification-menu'}
+                             onClickAway={this._onClickAway}/>
+            </Flex.Layout>
         </Flex.Layout>;
         var menuItems = [
             {route: '/platform/dashboard', iconClassName: 'icon-dashboard', text: 'Dashboard'},

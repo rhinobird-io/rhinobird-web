@@ -8,6 +8,7 @@ const mui = require("material-ui"),
       MenuItem = mui.MenuItem;
 const PerfectScroll = require('../PerfectScroll');
 const Flexible = require('../Mixins').Flexible;
+const Popup = require('../Popup');
 const PopupSelect = require('../Select').PopupSelect;
 
 require("./style.less");
@@ -47,40 +48,42 @@ const DropDownAny = React.createClass({
   },
 
   getInitialState() {
-    return { open: false };
+    return {
+
+    }
+  },
+
+  dismiss() {
+    this.refs.scroll.dismiss();
   },
 
   componentClickAway() {
-    if (this.state.open) {
-      this.setState({ open: false });
+    if (this.refs.scroll.isShown()) {
+      this.refs.scroll.dismiss();
       if (this.props.onClickAway) this.props.onClickAway();
     }
   },
 
   _onControlClick() {
-    this.setState({ open: !this.state.open });
+    if (this.refs.scroll.isShown()) {
+      this.refs.scroll.dismiss();
+    } else {
+      this.refs.scroll.show();
+    }
   },
 
   render() {
-    let dropClasses = this.getClasses("mui-drop-down-menu", {
-      "mui-open": this.state.open
-    });
-    let menuClasses = this.getClasses("mui-menu ", {
-      "mui-menu-hideable": true,
-      "mui-visible": this.state.open,
-      "dropdownany-hidden": !this.state.open
-    });
     return (
-      <div>
         <div ref="control" onClick={this._onControlClick}>
           {this.props.control}
+          <Popup
+              selfAlignOrigin="rt"
+              relatedAlignOrigin="rt"
+              ref="scroll" style={{paddingTop: 5, paddingBottom: 5}}
+              relatedTo={() => this.refs.control}>
+            {this.props.menu}
+          </Popup>
         </div>
-        <DropDownPopup
-            ref="scroll"
-            relatedTo={() => this.refs.control}
-            menu={this.props.menu} className={menuClasses} style={this.props.style} menuClasses={this.props.menuClasses}>
-        </DropDownPopup>
-      </div>
     );
   }
 });

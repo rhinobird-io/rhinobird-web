@@ -183,7 +183,7 @@ let Select = React.createClass({
             if (keyword.length === 0 || !child.props.index || !child.props.value) return true;
             return this._contain(child.props.index, keyword.toLowerCase());
         });
-        if (children.length >= 0 && !this.refs.popupSelect.isShow()) {
+        if (children.length >= 0 && !this.refs.popupSelect.isShown()) {
             this.refs.popupSelect.show();
         }
         this.setState({children: children});

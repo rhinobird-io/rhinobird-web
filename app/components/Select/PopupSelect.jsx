@@ -110,7 +110,7 @@ let PopupSelect = React.createClass({
         this.setState({shown: true});
     },
 
-    isShow() {
+    isShown() {
         return this.state.shown;
     },
 
@@ -165,7 +165,8 @@ let PopupSelect = React.createClass({
                 paddingLeft: 24,
                 paddingRight: 24,
                 cursor: "pointer",
-                lineHeight: "48px"
+                lineHeight: "48px",
+                color: this.context.muiTheme.palette.textColor
             },
             activeStyle: {
                 color: this.context.muiTheme.palette.accent1Color
@@ -314,8 +315,6 @@ let PopupSelect = React.createClass({
                         return this._constructChild(c, valueAttr)
                     })
                 });
-            } else {
-                return child;
             }
         } else {
             return child;

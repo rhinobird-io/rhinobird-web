@@ -190,7 +190,7 @@ const SmartEditor = React.createClass({
     if (triggerPos >= 0) {
       this._setOptions(text.substring(triggerPos, textarea.selectionEnd));
       this._setPopupPosition(textarea, triggerPos);
-    } else if (this.refs.popup.isShow()) {
+    } else if (this.refs.popup.isShown()) {
       this.hidePopup();
     }
     this._updateValueLink();
@@ -238,7 +238,7 @@ const SmartEditor = React.createClass({
   },
 
   _inputKeyDown(e){
-    if (!this.refs.popup.isShow() && this.props.onKeyDown) {
+    if (!this.refs.popup.isShown() && this.props.onKeyDown) {
       this.props.onKeyDown(e);
     }
   },
