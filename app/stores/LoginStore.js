@@ -17,7 +17,9 @@ let LoginStore = assign({}, BaseStore, {
     switch (payload.type) {
       case Constants.ActionTypes.LOGIN_UPDATE:
         _user = data;
-        _user.emailMd5 = _user.emailMd5 || md5(_user.email);
+        if(_user) {
+          _user.emailMd5 = _user.emailMd5 || md5(_user.email);
+        }
         LoginStore.emitChange();
         break;
       default:

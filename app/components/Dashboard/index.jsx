@@ -79,8 +79,8 @@ module.exports = React.createClass({
                     <Common.Hr />
                 </div>
             }) :<div style={{marginTop: 100}}>
-                    <h2 style={{textAlign: "center"}}>Welcome to RhinoBird!</h2>
-                    <h3 style={{textAlign: "center"}}>Click <span className="icon-menu" style={{fontSize: "1.2em"}}/> on the left top to get start.</h3>
+                    <h1 style={{textAlign: "center"}}>Welcome to RhinoBird!</h1>
+                    <h2 style={{textAlign: "center"}}>Click <span className="icon-menu" style={{fontSize: "1.2em"}}/> on the left top to get start.</h2>
                 </div>}
             {this.state.noMore? <div style={{textAlign:'center'}}>No more dashboard records</div>: undefined}
         </PerfectScroll>;
