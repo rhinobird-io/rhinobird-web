@@ -104,9 +104,6 @@ let PopupSelect = React.createClass({
     },
 
     show() {
-        //this.updatePosition();
-        //console.log("Hahasdfasfdaer");
-        //console.log(this.props.relatedTo());
         this.setState({shown: true});
     },
 
@@ -124,7 +121,6 @@ let PopupSelect = React.createClass({
 
         let childrenDOM = this._construct(children, this.props.valueAttr);
 
-        console.log(childrenDOM);
         let styles = {
             popupWrapper: {
                 transition: "opacity 300ms",
@@ -140,10 +136,9 @@ let PopupSelect = React.createClass({
         };
 
         let padding = <div style={{flex: 1}}></div>;
-        let topPadding = position === "top" ? padding : null;
-        let bottomPadding = position === "bottom" ? padding : null;
+        let topPadding = this.position === "top" ? padding : null;
+        let bottomPadding = this.position === "bottom" ? padding : null;
 
-        console.log(this.mergeStyles(style || {}, styles.popupWrapper));
         return (
             <Layout vertical style={this.mergeStyles(style || {}, styles.popupWrapper)}>
                 {topPadding}
@@ -238,8 +233,14 @@ let PopupSelect = React.createClass({
             }
             return false;
         });
-        this.setState({options: options, optionsMap: optionsMap});
-        this._updateScroll(this.state.activeOptionIndex);
+        let activeOptionIndex = this.state.activeOptionIndex;
+        if (activeOptionIndex >= optionsMap.length) {
+            activeOptionIndex = optionsMap.length - 1;
+        } else if (optionsMap.length >= 0) {
+            activeOptionIndex = 0;
+        }
+        this.setState({options: options, optionsMap: optionsMap, activeOptionIndex});
+        this._updateScroll(activeOptionIndex);
     },
 
     _parseChild: function(child, valueAttr, options, optionsSelectableSequence) {
@@ -335,7 +336,6 @@ let PopupSelect = React.createClass({
                     break;
                 case 13:    // Enter
                     e.preventDefault();
-                    console.log("haha");
                     this._select(this.state.activeOptionIndex, e);
                     break;
                 case 27:    // Escape

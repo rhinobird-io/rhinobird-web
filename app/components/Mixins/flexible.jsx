@@ -55,7 +55,6 @@ module.exports = {
             if (base.getDOMNode) {
                 let baseDOM = base.getDOMNode();
                 baseRect = baseDOM.getBoundingClientRect();
-                console.log(baseRect);
             } else {
                 if (isNaN(base.left) || isNaN(base.top) ||
                     (isNaN(base.right) && isNaN(base.width)) ||
@@ -163,11 +162,11 @@ module.exports = {
             self.style.position = "fixed";
             self.style.top = selfTop + "px";
 
-            console.log(innerHeight - baseBottom - selfHeight);
-            console.log("selfWidth: " + selfWidth);
-            console.log("innerHeight: " + innerHeight);
-            console.log("baseBottom: " + baseBottom);
-            console.log("selfLeft: " + selfLeft);
+            //console.log(innerHeight - baseBottom - selfHeight);
+            //console.log("selfWidth: " + selfWidth);
+            //console.log("innerHeight: " + innerHeight);
+            //console.log("baseBottom: " + baseBottom);
+            //console.log("selfLeft: " + selfLeft);
 
             if (isNaN(selfLeft)) {
                 self.style.left = "auto";

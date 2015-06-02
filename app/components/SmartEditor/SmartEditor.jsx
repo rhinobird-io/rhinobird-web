@@ -249,7 +249,6 @@ const SmartEditor = React.createClass({
       boxSizing: "border-box"
     };
     style = this.mergeAndPrefix(style, this.props.style);
-    console.log(style);
     Object.assign(style, props.style);
 
     let popupStyle = {
