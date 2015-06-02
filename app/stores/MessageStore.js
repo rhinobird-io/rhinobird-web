@@ -204,7 +204,7 @@ let MessageStore = assign({}, BaseStore, {
 
         let channel = ChannelStore.getChannel(message.channelId),
             user = UserStore.getUser(message.userId);
-        if(LoginStore.getUser().id !== meesage.userId && (!document.hasFocus() || currentChannel.backEndChannelId !== message.channelId)) {
+        if(LoginStore.getUser().id !== message.userId && (!document.hasFocus() || currentChannel.backEndChannelId !== message.channelId)) {
             let channelName = channel.isGroup ? channel.channel.name: channel.channel.realname;
 
             let body;
