@@ -100,8 +100,12 @@ const SmartEditor = React.createClass({
     if (!keyword) {
       options = [];
     } else if (keyword.charAt(0) === "@" && keyword.length > 1) {
-      options = UserStore.getUsersArray().filter(u =>
-        u.name.indexOf(keyword.substr(1)) >= 0
+      options = UserStore.getUsersArray().filter(u => {
+            let k = keyword.substr(1).toLowerCase();
+            return u.name.toLowerCase().indexOf(k) >= 0 ||
+            u.realname.toLowerCase().indexOf(k) >= 0 ||
+            u.email.toLowerCase().indexOf(k) >= 0;
+        }
       ).map(u =>
           <div key={u.id} value={[keyword, "@" + u.name + " "]} style={style}>
             <Avatar member={u} link={false} /> &ensp;
@@ -110,7 +114,7 @@ const SmartEditor = React.createClass({
       );
     } else if (keyword.charAt(0) === "#") {
       options = COMMANDS.filter(c =>
-        c.name.indexOf(keyword.substr(1)) >= 0
+        c.name.toLowerCase().indexOf(keyword.substr(1).toLowerCase()) >= 0
       ).map(c =>
           <div key={c.name} value={[keyword, "#" + c.name + ":"]} style={style}>
             <span style={{fontWeight: 500}}>{c.name}</span>
