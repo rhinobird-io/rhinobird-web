@@ -204,7 +204,7 @@ let MessageStore = assign({}, BaseStore, {
 
         let channel = ChannelStore.getChannel(message.channelId),
             user = UserStore.getUser(message.userId);
-        if(!document.hasFocus() || currentChannel.backEndChannelId !== message.channelId) {
+        if(LoginStore.getUser().id !== meesage.userId && (!document.hasFocus() || currentChannel.backEndChannelId !== message.channelId)) {
             let channelName = channel.isGroup ? channel.channel.name: channel.channel.realname;
 
             let body;
@@ -238,7 +238,7 @@ let MessageStore = assign({}, BaseStore, {
                 if(_messages[currentChannel.backEndChannelId]) {
                     appendToCurrentMessageSuite(_messages[currentChannel.backEndChannelId].getMessagesArray((1 << 30), IMConstants.MSG_LIMIT));
                 }
-                MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE);
+                MessageStore.emit(IMConstants.EVENTS.RECEIVE_MESSAGE, true);
                 break;
             case Constants.MessageActionTypes.RECEIVE_INIT_MESSAGES:
                 // TODO this block can be done by socket
