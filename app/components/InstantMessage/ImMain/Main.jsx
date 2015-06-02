@@ -103,7 +103,7 @@ module.exports = React.createClass({
       if (!LoginStore.getUser()) {
         return;
       }
-      if (UserStore.getUsersArray() && UserStore.getUsersArray().length === 0) {
+      if (!UserStore.hasInitialized()) {
         // wait for the users array arrive
         return;
       }
@@ -126,14 +126,16 @@ module.exports = React.createClass({
   getInitialState() {
 
     return  {
-      backEndChannelId : this.context.router.getCurrentParams().backEndChannelId
+
     }
   },
 
   componentDidMount() {
     this._onChannelChange();
     ChannelStore.addChangeListener(this._onChannelChange);
-    UserStore.addChangeListener(this._onUserChange);
+    if (!UserStore.hasInitialized()) {
+      UserStore.addChangeListener(this._onUserChange);
+    }
   },
 
   componentWillUnmount() {
@@ -144,7 +146,7 @@ module.exports = React.createClass({
 
   _onChannelChange() {
     var currentChannel = ChannelStore.getCurrentChannel();
-    if (currentChannel && currentChannel.backEndChannelId === this.state.backEndChannelId) {
+    if (currentChannel) {
       this.props.setTitle("Instant Message - Talk - " + (currentChannel.isGroup?currentChannel.channel.name:currentChannel.channel.realname));
       localStorage[IMConstant.LOCALSTORAGE_CHANNEL] = currentChannel.backEndChannelId;
     }
@@ -152,7 +154,7 @@ module.exports = React.createClass({
   },
 
   _onUserChange() {
-    let channelIdToGo = this.state.backEndChannelId;
+    let channelIdToGo = this.context.router.getCurrentParams().backEndChannelId;
     goTo(channelIdToGo, realChannelIdToGo => {
       this.context.router.transitionTo('/platform/im/talk/' + realChannelIdToGo);
     });

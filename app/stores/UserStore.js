@@ -197,6 +197,11 @@ let UserStore = assign({}, BaseStore, {
             }
         }
     },
+
+    hasInitialized() {
+      return Object.keys(_teams).length > 0;
+    },
+
     dispatcherIndex: AppDispatcher.register(function (payload) {
         switch (payload.type) {
             case Constants.ActionTypes.LOGIN_UPDATE:
