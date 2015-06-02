@@ -64,7 +64,7 @@ module.exports = React.createClass({
 
     },
     componentWillUnmount() {
-        this.props.scrollTarget().removeEventListener('scroll', this._handleScroll);
+        //this.props.scrollTarget().removeEventListener('scroll', this._handleScroll);
     },
     render: function () {
         return null;
