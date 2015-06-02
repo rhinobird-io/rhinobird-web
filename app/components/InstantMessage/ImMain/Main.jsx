@@ -74,6 +74,25 @@ function isChannelIdValid(channelIdToGo) {
   return channelIds.indexOf(channelIdToGo) >= 0;
 }
 
+function goTo(channelIdToGo, defaultCb) {
+  if (channelIdToGo === 'default' && localStorage[IMConstant.LOCALSTORAGE_CHANNEL]) {
+    // load from localStorage
+    channelIdToGo = localStorage[IMConstant.LOCALSTORAGE_CHANNEL];
+    // redirect
+    channelIdToGo && defaultCb(channelIdToGo);
+
+  } else {
+    if (!SocketStore.getSocket()) {
+      _channels = _init();
+      InitAction.init(_channels, LoginStore.getUser());
+    }
+    // validate channelIdToGo
+    if (isChannelIdValid(channelIdToGo)) {
+      ChannelAction.changeChannel(channelIdToGo, LoginStore.getUser());
+    }
+  }
+}
+
 
 let _channels = {};
 
@@ -84,23 +103,15 @@ module.exports = React.createClass({
       if (!LoginStore.getUser()) {
         return;
       }
-      let channelIdToGo = params.backEndChannelId;
-      if (channelIdToGo === 'default' && localStorage[IMConstant.LOCALSTORAGE_CHANNEL]) {
-        // load from localStorage
-        channelIdToGo = localStorage[IMConstant.LOCALSTORAGE_CHANNEL];
-        // redirect
-        channelIdToGo && transition.redirect('/platform/im/talk/' + channelIdToGo);
-
-      } else {
-        if (!SocketStore.getSocket()) {
-          _channels = _init();
-          InitAction.init(_channels, LoginStore.getUser());
-        }
-        // validate channelIdToGo
-        if (isChannelIdValid(channelIdToGo)) {
-          ChannelAction.changeChannel(channelIdToGo, LoginStore.getUser());
-        }
+      if (UserStore.getUsersArray() && UserStore.getUsersArray().length === 0) {
+        // wait for the users array arrive
+        return;
       }
+
+      let channelIdToGo = params.backEndChannelId;
+      goTo(channelIdToGo, realChannelIdToGo => {
+        transition.redirect('/platform/im/talk/' + realChannelIdToGo);
+      });
     }
   },
 
@@ -122,17 +133,29 @@ module.exports = React.createClass({
   componentDidMount() {
     this._onChannelChange();
     ChannelStore.addChangeListener(this._onChannelChange);
+    UserStore.addChangeListener(this._onUserChange);
   },
 
   componentWillUnmount() {
     ChannelStore.removeChangeListener(this._onChannelChange);
+    UserStore.removeChangeListener(this._onUserChange);
     ChannelAction.leaveIM();
   },
 
   _onChannelChange() {
     var currentChannel = ChannelStore.getCurrentChannel();
-    this.props.setTitle("Instant Message - Talk - " + (currentChannel.isGroup?currentChannel.channel.name:currentChannel.channel.realname));
-    localStorage[IMConstant.LOCALSTORAGE_CHANNEL] = currentChannel.backEndChannelId;
+    if (currentChannel && currentChannel.backEndChannelId === this.state.backEndChannelId) {
+      this.props.setTitle("Instant Message - Talk - " + (currentChannel.isGroup?currentChannel.channel.name:currentChannel.channel.realname));
+      localStorage[IMConstant.LOCALSTORAGE_CHANNEL] = currentChannel.backEndChannelId;
+    }
+
+  },
+
+  _onUserChange() {
+    let channelIdToGo = this.state.backEndChannelId;
+    goTo(channelIdToGo, realChannelIdToGo => {
+      this.context.router.transitionTo('/platform/im/talk/' + realChannelIdToGo);
+    });
   },
 
   render() {
