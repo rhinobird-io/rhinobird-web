@@ -72,6 +72,8 @@ let _teams_users = {};
 // key: userId, value: teams
 let _users_teams = {};
 
+let _initialized = false;
+
 // key, teamId
 let _teams = {};
 //
@@ -199,7 +201,7 @@ let UserStore = assign({}, BaseStore, {
     },
 
     hasInitialized() {
-      return Object.keys(_teams).length > 0;
+      return _initialized;
     },
 
     dispatcherIndex: AppDispatcher.register(function (payload) {
@@ -213,6 +215,7 @@ let UserStore = assign({}, BaseStore, {
                     _teams = tmp._teams;
                     _users = tmp._users;
                     _username_users = tmp._username_users;
+                    _initialized = true;
                     UserStore.emitChange();
                 });
                 break;
