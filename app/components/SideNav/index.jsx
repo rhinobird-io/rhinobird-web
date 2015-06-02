@@ -57,6 +57,7 @@ module.exports = React.createClass({
         menus.push(<mui.MenuItem onClick={() => {
             this.context.router.transitionTo('/platform/profile');
             this.refs.dropdown.dismiss();
+            this.toggle();
         }}>
             <Flex.Layout horizontal  style={{paddingRight: 36}}>
                 <Flex.Layout vertical selfCenter style={{marginRight: 24}}>
@@ -72,6 +73,7 @@ module.exports = React.createClass({
             //TODO logout
 
             this.refs.dropdown.dismiss();
+            this.toggle();
             $.post('/api/logout').then(()=>{
             })
         }}>

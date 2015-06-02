@@ -109,7 +109,8 @@ export default React.createClass({
                 backgroundColor: this.context.muiTheme.palette.primary1Color
             },
             eventParticipant: {
-                padding: "6px 8px"
+                padding: "6px 8px",
+                fontSize: "0.9em"
             },
             eventWrapper: {
             },
@@ -183,7 +184,7 @@ export default React.createClass({
                     let t = UserStore.getTeam(t.id);
                     return <Flex.Layout horizontal justified key={t.id} style={styles.eventParticipant}>
                         <Avatar member={t} style={{borderRadius: "50%"}} /> &ensp;&ensp;
-                        <span style={{fontWeight: 500}}>{t.name}</span>
+                        <Flex.Layout center><span style={{fontWeight: 500}}>{t.name}</span></Flex.Layout>
                     </Flex.Layout>;
                 });
 

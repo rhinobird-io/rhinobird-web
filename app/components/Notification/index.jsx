@@ -43,6 +43,9 @@ let NotifiItem = React.createClass({
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap"
+        };
+        let timeStyle = {
+            fontSize: "0.9em"
         }
         return (
             <Layout horizontal style={{padding: "8px 24px"}}>
@@ -52,7 +55,7 @@ let NotifiItem = React.createClass({
                 <Layout vertical flex={1} style={{lineHeight: "1.5em"}}>
                     <Layout horizontal justified>
                         <div className="name" style={nameStyle}><Name member={this.props.sender}/></div>
-                        <div className="time" flex={1}><SmartTimeDisplay start={this.props.time} relative/></div>
+                        <div className="time" style={timeStyle} flex={1}><SmartTimeDisplay start={this.props.time} relative/></div>
                     </Layout>
                     <div style={messageStyle}>{this.props.message}</div>
                 </Layout>
@@ -105,20 +108,22 @@ let Notification = React.createClass({
     },
 
     render() {
-
         let themeVariables = this.context.muiTheme.component.appBar;
         let iconStyle = {
             fill: themeVariables.textColor,
             color: themeVariables.textColor
         };
         let iconClassName = 'icon-notifications';
-        if(NotificationStore.getUncheckedCount() !== 0){
+
+        console.log("Notification Updated");
+        if (NotificationStore.getUncheckedCount() !== 0){
             iconStyle = {
                 fill: this.context.muiTheme.palette.accent3Color,
                 color: this.context.muiTheme.palette.accent3Color
             };
             iconClassName = 'icon-notifications-on';
         }
+
         let control = <IconButton iconStyle={iconStyle}
                                   iconClassName={iconClassName}/>;
         let menu = this.state.notifications.map(n => {
@@ -137,7 +142,7 @@ let Notification = React.createClass({
         return (
             <span>
                 <DropDownAny ref="dropdown" control={control} menu={menu} menuClasses={'notification-menu'}
-                     onClickAway={this._onClickAway} style={{width: 400, height: 500, fontSize: "15px"}}/>
+                     onClickAway={this._onClickAway} style={{width: 400, maxHeight: 500, fontSize: "15px"}}/>
                 <InfiniteScroll scrollTarget={() => this.refs.dropdown.refs.scroll.getDOMNode()}
                         lowerThreshold={5} onLowerTrigger={this._loadMore}/>
             </span>

@@ -65,7 +65,7 @@ function _websocket() {
   }
 }
 
-export default {
+let NotificationActions = {
 
   receive(startIndex) {
     if (startIndex === 0) NotificationStore.clear();
@@ -88,6 +88,7 @@ export default {
   markAsRead() {
     let socket = NotificationStore.getWebSocket();
     if (socket === null) return;
+    console.log("mark");
     let data = [];
     NotificationStore.getAll().map(n => {
       if (!n.checked) data.push({id: n.id});
@@ -101,3 +102,5 @@ export default {
   }
 
 };
+
+module.exports = NotificationActions;
