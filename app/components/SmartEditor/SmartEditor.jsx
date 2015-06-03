@@ -143,6 +143,7 @@ const SmartEditor = React.createClass({
     }
   },
 
+
   _setPopupPosition(textarea, pos) {
     let caretPos = CaretPosition(textarea, pos);
     let textareaRect = textarea.getBoundingClientRect();
@@ -259,43 +260,6 @@ const SmartEditor = React.createClass({
       maxHeight: props.popupMaxHeight,
       zIndex: 20
     };
-    for (let k in this.state.popupPosition) {
-      popupStyle[k] = this.state.popupPosition[k];
-    }
-
-    // Re-render popup's position
-    setTimeout(() => {
-      if (this.state.popupJustified) return;
-      let rect = this.refs.popup.getDOMNode().getBoundingClientRect();
-      let popupPosition = {
-        position: "fixed",
-        visibility: "visible"
-      };
-      let newTop = this.state.popupPosition.top - rect.height;
-      let position;
-      if (rect.bottom > window.innerHeight && newTop > 0) {
-        position = "top";
-        popupPosition.top = newTop;
-        popupPosition.marginTop = props.popupMinusTop;
-      } else {
-          position = "bottom";
-        // unchanged
-        popupPosition.top = this.state.popupPosition.top;
-        popupPosition.marginTop = this.state.popupPosition.marginTop;
-      }
-      if (rect.right > window.innerWidth && rect.width < window.innerWidth) {
-        popupPosition.left = "auto";
-        popupPosition.right = 0;
-      } else {
-        // unchanged
-        popupPosition.left = this.state.popupPosition.left;
-      }
-      this.setState({
-        popupPosition: popupPosition,
-        popupJustified: true,
-          position: position
-      });
-    }, 0);
 
     let tfProps = {};
     ["className", "defaultValue", "errorText", "floatingLabelText", "hintText", "multiLine"].map(
@@ -308,7 +272,7 @@ const SmartEditor = React.createClass({
         <TextField {...tfProps} style={this.mergeAndPrefix({width:'100%'}, this.props.inputStyle)} onKeyDown={this._inputKeyDown} ref="textfield"
                                 onChange={this._onInputChange}/>
         <PopupSelect ref="popup"
-                     position={this.state.position}
+                     relatedTo={() => {return {top: this.state.popupPosition.top, left: this.state.popupPosition.left, width: 0, height: 30}}}
                      onItemSelect={this._onItemSelect}
                      style={popupStyle}>
           {this.state.options}

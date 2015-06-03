@@ -144,6 +144,8 @@ module.exports = {
                 } else if (baseTop - selfHeight >= 0) {
                     selfTop = baseTop - selfHeight;
                     this.position = "top";
+                } else {
+                    this.position = "top";
                 }
 
                 if (innerWidth - baseRight - selfWidth >= 0) {
@@ -158,7 +160,6 @@ module.exports = {
                     }
                 }
             }
-
             self.style.position = "fixed";
             self.style.top = selfTop + "px";
 

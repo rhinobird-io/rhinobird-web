@@ -114,7 +114,6 @@ let PopupSelect = React.createClass({
     render: function() {
         let {
             style,
-            position,
             children,
             ...other
         } = this.props;
@@ -135,10 +134,16 @@ let PopupSelect = React.createClass({
             }
         };
 
-        let padding = <div style={{flex: 1}}></div>;
-        let topPadding = this.position === "top" ? padding : null;
-        let bottomPadding = this.position === "bottom" ? padding : null;
+        if (this.props.relatedTo) {
+            styles.popupWrapper.position = "fixed";
+        }
 
+        let padding = <div style={{flex: 1}}></div>;
+        let position = this.props.relatedTo ? this.position : this.props.position;
+        let topPadding = position === "top" ? padding : null;
+        let bottomPadding = position === "bottom" ? padding : null;
+
+        console.log("Position = " + position)
         return (
             <Layout vertical style={this.mergeStyles(style || {}, styles.popupWrapper)}>
                 {topPadding}
@@ -152,7 +157,6 @@ let PopupSelect = React.createClass({
             </Layout>
         );
     },
-
 
     _getDefaultStyle: function() {
         return {
