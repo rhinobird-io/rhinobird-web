@@ -218,7 +218,7 @@ export default React.createClass({
                                             to="event-detail" params={{ id: event.id, repeatedNumber: event.repeated_number }}>
                                             <span title={event.title}>{event.title}</span>
                                         </RouterLink>
-                                        <DropDownAny ref="dropdown" control={control} menu={menu} />
+                                        <DropDownAny style={{padding: "8px 12px"}} ref="dropdown" control={control} menu={menu} />
                                     </Flex.Layout>
                                     <div className="cal-event-time">
                                         <SmartTimeDisplay

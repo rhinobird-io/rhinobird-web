@@ -12,8 +12,6 @@ const Popup = require('../Popup');
 const PopupSelect = require('../Select').PopupSelect;
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 
-require("./style.less");
-
 let DropDownPopup = React.createClass({
   mixins: [Flexible, StylePropable],
 
@@ -90,4 +88,4 @@ const DropDownAny = React.createClass({
   }
 });
 
-export default DropDownAny;
+module.exports = DropDownAny;
