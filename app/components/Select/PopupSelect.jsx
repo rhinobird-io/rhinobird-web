@@ -1,9 +1,21 @@
 const React = require('react');
-const PerfectScroll = require('../PerfectScroll');
+const Popup = require('../Popup');
+const MUI = require('material-ui');
 const Layout = require("../Flex").Layout;
+const Flexible = require('../Mixins').Flexible;
+const PerfectScroll = require('../PerfectScroll');
+const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+const StylePropable = require('material-ui/lib/mixins/style-propable');
+const ClickAwayable = MUI.Mixins.ClickAwayable;
 
-export default React.createClass({
-    mixins: [React.addons.LinkedStateMixin],
+import uuid from 'node-uuid';
+
+let PopupSelect = React.createClass({
+    mixins: [Flexible, StylePropable, PureRenderMixin, ClickAwayable],
+
+    contextTypes: {
+        muiTheme: React.PropTypes.object
+    },
 
     propTypes: {
         onShow: React.PropTypes.func,
@@ -12,36 +24,34 @@ export default React.createClass({
         valueAttr: React.PropTypes.string,
         onItemSelect: React.PropTypes.func,
         normalStyle: React.PropTypes.object,
-        normalClass: React.PropTypes.string,
         activeStyle: React.PropTypes.object,
-        activeClass: React.PropTypes.string,
-        wrapperStyle: React.PropTypes.object,
-        wrapperClass: React.PropTypes.string,
         disabledStyle: React.PropTypes.object,
-        disabledClass: React.PropTypes.string
+        clickAwayToDismiss: React.PropTypes.bool
     },
 
     getDefaultProps: function() {
         return {
             position: "bottom",
             valueAttr: "value",
-            activeStyle: {
-                fontWeight: "bold"
-            },
-            disabledStyle: {
-                color: "#888"
-            },
-            activeClass: "active",
-            disabledClass: "disabled"
+            clickAwayToDismiss: false
         };
     },
 
     getInitialState() {
         return {
-            visible: false,
+            shown: false,
             options: {},
             optionsMap: [],
             activeOptionIndex: 0
+        }
+    },
+
+    componentClickAway() {
+        if (this.props.clickAwayToDismiss && this.state.shown) {
+            this.setState({ shown: false });
+            if (this.props.onClickAway && typeof this.props.onClickAway === "function") {
+                this.props.onClickAway();
+            }
         }
     },
 
@@ -87,62 +97,83 @@ export default React.createClass({
     },
 
     dismiss() {
-        this.setState({visible: false});
+        this.setState({shown: false});
         if (this.props.onDismiss && typeof this.props.onDismiss === "function") {
             this.props.onDismiss();
         }
     },
 
     show() {
-        this.setState({visible: true});
+        this.setState({shown: true});
+    },
+
+    isShown() {
+        return this.state.shown;
     },
 
     render: function() {
         let {
             style,
-            position,
+            children,
             ...other
         } = this.props;
 
-        let children = this._construct(this.props.children, this.props.valueAttr);
+        let childrenDOM = this._construct(children, this.props.valueAttr);
+
         let styles = {
-            outer: {
-                zIndex: 9,
+            popupWrapper: {
+                transition: "opacity 300ms",
+                zIndex: this.state.shown ? 100 : -1,
                 height: 250,
-                margin: -4,
-                display: this.state.visible ? "flex" : "none"
+                opacity: this.state.shown ? 1 : 0
             },
-            popup: {
-                background: "white",
+            scroll: {
                 position: "relative",
-                margin: 4
+                background: "white",
+                boxShadow: "0 3px 10px rgba(0, 0, 0, 0.16), 0 3px 10px rgba(0, 0, 0, 0.23)"
             }
         };
 
-        if (style === undefined || style === null) {
-            style = {};
+        if (this.props.relatedTo) {
+            styles.popupWrapper.position = "fixed";
         }
-        style.zIndex = 9;
-        style.height = 250;
-        style.margin = -4;
-        style.display = this.state.visible ? "flex" : "none";
 
         let padding = <div style={{flex: 1}}></div>;
+        let position = this.props.relatedTo ? this.position : this.props.position;
         let topPadding = position === "top" ? padding : null;
         let bottomPadding = position === "bottom" ? padding : null;
 
+        console.log("Position = " + position)
         return (
-            <Layout vertical style={style}>
+            <Layout vertical style={this.mergeStyles(style || {}, styles.popupWrapper)}>
                 {topPadding}
                 <PerfectScroll
                     ref="scroll"
-                    style={styles.popup}
-                    className={this.props.wrapperClass || ""} alwaysVisible>
-                    {children}
+                    style={styles.scroll}
+                    alwaysVisible>
+                    {childrenDOM}
                 </PerfectScroll>
                 {bottomPadding}
             </Layout>
         );
+    },
+
+    _getDefaultStyle: function() {
+        return {
+            normalStyle: {
+                paddingLeft: 24,
+                paddingRight: 24,
+                cursor: "pointer",
+                lineHeight: "48px",
+                color: this.context.muiTheme.palette.textColor
+            },
+            activeStyle: {
+                color: this.context.muiTheme.palette.accent1Color
+            },
+            disabledStyle: {
+                color: this.context.muiTheme.palette.disabledColor
+            }
+        }
     },
 
     _updateScroll: function(activeOptionIndex) {
@@ -206,8 +237,14 @@ export default React.createClass({
             }
             return false;
         });
-        this.setState({options: options, optionsMap: optionsMap});
-        this._updateScroll(this.state.activeOptionIndex);
+        let activeOptionIndex = this.state.activeOptionIndex;
+        if (activeOptionIndex >= optionsMap.length) {
+            activeOptionIndex = optionsMap.length - 1;
+        } else if (optionsMap.length >= 0) {
+            activeOptionIndex = 0;
+        }
+        this.setState({options: options, optionsMap: optionsMap, activeOptionIndex});
+        this._updateScroll(activeOptionIndex);
     },
 
     _parseChild: function(child, valueAttr, options, optionsSelectableSequence) {
@@ -245,29 +282,26 @@ export default React.createClass({
     },
 
     _constructChild: function(child, valueAttr) {
+        let defaultStyles = this._getDefaultStyle();
+        let normalStyle = this.props.normalStyle || defaultStyles.normalStyle;
+        let activeStyle = this.props.activeStyle || defaultStyles.activeStyle;
+        let disabledStyle = this.props.disabledStyle || defaultStyles.disabledStyle;
+
         if (child && child.props) {
             if (child.props[valueAttr]) {
                 let key = child.props[valueAttr].toString();
                 let disabled = !!child.props.disabled;
-                let style;
-                let className = "";
+                let style = normalStyle;
                 let onMouseOver, onClick;
 
-                if (this.props.normalClass) {
-                    className += this.props.normalClass;
-                }
-
                 if (disabled) {
-                    style = this.props.disabledStyle;
-                    className += " " + this.props.disabledClass;
+                    style = this.mergeStyles(style, disabledStyle);
                 } else {
                     let option = this.state.options[key];
                     onMouseOver = () => this.setState({activeOptionIndex: option.index});
                     onClick = (e) => this._select(option.index, e);
-                    if (option && option["index"] === this.state.activeOptionIndex
-                        && this.props.activeClass) {
-                        style =  this.props.activeStyle;
-                        className += " " + this.props.activeClass;
+                    if (option && option["index"] === this.state.activeOptionIndex) {
+                        style = this.mergeStyles(style, activeStyle);
                     }
                 }
 
@@ -276,7 +310,6 @@ export default React.createClass({
                     ref: key,
                     style: style,
                     onClick: onClick,
-                    className: className,
                     onMouseOver: onMouseOver
                 });
             } else if (child.props.children) {
@@ -294,7 +327,7 @@ export default React.createClass({
     },
 
     _windowKeyDownListener: function(e) {
-        if (this.state.visible) {
+        if (this.state.shown) {
             let keyCode = e.keyCode;
             switch (keyCode) {
                 case 38:    // Up
@@ -328,3 +361,4 @@ export default React.createClass({
     }
 });
 
+module.exports = PopupSelect;

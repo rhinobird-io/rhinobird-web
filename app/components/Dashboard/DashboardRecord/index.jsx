@@ -1,6 +1,7 @@
 const React = require('react/addons');
 const Router = require('react-router');
 const Member = require('../../Member');
+const Common = require('../../Common');
 const Flex = require('../../Flex');
 const MUI = require('material-ui');
 const SmartTimeDisplay = require('../../SmartTimeDisplay');
@@ -23,9 +24,9 @@ const DashboardRecord = React.createClass({
                 <div>
                     <span>{record.get('content')} </span>
                     {record.get('has_link') ?
-                        <Router.Link to={record.get('link_url')} params={{id: linkParam.id, repeatedNumber: linkParam.repeated_number || 1}}>
+                        <Common.RouterLink to={record.get('link_url')} params={{id: linkParam.id, repeatedNumber: linkParam.repeated_number || 1}}>
                             {record.get('link_title')}
-                        </Router.Link>
+                        </Common.RouterLink>
                         : undefined}
                 </div>
             </div>

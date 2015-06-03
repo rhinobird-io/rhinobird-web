@@ -3,13 +3,19 @@ const React       = require('react'),
       Paper       = MUI.Paper,
       Flex        = require('../Flex'),
       TextField   = MUI.TextField,
-      MaterialPopup = require('./MaterialPopup'),
-      ClickAwayable = MUI.Mixins.ClickAwayable;
+      PopupSelect = require('./PopupSelect'),
+      ClickAwayable = MUI.Mixins.ClickAwayable,
+      PureRenderMixin = require('react/addons').addons.PureRenderMixin,
+      StylePropable = require('material-ui/lib/mixins/style-propable');
 
 require('./style.less');
 
-export default React.createClass({
-    mixins: [ClickAwayable, React.addons.LinkedStateMixin],
+let Select = React.createClass({
+    mixins: [ClickAwayable, PureRenderMixin, StylePropable],
+
+    contextTypes: {
+        muiTheme: React.PropTypes.object
+    },
 
     propTypes: {
         valueLink: React.PropTypes.shape({
@@ -35,6 +41,9 @@ export default React.createClass({
 
     componentDidMount() {
         this._updateLayout();
+        console.log("Client Rect: ");
+        console.log(this.refs.text.getDOMNode());
+        console.log(this.refs.text.getDOMNode().getBoundingClientRect());
     },
 
     componentWillReceiveProps() {
@@ -70,6 +79,7 @@ export default React.createClass({
                 requestChange: props.onChange
             };
     },
+
     focus(){
         this.refs.text.focus();
     },
@@ -93,6 +103,7 @@ export default React.createClass({
     },
 
     _updateLayout: function() {
+        return;
         let marginTop = 0;
         let paddingLeft = 0;
         let tokenWrapper = this.refs.tokenWrapper;
@@ -172,7 +183,7 @@ export default React.createClass({
             if (keyword.length === 0 || !child.props.index || !child.props.value) return true;
             return this._contain(child.props.index, keyword.toLowerCase());
         });
-        if (children.length >= 0 && !this.refs.popupSelect.isShow()) {
+        if (children.length >= 0 && !this.refs.popupSelect.isShown()) {
             this.refs.popupSelect.show();
         }
         this.setState({children: children});
@@ -209,15 +220,19 @@ export default React.createClass({
                 marginBottom: 4,
                 cursor: "pointer",
                 padding: "2px 8px",
-                display: "block"
+                display: "block",
+                border: "1px solid transparent"
             },
             tokenWrapper: {
-                position: "absolute",
+                position: "relative",
                 cursor: "text",
                 zIndex: 2,
                 top: floatingLabelText ? 34 : 10,
                 left: 0,
                 right: 0
+            },
+            tokenToDelete: {
+                border: "1px solid " + this.context.muiTheme.palette.accent1Color
             },
             padding: {
                 paddingLeft: this.state.paddingLeft || 0
@@ -226,14 +241,13 @@ export default React.createClass({
 
         let selectedValues = Object.keys(this.state.selected);
         let floatingText = floatingLabelText;
-        if(selectedValues.length !== 0 && floatingLabelText) {
+        if (selectedValues.length !== 0 && floatingLabelText) {
             floatingText = " ";
         }
 
-        if (style === undefined || style === null) {
+        if (!style) {
             style = {};
         }
-        style.paddingLeft = styles.padding.paddingLeft;
 
         let text =
             <TextField
@@ -241,24 +255,21 @@ export default React.createClass({
                 type="text"
                 hintText={selectedValues.length === 0 ? hintText : undefined}
                 floatingLabelText={floatingText}
-                style={style}
+                style={this.mergeStyles(style, styles.padding)}
                 errorText={this.props.errorText}
-                className={this.props.className}
                 onChange={this._filter}
                 onKeyDown={this._keyDownListener}
                 onFocus={() => {
                     this.refs.popupSelect.show();
-                    this._updateLayout();
+                    //this._updateLayout();
                 }}
                 onBlur={() => this.setState({toDelete: false})} />;
 
         let popupSelect =
-            <MaterialPopup
+            <PopupSelect
                 hRestrict
                 ref="popupSelect"
-                relatedTo={() => this.refs.text}
-                position={this.refs.popupSelect ? this.refs.popupSelect.position : "bottom"}
-                style={{position: "absolute", top: "100%", left: 0, right: 0}}
+                relatedTo={() => this.refs.text.getDOMNode().getBoundingClientRect()}
                 onItemSelect={(value, e) => {
                         this._addSelectedOption(value);
                         this.refs.text.setValue("");
@@ -272,21 +283,22 @@ export default React.createClass({
                 }}
             >
                 {this.state.children}
-            </MaterialPopup>;
+            </PopupSelect>;
 
         let tokens = [];
         for (let i = 0; i < selectedValues.length; i++) {
+
+
             let selected = selectedValues[i];
             let token = this.props.token ? this.props.token(selected) : selected;
             let tokenStyle = styles.token;
 
-            let tokenClass = "token";
             if ((i === selectedValues.length - 1) && this.state.toDelete) {
-                tokenClass += " token-to-delete";
+                tokenStyle = this.mergeStyles(tokenStyle, styles.tokenToDelete);
             }
 
             tokens.push(
-                <Paper className={tokenClass} key={"token_" + i} ref={"token-" + i} zDepth={1} style={tokenStyle}>
+                <Paper key={"token_" + i} ref={"token-" + i} zDepth={1} style={tokenStyle}>
                     <Flex.Layout horizontal onClick={(e) => e.stopPropagation()}>
                         {token}
                         <Flex.Layout vertical selfCenter>
@@ -335,3 +347,5 @@ export default React.createClass({
         }
     }
 });
+
+module.exports = Select;

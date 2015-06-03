@@ -24,8 +24,8 @@ const commands = [
                     <span class="icon-attach-file"></span>
                     <span class="name"></span>
                 </span>
-                <span class="progress-holder" style="display:none; position: relative; height:4px;background-color: #b2ebf2;">
-                    <span class="progress" style="display:block; height: 100%;background-color: #0097a7;"></span>
+                <span class="progress-holder" style="display:none; position: relative; height:4px;background-color: #b2ebf2; border-radius: 2px;">
+                    <span class="progress" style="display:block; height: 100%;background-color: #0097a7; border-radius: 2px;"></span>
                 </span>
             </a>`;
 

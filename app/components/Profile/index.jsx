@@ -66,44 +66,36 @@ module.exports = React.createClass({
             <mui.Snackbar message='Failed to update user information' ref='saveFailSnackbar'/>
             <mui.Snackbar message='Password has been saved' ref='changeSuccessSnackbar'/>
             <mui.Snackbar message='Failed to change password' ref='changeFailSnackbar'/>
-            <div className='paper-outer-container'>
-                <mui.Paper zDepth={1}>
-                    <div className='paper-inner-container'>
-                        <div className="mui-font-style-headline">User information</div>
+                <mui.Paper zDepth={1} style={{width:600, margin:24, padding:24, position:'relative'}}>
+                        <h2 style={{marginBottom:24}}>User information</h2>
                         <Member.Avatar onMouseOver={()=>{this.setState({showTooltip:true});}}
                                        onMouseOut={()=>{this.setState({showTooltip:false});}}
                                        scale={2.5} link={false} member={this.state.user} className='avatar'></Member.Avatar>
-                        <mui.Tooltip className='tooltip' label="You can change your avatar on gravatar.com" show={this.state.showTooltip}/>
+                        <mui.Tooltip style={{right: 24, top: 70}} label="You can change your avatar on gravatar.com" show={this.state.showTooltip}/>
                         <mui.TextField floatingLabelText='Email' type='email' valueLink={this.linkState('email')}
-                                       disabled={true}/>
+                                       disabled={true} style={{width:'100%'}}/>
                         <div className='uniqueNameField'>
-                            <span className='mui-font-style-caption'>@</span>
+                            <span>@</span>
                             <mui.TextField className='textField' floatingLabelText='Unique name'
-                                           valueLink={this.linkState('uniqueName')} disabled={true}/>
+                                           valueLink={this.linkState('uniqueName')} disabled={true} style={{width:'100%'}}/>
                         </div>
                         <mui.TextField floatingLabelText='Display name' valueLink={this.linkState('displayName')} />
                         <div className="rightButton">
                             <mui.RaisedButton primary={true} label='Save' onClick={this._updateUser}></mui.RaisedButton>
                         </div>
-                    </div>
                 </mui.Paper>
-            </div>
 
-            <div className='paper-outer-container'>
-                <mui.Paper zDepth={1}>
-                    <div className='paper-inner-container'>
-                        <h3>Change password</h3>
+                <mui.Paper zDepth={1} style={{width:600, margin:24, padding:24}}>
+                        <h2 style={{marginBottom:24}}>Change password</h2>
                         <mui.TextField floatingLabelText='Old password' type='password' valueLink={this.linkState('oldPwd')}
-                                       errorText={this.state.passwordIncorrect}/>
-                        <mui.TextField floatingLabelText='New password' type='password' valueLink={this.linkState('newPwd')} />
-                        <mui.TextField floatingLabelText='Confirm new password' type='password' valueLink={this.linkState('confirmPwd')}
+                                       errorText={this.state.passwordIncorrect} style={{width:'100%'}}/>
+                        <mui.TextField floatingLabelText='New password' type='password' valueLink={this.linkState('newPwd')} style={{width:'100%'}}/>
+                        <mui.TextField style={{width:'100%'}} floatingLabelText='Confirm new password' type='password' valueLink={this.linkState('confirmPwd')}
                             errorText={this.state.passwordError}/>
                         <div className="rightButton">
                             <mui.RaisedButton primary={true} label='Reset' onClick={this._changePassword}></mui.RaisedButton>
                         </div>
-                    </div>
                 </mui.Paper>
-            </div>
         </Flex.Layout>;
     }
 });

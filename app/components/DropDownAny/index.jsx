@@ -4,14 +4,16 @@ const React = require("react");
 const mui = require("material-ui"),
       Classable = mui.Mixins.Classable,
       ClickAwayable = mui.Mixins.ClickAwayable,
-      Paper = mui.Paper;
+      Paper = mui.Paper,
+      MenuItem = mui.MenuItem;
 const PerfectScroll = require('../PerfectScroll');
 const Flexible = require('../Mixins').Flexible;
-
-require("./style.less");
+const Popup = require('../Popup');
+const PopupSelect = require('../Select').PopupSelect;
+const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 let DropDownPopup = React.createClass({
-  mixins: [Flexible],
+  mixins: [Flexible, StylePropable],
 
   render() {
     let {
@@ -29,12 +31,12 @@ let DropDownPopup = React.createClass({
 
   _getMenuItems(list) {
     let key = 0;
-    return list.map(item => <div key={key += 1} className="mui-menu-item">{item}</div>);
+    return list.map(item => <MenuItem key={key += 1}>{item}</MenuItem>);
   }
 });
 
-export default React.createClass({
-  mixins: [Classable, ClickAwayable],
+const DropDownAny = React.createClass({
+  mixins: [Classable, ClickAwayable, StylePropable],
 
   propTypes: {
     control: React.PropTypes.element.isRequired,
@@ -45,39 +47,45 @@ export default React.createClass({
   },
 
   getInitialState() {
-    return { open: false };
+    return {
+
+    }
+  },
+
+  dismiss() {
+    this.refs.scroll.dismiss();
   },
 
   componentClickAway() {
-    this.setState({ open: false });
-    if (this.props.onClickAway) this.props.onClickAway();
+    if (this.refs.scroll.isShown()) {
+      this.refs.scroll.dismiss();
+      if (this.props.onClickAway) this.props.onClickAway();
+    }
   },
 
   _onControlClick() {
-    this.setState({ open: !this.state.open });
+    this.refs.scroll.updatePosition();
+    if (this.refs.scroll.isShown()) {
+      this.refs.scroll.dismiss();
+    } else {
+      this.refs.scroll.show();
+    }
   },
 
   render() {
-    let dropClasses = this.getClasses("mui-drop-down-menu", {
-      "mui-open": this.state.open
-    });
-    let controlClasses = "mui-menu-control " + (this.props.controlClasses || "");
-    let menuClasses = this.getClasses("mui-menu ", {
-      "mui-menu-hideable": true,
-      "mui-visible": this.state.open,
-      "dropdownany-hidden": !this.state.open
-    });
     return (
-      <div className={dropClasses} style={{height: "auto"}}>
-        <div ref="control" className={controlClasses} onClick={this._onControlClick}>
+        <div ref="control" onClick={this._onControlClick}>
           {this.props.control}
+          <Popup
+              selfAlignOrigin="rt"
+              relatedAlignOrigin="rt"
+              ref="scroll" style={this.mergeStyles({paddingTop: 8, paddingBottom: 8}, this.props.style || {})}
+              relatedTo={() => this.refs.control}>
+            {this.props.menu}
+          </Popup>
         </div>
-        <DropDownPopup
-            ref="scroll"
-            relatedTo={() => this.refs.control}
-            menu={this.props.menu} className={menuClasses} style={this.props.style} menuClasses={this.props.menuClasses}>
-        </DropDownPopup>
-      </div>
     );
   }
 });
+
+module.exports = DropDownAny;

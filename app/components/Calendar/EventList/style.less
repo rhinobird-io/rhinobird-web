@@ -1,17 +1,13 @@
-@import "~material-ui/src/less/scaffolding.less";
-@import "~material-ui/src/less/components.less";
-
 @calEventBg: white;
 @arrowBg: white;
 @arrowZIndex: 1;
 @eventBg: white;
 @triangle-size: 6px;
-@event-expired-bg: @indigo-200;
-@event-icon-wrapper-bg: @indigo-300;
+@event-icon-wrapper-bg: #00bcd4;
 @day-divider-radius: 22px;
 @expired-event-bg: grey;
-@active-event-bg: @pink-500;
-@future-event-bg: @indigo-500;
+@active-event-bg: indigo;
+@future-event-bg: indigo;
 
 .cal-event-list {
   height: 100%;
@@ -53,7 +49,6 @@
   font-size: 1.1em;
   text-align: center;
   vertical-align: middle;
-  background-color: @pink-300;
 
   label {
     line-height: @day-divider-radius * 2;
@@ -83,21 +78,11 @@
 .cal-event-icon {
   position: absolute;
   border-radius: 50%;
-  left: -18px;
   width: 40px;
   height: 40px;
   line-height: 36px;
   text-align: center;
   color: white;
-  background-color: @indigo-300;
-}
-
-.cal-event-icon.expired {
-  *background-color: @event-expired-bg;
-}
-
-.cal-event-icon.active {
-  *background-color: @pink-500;
 }
 
 .cal-event-icon span {
@@ -109,15 +94,11 @@
 }
 
 .cal-event-content-inner {
-  margin-right: 20%;
-  position: relative;
-  box-shadow: 0px 0px 6px 0 rgba(0, 0, 0, .4);
-  background-color: @eventBg;
-  transition: box-shadow 1s;
+  margin-right: 20%
 }
 
 .cal-event-content-inner.highlight {
-  box-shadow: 0px 0px 6px 0 @pink-500;
+  box-shadow: 0px 0px 6px 0 pink;
   transition: box-shadow 1s;
 }
 
@@ -162,7 +143,7 @@
   margin: 2em 0 1em 0;
 }
 
-@media screen and (max-width: 960px) {
+@media screen and (max-width: 959px) {
   .cal-event-content .cal-event-title {
     &::before {
       content: "";
@@ -182,6 +163,10 @@
 
       box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.4);
     }
+  }
+
+  .cal-event-icon {
+    left: -18px;
   }
 }
 
@@ -263,7 +248,7 @@
       transform-origin: 50% 50%;
       transform: rotate(135deg);
 
-      box-shadow: 1px 1px 3px 0 rgba(0, 0, 0, 0.4);
+      box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.4);
     }
   }
 }

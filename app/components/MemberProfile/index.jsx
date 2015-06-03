@@ -3,6 +3,7 @@ const mui = require('material-ui');
 const Member = require('../Member');
 const UserStore = require('../../stores/UserStore');
 const Flex = require('../Flex');
+const Common = require('../Common');
 
 require('./style.less');
 
@@ -51,10 +52,10 @@ module.exports = React.createClass({
                         <div className="unique-name">@{this.state.member.name}</div>
                     </Flex.Layout>
                 </Flex.Layout>
-                <hr/>
-                <div className="mui-font-style-title">Person</div>
+                <Common.Hr style={{marginBottom:24}} />
+                <h3>Person</h3>
                 <mui.Menu autoWidth={false} zDepth={0} menuItems={info} />
-                <div className="mui-font-style-title">Teams</div>
+                <h3>Teams</h3>
                 <mui.Menu autoWidth={false} zDepth={0} menuItems={teamItems} />
                 {/*<div className="mui-font-style-title">Recent activities</div>*/}
             </div>;

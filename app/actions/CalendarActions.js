@@ -6,19 +6,7 @@ const CalendarActionTypes = require("../constants/AppConstants").CalendarActionT
 
 require("./mockjax/events.js");
 
-export default {
-    getByDate(date) {
-
-    },
-
-    getByWeek(date) {
-
-    },
-
-    getByMonth(date) {
-
-    },
-
+let CalendarAction =  {
     receive(success) {
         $.get("/platform/api/events").done(data => {
             AppDispatcher.dispatch({
@@ -150,15 +138,29 @@ export default {
         if (!parsedEvent.full_day) {
             fromTime.setHours(event.fromHour);
             fromTime.setMinutes(event.fromMinute);
-        }
 
-        if (event.isPeriod) {
-            parsedEvent.period = true;
-            toTime.setHours(event.toHour);
-            toTime.setMinutes(event.toMinute);
+            if (event.isPeriod) {
+                parsedEvent.period = true;
+                toTime.setHours(event.toHour);
+                toTime.setMinutes(event.toMinute);
+            } else {
+                parsedEvent.period = false;
+                toTime = fromTime;
+            }
         } else {
-            parsedEvent.period = false;
-            toTime = fromTime;
+            fromTime.setHours(0);
+            fromTime.setMinutes(0);
+            fromTime.setSeconds(0);
+
+            if (event.isPeriod) {
+                parsedEvent.period = true;
+                toTime.setHours(23);
+                toTime.setMinutes(59);
+                toTime.setSeconds(59);
+            } else {
+                parsedEvent.period = false;
+                toTime = fromTime;
+            }
         }
 
         parsedEvent.from_time = fromTime.toISOString();
@@ -174,7 +176,6 @@ export default {
             parsedEvent.repeated_times = event.repeatedTimes;
             parsedEvent.repeated_end_type = event.repeatedEndType;
             parsedEvent.repeated_end_date = event.repeatedEndDate;
-
         } else {
             parsedEvent.repeated = false;
         }
@@ -192,3 +193,5 @@ export default {
     }
 
 };
+
+module.exports = CalendarAction;

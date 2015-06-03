@@ -4,7 +4,7 @@ import Constants from '../constants/AppConstants';
 import BaseStore from './BaseStore';
 import assign from 'object-assign';
 
-let _user;
+let _user = null;
 
 const md5 = require('blueimp-md5');
 let LoginStore = assign({}, BaseStore, {
@@ -17,7 +17,9 @@ let LoginStore = assign({}, BaseStore, {
     switch (payload.type) {
       case Constants.ActionTypes.LOGIN_UPDATE:
         _user = data;
-        _user.emailMd5 = _user.emailMd5 || md5(_user.email);
+        if(_user) {
+          _user.emailMd5 = _user.emailMd5 || md5(_user.email);
+        }
         LoginStore.emitChange();
         break;
       default:
@@ -27,4 +29,4 @@ let LoginStore = assign({}, BaseStore, {
 
 });
 
-export default LoginStore;
+module.exports = LoginStore;

@@ -2,6 +2,8 @@ const React = require("react");
 const RouteHandler = require("react-router").RouteHandler;
 const injectTapEventPlugin = require("react-tap-event-plugin");
 const Flex = require('../Flex');
+const ThemeManager = require('material-ui/lib/styles/theme-manager')();
+const Colors = require('material-ui/lib/styles/colors');
 //Needed for onTouchTap
 //Can go away when react 1.0 release
 //Check this repo:
@@ -25,7 +27,9 @@ const closeButton = <mui.IconButton iconClassName="icon-close"/>;
 
 let FloatingContent = React.createClass({
     mixins: [ClickAwayable],
-
+    contextTypes: {
+        muiTheme: React.PropTypes.object
+    },
     render() {
         let {
             title,
@@ -35,11 +39,9 @@ let FloatingContent = React.createClass({
 
         return <mui.Paper className='floatingContent'
                           zDepth={1}>
-            <Flex.Layout className='header' justified center>
+            <Flex.Layout className='header' style={{backgroundColor: this.context.muiTheme.palette.borderColor}} justified center>
                 <div className='title'>{title}</div>
-                <div className='right'>
-                    <mui.IconButton className='icon-close' onClick={onClose}/>
-                </div>
+                <mui.IconButton iconClassName='icon-close' onClick={onClose}/>
             </Flex.Layout>
             <PerfectScroll style={{position:'absolute', top:60, bottom:0, right:0, left: 0}}>
                 {content}
@@ -50,6 +52,14 @@ let FloatingContent = React.createClass({
 
 let Application = React.createClass({
 
+    childContextTypes: {
+        muiTheme: React.PropTypes.object
+    },
+    getChildContext: function() {
+        return {
+            muiTheme: ThemeManager.getCurrentTheme()
+        };
+    },
     contextTypes: {
         router: React.PropTypes.func.isRequired
     },
@@ -79,10 +89,11 @@ let Application = React.createClass({
     },
 
     render() {
-        return <div>
+        return <mui.AppCanvas predefinedLayout={1}>
+            <TopNav onLeftIconButtonTouchTap={this._onMenuIconButtonTouch} title={this.state.title}/>
             <SideNav ref='sideNav'/>
 
-            <div className={this.state.showFloatingContent? 'mainContainer floating' : 'mainContainer'}>
+            <div style={{color: ThemeManager.getCurrentTheme().palette.textColor}} className={this.state.showFloatingContent? 'mainContainer floating' : 'mainContainer'}>
                 <FloatingContent
                     ref="floatingContent"
                     title={this.state.floatingContent.title}
@@ -94,8 +105,7 @@ let Application = React.createClass({
             </div>
 
             <SearchEverywhere ref="search"/>
-            <TopNav onMenuIconButtonTouchTap={this._onMenuIconButtonTouch} title={this.state.title}/>
-        </div>;
+        </mui.AppCanvas>;
     },
 
     _setTitle(title) {

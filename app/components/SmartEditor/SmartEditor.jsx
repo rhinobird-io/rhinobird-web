@@ -11,6 +11,8 @@ const PopupSelect = require("../Select").PopupSelect;
 const UserStore = require("../../stores/UserStore");
 const ClickAwayable = MUI.Mixins.ClickAwayable;
 const Flex = require('../Flex');
+const StylePropable = require('material-ui/lib/mixins/style-propable');
+
 import _ from 'lodash';
 
 require('./style.less');
@@ -18,13 +20,14 @@ require('./style.less');
 const commands = require('./commands'), COMMANDS = commands.list;
 
 const SmartEditor = React.createClass({
-  mixins: [ClickAwayable, React.addons.PureRenderMixin],
+  mixins: [ClickAwayable, React.addons.PureRenderMixin, StylePropable],
 
   propTypes: {
     valueLink: React.PropTypes.shape({
       value: React.PropTypes.string.isRequired,
       requestChange: React.PropTypes.func.isRequired
     }),
+    inputStyle: React.PropTypes.object,
     nohr: React.PropTypes.bool,
     popupWidth: React.PropTypes.number,
     popupMaxHeight: React.PropTypes.number,
@@ -96,17 +99,21 @@ const SmartEditor = React.createClass({
     if (!keyword) {
       options = [];
     } else if (keyword.charAt(0) === "@" && keyword.length > 1) {
-      options = UserStore.getUsersArray().filter(u =>
-        u.name.indexOf(keyword.substr(1)) >= 0
+      options = UserStore.getUsersArray().filter(u => {
+            let k = keyword.substr(1).toLowerCase();
+            return u.name.toLowerCase().indexOf(k) >= 0 ||
+            u.realname.toLowerCase().indexOf(k) >= 0 ||
+            u.email.toLowerCase().indexOf(k) >= 0;
+        }
       ).map(u =>
           <div key={u.id} value={[keyword, "@" + u.name + " "]} style={style}>
-            <Avatar member={u} /> &ensp;
+            <Avatar member={u} link={false} /> &ensp;
             <span style={{fontWeight: 500}}>{u.name}</span>
           </div>
       );
     } else if (keyword.charAt(0) === "#") {
       options = COMMANDS.filter(c =>
-        c.name.indexOf(keyword.substr(1)) >= 0
+        c.name.toLowerCase().indexOf(keyword.substr(1).toLowerCase()) >= 0
       ).map(c =>
           <div key={c.name} value={[keyword, "#" + c.name + ":"]} style={style}>
             <span style={{fontWeight: 500}}>{c.name}</span>
@@ -135,6 +142,7 @@ const SmartEditor = React.createClass({
       this.hidePopup();
     }
   },
+
 
   _setPopupPosition(textarea, pos) {
     let caretPos = CaretPosition(textarea, pos);
@@ -186,7 +194,7 @@ const SmartEditor = React.createClass({
     if (triggerPos >= 0) {
       this._setOptions(text.substring(triggerPos, textarea.selectionEnd));
       this._setPopupPosition(textarea, triggerPos);
-    } else if (this.refs.popup.isShow()) {
+    } else if (this.refs.popup.isShown()) {
       this.hidePopup();
     }
     this._updateValueLink();
@@ -214,6 +222,7 @@ const SmartEditor = React.createClass({
   _uploadFile(callback) {
     var input = $(document.createElement('input'));
     input.attr("type", "file");
+
     input.change(function(e) {
       let file = e.target.files[0];
       let formData = new FormData();
@@ -233,7 +242,7 @@ const SmartEditor = React.createClass({
   },
 
   _inputKeyDown(e){
-    if (!this.refs.popup.isShow() && this.props.onKeyDown) {
+    if (!this.refs.popup.isShown() && this.props.onKeyDown) {
       this.props.onKeyDown(e);
     }
   },
@@ -243,51 +252,14 @@ const SmartEditor = React.createClass({
     let style = {
       boxSizing: "border-box"
     };
+    style = this.mergeAndPrefix(style, this.props.style);
     Object.assign(style, props.style);
 
     let popupStyle = {
       width: props.popupWidth,
       maxHeight: props.popupMaxHeight,
-      overflow: "auto",
       zIndex: 20
     };
-    for (let k in this.state.popupPosition) {
-      popupStyle[k] = this.state.popupPosition[k];
-    }
-
-    // Re-render popup's position
-    setTimeout(() => {
-      if (this.state.popupJustified) return;
-      let rect = this.refs.popup.getDOMNode().getBoundingClientRect();
-      let popupPosition = {
-        position: "fixed",
-        visibility: "visible"
-      };
-      let newTop = this.state.popupPosition.top - rect.height;
-      let position;
-      if (rect.bottom > window.innerHeight && newTop > 0) {
-        position = "top";
-        popupPosition.top = newTop;
-        popupPosition.marginTop = props.popupMinusTop;
-      } else {
-          position = "bottom";
-        // unchanged
-        popupPosition.top = this.state.popupPosition.top;
-        popupPosition.marginTop = this.state.popupPosition.marginTop;
-      }
-      if (rect.right > window.innerWidth && rect.width < window.innerWidth) {
-        popupPosition.left = "auto";
-        popupPosition.right = 0;
-      } else {
-        // unchanged
-        popupPosition.left = this.state.popupPosition.left;
-      }
-      this.setState({
-        popupPosition: popupPosition,
-        popupJustified: true,
-          position: position
-      });
-    }, 0);
 
     let tfProps = {};
     ["className", "defaultValue", "errorText", "floatingLabelText", "hintText", "multiLine"].map(
@@ -297,12 +269,12 @@ const SmartEditor = React.createClass({
     // Apply `style` to TextField seems no effect, so just apply to Item
     return (
       <Item flex style={style} className={"smart-editor" + (props.nohr ? " nohr" : "")}>
-        <TextField {...tfProps} onKeyDown={this._inputKeyDown} ref="textfield"
+        <TextField {...tfProps} style={this.mergeAndPrefix({width:'100%'}, this.props.inputStyle)} onKeyDown={this._inputKeyDown} ref="textfield"
                                 onChange={this._onInputChange}/>
         <PopupSelect ref="popup"
-                     position={this.state.position}
+                     relatedTo={() => {return {top: this.state.popupPosition.top, left: this.state.popupPosition.left, width: 0, height: 30}}}
                      onItemSelect={this._onItemSelect}
-            style={popupStyle}>
+                     style={popupStyle}>
           {this.state.options}
         </PopupSelect>
       </Item>

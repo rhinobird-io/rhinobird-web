@@ -9,6 +9,7 @@ let LoginStore = require("../../stores/LoginStore");
 let UserStore = require("../../stores/UserStore");
 
 let markdown = require('./markdown');
+let Common = require('../Common');
 
 let Flex = require('../Flex');
 let Ps = require('perfect-scrollbar');
@@ -25,6 +26,9 @@ const SmartDisplay = React.createClass({
         return {
             enableLinkPreview: true
         };
+    },
+    contextTypes: {
+        muiTheme: React.PropTypes.object
     },
     shouldComponentUpdate(nextProps, nextState){
         return nextProps.value !== this.props.value || nextState.urlPreviews !== this.state.urlPreviews;
@@ -43,9 +47,11 @@ const SmartDisplay = React.createClass({
         let self = this;
         $(this.getDOMNode()).find("a").each(function(){
             let elem = $(this);
+            elem.css('color', self.context.muiTheme.palette.accent1Color);
             if(elem.hasClass('member-at')){
                 elem.click(self._onClick);
             }
+
             if(elem.hasClass('file-link')){
                 let fileSource = new EventSource(`/file/files/${elem.data('file-id')}`);
                 fileSource.addEventListener('message', (e)=>{
@@ -203,8 +209,8 @@ const SmartDisplay = React.createClass({
             <div className='vertical-line'></div>
             <div style={{flexGrow: 1}} className='content'>
                 {p.urlSiteName ? <div className='site-name'>{p.urlSiteName}</div> : undefined}
-                {p.urlTitle ? <a target='_blank' style={{display:'block'}} href={p.url} className='title'>{p.urlTitle}</a> : undefined}
-                {p.urlDescription ? <a target='_blank' style={{display:'block', color:'black'}} href={p.url} className='description'>{p.urlDescription}</a> : undefined}
+                {p.urlTitle ? <Common.Link target='_blank' style={{display:'block'}} href={p.url} className='title'>{p.urlTitle}</Common.Link> : undefined}
+                {p.urlDescription ? <Common.Link target='_blank' style={{display:'block', color:'black'}} href={p.url} className='description'>{p.urlDescription}</Common.Link> : undefined}
                 {p.videoURL ? <div style={{width: Math.min(p.videoWidth, maxWidth) ,maxWidth: '100%'}}><div style={{position: 'relative',
                                             width: '100%',
                                             height: 0,

@@ -52,6 +52,7 @@ let NotificationStore = assign({}, BaseStore, {
         break;
 
       case ActionTypes.READ_NOTIFI:
+          console.log("Read Notifi");
         let list = data.map(n => n.id);
         _notifications.map(n => {
           if (list.includes(n.id)) n.checked = true;
@@ -63,9 +64,11 @@ let NotificationStore = assign({}, BaseStore, {
         break;
     }
 
-    if (changed) NotificationStore.emitChange();
+    if (changed) {
+      NotificationStore.emitChange();
+    }
   })
 
 });
 
-export default NotificationStore;
+module.exports = NotificationStore;

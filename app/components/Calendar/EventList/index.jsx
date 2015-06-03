@@ -12,12 +12,18 @@ const React                = require("react"),
       CalendarActions      = require("../../../actions/CalendarActions"),
       UserStore            = require("../../../stores/UserStore"),
       PerfectScroll        = require('../../PerfectScroll'),
-      InfiniteScroll       = require('../../InfiniteScroll');
+      InfiniteScroll       = require('../../InfiniteScroll'),
+      RouterLink           = require('../../Common').RouterLink,
+      StylePropable        = require('material-ui/lib/mixins/style-propable');
 
 require("./style.less");
 
 export default React.createClass({
-    mixins: [React.addons.LinkedStateMixin],
+    mixins: [React.addons.LinkedStateMixin, StylePropable],
+
+    contextTypes: {
+        muiTheme: React.PropTypes.object
+    },
 
     getInitialState() {
         return {
@@ -95,6 +101,31 @@ export default React.createClass({
     },
 
     render: function() {
+        let styles = {
+            dayLabel: {
+                backgroundColor: this.context.muiTheme.palette.accent1Color
+            },
+            eventIcon: {
+                backgroundColor: this.context.muiTheme.palette.primary1Color
+            },
+            eventParticipant: {
+                padding: "6px 8px",
+                fontSize: "0.9em"
+            },
+            eventWrapper: {
+            },
+            eventContentInner: {
+                position: "relative",
+                boxShadow: "0px 0px 6px 0 rgba(0, 0, 0, .4)",
+                backgroundColor: this.context.muiTheme.palette.canvasColor,
+                transition: "box-shadow 2000ms"
+            },
+            eventContentInnerHighlight: {
+                boxShadow: "0px 0px 6px 0 " + this.context.muiTheme.palette.accent1Color,
+                transition: "box-shadow 2000ms"
+            }
+        };
+
         let eventKeys = Object.keys(this.state.events).sort();
         let eventsDOM = eventKeys.map((key, index) => {
             let direction = index % 2 === 0 ? "left" : "right";
@@ -109,7 +140,7 @@ export default React.createClass({
 
             dayEvents.push(
                 <div className={dayDividerClass}>
-                    <div className="cal-day-divider-label">
+                    <div className="cal-day-divider-label" style={styles.dayLabel}>
                         <span>{Moment.weekdaysShort()[Moment(key).day()]}</span>
                         <label>{Moment(key).format("M/D")}</label>
                     </div>
@@ -119,10 +150,12 @@ export default React.createClass({
             dayEvents.push(events.map((event) => {
                 let contentClass = "cal-event-content " + direction;
                 let eventIconClass = "cal-event-icon";
+                let eventIconStyle = styles.eventIcon;
 
                 let now = new Date();
                 let fromTime = new Date(event.from_time);
                 let toTime = event.to_time ? new Date(event.to_time) : fromTime;
+
                 if (toTime < now) {
                     eventIconClass += " expired";
                 } else if (now > fromTime && now < toTime) {
@@ -131,24 +164,27 @@ export default React.createClass({
 
                 let ref = event.id.toString() === this.state.newCreated ? "newCreated" : undefined;
                 let contentInnerClass = "cal-event-content-inner";
+                let contentInnerStyle = styles.eventContentInner;
                 if (event.id.toString() === this.state.newCreated) {
-                    contentInnerClass += " highlight";
+                    //contentInnerClass += " highlight";
+                    contentInnerStyle = this.mergeStyles(styles.eventContentInner, styles.eventContentInnerHighlight);
+                    //console.log(eventIconStyle);
                 }
 
-                let control = <span title="Event Members" className="cal-event-member icon-group"></span>;
+                let control = <span title="Event Members" className="cal-event-member icon-group" style={{cursor: "pointer"}}></span>;
                 let menu = event.participants.map((p) => {
                     let u = UserStore.getUser(p.id);
-                    return <Flex.Layout key={u.id} horizontal>
+                    return <Flex.Layout key={u.id} horizontal justified style={styles.eventParticipant}>
                         <Avatar member={u} style={{borderRadius: "50%"}} /> &ensp;&ensp;
-                        <span style={{fontWeight: 500}}>{u.name}</span>
+                        <Flex.Layout center style={{fontWeight: 500}}>{u.name}</Flex.Layout>
                     </Flex.Layout>;
                 });
 
                 let teamMenu = event.team_participants.map(t => {
                     let t = UserStore.getTeam(t.id);
-                    return <Flex.Layout key={t.id} horizontal>
+                    return <Flex.Layout horizontal justified key={t.id} style={styles.eventParticipant}>
                         <Avatar member={t} style={{borderRadius: "50%"}} /> &ensp;&ensp;
-                        <span style={{fontWeight: 500}}>{t.name}</span>
+                        <Flex.Layout center><span style={{fontWeight: 500}}>{t.name}</span></Flex.Layout>
                     </Flex.Layout>;
                 });
 
@@ -157,27 +193,37 @@ export default React.createClass({
                 } else if (teamMenu.length !== 0) {
                     menu = menu.concat(teamMenu);
                 }
+
+                let format;
+                let relative = true;
+
+                // If full day event, using different date format and disable relative display
+                if (event.full_day) {
+                    relative = false;
+                    format = "YYYY MMMM Do";
+                }
                 return (
                     <div ref={ref} className="cal-event">
-                        <div className={eventIconClass}>
+                        <div className={eventIconClass} style={eventIconStyle}>
                             <span style={{fontSize: 20}} className="icon-event"></span>
                         </div>
 
                         <div className={contentClass}>
-                            <div className={contentInnerClass}>
+                            <div style={contentInnerStyle} className={contentInnerClass}>
                                 <div className="cal-event-title">
                                     <Flex.Layout horizontal justified>
-                                        <Link
+                                        <RouterLink
                                             tooltip={event.title}
                                             style={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}
                                             to="event-detail" params={{ id: event.id, repeatedNumber: event.repeated_number }}>
                                             <span title={event.title}>{event.title}</span>
-                                        </Link>
-                                        <DropDownAny ref="dropdown" control={control} menu={menu} />
+                                        </RouterLink>
+                                        <DropDownAny style={{padding: "8px 12px"}} ref="dropdown" control={control} menu={menu} />
                                     </Flex.Layout>
                                     <div className="cal-event-time">
                                         <SmartTimeDisplay
-                                            relative
+                                            format={format}
+                                            relative={relative}
                                             end={event.to_time}
                                             start={event.from_time} />
                                     </div>
@@ -241,7 +287,7 @@ export default React.createClass({
                 {noMoreNewerEvents}
                 <Link to="create-event">
                     <MUI.FloatingActionButton
-                        className="add-event"
+                        style={{position: "fixed", bottom: 24, right: 24}}
                         iconClassName="icon-add" />
                 </Link>
                 {snackBar}

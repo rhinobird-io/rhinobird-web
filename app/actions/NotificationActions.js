@@ -65,7 +65,7 @@ function _websocket() {
   }
 }
 
-export default {
+let NotificationActions = {
 
   receive(startIndex) {
     if (startIndex === 0) NotificationStore.clear();
@@ -93,6 +93,7 @@ export default {
       if (!n.checked) data.push({id: n.id});
     });
     if (data.length === 0) return;
+    console.log("mark");
     socket.send(JSON.stringify(data));
     AppDispatcher.dispatch({
       type: ActionTypes.READ_NOTIFI,
@@ -101,3 +102,5 @@ export default {
   }
 
 };
+
+module.exports = NotificationActions;

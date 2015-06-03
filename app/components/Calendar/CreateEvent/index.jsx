@@ -99,7 +99,7 @@ export default React.createClass({
             repeatedOn: this._getInitialRepeatedOn(new Date()),
             repeatedBy: "Month",
             repeatedEndType: "Never",
-            repeatedEndDate: "",
+            repeatedEndDate: new Date(),
             repeatedTimes: 2,
             isPeriod: true
         };
@@ -170,8 +170,8 @@ export default React.createClass({
                                 className="cal-create-event-textfield" />
 
                             <Flex.Layout horizontal justified style={{marginTop: 24, marginBottom: 24}}>
-                                <label>Full Day</label>
                                 <MUI.Toggle
+                                    label="Full Day"
                                     onToggle={this._onFullDayToggled}/>
                             </Flex.Layout>
 
@@ -220,7 +220,9 @@ export default React.createClass({
                                 </Flex.Layout>
                                 <Flex.Layout horizontal centerJustified>
                                     <Flex.Layout vertical selfCenter>
-                                        <label style={{maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>{this._getSummary()}</label>
+                                        <label title={this._getSummary()} style={{maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>
+                                            {this._getSummary()}
+                                        </label>
                                     </Flex.Layout>
                                     <MUI.FlatButton
                                         label="Edit"
@@ -239,10 +241,8 @@ export default React.createClass({
                             <MemberSelect
                                 hintText="Participants"
                                 floatingLabelText="Participants"
-                                className="cal-create-event-textfield"
+                                style={{width: "100%"}}
                                 valueLink={this.linkState("participants")} />
-
-                            <br/>
 
                             <Flex.Layout horizontal justified>
                                 <Link to="event-list">
@@ -324,6 +324,7 @@ export default React.createClass({
         let event = this.state;
         event.title = title;
         event.description = description;
+        console.log(event);
         CalendarActions.create(event, () => this.context.router.transitionTo("event-list"));
     },
 
@@ -341,6 +342,7 @@ export default React.createClass({
             }
         };
 
+        let weeklyRepeats = this.daysInWeek.map(day => <span name={day}>{day}</span>);
         let weeklyRepeatOn =
             <Flex.Layout horizontal justified hidden={this.state.repeatedType !== "Weekly"} style={styles.row}>
                 <label>Repeated On:</label>
@@ -348,13 +350,7 @@ export default React.createClass({
                     multiple
                     valueLink={this.linkState("repeatedOn")}
                     onSelectChange={this._repeatedOnChange}>
-                    <span className="cal-event-repeated-item" name="Sun">Sun</span>
-                    <span className="cal-event-repeated-item" name="Mon">Mon</span>
-                    <span className="cal-event-repeated-item" name="Tue">Tue</span>
-                    <span className="cal-event-repeated-item" name="Wed">Wed</span>
-                    <span className="cal-event-repeated-item" name="Thu">Thu</span>
-                    <span className="cal-event-repeated-item" name="Fri">Fri</span>
-                    <span className="cal-event-repeated-item" name="Sat">Sat</span>
+                    {weeklyRepeats}
                 </Selector>
             </Flex.Layout>;
 
@@ -392,6 +388,7 @@ export default React.createClass({
                 <Flex.Layout vertical selfCenter>
                     <MUI.DatePicker
                         ref="repeatedEndDate"
+                        style={{width: 120}}
                         defaultDate={this.state.fromTime}
                         hintText="" mode="landscape"
                         className="cal-event-repeated-end-date" />

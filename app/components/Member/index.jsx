@@ -4,6 +4,7 @@ const FloatingContentAction = require('../../actions/FloatingContentAction');
 const Select = require('../Select');
 const Flex = require('../Flex');
 const UserStore = require("../../stores/UserStore");
+const Common = require('../Common');
 
 function Member() {
 
@@ -48,9 +49,9 @@ Member.Avatar = React.createClass({
             let display = <img className='avatar' width={size} height={size} {...this.props}
                                src={`http://www.gravatar.com/avatar/${this.props.member.emailMd5}?d=identicon`}/>;
             if (this.props.link) {
-                return <a onClick={_showMemberProfile.bind(this)}>
+                return <Common.Link onClick={_showMemberProfile.bind(this)}>
                     {display}
-                </a>;
+                </Common.Link>;
             } else {
                 return display;
             }
@@ -71,9 +72,9 @@ Member.Name = React.createClass({
         if (this.props.member) {
             let display = <span className={this.props.className} style={this.props.style}>{this.props.member.realname}</span>;
             if (this.props.link) {
-                return <a onClick={_showMemberProfile.bind(this)}>
+                return <Common.Link onClick={_showMemberProfile.bind(this)}>
                     {display}
-                </a>;
+                </Common.Link>;
             } else {
                 return display;
             }
@@ -98,10 +99,10 @@ Member.MemberSelect = React.createClass({
         hintText: React.PropTypes.string,
         label: React.PropTypes.string
     },
-
     focus() {
         this.refs.select.focus();
     },
+
     getDefaultProps: function() {
         return {
             user: true,
@@ -132,13 +133,14 @@ Member.MemberSelect = React.createClass({
     },
 
     render: function() {
-        console.log("MemberSelect render.");
         let {
             team,
             user,
             className,
+            onChange,
+            style,
             ...other
-            } = this.props;
+        } = this.props;
 
         let users =
             user && this.state.users.length > 0 ?
@@ -178,68 +180,68 @@ Member.MemberSelect = React.createClass({
 
         return (
             <div style={{paddingTop:16}}>
-            <label style={{color:'rgba(0,0,0,0.5)'}}>{this.props.label}</label>
-            <Select.Select ref='select'
-                multiple
-                token={(v) => {
-                    let u;
-                    if (v.indexOf("user_") === 0) {
-                        u = UserStore.getUser(parseInt(v.substring(5)));
-                    } else if (v.indexOf("team_") === 0) {
-                        u = UserStore.getTeam(parseInt(v.substring(5)));
-                    }
-
-                    if (v.indexOf("user_") === 0) {
-                        return <Flex.Layout horizontal key={"user_" + u.id} value={"user_" + u.id}>
-                            <Flex.Layout vertical selfCenter>
-                                <Member.Avatar scale={0.5} member={u} />
-                            </Flex.Layout>&ensp;
-                            <span>{u.realname}</span>
-                        </Flex.Layout>;
-                    } else {
-                        return <Flex.Layout horizontal key={"team_" + u.id} value={"team_" + u.id}>
-                                <Flex.Layout vertical selfCenter>
-                                    <span className="icon-group" style={{fontSize: "12px"}} />
-                                </Flex.Layout>&ensp;
-                                <span style={{fontWeight: 500}}>{u.name}</span>
-                        </Flex.Layout>;
-                    }
-
-                    return null;
-                }}
-                className={className}
-                onChange={(selected) => {
-                    let results = {};
-                    if (team && user) {
-                        results.teams = [];
-                        results.users = [];
-                    } else {
-                        results = [];
-                    }
-
-                    selected.forEach((s) => {
-                        if (s.indexOf("user_") === 0) {
-                            if (!team) {
-                                results.push(parseInt(s.substring(5)));
-                            } else {
-                                results.users.push(parseInt(s.substring(5)));
-                            }
-                        } else if (s.indexOf("team_") === 0) {
-                            if (!user) {
-                                results.push(parseInt(s.substring(5)));
-                            } else {
-                                results.teams.push(parseInt(s.substring(5)));
-                            }
+                <label style={{color:'rgba(0,0,0,0.5)'}}>{this.props.label}</label>
+                <Select.Select ref='select'
+                    multiple
+                    style={style}
+                    token={(v) => {
+                        let u;
+                        if (v.indexOf("user_") === 0) {
+                            u = UserStore.getUser(parseInt(v.substring(5)));
+                        } else if (v.indexOf("team_") === 0) {
+                            u = UserStore.getTeam(parseInt(v.substring(5)));
                         }
-                    });
-                    if (this.props.valueLink || this.props.onChange) {
-                        this.getValueLink(this.props).requestChange(results);
-                    }
-                }}
-                {...other}>
-                {children}
-            </Select.Select>
-                </div>
+
+                        if (v.indexOf("user_") === 0) {
+                            return <Flex.Layout horizontal key={"user_" + u.id} value={"user_" + u.id}>
+                                <Flex.Layout vertical selfCenter>
+                                    <Member.Avatar scale={0.5} member={u} />
+                                </Flex.Layout>&ensp;
+                                <span>{u.realname}</span>
+                            </Flex.Layout>;
+                        } else {
+                            return <Flex.Layout horizontal key={"team_" + u.id} value={"team_" + u.id}>
+                                    <Flex.Layout vertical selfCenter>
+                                        <span className="icon-group" style={{fontSize: "12px"}} />
+                                    </Flex.Layout>&ensp;
+                                    <span style={{fontWeight: 500}}>{u.name}</span>
+                            </Flex.Layout>;
+                        }
+
+                        return null;
+                    }}
+                    onChange={(selected) => {
+                        let results = {};
+                        if (team && user) {
+                            results.teams = [];
+                            results.users = [];
+                        } else {
+                            results = [];
+                        }
+
+                        selected.forEach((s) => {
+                            if (s.indexOf("user_") === 0) {
+                                if (!team) {
+                                    results.push(parseInt(s.substring(5)));
+                                } else {
+                                    results.users.push(parseInt(s.substring(5)));
+                                }
+                            } else if (s.indexOf("team_") === 0) {
+                                if (!user) {
+                                    results.push(parseInt(s.substring(5)));
+                                } else {
+                                    results.teams.push(parseInt(s.substring(5)));
+                                }
+                            }
+                        });
+                        if (this.props.valueLink || this.props.onChange) {
+                            this.getValueLink(this.props).requestChange(results);
+                        }
+                    }}
+                    {...other}>
+                    {children}
+                </Select.Select>
+            </div>
         );
     },
 

@@ -10,10 +10,10 @@
 .markdown-body {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
-  color: #333;
+  color: rgba(0,0,0,0.87);
   overflow: hidden;
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 13px;
+  line-height: 20px;
   word-wrap: break-word;
 }
 

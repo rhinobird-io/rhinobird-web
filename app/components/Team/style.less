@@ -1,4 +1,4 @@
-@import "~material-ui/src/less/variables/colors.less";
+
 
 .teamPage {
   .paper-outer-container {
@@ -16,7 +16,7 @@
   }
 
   .add-member {
-    color: @pink-500;
+    color: grey;
   }
   .add-team {
     position: fixed;
@@ -61,20 +61,6 @@
         font-family: icomoon;
         font-size: 20px;
       }
-      &.highlight.primary {
-        fill: @pink-500;
-
-        circle {
-          stroke: @pink-500;
-        }
-      }
-      &.highlight.secondary {
-        fill: @cyan-500;
-
-        circle {
-          stroke: @cyan-500;
-        }
-      }
       circle {
         cursor: pointer;
       }
@@ -96,15 +82,6 @@
       fill: #fff;
       stroke-width: 1.5px;
     }
-
-    .node.highlight.primary rect{
-      stroke: @pink-500;
-    }
-
-    .node.highlight.secondary rect{
-      stroke: @cyan-500;
-    }
-
     .edgePath path {
       stroke: rgba(0,0,0,0.54);
       stroke-width: 1.5px;
