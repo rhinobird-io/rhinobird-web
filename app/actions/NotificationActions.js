@@ -88,12 +88,12 @@ let NotificationActions = {
   markAsRead() {
     let socket = NotificationStore.getWebSocket();
     if (socket === null) return;
-    console.log("mark");
     let data = [];
     NotificationStore.getAll().map(n => {
       if (!n.checked) data.push({id: n.id});
     });
     if (data.length === 0) return;
+    console.log("mark");
     socket.send(JSON.stringify(data));
     AppDispatcher.dispatch({
       type: ActionTypes.READ_NOTIFI,

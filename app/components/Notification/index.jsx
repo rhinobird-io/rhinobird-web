@@ -72,7 +72,11 @@ let Notification = React.createClass({
     },
 
     getInitialState() {
-        return {notifications: [], transitionTo: null};
+        return {
+            notifications: [],
+            transitionTo: null,
+            unCheckedCount: NotificationStore.getUncheckedCount()
+        };
     },
 
     componentDidMount() {
@@ -95,7 +99,8 @@ let Notification = React.createClass({
 
     _onChange() {
         this.setState({
-            notifications: NotificationStore.getAll()
+            notifications: NotificationStore.getAll(),
+            unCheckedCount: NotificationStore.getUncheckedCount()
         });
     },
 
@@ -115,8 +120,7 @@ let Notification = React.createClass({
         };
         let iconClassName = 'icon-notifications';
 
-        console.log("Notification Updated");
-        if (NotificationStore.getUncheckedCount() !== 0){
+        if (this.state.unCheckedCount !== 0){
             iconStyle = {
                 fill: this.context.muiTheme.palette.accent3Color,
                 color: this.context.muiTheme.palette.accent3Color
