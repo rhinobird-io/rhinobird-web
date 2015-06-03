@@ -63,6 +63,10 @@ module.exports = React.createClass({
         } else {
             node.scrollTop = this.scrollTop + (node.scrollHeight - this.scrollHeight);
         }
+
+        if (this.state.messages.length < 10) {
+          this.loadMoreOldMessages();
+        }
     },
 
     _onReceiveMessage(newChannel) {
