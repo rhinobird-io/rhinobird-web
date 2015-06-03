@@ -99,7 +99,7 @@ export default React.createClass({
             repeatedOn: this._getInitialRepeatedOn(new Date()),
             repeatedBy: "Month",
             repeatedEndType: "Never",
-            repeatedEndDate: "",
+            repeatedEndDate: new Date(),
             repeatedTimes: 2,
             isPeriod: true
         };
@@ -220,7 +220,9 @@ export default React.createClass({
                                 </Flex.Layout>
                                 <Flex.Layout horizontal centerJustified>
                                     <Flex.Layout vertical selfCenter>
-                                        <label style={{maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>{this._getSummary()}</label>
+                                        <label title={this._getSummary()} style={{maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>
+                                            {this._getSummary()}
+                                        </label>
                                     </Flex.Layout>
                                     <MUI.FlatButton
                                         label="Edit"
@@ -322,6 +324,7 @@ export default React.createClass({
         let event = this.state;
         event.title = title;
         event.description = description;
+        console.log(event);
         CalendarActions.create(event, () => this.context.router.transitionTo("event-list"));
     },
 
@@ -385,6 +388,7 @@ export default React.createClass({
                 <Flex.Layout vertical selfCenter>
                     <MUI.DatePicker
                         ref="repeatedEndDate"
+                        style={{width: 120}}
                         defaultDate={this.state.fromTime}
                         hintText="" mode="landscape"
                         className="cal-event-repeated-end-date" />

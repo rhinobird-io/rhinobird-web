@@ -118,11 +118,11 @@ export default React.createClass({
                 position: "relative",
                 boxShadow: "0px 0px 6px 0 rgba(0, 0, 0, .4)",
                 backgroundColor: this.context.muiTheme.palette.canvasColor,
-                transition: "box-shadow 1000ms"
+                transition: "box-shadow 2000ms"
             },
             eventContentInnerHighlight: {
                 boxShadow: "0px 0px 6px 0 " + this.context.muiTheme.palette.accent1Color,
-                transition: "box-shadow 1000ms"
+                transition: "box-shadow 2000ms"
             }
         };
 

@@ -162,7 +162,6 @@ let CalendarAction =  {
             parsedEvent.repeated_times = event.repeatedTimes;
             parsedEvent.repeated_end_type = event.repeatedEndType;
             parsedEvent.repeated_end_date = event.repeatedEndDate;
-
         } else {
             parsedEvent.repeated = false;
         }
