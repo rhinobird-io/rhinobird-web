@@ -69,6 +69,9 @@ export default React.createClass({
                 verticalAlign: "baseline",
                 lineHeight: "34px",
                 textAlign: "center"
+            },
+            deleteButton: {
+                color: this.context.muiTheme.palette.accent1Color
             }
         };
 
@@ -80,11 +83,14 @@ export default React.createClass({
             eventContent = <h3 style={{textAlign: "center"}}>Event not found</h3>
         } else {
             let deleteEvent = LoginStore.getUser().id === event.creator_id ?
-                <MUI.IconButton iconClassName="icon-delete" onClick={this._onEventDelete}/> : null;
+                <MUI.IconButton
+                    iconStyle={styles.deleteButton}
+                    iconClassName="icon-delete"
+                    onClick={this._onEventDelete} /> : null;
 
             eventActions = <Flex.Layout horizontal justified>
                 <RouterLink to="event-list">
-                    <MUI.IconButton iconClassName="icon-arrow-back" tooltip="Back"/>
+                    <MUI.IconButton iconClassName="icon-arrow-back" title="Back to List"/>
                 </RouterLink>
                 {deleteEvent}
                 {
@@ -102,12 +108,22 @@ export default React.createClass({
                 <div key="title" style={styles.eventTitle}>{event.title}</div>
             );
 
-            let formatTime = Moment(event.from_time).format("YYYY-MM-DD HH:mm");
-            if (event.period) {
-                formatTime += " ~ " + Moment(event.to_time).format("YYYY-MM-DD HH:mm")
+            let format;
+            if (event.full_day) {
+                format = "YYYY-MM-DD";
+            } else {
+                format = "YYYY-MM-DD HH:mm";
+            }
+
+            let formattedFrom = Moment(event.from_time).format(format);
+            let formattedTo = Moment(event.to_time).format(format);
+
+            let formatTime = formattedFrom;
+            if (event.period && formattedFrom !== formattedTo) {
+                formatTime += " ~ " + Moment(event.to_time).format(format)
             }
             eventContent.push(
-                <div key="time"  style={styles.eventTime}>{formatTime}</div>
+                <div key="time" style={styles.eventTime}>{formatTime}</div>
             );
 
             eventContent.push(

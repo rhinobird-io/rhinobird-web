@@ -138,15 +138,29 @@ let CalendarAction =  {
         if (!parsedEvent.full_day) {
             fromTime.setHours(event.fromHour);
             fromTime.setMinutes(event.fromMinute);
-        }
 
-        if (event.isPeriod) {
-            parsedEvent.period = true;
-            toTime.setHours(event.toHour);
-            toTime.setMinutes(event.toMinute);
+            if (event.isPeriod) {
+                parsedEvent.period = true;
+                toTime.setHours(event.toHour);
+                toTime.setMinutes(event.toMinute);
+            } else {
+                parsedEvent.period = false;
+                toTime = fromTime;
+            }
         } else {
-            parsedEvent.period = false;
-            toTime = fromTime;
+            fromTime.setHours(0);
+            fromTime.setMinutes(0);
+            fromTime.setSeconds(0);
+
+            if (event.isPeriod) {
+                parsedEvent.period = true;
+                toTime.setHours(23);
+                toTime.setMinutes(59);
+                toTime.setSeconds(59);
+            } else {
+                parsedEvent.period = false;
+                toTime = fromTime;
+            }
         }
 
         parsedEvent.from_time = fromTime.toISOString();

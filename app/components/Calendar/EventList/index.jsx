@@ -193,6 +193,15 @@ export default React.createClass({
                 } else if (teamMenu.length !== 0) {
                     menu = menu.concat(teamMenu);
                 }
+
+                let format;
+                let relative = true;
+
+                // If full day event, using different date format and disable relative display
+                if (event.full_day) {
+                    relative = false;
+                    format = "YYYY MMMM Do";
+                }
                 return (
                     <div ref={ref} className="cal-event">
                         <div className={eventIconClass} style={eventIconStyle}>
@@ -213,7 +222,8 @@ export default React.createClass({
                                     </Flex.Layout>
                                     <div className="cal-event-time">
                                         <SmartTimeDisplay
-                                            relative
+                                            format={format}
+                                            relative={relative}
                                             end={event.to_time}
                                             start={event.from_time} />
                                     </div>

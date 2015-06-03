@@ -121,6 +121,7 @@ let CalendarStore = assign({}, BaseStore, {
             Object.keys(_events[key]).forEach(id => {
                 events[key].push(_events[key][id]);
             });
+            events[key].sort(_sortByFromTime);
         });
         return events;
     },

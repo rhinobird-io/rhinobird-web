@@ -17,12 +17,19 @@ export default React.createClass({
             React.PropTypes.string
         ]),
         format: React.PropTypes.string,
-        relative: React.PropTypes.bool,
-        container: React.PropTypes.object
+        relative: React.PropTypes.bool
     },
+
     contextTypes: {
         muiTheme: React.PropTypes.object
     },
+
+    getDefaultProps() {
+        return {
+            dateOnly: false
+        }
+    },
+
     getInitialState() {
         return {
             tipShow: false
@@ -46,7 +53,7 @@ export default React.createClass({
         let start = this.props.start ? new Date(this.props.start) : 0,
             end   = this.props.end ? new Date(this.props.end) : start,
             relative = this.props.relative || false,
-            format = this.props.format || "MMMM Do YYYY, h:mm:ss a";
+            format = this.props.format || "YYYY-MM-DD hh:mm:ss a";
 
         let timeFormat = "";
 
