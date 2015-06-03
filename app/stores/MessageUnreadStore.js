@@ -102,6 +102,17 @@ let UnreadStore = assign({}, BaseStore, {
                 let backEndChannelId = payload.backEndChannelId;
                 _unreadBool = _unreadBool.set(backEndChannelId, false);
                 UnreadStore.emit(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + backEndChannelId, {unread : false});
+                // cauz socket may not ready
+                SocketStore.pushDeferTasks(function(socket){
+                  if (MessageStore.getCurrentChannelLatestMessageId() !== 0) {
+                    socket.emit('message:seen', {
+                      userId: LoginStore.getUser().id,
+                      messageId: MessageStore.getCurrentChannelLatestMessageId(),
+                      channelId: backEndChannelId
+                    })
+                  }
+
+                });
                 break;
             default:
                 break;

@@ -8,10 +8,27 @@ import assign from 'object-assign';
 import _ from 'lodash';
 
 let _socket;
+let _deferTasks = [];
 
 let SocketStore = assign({}, BaseStore, {
 
     getSocket : ()=>{return _socket; },
+
+  /**
+   * it will be called once the socket is ready
+   * @param task
+   */
+    pushDeferTasks: (task) => {
+      if (SocketStore.isSocketReady()) {
+        task(_socket);
+      } else {
+        _deferTasks.push(task);
+      }
+
+    },
+    isSocketReady: () => {
+      return !!_socket;
+    },
 
     dispatcherIndex: AppDispatcher.register(function (payload) {
         switch (payload.type) {
@@ -19,6 +36,10 @@ let SocketStore = assign({}, BaseStore, {
                 let socket = payload.socket;
                 _socket = socket;
                 SocketStore.initSocket(payload.channels);
+                _deferTasks.forEach(task => {
+                  task(_socket)
+                });
+                _deferTasks = [];
                 break;
             default:
                 break;
