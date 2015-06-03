@@ -12,7 +12,6 @@ const UserStore = require("../../stores/UserStore");
 const ClickAwayable = MUI.Mixins.ClickAwayable;
 const Flex = require('../Flex');
 const StylePropable = require('material-ui/lib/mixins/style-propable');
-const Flex = require('../Flex');
 
 import _ from 'lodash';
 
