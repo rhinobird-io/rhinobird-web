@@ -44,7 +44,7 @@ let RecentChannelStore = assign({}, BaseStore, {
             }
 
         } else {
-            console.log('neither public group channel nor direct message channel');
+            console.error('neither public group channel nor direct message channel');
         }
     },
 

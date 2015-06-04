@@ -84,6 +84,9 @@ const SmartEditor = React.createClass({
       this.refs.popup.show();
   },
 
+  focus(){
+      this.refs.textfield.focus();
+  },
   hidePopup() {
       this.refs.popup.dismiss();
   },

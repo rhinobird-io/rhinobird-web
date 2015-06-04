@@ -125,7 +125,6 @@ let DayBar = React.createClass({
                 <EventRect event={event}/>
             );
         });
-        console.log(eventsRect);
         return (
             <div style={style}>
                 {times}

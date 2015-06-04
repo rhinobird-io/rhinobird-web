@@ -87,8 +87,8 @@ let TeamDisplay = React.createClass({
             return <div className='paper-outer-container'>
                 <Paper zDepth={1} style={{padding: 24}}>
                         <Flex.Layout justified center >
-                            <Flex.Layout center style={{fontSize: '1.5em', lineHeight: '48px'}}>
-                                <mui.FontIcon style={{fontSize: '1.5em'}} className='icon-group'/>
+                            <Flex.Layout center style={{fontSize: '1.5em'}}>
+                                <mui.FontIcon style={{fontSize: '1.5em', lineHeight: '48px'}} className='icon-group'/>
                                 <div style={{marginLeft: 8}}>{this.props.team.name}</div>
                             </Flex.Layout>
                             {loginUserTeam ?
@@ -110,10 +110,12 @@ let TeamDisplay = React.createClass({
                                 <div className='mui-font-style-subhead-1'>Parent teams</div>
                                 <Flex.Layout wrap>
                                     {this.props.team.parentTeams.map((parent)=> {
-                                        return <mui.FlatButton key={parent.name} className='team-item'
+                                        return <mui.FlatButton key={parent.name} style={{padding:"0 12px", textTransform:'none'}}
                                                                onClick={this._teamItemClick.bind(this, parent)}>
-                                            <mui.FontIcon className='icon-group flat-button-icon'/>
-                                            <span className='flat-button-label'>{parent.name}</span>
+                                            <Flex.Layout center>
+                                                <mui.FontIcon className='icon-group'/>
+                                                <span style={{marginLeft:4}}>{parent.name}</span>
+                                            </Flex.Layout>
                                         </mui.FlatButton>;
                                     })}
                                 </Flex.Layout>
@@ -126,10 +128,12 @@ let TeamDisplay = React.createClass({
                                 <div className='mui-font-style-subhead-1'>Subsidiary teams</div>
                                 <Flex.Layout wrap>
                                     {this.props.team.teams.map((team)=> {
-                                        return <mui.FlatButton key={team.name} className='team-item'
+                                        return <mui.FlatButton key={team.name} style={{padding:"0 12px", textTransform:'none'}}
                                                                onClick={this._teamItemClick.bind(this, team)}>
-                                            <mui.FontIcon className='icon-group flat-button-icon'/>
-                                            <span className='flat-button-label'>{team.name}</span>
+                                            <Flex.Layout center>
+                                                <mui.FontIcon className='icon-group'/>
+                                                <span style={{marginLeft:4}}>{team.name}</span>
+                                            </Flex.Layout>
                                         </mui.FlatButton>;
                                     })}
                                 </Flex.Layout>

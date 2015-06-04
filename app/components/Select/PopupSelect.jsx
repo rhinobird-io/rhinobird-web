@@ -143,7 +143,6 @@ let PopupSelect = React.createClass({
         let topPadding = position === "top" ? padding : null;
         let bottomPadding = position === "bottom" ? padding : null;
 
-        console.log("Position = " + position)
         return (
             <Layout vertical style={this.mergeStyles(style || {}, styles.popupWrapper)}>
                 {topPadding}
