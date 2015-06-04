@@ -14,6 +14,8 @@ let Common = require('../Common');
 let Flex = require('../Flex');
 let Ps = require('perfect-scrollbar');
 
+const Colors = require('material-ui/lib/styles/colors.js');
+
 
 const SmartDisplay = React.createClass({
 
@@ -47,7 +49,7 @@ const SmartDisplay = React.createClass({
         let self = this;
         $(this.getDOMNode()).find("a").each(function(){
             let elem = $(this);
-            elem.css('color', self.context.muiTheme.palette.accent1Color);
+            elem.css('color', Colors.indigo500);
             if(elem.hasClass('member-at')){
                 elem.click(self._onClick);
             }

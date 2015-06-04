@@ -10,7 +10,8 @@ const React           = require("react"),
       LoginStore      = require('../../../stores/LoginStore'),
       CalendarStore   = require('../../../stores/CalendarStore'),
       CalendarActions = require('../../../actions/CalendarActions'),
-      RouterLink      = require('../../Common').RouterLink;
+      RouterLink      = require('../../Common').RouterLink,
+      Thread          = require('../../Thread');
 
 export default React.createClass({
     contextTypes: {
@@ -34,7 +35,8 @@ export default React.createClass({
         let params = this.props.params;
         return {
             event: CalendarStore.getEvent(params.id, params.repeatedNumber),
-            notFound: false
+            notFound: false,
+            threadKey: `/platform/calendar/events/${params.id}/${params.repeatedNumber}`
         };
     },
 
@@ -90,7 +92,7 @@ export default React.createClass({
 
             eventActions = <Flex.Layout horizontal justified>
                 <RouterLink to="event-list">
-                    <MUI.IconButton iconClassName="icon-arrow-back" title="Back to List"/>
+                    <MUI.IconButton style={{marginLeft: -16}} iconClassName="icon-arrow-back" title="Back to List"/>
                 </RouterLink>
                 {deleteEvent}
                 {
@@ -166,7 +168,6 @@ export default React.createClass({
                     </span>
                 );
             });
-
             eventContent.push(<div key="members">{members}</div>);
         }
 
@@ -195,12 +196,14 @@ export default React.createClass({
         return (
             <PerfectScroll style={{height: "100%", position: "relative", margin: "0 auto", padding: 20}}>
                 <Flex.Layout horizontal centerJustified wrap>
-                    <MUI.Paper zDepth={3} style={{position: "relative", paddingTop: 20, width: 600, overflow: "hidden"}}>
+                    <MUI.Paper zDepth={3} style={{position: "relative", padding: 20, width: 600, overflow: "hidden"}}>
                         {eventActions}
-                        <div style={{padding: "0 20px 20px 20px"}}>
+                        <div>
                             {eventContent}
                         </div>
                         {confirmDeleteDialog}
+                        <h2 style={{margin:"24px 0"}}>Comments</h2>
+                        <Thread threadKey={this.state.threadKey}/>
                     </MUI.Paper>
                 </Flex.Layout>
 

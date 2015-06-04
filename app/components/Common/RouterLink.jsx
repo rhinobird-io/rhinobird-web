@@ -1,6 +1,7 @@
 const React = require('react/addons');
 
 const Link = require('react-router').Link;
+const Colors = require('material-ui/lib/styles/colors.js');
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 const RouterLink = React.createClass({
@@ -9,7 +10,7 @@ const RouterLink = React.createClass({
         muiTheme: React.PropTypes.object
     },
     render() {
-        let color = this.context.muiTheme.palette.accent1Color;
+        let color = Colors.indigo500;
         let linkStyle = {
             color: color
         };
