@@ -106,8 +106,11 @@ const Thread = React.createClass({
             $.post('/platform/api/users/notifications', {
                     users: memberIds,
                     content: {
-                        content: `Mentioned you in comment of ${this.props.threadTitle}}`
+                        content: `Mentioned you in comment of ${this.props.threadTitle}`
                     },
+                    email_subject: `[RhinoBird] ${LoginStore.getUser().realname} mentioned you in comment`,
+                    email_body: `${LoginStore.getUser().realname} mentioned you in comment of <a href="${window.location.href.split('#')[0]}">${this.props.threadTitle}</a>
+                    <br/><br/> ${comment}`,
                     url: `window.location.pathname#${c.cid}`
                 }
             );
@@ -125,6 +128,9 @@ const Thread = React.createClass({
                     content: {
                         content: `New comment of ${this.props.threadTitle}}`
                     },
+                    email_subject: `[RhinoBird] ${LoginStore.getUser().realname} posted new comment`,
+                    email_body: `${LoginStore.getUser().realname} posted new comment of <a href="${window.location.href.split('#')[0]}">${this.props.threadTitle}</a>
+                    <br/><br/> ${comment}`,
                     url: `window.location.pathname#${c.cid}`
                 }
             );
