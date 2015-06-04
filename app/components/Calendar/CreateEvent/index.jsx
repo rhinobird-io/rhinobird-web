@@ -13,8 +13,6 @@ const React           = require("react"),
       SmartEditor     = require('../../SmartEditor').SmartEditor,
       CalendarActions = require("../../../actions/CalendarActions");
 
-require("./style.less");
-
 // Return the number of week days of a month
 // Eg: 2015/2/1 is the first sunday of February, it will return 1.
 Date.prototype.weekOfMonth = function() {
@@ -111,7 +109,13 @@ export default React.createClass({
                 transition: "all 500ms",
                 opacity: this.state.editRepeated ? 1 : 0,
                 width: this.state.editRepeated ? "552px" : "0",
-                height: "100%"
+                height: "100%",
+                margin: 20
+            },
+            inner: {
+                width: 600,
+                padding: 0,
+                margin: 20
             }
         };
 
@@ -149,16 +153,16 @@ export default React.createClass({
             <PerfectScroll style={{height: "100%", position: "relative"}}>
                 <Flex.Layout horizontal centerJustified wrap>
                     <form onSubmit={(e) => e.preventDefault()}>
-                    <MUI.Paper zDepth={3} className="cal-create-event">
+                    <MUI.Paper zDepth={3} style={styles.inner}>
                         <div style={{padding: 20}}>
-                            <h3>Create Event</h3>
+                            <h3 style={{marginBottom: 0}}>Create Event</h3>
 
                             <MUI.TextField
                                 ref="eventTitle"
                                 hintText="Event Title"
                                 errorText={this.state.titleError}
                                 floatingLabelText="Event Title"
-                                className="cal-create-event-textfield" />
+                                style={{width: "100%"}} />
 
                             <SmartEditor
                                 multiLine={true}
@@ -166,7 +170,7 @@ export default React.createClass({
                                 hintText="Description"
                                 errorText={this.state.descriptionError}
                                 floatingLabelText="Description"
-                                className="cal-create-event-textfield" />
+                                style={{width: "100%"}} />
 
                             <Flex.Layout horizontal justified style={{marginTop: 24, marginBottom: 24}}>
                                 <MUI.Toggle
@@ -174,7 +178,7 @@ export default React.createClass({
                                     onToggle={this._onFullDayToggled}/>
                             </Flex.Layout>
 
-                            <MUI.Tabs className="cal-create-event-tab">
+                            <MUI.Tabs>
                                 <MUI.Tab label="Period" onActive={() => this.setState({isPeriod: true})}>
                                     <div className="tab-template-container">
                                         <Flex.Layout horizontal justified style={{marginTop: -10}}>
@@ -330,7 +334,8 @@ export default React.createClass({
         let styles = {
             textfield: {
                 textAlign: "center",
-                fontSize: "0.9em"
+                fontSize: "0.9em",
+                width: 40
             },
             row: {
                 lineHeight: "3em"
@@ -371,7 +376,6 @@ export default React.createClass({
                     type="text"
                     ref="repeatedTimes"
                     style={styles.textfield}
-                    className="cal-event-repeated-every"
                     valueLink={this.linkState("repeatedTimes")}/>
                 <Flex.Layout vertical selfCenter>
                     <label>times</label>
@@ -416,7 +420,6 @@ export default React.createClass({
                             type="text"
                             ref="repeatedFrequency"
                             style={styles.textfield}
-                            className="cal-event-repeated-every"
                             valueLink={this.linkState("repeatedFrequency")} />
                         {this.repeatedEvery[this.state.repeatedType]}
                     </div>
