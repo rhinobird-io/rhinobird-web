@@ -22,6 +22,7 @@ const MessageStore = require('../../stores/MessageStore');
 const ImConstants = require('../../constants/IMConstants');
 const PerfectScroll = require('../PerfectScroll');
 const SearchEverywhere = require('../SearchEverywhere');
+const Redirect = require('../../stores/Redirect');
 
 const closeButton = <mui.IconButton iconClassName="icon-close"/>;
 
@@ -76,7 +77,7 @@ let Application = React.createClass({
         FloatingContentStore.addChangeListener(this._floatingContentChanged);
         this.getDOMNode().addEventListener("click", this._clickListener);
         //window.addEventListener("keydown", this._keyDownListener);
-
+        Redirect.addRedirectListener(this._onRequestRedirect);
         MessageStore.on(ImConstants.EVENTS.REQUEST_REDIRECT, this._onRequestRedirect);
     },
 
@@ -85,6 +86,7 @@ let Application = React.createClass({
         this.getDOMNode().removeEventListener("click", this._clickListener);
         //window.removeEventListener("keydown", this._keyDownListener);
 
+        Redirect.removeRedirectListener(this._onRequestRedirect);
         MessageStore.removeListener(ImConstants.EVENTS.REQUEST_REDIRECT, this._onRequestRedirect);
     },
 

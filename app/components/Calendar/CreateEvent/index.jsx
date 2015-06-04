@@ -84,7 +84,9 @@ export default React.createClass({
                 users: []
             },
             fromDate: fromDate,
+            fromTime: fromDate,
             toDate: toDate,
+            toTime: toDate,
             editRepeated: false,
             repeated: false,
             repeatedType: "Daily",
@@ -123,7 +125,8 @@ export default React.createClass({
             ref="fromTime"
             hintText="From Time"
             style={styles.picker}
-            defaultDate={new Date()}
+            defaultDate={this.state.fromTime}
+            defaultTime={this.state.fromTime}
             floatingLabelText="From Time" />
 
         let toTime = <MUI.TimePicker
@@ -131,7 +134,8 @@ export default React.createClass({
             ref="toTime"
             hintText="To Time"
             style={styles.picker}
-            defaultDate={new Date()}
+            defaultDate={this.state.toTime}
+            defaultTime={this.state.toTime}
             floatingLabelText="To Time" />
 
         return (
@@ -195,8 +199,8 @@ export default React.createClass({
                                         <Flex.Layout horizontal justified style={{marginTop: -10}}>
                                             <MUI.DatePicker
                                                 ref="fromDate"
-                                                hintText="Date"
-                                                floatingLabelText="Date"
+                                                hintText="From Date"
+                                                floatingLabelText="From Date"
                                                 defaultDate={this.state.toDate} />
                                                 {!this.state.fullDay ? fromTime : null}
                                         </Flex.Layout>
@@ -306,9 +310,9 @@ export default React.createClass({
         event.title = title;
         event.description = description;
         event.fromDate = this.refs.fromDate.getDate();
-        event.toDate = this.refs.toDate.getDate();
+        event.toDate = this.refs.toDate ? this.refs.toDate.getDate() : new Date();
         event.fromTime = this.refs.fromTime.getTime();
-        event.toTime = this.refs.toTime.getTime();
+        event.toTime = this.refs.toTime ? this.refs.toTime.getTime() : new Date();
         CalendarActions.create(event, () => this.context.router.transitionTo("event-list"));
     },
 
