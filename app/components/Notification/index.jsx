@@ -30,10 +30,7 @@ let NotifiItem = React.createClass({
     render() {
         let messageStyle = {
             wordWrap: "break-word",
-            whiteSpace: "nowrap",
             maxWidth: "100%",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
             color: this.props.read ? this.context.muiTheme.palette.disabledColor : this.context.muiTheme.palette.textColor
         };
         let nameStyle = {
@@ -49,10 +46,10 @@ let NotifiItem = React.createClass({
         }
         return (
             <Layout horizontal style={{padding: "8px 24px"}}>
-                <Layout vertical selfCenter className="avatar-wrapper" style={{marginRight: 12, minWidth: 38}}>
+                <Layout vertical top className="avatar-wrapper" style={{marginRight: 12, marginTop: 4, minWidth: 38}}>
                     <Avatar scale={1.6} member={this.props.sender}/>
                 </Layout>
-                <Layout vertical flex={1} style={{lineHeight: "1.5em"}}>
+                <Layout vertical justified flex={1} style={{lineHeight: "1.5em"}}>
                     <Layout horizontal justified>
                         <div className="name" style={nameStyle}><Name member={this.props.sender}/></div>
                         <div className="time" style={timeStyle} flex={1}><SmartTimeDisplay start={this.props.time} relative/></div>

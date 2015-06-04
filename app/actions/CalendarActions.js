@@ -128,6 +128,8 @@ let CalendarAction =  {
 
     create(event, success, fail) {
         let parsedEvent = {};
+        let _from = new Date(event.fromDate);
+        let _to = new Date(event.toDate);
         let fromTime = new Date(event.fromTime);
         let toTime = new Date(event.toTime);
 
@@ -136,35 +138,37 @@ let CalendarAction =  {
         parsedEvent.full_day = event.fullDay;
 
         if (!parsedEvent.full_day) {
-            fromTime.setHours(event.fromHour);
-            fromTime.setMinutes(event.fromMinute);
+            _from.setHours(fromTime.getHours());
+            _from.setMinutes(fromTime.getMinutes());
+            _from.setSeconds(fromTime.getSeconds());
 
             if (event.isPeriod) {
                 parsedEvent.period = true;
-                toTime.setHours(event.toHour);
-                toTime.setMinutes(event.toMinute);
+                _to.setHours(toTime.getHours());
+                _to.setMinutes(toTime.getMinutes());
+                _to.setSeconds(toTime.getSeconds());
             } else {
                 parsedEvent.period = false;
-                toTime = fromTime;
+                _to = _from;
             }
         } else {
-            fromTime.setHours(0);
-            fromTime.setMinutes(0);
-            fromTime.setSeconds(0);
+            _from.setHours(0);
+            _from.setMinutes(0);
+            _from.setSeconds(0);
 
             if (event.isPeriod) {
                 parsedEvent.period = true;
-                toTime.setHours(23);
-                toTime.setMinutes(59);
-                toTime.setSeconds(59);
+                _to.setHours(23);
+                _to.setMinutes(59);
+                _to.setSeconds(59);
             } else {
                 parsedEvent.period = false;
-                toTime = fromTime;
+                _to = _from;
             }
         }
 
-        parsedEvent.from_time = fromTime.toISOString();
-        parsedEvent.to_time = toTime.toISOString();
+        parsedEvent.from_time = _from.toISOString();
+        parsedEvent.to_time = _to.toISOString();
 
         parsedEvent.participants = event.participants;
         if (event.repeated) {

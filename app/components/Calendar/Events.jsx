@@ -1,54 +1,7 @@
-let React = require('react');
-let CalendarStore = require("../../stores/CalendarStore");
-let CalendarActions = require("../../actions/CalendarActions");
-
-let EventRect = React.createClass({
-    getInitialState() {
-        return {
-        };
-    },
-
-    render() {
-        let {
-            style,
-            event,
-            ...other
-        } = this.props;
-
-        if (!style) {
-            style = {};
-        }
-
-        style.position = "absolute";
-        style.border = "1px solid rgb(33, 150, 243)";
-        style.background = "rgba(33, 150, 243, .7)";
-        style.left = 10;
-        style.right = 10;
-        style.borderRadius = 2;
-
-        if (event) {
-            let fromTime = new Date(event.from_time);
-            let toTime = new Date(event.to_time);
-
-            let time = fromTime.getHours() * 3600 + fromTime.getMinutes() * 60 + fromTime.getSeconds();
-            let range = (toTime - fromTime) / 1000;
-
-            let top = `${time / 864}%`;
-            let height = `${range / 864}%`;
-            let minHeight = "20px";
-
-            style.top = top;
-            style.height = height;
-            style.minHeight = minHeight;
-        }
-        return (
-            <div style={style} {...other}>
-                <div>{`${event.from_time}~${event.to_time}`}</div>
-                <div>{event.title}</div>
-            </div>
-        );
-    }
-});
+const React = require('react');
+const CalendarStore = require("../../stores/CalendarStore");
+const CalendarActions = require("../../actions/CalendarActions");
+const DayView = require('./EventViews/DayView');
 
 let TimeBar = React.createClass({
     getDefaultProps() {
@@ -83,97 +36,30 @@ let TimeBar = React.createClass({
     }
 });
 
-let DayBar = React.createClass({
-    getInitialState() {
-        return {
-
-        }
-    },
-
-    render() {
-        let {
-            style,
-            events
-        } = this.props;
-
-        if (!style) {
-            style = {};
-        }
-        style.position = "relative";
-        style.borderRight = "1px solid lightgray";
-
-        let styles = {
-            top: {
-                height: 20,
-                borderTop: "1px solid lightgray"
-            },
-            bottom: {
-                height: 20,
-                borderTop: "1px dashed lightgray"
-            }
-        };
-
-        let times = [];
-
-        for (let i = 0; i < 24; i++) {
-            times.push(<div key={i + "t"} style={styles.top}></div>);
-            times.push(<div key={i + "b"} style={styles.bottom}></div>);
-        }
-
-        let eventsRect = (events || []).map(event => {
-            return (
-                <EventRect event={event}/>
-            );
-        });
-        return (
-            <div style={style}>
-                {times}
-                {eventsRect.slice(0, 1)}
-            </div>
-        );
-    }
-});
-
 let Events = React.createClass({
-    getInitialState() {
-        return {
-            events: CalendarStore.getAllEvents()
-        }
-    },
-
-    componentDidMount() {
-        CalendarActions.receive();
-        CalendarStore.addChangeListener(this._onChange);
-    },
-
-    componentWillUnmount() {
-        CalendarStore.reset();
-        CalendarStore.removeChangeListener(this._onChange);
-    },
-
     render() {
         return (
             <div style={{height: "100%", overflow: "auto"}}>
-                <table style={{width: "100%"}}>
+                <table cellspacing="0" cellpadding="0" style={{width: "100%", borderSpacing: 0}}>
                     <tbody>
                         <tr>
-                            <td style={{width: 60}}>
+                            <td style={{width: 60, padding: 0}}>
                                 <TimeBar />
                             </td>
-                            <td>
-                                <DayBar events={this.state.events["2015-05-28"]}/>
+                            <td style={{padding: 0}}>
+                                <DayView date={"2015-06-03"}/>
+                            </td>
+                            <td style={{padding: 0}}>
+                                <DayView date={"2015-06-04"}/>
+                            </td>
+                            <td style={{padding: 0}}>
+                                <DayView date={"2015-06-05"}/>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         );
-    },
-
-    _onChange() {
-        this.setState({
-            events: CalendarStore.getAllEvents()
-        });
     }
 });
 

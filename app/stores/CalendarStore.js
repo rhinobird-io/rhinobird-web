@@ -126,6 +126,16 @@ let CalendarStore = assign({}, BaseStore, {
         return events;
     },
 
+    getByDate(date) {
+        let events = [];
+        if (_events[date]) {
+            Object.keys(_events[date]).forEach(key => {
+                events.push(_events[date][key]);
+            });
+        }
+        return events;
+    },
+
     getEventTimeRange() {
         return _eventRange;
     },

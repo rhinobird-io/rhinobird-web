@@ -13,8 +13,6 @@ const React           = require("react"),
       SmartEditor     = require('../../SmartEditor').SmartEditor,
       CalendarActions = require("../../../actions/CalendarActions");
 
-require("./style.less");
-
 // Return the number of week days of a month
 // Eg: 2015/2/1 is the first sunday of February, it will return 1.
 Date.prototype.weekOfMonth = function() {
@@ -70,7 +68,7 @@ export default React.createClass({
     },
 
     componentDidMount() {
-        this.refs.eventTitle.focus();
+        this.refs.title.focus();
     },
 
     getInitialState() {
@@ -85,12 +83,10 @@ export default React.createClass({
                 teams: [],
                 users: []
             },
+            fromDate: fromDate,
             fromTime: fromDate,
-            fromHour: fromDate.getHours(),
-            fromMinute: fromDate.getMinutes(),
+            toDate: toDate,
             toTime: toDate,
-            toHour: toDate.getHours(),
-            toMinute: toDate.getMinutes(),
             editRepeated: false,
             repeated: false,
             repeatedType: "Daily",
@@ -111,62 +107,59 @@ export default React.createClass({
                 transition: "all 500ms",
                 opacity: this.state.editRepeated ? 1 : 0,
                 width: this.state.editRepeated ? "552px" : "0",
-                height: "100%"
+                height: "100%",
+                margin: 20
+            },
+            inner: {
+                width: 600,
+                padding: 0,
+                margin: 20
+            },
+            picker: {
+                width: "auto !important"
             }
         };
 
-        let fromHM = [];
-        fromHM.push(
-            <Input.RegexInput
-                key="fromHour"
-                pattern={/^([01]?\d|2[0-3])$/}
-                floatingLabelText="Hour"
-                onChange={this._onFromHourChange}
-                valueLink={this.linkState("fromHour")}/>);
-        fromHM.push(
-            <Input.RegexInput
-                key="fromMinute"
-                pattern={/^([0-5]?\d)$/}
-                floatingLabelText="Minute"
-                onChange={this._onFromMinuteChange}
-                valueLink={this.linkState("fromMinute")}/>);
+        let fromTime = <MUI.TimePicker
+            format="ampm"
+            ref="fromTime"
+            hintText="From Time"
+            style={styles.picker}
+            defaultDate={this.state.fromTime}
+            defaultTime={this.state.fromTime}
+            floatingLabelText="From Time" />
 
-        let toHM = [];
-        toHM.push(
-            <Input.RegexInput
-                key="toHour"
-                pattern={/^([01]?\d|2[0-3])$/}
-                floatingLabelText="Hour"
-                valueLink={this.linkState("toHour")}/>);
-        toHM.push(
-            <Input.RegexInput
-                key="toMinute"
-                pattern={/^([0-5]?\d)$/}
-                floatingLabelText="Minute"
-                valueLink={this.linkState("toMinute")}/>);
+        let toTime = <MUI.TimePicker
+            format="ampm"
+            ref="toTime"
+            hintText="To Time"
+            style={styles.picker}
+            defaultDate={this.state.toTime}
+            defaultTime={this.state.toTime}
+            floatingLabelText="To Time" />
 
         return (
             <PerfectScroll style={{height: "100%", position: "relative"}}>
                 <Flex.Layout horizontal centerJustified wrap>
                     <form onSubmit={(e) => e.preventDefault()}>
-                    <MUI.Paper zDepth={3} className="cal-create-event">
+                    <MUI.Paper zDepth={3} style={styles.inner}>
                         <div style={{padding: 20}}>
-                            <h3>Create Event</h3>
+                            <h3 style={{marginBottom: 0}}>Create Event</h3>
 
                             <MUI.TextField
-                                ref="eventTitle"
+                                ref="title"
                                 hintText="Event Title"
                                 errorText={this.state.titleError}
                                 floatingLabelText="Event Title"
-                                className="cal-create-event-textfield" />
+                                style={{width: "100%"}} />
 
                             <SmartEditor
                                 multiLine={true}
-                                ref="eventDescription"
+                                ref="description"
                                 hintText="Description"
                                 errorText={this.state.descriptionError}
                                 floatingLabelText="Description"
-                                className="cal-create-event-textfield" />
+                                style={{width: "100%"}} />
 
                             <Flex.Layout horizontal justified style={{marginTop: 24, marginBottom: 24}}>
                                 <MUI.Toggle
@@ -174,7 +167,7 @@ export default React.createClass({
                                     onToggle={this._onFullDayToggled}/>
                             </Flex.Layout>
 
-                            <MUI.Tabs className="cal-create-event-tab">
+                            <MUI.Tabs>
                                 <MUI.Tab label="Period" onActive={() => this.setState({isPeriod: true})}>
                                     <div className="tab-template-container">
                                         <Flex.Layout horizontal justified style={{marginTop: -10}}>
@@ -182,19 +175,21 @@ export default React.createClass({
                                                 <MUI.DatePicker
                                                     ref="fromDate"
                                                     hintText="From Date"
+                                                    style={styles.picker}
                                                     floatingLabelText="From Date"
                                                     onChange={this._onFromDateChange}
-                                                    defaultDate={this.state.fromTime} />
-                                                {!this.state.fullDay ? fromHM : null}
+                                                    defaultDate={this.state.fromDate} />
+                                                {!this.state.fullDay ? fromTime : null}
                                             </Flex.Layout>
                                             <Flex.Layout horizontal justified style={{minWidth: 0}}>
                                                 <MUI.DatePicker
                                                     ref="toDate"
                                                     hintText="To Date"
+                                                    style={styles.picker}
                                                     floatingLabelText="To Date"
                                                     onChange={this._onToDateChange}
-                                                    defaultDate={this.state.fromTime} />
-                                                {!this.state.fullDay ? toHM : null}
+                                                    defaultDate={this.state.fromDate} />
+                                                {!this.state.fullDay ? toTime : null}
                                             </Flex.Layout>
                                         </Flex.Layout>
                                     </div>
@@ -204,10 +199,10 @@ export default React.createClass({
                                         <Flex.Layout horizontal justified style={{marginTop: -10}}>
                                             <MUI.DatePicker
                                                 ref="fromDate"
-                                                hintText="Date"
-                                                floatingLabelText="Date"
-                                                defaultDate={this.state.fromTime} />
-                                                {!this.state.fullDay ? fromHM : null}
+                                                hintText="From Date"
+                                                floatingLabelText="From Date"
+                                                defaultDate={this.state.toDate} />
+                                                {!this.state.fullDay ? fromTime : null}
                                         </Flex.Layout>
                                     </div>
                                 </MUI.Tab>
@@ -285,15 +280,6 @@ export default React.createClass({
             this.refs.fromDate.setDate(newDate);
         }
         this.setState(state);
-
-    },
-
-    _onFromHourChange(e, newHour) {
-
-    },
-
-    _onFromMinuteChange(e, newMinute) {
-
     },
 
     _handleSubmit: function(e) {
@@ -303,8 +289,8 @@ export default React.createClass({
 
         let refs = this.refs;
 
-        let title = refs.eventTitle.getValue();
-        let description = refs.eventDescription.getValue();
+        let title = refs.title.getValue();
+        let description = refs.description.getValue();
 
         if (title.length === 0) {
             this.setState({titleError: errorMsg.titleRequired});
@@ -323,6 +309,10 @@ export default React.createClass({
         let event = this.state;
         event.title = title;
         event.description = description;
+        event.fromDate = this.refs.fromDate.getDate();
+        event.toDate = this.refs.toDate ? this.refs.toDate.getDate() : new Date();
+        event.fromTime = this.refs.fromTime.getTime();
+        event.toTime = this.refs.toTime ? this.refs.toTime.getTime() : new Date();
         CalendarActions.create(event, () => this.context.router.transitionTo("event-list"));
     },
 
@@ -330,7 +320,8 @@ export default React.createClass({
         let styles = {
             textfield: {
                 textAlign: "center",
-                fontSize: "0.9em"
+                fontSize: "0.9em",
+                width: 40
             },
             row: {
                 lineHeight: "3em"
@@ -371,7 +362,6 @@ export default React.createClass({
                     type="text"
                     ref="repeatedTimes"
                     style={styles.textfield}
-                    className="cal-event-repeated-every"
                     valueLink={this.linkState("repeatedTimes")}/>
                 <Flex.Layout vertical selfCenter>
                     <label>times</label>
@@ -416,7 +406,6 @@ export default React.createClass({
                             type="text"
                             ref="repeatedFrequency"
                             style={styles.textfield}
-                            className="cal-event-repeated-every"
                             valueLink={this.linkState("repeatedFrequency")} />
                         {this.repeatedEvery[this.state.repeatedType]}
                     </div>
