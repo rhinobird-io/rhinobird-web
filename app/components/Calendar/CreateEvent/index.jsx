@@ -70,7 +70,6 @@ export default React.createClass({
     },
 
     componentDidMount() {
-        console.log(new Date().getTime() - this.seconds);
         this.refs.eventTitle.focus();
     },
 
@@ -324,7 +323,6 @@ export default React.createClass({
         let event = this.state;
         event.title = title;
         event.description = description;
-        console.log(event);
         CalendarActions.create(event, () => this.context.router.transitionTo("event-list"));
     },
 
@@ -490,7 +488,6 @@ export default React.createClass({
     },
 
     _repeatedEndTypeChange: function(repeatedEndType) {
-        console.log(repeatedEndType);
         this.setState({repeatedEndType: repeatedEndType}, () => {
             if (repeatedEndType === "Occurrence") {
                 this.refs.repeatedTimes.focus();

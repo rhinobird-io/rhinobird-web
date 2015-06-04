@@ -90,7 +90,6 @@ module.exports = React.createClass({
         if (!currentChannel || currentChannel.backEndChannelId !== item.backEndChannelId) {
             this.context.router.transitionTo('/platform/im/talk/' + item.backEndChannelId);
         } else {
-            console.log('change channel : ' + !currentChannel || currentChannel.backEndChannelId !== item.backEndChannelId)
         }
     },
 

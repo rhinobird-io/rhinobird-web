@@ -28,11 +28,10 @@ export default {
             });
         } else if (hasOlder.atBack){
             // trigger action to load from backEnd
-            // console.log('find in back');
             getMessages(currentChannel, { id : oldestMessageId});
 
         } else {
-            console.log('no more');
+            //console.log('no more');
         }
     },
 

@@ -41,9 +41,6 @@ let Select = React.createClass({
 
     componentDidMount() {
         this._updateLayout();
-        console.log("Client Rect: ");
-        console.log(this.refs.text.getDOMNode());
-        console.log(this.refs.text.getDOMNode().getBoundingClientRect());
     },
 
     componentWillReceiveProps() {
