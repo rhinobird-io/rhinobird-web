@@ -101,7 +101,6 @@ const Thread = React.createClass({
         if(idx > -1) {
             memberIds.splice(idx, 1);
         }
-        debugger;
         if(memberIds.length > 0) {
             $.post('/platform/api/users/notifications', {
                     users: memberIds,
@@ -126,7 +125,7 @@ const Thread = React.createClass({
                     users: userIds,
                     teams: teamIds,
                     content: {
-                        content: `New comment of ${this.props.threadTitle}}`
+                        content: `New comment of ${this.props.threadTitle}`
                     },
                     email_subject: `[RhinoBird] ${LoginStore.getUser().realname} posted new comment`,
                     email_body: `${LoginStore.getUser().realname} posted new comment of <a href="${window.location.href.split('#')[0]}">${this.props.threadTitle}</a>
