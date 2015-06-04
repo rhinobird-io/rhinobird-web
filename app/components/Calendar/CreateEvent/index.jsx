@@ -68,7 +68,7 @@ export default React.createClass({
     },
 
     componentDidMount() {
-        this.refs.eventTitle.focus();
+        this.refs.title.focus();
     },
 
     getInitialState() {
@@ -83,12 +83,8 @@ export default React.createClass({
                 teams: [],
                 users: []
             },
-            fromTime: fromDate,
-            fromHour: fromDate.getHours(),
-            fromMinute: fromDate.getMinutes(),
-            toTime: toDate,
-            toHour: toDate.getHours(),
-            toMinute: toDate.getMinutes(),
+            fromDate: fromDate,
+            toDate: toDate,
             editRepeated: false,
             repeated: false,
             repeatedType: "Daily",
@@ -116,38 +112,27 @@ export default React.createClass({
                 width: 600,
                 padding: 0,
                 margin: 20
+            },
+            picker: {
+                width: "auto !important"
             }
         };
 
-        let fromHM = [];
-        fromHM.push(
-            <Input.RegexInput
-                key="fromHour"
-                pattern={/^([01]?\d|2[0-3])$/}
-                floatingLabelText="Hour"
-                onChange={this._onFromHourChange}
-                valueLink={this.linkState("fromHour")}/>);
-        fromHM.push(
-            <Input.RegexInput
-                key="fromMinute"
-                pattern={/^([0-5]?\d)$/}
-                floatingLabelText="Minute"
-                onChange={this._onFromMinuteChange}
-                valueLink={this.linkState("fromMinute")}/>);
+        let fromTime = <MUI.TimePicker
+            format="ampm"
+            ref="fromTime"
+            hintText="From Time"
+            style={styles.picker}
+            defaultDate={new Date()}
+            floatingLabelText="From Time" />
 
-        let toHM = [];
-        toHM.push(
-            <Input.RegexInput
-                key="toHour"
-                pattern={/^([01]?\d|2[0-3])$/}
-                floatingLabelText="Hour"
-                valueLink={this.linkState("toHour")}/>);
-        toHM.push(
-            <Input.RegexInput
-                key="toMinute"
-                pattern={/^([0-5]?\d)$/}
-                floatingLabelText="Minute"
-                valueLink={this.linkState("toMinute")}/>);
+        let toTime = <MUI.TimePicker
+            format="ampm"
+            ref="toTime"
+            hintText="To Time"
+            style={styles.picker}
+            defaultDate={new Date()}
+            floatingLabelText="To Time" />
 
         return (
             <PerfectScroll style={{height: "100%", position: "relative"}}>
@@ -158,7 +143,7 @@ export default React.createClass({
                             <h3 style={{marginBottom: 0}}>Create Event</h3>
 
                             <MUI.TextField
-                                ref="eventTitle"
+                                ref="title"
                                 hintText="Event Title"
                                 errorText={this.state.titleError}
                                 floatingLabelText="Event Title"
@@ -166,7 +151,7 @@ export default React.createClass({
 
                             <SmartEditor
                                 multiLine={true}
-                                ref="eventDescription"
+                                ref="description"
                                 hintText="Description"
                                 errorText={this.state.descriptionError}
                                 floatingLabelText="Description"
@@ -186,19 +171,21 @@ export default React.createClass({
                                                 <MUI.DatePicker
                                                     ref="fromDate"
                                                     hintText="From Date"
+                                                    style={styles.picker}
                                                     floatingLabelText="From Date"
                                                     onChange={this._onFromDateChange}
-                                                    defaultDate={this.state.fromTime} />
-                                                {!this.state.fullDay ? fromHM : null}
+                                                    defaultDate={this.state.fromDate} />
+                                                {!this.state.fullDay ? fromTime : null}
                                             </Flex.Layout>
                                             <Flex.Layout horizontal justified style={{minWidth: 0}}>
                                                 <MUI.DatePicker
                                                     ref="toDate"
                                                     hintText="To Date"
+                                                    style={styles.picker}
                                                     floatingLabelText="To Date"
                                                     onChange={this._onToDateChange}
-                                                    defaultDate={this.state.fromTime} />
-                                                {!this.state.fullDay ? toHM : null}
+                                                    defaultDate={this.state.fromDate} />
+                                                {!this.state.fullDay ? toTime : null}
                                             </Flex.Layout>
                                         </Flex.Layout>
                                     </div>
@@ -210,8 +197,8 @@ export default React.createClass({
                                                 ref="fromDate"
                                                 hintText="Date"
                                                 floatingLabelText="Date"
-                                                defaultDate={this.state.fromTime} />
-                                                {!this.state.fullDay ? fromHM : null}
+                                                defaultDate={this.state.toDate} />
+                                                {!this.state.fullDay ? fromTime : null}
                                         </Flex.Layout>
                                     </div>
                                 </MUI.Tab>
@@ -289,15 +276,6 @@ export default React.createClass({
             this.refs.fromDate.setDate(newDate);
         }
         this.setState(state);
-
-    },
-
-    _onFromHourChange(e, newHour) {
-
-    },
-
-    _onFromMinuteChange(e, newMinute) {
-
     },
 
     _handleSubmit: function(e) {
@@ -307,8 +285,8 @@ export default React.createClass({
 
         let refs = this.refs;
 
-        let title = refs.eventTitle.getValue();
-        let description = refs.eventDescription.getValue();
+        let title = refs.title.getValue();
+        let description = refs.description.getValue();
 
         if (title.length === 0) {
             this.setState({titleError: errorMsg.titleRequired});
@@ -327,6 +305,10 @@ export default React.createClass({
         let event = this.state;
         event.title = title;
         event.description = description;
+        event.fromDate = this.refs.fromDate.getDate();
+        event.toDate = this.refs.toDate.getDate();
+        event.fromTime = this.refs.fromTime.getTime();
+        event.toTime = this.refs.toTime.getTime();
         CalendarActions.create(event, () => this.context.router.transitionTo("event-list"));
     },
 
