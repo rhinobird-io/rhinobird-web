@@ -1,4 +1,3 @@
-
 require("./markdown.css");
 require("../../../../node_modules/highlight.js/styles/default.css");
 require('./highlight-material.less');
@@ -38,6 +37,9 @@ function _plugin(state, regex, trans) {
 
 function atPlugin(state) {
     return _plugin(state, AT_REGEX, (state, match) => {
+        if (state.env.atMembers !== undefined) {
+            state.env.atMembers.push(match.substr(1));
+        }
         let token = state.push("at", '', 0);
         token.content = match;
     });
@@ -87,12 +89,12 @@ md.renderer.rules.emoji = (token, i) => {
 md.renderer.rules.command = (token, i) => {
     let content = token[i].content;
     let match = content.match(/#(.*):(.*)/);
-    if(!match){
+    if (!match) {
         return content;
     }
     let [,commandName, value] = match;
     let command = commands.getCommand(commandName);
-    if(!command) {
+    if (!command) {
         return content;
     } else {
         return command.render(value);
@@ -103,7 +105,7 @@ md.renderer.rules.at = (token, i) => {
     let content = token[i].content;
     let username = content.substr(1);
     let user = UserStore.getUserByName(username);
-    if(!user){
+    if (!user) {
         return content;
     }
     else {
@@ -111,9 +113,9 @@ md.renderer.rules.at = (token, i) => {
     }
 };
 
-var defaultRender = md.renderer.rules.link_open || function(tokens, idx, options, env, self) {
-    return self.renderToken(tokens, idx, options);
-};
+var defaultRender = md.renderer.rules.link_open || function (tokens, idx, options, env, self) {
+        return self.renderToken(tokens, idx, options);
+    };
 
 md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
     // If you are sure other plugins can't add `target` - drop check below
@@ -124,7 +126,7 @@ md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
     } else {
         tokens[idx].attrs[aIndex][1] = '_blank';    // replace value of existing attr
     }
-    if(tokens[idx].markup === 'linkify') {
+    if (tokens[idx].markup === 'linkify') {
         tokens[idx].attrPush(['linkify', '']);
     }
     // pass token to default renderer.

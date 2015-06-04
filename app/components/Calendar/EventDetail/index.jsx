@@ -193,6 +193,9 @@ export default React.createClass({
                 <p style={{margin: 0}}>Would you like to delete only this event or all events in the series?</p>
             </MUI.Dialog>
         }
+        if(!this.state.event){
+            return null;
+        }
         return (
             <PerfectScroll style={{height: "100%", position: "relative", margin: "0 auto", padding: 20}}>
                 <Flex.Layout horizontal centerJustified wrap>
@@ -203,7 +206,8 @@ export default React.createClass({
                         </div>
                         {confirmDeleteDialog}
                         <h2 style={{margin:"24px 0"}}>Comments</h2>
-                        <Thread threadKey={this.state.threadKey}/>
+                        <Thread threadKey={this.state.threadKey} threadTitle={`Event ${this.state.event.title}`}
+                                participants={{users: this.state.event.participants, teams: this.state.event.team_participants}}/>
                     </MUI.Paper>
                 </Flex.Layout>
 
