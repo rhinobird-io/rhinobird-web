@@ -79,10 +79,11 @@ export default React.createClass({
 
         let eventActions = null;
         let eventContent = null;
+        let eventComment = null;
         let event = this.state.event;
 
         if (this.state.notFound || event === null || event === undefined) {
-            eventContent = <h3 style={{textAlign: "center"}}>Event not found</h3>
+            eventContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Event not found</h3>
         } else {
             let deleteEvent = LoginStore.getUser().id === event.creator_id ?
                 <MUI.IconButton
@@ -92,7 +93,7 @@ export default React.createClass({
 
             eventActions = <Flex.Layout horizontal justified>
                 <RouterLink to="event-list">
-                    <MUI.IconButton style={{marginLeft: -16}} iconClassName="icon-arrow-back" title="Back to List"/>
+                    <MUI.IconButton iconClassName="icon-arrow-back" title="Back to List"/>
                 </RouterLink>
                 {deleteEvent}
                 {
@@ -169,7 +170,14 @@ export default React.createClass({
                 );
             });
             eventContent.push(<div key="members">{members}</div>);
-        }
+
+            eventComment = [];
+            eventComment.push(<h2 key="commentTitle" style={{marginTop: 24}}>Comments</h2>);
+            eventComment.push(
+                <Thread threadKey={this.state.threadKey} threadTitle={`Event ${this.state.event.title}`}
+                        participants={{users: this.state.event.participants, teams: this.state.event.team_participants}} />);
+
+}
 
         let confirmDeleteDialog = null;
 
@@ -193,24 +201,19 @@ export default React.createClass({
                 <p style={{margin: 0}}>Would you like to delete only this event or all events in the series?</p>
             </MUI.Dialog>
         }
-        if(!this.state.event){
-            return null;
-        }
+
         return (
             <PerfectScroll style={{height: "100%", position: "relative", margin: "0 auto", padding: 20}}>
                 <Flex.Layout horizontal centerJustified wrap>
-                    <MUI.Paper zDepth={3} style={{position: "relative", padding: 20, width: 600, overflow: "hidden"}}>
+                    <MUI.Paper zDepth={3} style={{position: "relative", width: 600, padding: "12px 0", overflow: "hidden"}}>
                         {eventActions}
-                        <div>
+                        <div style={{padding: "0 20px"}}>
                             {eventContent}
+                            {eventComment}
                         </div>
                         {confirmDeleteDialog}
-                        <h2 style={{margin:"24px 0"}}>Comments</h2>
-                        <Thread threadKey={this.state.threadKey} threadTitle={`Event ${this.state.event.title}`}
-                                participants={{users: this.state.event.participants, teams: this.state.event.team_participants}}/>
                     </MUI.Paper>
                 </Flex.Layout>
-
             </PerfectScroll>
         );
     },
