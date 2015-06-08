@@ -13,7 +13,7 @@ const React           = require("react"),
       RouterLink      = require('../../Common').RouterLink,
       Thread          = require('../../Thread');
 
-export default React.createClass({
+const EventDetail = React.createClass({
     contextTypes: {
         router: React.PropTypes.func.isRequired,
         muiTheme: React.PropTypes.object
@@ -146,10 +146,10 @@ export default React.createClass({
                 let u = UserStore.getUser(p.id);
                 members.push(
                     <span key={"user_" + u.id} style={{display: "inline-block", marginRight: 5}}>
-                        <Flex.Layout horizontal value={"user_" + u.id} index={u.name}>
+                        <Flex.Layout horizontal selfCenter value={"user_" + u.id} index={u.name}>
                             <Flex.Layout vertical selfCenter>
                                <Member.Avatar scale={0.5} member={u} />
-                            </Flex.Layout>&ensp;
+                            </Flex.Layout> &ensp;
                             <Member.Name style={{width: "100px", overflow: "hidden", textOverflow: "ellipsis"}} member={u}></Member.Name>
                         </Flex.Layout>
                     </span>
@@ -160,7 +160,7 @@ export default React.createClass({
                 let t = UserStore.getTeam(p.id);
                 members.push(
                     <span key={"team_" + t.id} style={{display: "inline-block", marginRight: 5}}>
-                        <Flex.Layout horizontal  value={"team_" + t.id} index={t.name}>
+                        <Flex.Layout horizontal value={"team_" + t.id} index={t.name}>
                             <Flex.Layout vertical selfCenter>
                                 <span className="icon-group" style={{fontSize: "12px"}} />
                             </Flex.Layout>&ensp;
@@ -235,3 +235,5 @@ export default React.createClass({
         }
     }
 });
+
+module.exports = EventDetail;

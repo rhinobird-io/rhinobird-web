@@ -37,7 +37,28 @@ let TimeBar = React.createClass({
 });
 
 let Events = React.createClass({
+    propTypes: {
+        viewType: React.PropTypes.oneOf([
+            "day",
+            "week",
+            "month",
+            "4day"
+        ])
+    },
+
+    getDefaultProps() {
+        return {
+            viewType: "day"
+        }
+    },
+
     render() {
+        let {
+
+        } = this.props;
+
+        let content = null;
+
         return (
             <div style={{height: "100%", overflow: "auto"}}>
                 <table cellspacing="0" cellpadding="0" style={{width: "100%", borderSpacing: 0}}>
@@ -47,13 +68,13 @@ let Events = React.createClass({
                                 <TimeBar />
                             </td>
                             <td style={{padding: 0}}>
-                                <DayView date={"2015-06-03"}/>
+                                <DayView date={"2015-06-07"}/>
                             </td>
                             <td style={{padding: 0}}>
-                                <DayView date={"2015-06-04"}/>
+                                <DayView date={"2015-06-08"}/>
                             </td>
                             <td style={{padding: 0}}>
-                                <DayView date={"2015-06-05"}/>
+                                <DayView date={"2015-06-09"}/>
                             </td>
                         </tr>
                     </tbody>

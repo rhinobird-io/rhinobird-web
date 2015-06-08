@@ -139,10 +139,10 @@ const EventList = React.createClass({
             }
 
             dayEvents.push(
-                <div className={dayDividerClass}>
+                <div className={dayDividerClass} style={{padding: "2em 0", position: "relative"}}>
                     <div className="cal-day-divider-label" style={styles.dayLabel}>
                         <span>{Moment.weekdaysShort()[Moment(key).day()]}</span>
-                        <label>{Moment(key).format("M/D")}</label>
+                        <label>{Moment(key).format("MMMM Do")}</label>
                     </div>
                 </div>
             );
@@ -166,9 +166,7 @@ const EventList = React.createClass({
                 let contentInnerClass = "cal-event-content-inner";
                 let contentInnerStyle = styles.eventContentInner;
                 if (event.id.toString() === this.state.newCreated) {
-                    //contentInnerClass += " highlight";
                     contentInnerStyle = this.mergeStyles(styles.eventContentInner, styles.eventContentInnerHighlight);
-                    //console.log(eventIconStyle);
                 }
 
                 let control = <span title="Event Members" className="cal-event-member icon-group" style={{cursor: "pointer"}}></span>;
@@ -203,7 +201,7 @@ const EventList = React.createClass({
                 }
 
                 return (
-                    <div ref={ref} className="cal-event">
+                    <div ref={ref} style={{padding: "2em 0", position: "relative"}}>
                         <div className={eventIconClass} style={eventIconStyle}>
                             <span style={{fontSize: 20}} className="icon-event"></span>
                         </div>

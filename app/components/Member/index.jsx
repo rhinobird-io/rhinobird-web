@@ -28,7 +28,13 @@ Member.showMemberProfile = (id) => {
         elementFactory: () => <MemberProfile userId={id} />,
         showFloatingContent: true
     });
-}
+};
+
+Member.TeamAvatar = React.createClass({
+    render() {
+        return <div></div>;
+    }
+});
 
 Member.Avatar = React.createClass({
     mixins: [React.addons.PureRenderMixin],
@@ -46,8 +52,8 @@ Member.Avatar = React.createClass({
     render: function () {
         let size = 24 * this.props.scale;
         if (this.props.member) {
-            let display = <img className='avatar' width={size} height={size} {...this.props}
-                               src={`http://www.gravatar.com/avatar/${this.props.member.emailMd5}?d=identicon`}/>;
+            let display = <Flex.Layout vertical center><img className='avatar' style={{display: "inline-block", verticalAlign: "middle"}} width={size} height={size} {...this.props}
+                               src={`http://www.gravatar.com/avatar/${this.props.member.emailMd5}?d=identicon`}/></Flex.Layout>;
             if (this.props.link) {
                 return <Common.Link onClick={_showMemberProfile.bind(this)}>
                     {display}
@@ -70,9 +76,9 @@ Member.Name = React.createClass({
     },
     render: function () {
         if (this.props.member) {
-            let display = <span className={this.props.className} style={this.props.style}>{this.props.member.realname}</span>;
+            let display = <span className={this.props.className}>{this.props.member.realname}</span>;
             if (this.props.link) {
-                return <Common.Link onClick={_showMemberProfile.bind(this)}>
+                return <Common.Link onClick={_showMemberProfile.bind(this)} style={this.props.style}>
                     {display}
                 </Common.Link>;
             } else {
