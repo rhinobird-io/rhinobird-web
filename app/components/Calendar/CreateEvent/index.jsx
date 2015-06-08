@@ -200,6 +200,7 @@ export default React.createClass({
                                             <MUI.DatePicker
                                                 ref="fromDate"
                                                 hintText="From Date"
+                                                style={styles.picker}
                                                 floatingLabelText="From Date"
                                                 defaultDate={this.state.toDate} />
                                                 {!this.state.fullDay ? fromTime : null}

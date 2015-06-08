@@ -16,6 +16,7 @@ export default React.createClass({
             React.PropTypes.object,
             React.PropTypes.string
         ]),
+        message: React.PropTypes.func,
         format: React.PropTypes.string,
         relative: React.PropTypes.bool
     },

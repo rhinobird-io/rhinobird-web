@@ -18,7 +18,7 @@ const React                = require("react"),
 
 require("./style.less");
 
-export default React.createClass({
+const EventList = React.createClass({
     mixins: [React.addons.LinkedStateMixin, StylePropable],
 
     contextTypes: {
@@ -194,14 +194,14 @@ export default React.createClass({
                     menu = menu.concat(teamMenu);
                 }
 
-                let format;
-                let relative = true;
+                let format = "hh:mm a";
+                let relative = false;
 
                 // If full day event, using different date format and disable relative display
                 if (event.full_day) {
-                    relative = false;
                     format = "YYYY MMMM Do";
                 }
+
                 return (
                     <div ref={ref} className="cal-event">
                         <div className={eventIconClass} style={eventIconStyle}>
@@ -295,3 +295,5 @@ export default React.createClass({
         );
     }
 });
+
+module.exports = EventList;
