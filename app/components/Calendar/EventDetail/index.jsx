@@ -141,43 +141,40 @@ const EventDetail = React.createClass({
             eventContent.push(<br key="br"/>);
 
             let members = [];
+            let teamMembers = [];
 
             event.participants.forEach(p => {
                 let u = UserStore.getUser(p.id);
                 members.push(
-                    <span key={"user_" + u.id} style={{display: "inline-block", marginRight: 5}}>
-                        <Flex.Layout horizontal selfCenter value={"user_" + u.id} index={u.name}>
-                            <Flex.Layout vertical selfCenter>
-                               <Member.Avatar scale={0.5} member={u} />
-                            </Flex.Layout> &ensp;
-                            <Member.Name style={{width: "100px", overflow: "hidden", textOverflow: "ellipsis"}} member={u}></Member.Name>
-                        </Flex.Layout>
-                    </span>
+                    <Flex.Layout horizontal center style={{margin: "8px 10px"}} key={"user_" + u.id}>
+                        <Member.Avatar scale={1.0} member={u} />
+                        <Member.Name style={{marginLeft: 6, width: 90, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}} member={u}></Member.Name>
+                    </Flex.Layout>
                 );
             });
 
             event.team_participants.forEach(p => {
                 let t = UserStore.getTeam(p.id);
-                members.push(
-                    <span key={"team_" + t.id} style={{display: "inline-block", marginRight: 5}}>
-                        <Flex.Layout horizontal value={"team_" + t.id} index={t.name}>
-                            <Flex.Layout vertical selfCenter>
-                                <span className="icon-group" style={{fontSize: "12px"}} />
-                            </Flex.Layout>&ensp;
-                            <span style={{width: "100px", overflow: "hidden", textOverflow: "ellipsis"}}>{t.name}</span>
+                teamMembers.push(
+                    <Flex.Layout horizontal center style={{margin: "8px 10px"}} key={"team_" + t.id}>
+                        <Flex.Layout>
+                            <MUI.FontIcon className="icon-group"/>
                         </Flex.Layout>
-                    </span>
+                        <span style={{marginLeft: 6, width: 90, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}}>{t.name}</span>
+                    </Flex.Layout>
                 );
             });
-            eventContent.push(<div key="members">{members}</div>);
+            eventContent.push(<h4>Participants</h4>);
+            eventContent.push(<Flex.Layout wrap key="members">{members}</Flex.Layout>);
+            eventContent.push(<Flex.Layout wrap key="teamMembers">{teamMembers}</Flex.Layout>)
 
             eventComment = [];
-            eventComment.push(<h2 key="commentTitle" style={{marginTop: 24}}>Comments</h2>);
+            eventComment.push(<h4 key="commentTitle" style={{marginTop: 12}}>Comments</h4>);
             eventComment.push(
                 <Thread threadKey={this.state.threadKey} threadTitle={`Event ${this.state.event.title}`}
                         participants={{users: this.state.event.participants, teams: this.state.event.team_participants}} />);
 
-}
+        }
 
         let confirmDeleteDialog = null;
 
