@@ -337,23 +337,27 @@ export default React.createClass({
         let weeklyRepeats = this.daysInWeek.map(day => <span name={day}>{day}</span>);
         let weeklyRepeatOn =
             <Flex.Layout horizontal justified hidden={this.state.repeatedType !== "Weekly"} style={styles.row}>
-                <label>Repeated On:</label>
-                <Selector
-                    multiple
-                    valueLink={this.linkState("repeatedOn")}
-                    onSelectChange={this._repeatedOnChange}>
-                    {weeklyRepeats}
-                </Selector>
+                <Flex.Layout>Repeated On:</Flex.Layout>
+                <Flex.Layout>
+                    <Selector
+                        multiple
+                        valueLink={this.linkState("repeatedOn")}
+                        onSelectChange={this._repeatedOnChange}>
+                        {weeklyRepeats}
+                    </Selector>
+                </Flex.Layout>
             </Flex.Layout>;
 
         let monthlyRepeatBy =
             <Flex.Layout horizontal justified hidden={this.state.repeatedType !== "Monthly"} style={styles.row}>
                 <label>Repeated By:</label>
-                <Selector
-                    valueLink={this.linkState("repeatedBy")}>
-                    <span className="cal-event-repeated-item" name="Month">Month</span>
-                    <span className="cal-event-repeated-item" name="Week">Week</span>
-                </Selector>
+                <Flex.Layout>
+                    <Selector
+                        valueLink={this.linkState("repeatedBy")}>
+                        <span className="cal-event-repeated-item" name="Month">Day of The Month</span>
+                        <span className="cal-event-repeated-item" name="Week">Day of The Week</span>
+                    </Selector>
+                </Flex.Layout>
             </Flex.Layout>;
 
         let occurrence =

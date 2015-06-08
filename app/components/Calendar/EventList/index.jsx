@@ -223,6 +223,7 @@ const EventList = React.createClass({
                                     <div className="cal-event-time">
                                         <SmartTimeDisplay
                                             format={format}
+                                            style={{color: this.context.muiTheme.palette.accent3Color}}
                                             relative={relative}
                                             end={event.to_time}
                                             start={event.from_time} />
