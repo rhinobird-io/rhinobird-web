@@ -9,6 +9,9 @@ let SmartEditor = require("./SmartEditor");
 let SmartDisplay = require("./SmartDisplay");
 
 const SmartPreview = React.createClass({
+  contextTypes:{
+    muiTheme: React.PropTypes.object
+  },
   getInitialState() {
     return {
       value: this.props.defaultValue || ""
@@ -24,11 +27,11 @@ const SmartPreview = React.createClass({
   render() {
     let defaultValue = this.props.valueLink ? undefined : this.state.value;
     return (
-      <Tabs>
-        <Tab label="EDIT">
+      <Tabs tabItemContainerStyle={{backgroundColor:'none'}}>
+        <Tab label="EDIT" style={{color: this.context.muiTheme.palette.textColor}}>
           <SmartEditor ref="editor" defaultValue={defaultValue} valueLink={this.props.valueLink} multiLine />
         </Tab>
-        <Tab label="PREVIEW" onActive={this._preview}>
+        <Tab label="PREVIEW" onActive={this._preview} style={{color: this.context.muiTheme.palette.textColor}}>
           <SmartDisplay value={this.state.value} />
         </Tab>
       </Tabs>
