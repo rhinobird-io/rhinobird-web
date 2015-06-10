@@ -43,9 +43,35 @@ const PostList = React.createClass({
             })
         });
     },
-    filter(tags){
+    componentDidUpdate(){
+        if(this.filtering){
+            var node = this.getDOMNode();
+            node.scrollTop = 0;
+            this.filtering = false;
+        }
+    },
+    filter(tags) {
+        tags = tags.filter(t=>t.checked).map(t=>t.id);
+        this.filtering = true;
+        this.showingCount = this.state.posts.filter((post)=> {
+            return tags.length>0 && intersect_safe(tags, post.get('tags').map(t=>t.get('id')).toArray()).length !== 0;
+        }).length;
+        if(this.showingCount < 20 && !this.state.noMore) {
+            let lastId = this.state.posts.last().get('id');
+            $.get(`/post/v1/posts?before=${lastId}`).then((data)=> {
+                if(data.length === 0) {
+                    this.setState({
+                        noMore: true
+                    })
+                } else {
+                    this.setState({
+                        posts: this.state.posts.concat(Immutable.fromJS(data))
+                    });
+                }
+            });
+        }
         this.setState({
-            tags: tags.filter(t=>t.checked).map(t=>t.id)
+            tags: tags
         });
     },
     render: function () {
