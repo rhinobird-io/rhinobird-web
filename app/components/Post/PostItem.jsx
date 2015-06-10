@@ -27,12 +27,11 @@ const PostItem = React.createClass({
             colorBlock = <Flex.Item flex={1} style={{backgroundColor: bgColor}}/>
         }
         if(post) {
-            return <mui.Paper style={this.props.hide?{display:'none'}:{margin:12, flex:'1 1 320px'}}>
-                <Flex.Layout vertical stretch onClick={this._goPostDetailPage} style={{height:200, cursor:'pointer'}}>
-                    {colorBlock}
-                </Flex.Layout>
-                <Flex.Layout center>
-                    <Flex.Layout flex={1} vertical style={{padding: 10}}>
+            return <mui.Paper style={this.props.hide?{display:'none'}:{margin:12, flex:'1 1 320px', display:'flex', flexDirection:'column'}}>
+                    <Flex.Layout vertical stretch onClick={this._goPostDetailPage} style={{height:200, cursor:'pointer'}}>
+                        {colorBlock}
+                    </Flex.Layout>
+                    <Flex.Layout flex={1} vertical style={{padding: 10}} justified>
                         <Common.Display type='body2'
                                         style={{cursor:'pointer'}}
                                         onClick={this._goPostDetailPage}
@@ -45,7 +44,6 @@ const PostItem = React.createClass({
                                 <SmartTimeDisplay start={post.get('created_at')} format='MMM Do YYYY' />
                             </div>
                         </Common.Display>
-                    </Flex.Layout>
                 </Flex.Layout>
             </mui.Paper>;
         } else {

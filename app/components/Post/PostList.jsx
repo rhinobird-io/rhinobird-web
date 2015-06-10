@@ -55,7 +55,7 @@ const PostList = React.createClass({
         this.filtering = true;
         this.showingCount = this.state.posts.filter((post)=> {
             return tags.length>0 && intersect_safe(tags, post.get('tags').map(t=>t.get('id')).toArray()).length !== 0;
-        }).length;
+        }).size;
         if(this.showingCount < 20 && !this.state.noMore) {
             let lastId = this.state.posts.last().get('id');
             $.get(`/post/v1/posts?before=${lastId}`).then((data)=> {
