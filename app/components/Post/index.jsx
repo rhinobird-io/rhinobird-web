@@ -13,9 +13,12 @@ const Post = React.createClass({
     },
     render() {
         return <Flex.Layout stretch fit>
-            <PostList/>
-            <PostFilter/>
+            <PostList ref='postlist'/>
+            <PostFilter onFilter={this._onFilter}/>
         </Flex.Layout>;
+    },
+    _onFilter(tags){
+        this.refs.postlist.filter(tags);
     }
 });
 

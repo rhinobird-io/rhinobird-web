@@ -20,9 +20,17 @@ const PostItem = React.createClass({
     render() {
         let post = this.props.post;
         let user = UserStore.getUser(post.get('creator_id'));
-        if(post){
-            return <mui.Paper style={{margin:12, flex:'1 1 320px'}}>
-                <div onClick={this._goPostDetailPage} style={{backgroundColor: this.context.muiTheme.palette.primary3Color, height:200, cursor:'pointer'}}></div>
+        let bgColor = this.context.muiTheme.palette.primary3Color, tags = post.get('tags'), colorBlock;
+        if(tags.size > 0){
+            colorBlock = tags.map(tag=><Flex.Item flex={1} key={tag.get('id')} style={{backgroundColor: tag.get('color')}}/>);
+        } else{
+            colorBlock = <Flex.Item flex={1} style={{backgroundColor: bgColor}}/>
+        }
+        if(post) {
+            return <mui.Paper style={this.props.hide?{display:'none'}:{margin:12, flex:'1 1 320px'}}>
+                <Flex.Layout vertical stretch onClick={this._goPostDetailPage} style={{height:200, cursor:'pointer'}}>
+                    {colorBlock}
+                </Flex.Layout>
                 <Flex.Layout center>
                     <Flex.Layout flex={1} vertical style={{padding: 10}}>
                         <Common.Display type='body2'

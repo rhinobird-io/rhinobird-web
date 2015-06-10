@@ -9,11 +9,31 @@ const Link = require("react-router").Link;
 const mui = require('material-ui');
 const PostItem = require('./PostItem');
 
+function intersect_safe(a, b)
+{
+    var ai = 0, bi = 0;
+    var result = [];
+
+    while( ai < a.length && bi < b.length ){
+        if      (a[ai] < b[bi] ){ ai++; }
+        else if (a[ai] > b[bi] ){ bi++; }
+        else /* they're equal */
+        {
+            result.push(ai);
+            ai++;
+            bi++;
+        }
+    }
+
+    return result;
+}
+
 const PostList = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     getInitialState(){
         return {
-            noMore: false
+            noMore: false,
+            tags: []
         }
     },
     componentWillMount(){
@@ -23,15 +43,21 @@ const PostList = React.createClass({
             })
         });
     },
+    filter(tags){
+        this.setState({
+            tags: tags.filter(t=>t.checked).map(t=>t.id)
+        });
+    },
     render: function () {
         let posts = this.state.posts;
+        let tags = this.state.tags;
         let content;
         if (!posts){
             content = undefined;
         } else if(posts.size > 0){
             content = <Flex.Layout wrap>
                 {posts.map((post, index)=> {
-                    return <PostItem key={index} post={post}/>
+                    return <PostItem key={index} post={post} hide={tags.length>0 && intersect_safe(tags, post.get('tags').map(t=>t.get('id')).toArray()).length === 0}/>
                 })}</Flex.Layout>;
         } else {
             content = <div style={{marginTop: 100}}>
