@@ -13,7 +13,6 @@ const PostList = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     getInitialState(){
         return {
-            posts: Immutable.List(),
             noMore: false
         }
     },
@@ -26,6 +25,20 @@ const PostList = React.createClass({
     },
     render: function () {
         let posts = this.state.posts;
+        let content;
+        if (!posts){
+            content = undefined;
+        } else if(posts.size > 0){
+            content = <Flex.Layout wrap>
+                {posts.map((post, index)=> {
+                    return <PostItem key={index} post={post}/>
+                })}</Flex.Layout>;
+        } else {
+            content = <div style={{marginTop: 100}}>
+                <h1 style={{textAlign: "center", margin:24}}>No post yet</h1>
+                <h2 style={{textAlign: "center"}}>Start to create posts now!</h2>
+            </div>;
+        }
         return <PerfectScroll style={{padding:24, flex:1, position:'relative'}}>
             <InfiniteScroll lowerThreshold={this.state.noMore? undefined : 300} onLowerTrigger={()=>{
                 let lastId = this.state.posts.last().get('id');
@@ -43,13 +56,7 @@ const PostList = React.createClass({
             }} scrollTarget={()=>{
                 return this.getDOMNode();
             }}/>
-            {posts.size > 0 ? <Flex.Layout wrap>
-                {posts.map((post, index)=> {
-                return <PostItem key={index} post={post}/>
-            })}</Flex.Layout> :<div style={{marginTop: 100}}>
-                <h1 style={{textAlign: "center", margin:24}}>No post yet</h1>
-                <h2 style={{textAlign: "center"}}>Start to create posts now!</h2>
-            </div>}
+            {content}
             {this.state.noMore? <div style={{textAlign:'center'}}>No more posts</div>: undefined}
             <Link to='/platform/create-post'>
                 <mui.FloatingActionButton style={{position:'fixed', right: 224, bottom: 24, zIndex:100}} iconClassName="icon-create"/>

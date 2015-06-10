@@ -8,52 +8,62 @@ const fonts = {
     'caption': {
         size: 12,
         weight: Typography.fontWeightRegular,
-        lineHeight: 20
+        lineHeight: 20,
+        contrast: 54
     },
     'body1': {
         size: 14,
         weight: Typography.fontWeightRegular,
-        lineHeight: 20
+        lineHeight: 20,
+        contrast: 87
     },
     'body2': {
         size: 14,
         weight: Typography.fontWeightMedium,
-        lineHeight: 24
+        lineHeight: 24,
+        contrast: 87
     },
     'subhead': {
         size: 16,
         weight: Typography.fontWeightRegular,
-        lineHeight: 24
+        lineHeight: 24,
+        contrast: 87
     },
     'title': {
         size: 20,
         weight: Typography.fontWeightMedium,
-        lineHeight: 32
+        lineHeight: 32,
+        contrast: 87
     },
     'headline': {
         size: 24,
         weight: Typography.fontWeightRegular,
-        lineHeight: 32
+        lineHeight: 32,
+        contrast: 87
     },
     'display1': {
         size: 34,
         weight: Typography.fontWeightRegular,
-        lineHeight: 40
+        lineHeight: 40,
+        contrast: 54
     },
     'display2': {
         size: 45,
         weight: Typography.fontWeightRegular,
-        lineHeight: 48
+        lineHeight: 48,
+        contrast: 54
     },
     'display3': {
         size: 56,
         weight: Typography.fontWeightRegular,
-        lineHeight: 60
+        lineHeight: 60,
+        contrast: 54
     },
     'display4': {
         size: 112,
         weight: Typography.fontWeightLight,
-        lineHeight: 116
+        lineHeight: 116,
+        contrast: 54
     }
 };
 const Link = React.createClass({
@@ -68,7 +78,8 @@ const Link = React.createClass({
             display: 'inline-block',
             fontSize: font.size,
             fontWeight: font.weight,
-            lineHeight: font.lineHeight + 'px'
+            lineHeight: font.lineHeight + 'px',
+            color: `rgba(0,0,0,0.${font.contrast})`
         };
         return <div {...other} style={this.mergeAndPrefix(displayStyle, style)}>
             {children}

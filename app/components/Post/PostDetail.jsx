@@ -30,9 +30,9 @@ const Editor = React.createClass({
     render(){
         return <PerfectScroll
             style={{position:'absolute', bottom:0, left:0, right:0, top: 48, maxWidth: 1024, padding:24, margin:'0 auto',display:'flex', flexDirection:'column'}}>
-            <label style={{fontSize: 16, color: 'rgba(0,0,0,0.5)'}}>Title</label>
+            <label style={{fontSize: 16, color: 'rgba(0,0,0,0.54)'}}>Title</label>
             <mui.TextField ref='textField' valueLink={this.linkState('title')} style={{width: '100%'}}/>
-            <label style={{fontSize: 16, marginTop: 12,display:'block', color: 'rgba(0,0,0,0.5)'}}>Body</label>
+            <label style={{fontSize: 16, marginTop: 12,display:'block', color: 'rgba(0,0,0,0.54)'}}>Body</label>
             <SmartEditor ref="editor" valueLink={this.linkState('body')} multiLine/>
         </PerfectScroll>;
     }
@@ -65,7 +65,7 @@ const PostDetail = React.createClass({
             title: ''
         }
     },
-    _preview(){
+    _preview() {
         let value = this.refs.editor.getValue();
         this.setState(value);
         this.forceUpdate();
@@ -81,9 +81,8 @@ const PostDetail = React.createClass({
                     <Common.Display type='caption' style={{display:'flex', alignItems:'center', justifyContent:'flex-end', margin:'24px 0'}}>
                         <Member.Avatar scale={0.5} member={user}/>
                         <Member.Name member={user} style={{marginLeft: 4}}/>
-                        <div style={{marginLeft: 4}}>
-                            <SmartTimeDisplay start={this.state.created_at} format='MMM Do YYYY' />
-                        </div>
+                        <span style={{marginLeft: 4}}>created at <SmartTimeDisplay start={this.state.created_at} format='MMM Do YYYY' /></span>
+                        {this.state.created_at !== this.state.updated_at? <span>, updated at <SmartTimeDisplay start={this.state.updated_at} format='MMM Do YYYY' /></span>:undefined}
                     </Common.Display>
                     <Common.Display type='title' style={{marginTop:24}}>Comments</Common.Display>
                     <Thread threadKey={this.context.router.getCurrentPathname()} threadTitle={`Post ${this.state.title}`}
