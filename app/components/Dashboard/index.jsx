@@ -73,7 +73,7 @@ module.exports = React.createClass({
                 return this.getDOMNode();
             }}/>
             <Common.Hr />
-            {records.length > 0 ? records.map((record, index)=> {
+            {records.size > 0 ? records.map((record, index)=> {
                 return <div key={index}>
                     <DashboardRecord record={record}/>
                     <Common.Hr />

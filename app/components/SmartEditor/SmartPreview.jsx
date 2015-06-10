@@ -27,11 +27,11 @@ const SmartPreview = React.createClass({
   render() {
     let defaultValue = this.props.valueLink ? undefined : this.state.value;
     return (
-      <Tabs tabItemContainerStyle={{backgroundColor:'none'}}>
-        <Tab label="EDIT" style={{color: this.context.muiTheme.palette.textColor}}>
+      <Tabs style={this.props.style}>
+        <Tab label="EDIT" >
           <SmartEditor ref="editor" defaultValue={defaultValue} valueLink={this.props.valueLink} multiLine />
         </Tab>
-        <Tab label="PREVIEW" onActive={this._preview} style={{color: this.context.muiTheme.palette.textColor}}>
+        <Tab label="PREVIEW" onActive={this._preview} >
           <SmartDisplay value={this.state.value} />
         </Tab>
       </Tabs>
