@@ -183,6 +183,7 @@ Member.MemberSelect = React.createClass({
                 <label style={{color:'rgba(0,0,0,0.5)'}}>{this.props.label}</label>
                 <Select.Select ref='select'
                     multiple
+                    hRestrict
                     style={style}
                     token={(v) => {
                         let u;

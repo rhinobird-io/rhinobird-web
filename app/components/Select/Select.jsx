@@ -43,8 +43,8 @@ let Select = React.createClass({
         this._updateLayout();
     },
 
-    componentWillReceiveProps() {
-        this.setState({children: this.props.children});
+    componentWillReceiveProps(nextProps) {
+        this.setState({children: this._getFilteredChildren(nextProps.children)});
     },
 
     componentDidUpdate() {
@@ -137,7 +137,7 @@ let Select = React.createClass({
             return;
         }
 
-        this.setState({selected: selected, children: this._getFilteredChildren("")});
+        this.setState({selected: selected, children: this._getFilteredChildren(this.props.children, "", selected)});
         this._updateLayout(true, selected);
         if (this.props.valueLink || this.props.onChange) {
             this.getValueLink(this.props).requestChange(Object.keys(selected));
@@ -146,7 +146,6 @@ let Select = React.createClass({
             }
         }
     },
-
     _contain(item, keyword) {
         if (typeof item === 'object' && item !== null) {
             item.visited = true;
@@ -176,8 +175,8 @@ let Select = React.createClass({
         let propsChildren = [].concat(this.props.children);
 
         let children = propsChildren.filter((child) => {
-            if (child.props.value && this.state.selected[child.props.value]) return false;
-            if (keyword.length === 0 || !child.props.index || !child.props.value) return true;
+            if (child.props.value !== undefined && this.state.selected[child.props.value]) return false;
+            if (keyword.length === 0 || !child.props.index || child.props.value === undefined) return true;
             return this._contain(child.props.index, keyword.toLowerCase());
         });
         if (children.length >= 0 && !this.refs.popupSelect.isShown()) {
@@ -186,11 +185,12 @@ let Select = React.createClass({
         this.setState({children: children});
     },
 
-    _getFilteredChildren(keyword) {
-        return this.props.children.filter((child) => {
-            if (child.props.value && this.state.selected[child.props.value]) return false;
-            if (keyword.length === 0 || !child.props.index || !child.props.value) return true;
-            return child.props.index.indexOf(keyword) >= 0;
+    _getFilteredChildren(children, keyword, selected) {
+        let selected = selected || this.state.selected;
+        return children.filter((child) => {
+            if (child.props.value !== undefined && selected[child.props.value]) return false;
+            if (!keyword || !child.props.index || child.props.value === undefined) return true;
+            return child.props.index.indexOf(keyword) >= 0; // this is error and dead code
         });
     },
 
@@ -264,7 +264,7 @@ let Select = React.createClass({
 
         let popupSelect =
             <PopupSelect
-                hRestrict
+                hRestrict={this.props.hRestrict}
                 ref="popupSelect"
                 relatedTo={() => this.refs.text.getDOMNode().getBoundingClientRect()}
                 onItemSelect={(value, e) => {
