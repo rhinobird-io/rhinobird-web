@@ -44,9 +44,19 @@ const EventDetail = React.createClass({
         let styles = {
             eventTitle: {
                 fontSize: "2em",
-                lineHeight: "1.2em",
-                marginBottom: "0.2em",
-                wordBreak: "break-all"
+                lineHeight: "2em",
+                wordBreak: "break-all",
+                padding: "0.2em 0.8em",
+                color: this.context.muiTheme.palette.canvasColor,
+                backgroundColor: this.context.muiTheme.palette.primary1Color
+            },
+            eventAction: {
+                height: 120,
+                padding: 6,
+                backgroundColor: this.context.muiTheme.palette.primary1Color
+            },
+            eventInfo: {
+                fontSize: "1em"
             },
             eventTime: {
                 fontSize: "1em",
@@ -73,10 +83,11 @@ const EventDetail = React.createClass({
                 textAlign: "center"
             },
             deleteButton: {
-                color: this.context.muiTheme.palette.accent1Color
+                color: this.context.muiTheme.palette.canvasColor
             }
         };
 
+        let eventTitle = null;
         let eventActions = null;
         let eventContent = null;
         let eventComment = null;
@@ -85,16 +96,18 @@ const EventDetail = React.createClass({
         if (this.state.notFound || event === null || event === undefined) {
             eventContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Event not found</h3>
         } else {
+            let backToList = (
+                <RouterLink to="event-list">
+                    <MUI.IconButton iconClassName="icon-arrow-back" title="Back to List"/>
+                </RouterLink>
+            );
             let deleteEvent = LoginStore.getUser().id === event.creator_id ?
                 <MUI.IconButton
                     iconStyle={styles.deleteButton}
                     iconClassName="icon-delete"
                     onClick={this._onEventDelete} /> : null;
 
-            eventActions = <Flex.Layout horizontal justified>
-                <RouterLink to="event-list">
-                    <MUI.IconButton iconClassName="icon-arrow-back" title="Back to List"/>
-                </RouterLink>
+            eventActions = <Flex.Layout horizontal endJustified style={styles.eventAction}>
                 {deleteEvent}
                 {
                     event && event.repeated ?
@@ -105,12 +118,13 @@ const EventDetail = React.createClass({
                 }
             </Flex.Layout>;
 
+            eventTitle = <div key="title" style={styles.eventTitle}>{event.title}</div>;
+
             eventContent = [];
 
             eventContent.push(
-                <div key="title" style={styles.eventTitle}>{event.title}</div>
+                <div key="info" style={styles.eventInfo}>XXX invite you at</div>
             );
-
             let format;
             if (event.full_day) {
                 format = "YYYY-MM-DD";
@@ -140,6 +154,7 @@ const EventDetail = React.createClass({
 
             eventContent.push(<br key="br"/>);
 
+            // Event participants
             let members = [];
             let teamMembers = [];
 
@@ -202,9 +217,10 @@ const EventDetail = React.createClass({
         return (
             <PerfectScroll style={{height: "100%", position: "relative", margin: "0 auto", padding: 20}}>
                 <Flex.Layout horizontal centerJustified wrap>
-                    <MUI.Paper zDepth={3} style={{position: "relative", width: 600, padding: "12px 0", overflow: "hidden"}}>
+                    <MUI.Paper zDepth={3} style={{position: "relative", width: 600, overflow: "hidden"}}>
                         {eventActions}
-                        <div style={{padding: "0 20px"}}>
+                        {eventTitle}
+                        <div style={{padding: "0.8em 1.6em"}}>
                             {eventContent}
                             {eventComment}
                         </div>
