@@ -252,7 +252,7 @@ const SmartEditor = React.createClass({
               contentType: false,
               data: formData
             });
-            callback(`![${file.name}](/file/files/${newFile.id}/download =${w}x${h})`);
+            callback(`![${file.name}](/file/files/${newFile.id}/fetch =${w}x${h})`);
           });
         };
       };

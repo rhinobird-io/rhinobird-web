@@ -28,6 +28,9 @@
 
 .markdown-body img {
   border: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  height: auto;
 }
 
 .markdown-body hr {
@@ -399,11 +402,6 @@
 
 .markdown-body table tr:nth-child(2n) {
   background-color: #f8f8f8;
-}
-
-.markdown-body img {
-  max-width: 100%;
-  box-sizing: border-box;
 }
 
 .markdown-body code {
