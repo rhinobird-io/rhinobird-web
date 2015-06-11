@@ -410,7 +410,7 @@ const Editor = React.createClass({
     mixins: [React.addons.LinkedStateMixin, React.addons.PureRenderMixin],
     _addTag(tag){
         this.state.tags.push(tag);
-        this.refs.select._addSelectedOption(this.state.tags.length - 1);
+        this.refs.select._addSelectedOption(tag.id);
         this.forceUpdate();
     },
     render(){
