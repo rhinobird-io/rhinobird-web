@@ -482,16 +482,15 @@ const PostDetail = React.createClass({
         this.forceUpdate();
     },
     render() {
-
+        let user = UserStore.getUser(this.state.creator_id);
+        let tagsBlock = undefined;
+        if (this.state.tags){
+            tagsBlock = this.state.tags.map(t=><Flex.Layout center style={{marginRight: 8}}>
+                <span style={{width:12, height:12, backgroundColor: t.color, marginRight:4}}></span><span>{t.name}</span>
+            </Flex.Layout>);
+        }
         switch (this.state.mode) {
             case 'view':
-                let user = UserStore.getUser(this.state.creator_id);
-                let tagsBlock = undefined;
-                if (this.state.tags){
-                    tagsBlock = this.state.tags.map(t=><Flex.Layout center style={{marginRight: 8}}>
-                        <span style={{width:12, height:12, backgroundColor: t.color, marginRight:4}}></span><span>{t.name}</span>
-                    </Flex.Layout>);
-                }
                 return <div style={{position:'relative', height:'100%', maxWidth: 1024, padding:24, margin:'0 auto'}}>
                     <PerfectScroll noScrollX style={{height: '100%'}}>
                     <Common.Display type='headline' style={{marginBottom:12}}>{this.state.title}</Common.Display>
@@ -518,6 +517,7 @@ const PostDetail = React.createClass({
                 </div>;
             case 'create':
             case 'edit':
+                user = UserStore.getUser(LoginStore.getUser().id);
                 return <div>
                     <Tabs style={{width:'100%', position:'absolute', top:0, bottom:0, left:0, right:0}}>
                         <Tab label="EDIT">
@@ -528,6 +528,16 @@ const PostDetail = React.createClass({
                                 style={{position:'absolute', bottom:0, left:0, right:0, top: 48,  maxWidth: 1024, padding:24, margin:'0 auto'}}>
                                 <Common.Display type='headline' style={{marginBottom:12}}>{this.state.title}</Common.Display>
                                 <SmartDisplay value={this.state.body}/>
+                                <Common.Display type='caption' style={{display:'flex', alignItems:'center', justifyContent:'space-between', margin:'24px 0'}}>
+                                    <Flex.Layout>
+                                        {tagsBlock}
+                                    </Flex.Layout>
+                                    <Flex.Layout endJustified>
+                                        <Member.Avatar scale={0.5} member={user}/>
+                                        <Member.Name member={user} style={{marginLeft: 4}}/>
+                                        <span style={{marginLeft: 4}}>created at <SmartTimeDisplay start={new Date()} format='MMM Do YYYY' /></span>
+                                    </Flex.Layout>
+                                </Common.Display>
                             </PerfectScroll>
                         </Tab>
                     </Tabs>
@@ -545,7 +555,12 @@ const PostDetail = React.createClass({
         }
     },
     _savePost(){
-        let post = this.refs.editor.getValue();
+        let post;
+        if(this.refs.editor){
+            post = this.refs.editor.getValue();
+        } else{
+            post = $.extend({}, this.state);
+        }
         let dataToSend = $.extend({}, post);
         dataToSend.tags = dataToSend.tags.map(t=>t.id);
         if(this.state.mode === 'edit'){
