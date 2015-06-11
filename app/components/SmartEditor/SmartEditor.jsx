@@ -62,7 +62,10 @@ const SmartEditor = React.createClass({
     // components' re-mount. Since the `valueLink` property won't be passed to
     // `TextField`, we need to restore the text value here.
     if (this.props.valueLink) {
-      this._getInputNode().value = this.props.valueLink.value;
+      this.refs.textfield.setValue(this.props.valueLink.value);
+      if(this.props.multiLine){
+        this.refs.textfield.refs.input._syncHeightWithShadow(this.props.valueLink.value);
+      }
     }
   },
 

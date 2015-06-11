@@ -250,7 +250,7 @@ let PopupSelect = React.createClass({
         if (!child || !child.props) {
             return;
         }
-        if (child.props[valueAttr]) {
+        if (child.props[valueAttr] !== undefined) {
             let value = child.props[valueAttr];
             let key = value.toString();
             if (!options[key]) {
@@ -287,7 +287,7 @@ let PopupSelect = React.createClass({
         let disabledStyle = this.props.disabledStyle || defaultStyles.disabledStyle;
 
         if (child && child.props) {
-            if (child.props[valueAttr]) {
+            if (child.props[valueAttr] !== undefined) {
                 let key = child.props[valueAttr].toString();
                 let disabled = !!child.props.disabled;
                 let style = normalStyle;
