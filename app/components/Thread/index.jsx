@@ -69,7 +69,7 @@ const Thread = React.createClass({
             this.forceUpdate();
         });
         if(newThread){
-            setInterval(()=>{this._getComments(key)}, 10000);
+            this.timer= setInterval(()=>{this._getComments(key)}, 10000);
         }
     },
     componentDidMount() {

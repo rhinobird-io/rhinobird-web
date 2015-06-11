@@ -34,9 +34,9 @@ module.exports = (
         </Route>
         <Route name="post" path="post" handler={require("react-proxy!./components/Post")}>
         </Route>
-        <Route name="post-detail" path="post/:id" handler={require("react-proxy!./components/Post/PostDetail")}>
+        <Route name="post-detail" path="post/:id" handler={require("react-router-proxy!./components/Post/PostDetail")}>
         </Route>
-        <Route name="create-post" path="create-post" handler={require("react-proxy!./components/Post/PostDetail")}/>
+        <Route name="create-post" path="create-post" handler={require("react-router-proxy!./components/Post/PostDetail")}/>
         <Redirect from="/platform" to="/platform/dashboard" />
         <Redirect from="/platform/" to="/platform/dashboard" />
         <Redirect from="/" to="/platform/dashboard" />

@@ -3,6 +3,7 @@ const React = require('react/addons');
 const Flex = require('../Flex');
 const mui = require('material-ui');
 const Common = require('../Common');
+const PerfectScroll = require('../PerfectScroll');
 
 const PostFilter = React.createClass({
     getInitialState(){
@@ -26,16 +27,16 @@ const PostFilter = React.createClass({
         }
     },
     render() {
-        return <mui.Paper style={{width:'200px', padding: 24}}>
+        return <mui.Paper style={{width:'200px', padding: 12, display:'flex', flexDirection:'column'}}>
             <Common.Display type='title'>Tags</Common.Display>
-            <div style={{marginTop:12}}>
+            <PerfectScroll noScrollX style={{marginTop:12, flex:1, position:'relative'}}>
                 {this.state.tags.map(t=>
-                    <Flex.Layout center key={t.id}>
-                        <mui.Checkbox label={t.name} onCheck={this._onCheck.bind(this, t)}/>
+                    <Flex.Layout center key={t.id} style={{width:'100%'}}>
+                        <mui.Checkbox style={{width:150}} label={t.name} onCheck={this._onCheck.bind(this, t)}/>
                         <div style={{width:16, height:16, backgroundColor: t.color}}></div>
                     </Flex.Layout>
                 )}
-            </div>
+            </PerfectScroll>
         </mui.Paper>;
     }
 });

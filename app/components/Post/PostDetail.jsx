@@ -333,11 +333,11 @@ const CreateTagDialog = React.createClass({
     },
     render(){
         let dialogActions = [
-            <mui.FlatButton
+            <mui.FlatButton key={0}
                 label="Cancel"
                 secondary={true}
                 onTouchTap={this._handleDialogCancel} />,
-            <mui.FlatButton
+            <mui.FlatButton key={1}
                 label="Create tag"
                 primary={true}
                 onTouchTap={this._handleDialogSubmit} />
@@ -376,15 +376,36 @@ const Editor = React.createClass({
             this.setState({
                 tags: data
             });
+            if(this.props.tags){
+                this.props.tags.forEach((t)=>{
+                    this.refs.select._addSelectedOption(this.state.tags.find(tag=>tag.id===t.id).id);
+                });
+            }
         });
         return {
             title: this.props.title,
-            body: this.props.body,
-            tags: []
+            body: this.props.body
         };
     },
+    componentDidMount() {
+        if(this.state.tags && this.props.tags){
+            this.props.tags.forEach((t)=>{
+                this.refs.select._addSelectedOption(this.state.tags.find(tag=>tag.id===t.id).id);
+            });
+        }
+    },
     getValue(){
-        return this.state;
+        let tags = [], selected = this.refs.select.getSelected();
+        for (let key in selected){
+            if(selected[key]) {
+                tags.push(this.state.tags.find(tag=>tag.id===parseInt(key)));
+            }
+        }
+        return {
+            title: this.state.title,
+            body: this.state.body,
+            tags: tags
+        }
     },
     mixins: [React.addons.LinkedStateMixin, React.addons.PureRenderMixin],
     _addTag(tag){
@@ -393,10 +414,13 @@ const Editor = React.createClass({
         this.forceUpdate();
     },
     render(){
+        if(!this.state.tags){
+            return null;
+        }
         let tags =
             this.state.tags.length > 0 ?
                 this.state.tags.map((t, idx) => {
-                    return <Flex.Layout center key={`tag_${t.id}`} value={idx} index={t.name}>
+                    return <Flex.Layout center key={t.id} value={t.id} index={t.name}>
                         <span style={{width:14, height:14, backgroundColor: t.color, marginRight:12}}></span><span>{t.name}</span>
                     </Flex.Layout>;
                 }) : null;
@@ -413,7 +437,7 @@ const Editor = React.createClass({
             <Select.Select ref='select'
                            multiple
                            token={(v) => {
-                           let t = this.state.tags[v];
+                           let t = this.state.tags.find(tag=>tag.id === parseInt(v));
                            return <Flex.Layout center><span style={{width:14, height:14, backgroundColor: t.color, marginRight:4}}></span><span>{t.name}</span></Flex.Layout>
                     }}
                 style={{width:'100%'}}>
@@ -458,18 +482,30 @@ const PostDetail = React.createClass({
         this.forceUpdate();
     },
     render() {
+
         switch (this.state.mode) {
             case 'view':
                 let user = UserStore.getUser(this.state.creator_id);
+                let tagsBlock = undefined;
+                if (this.state.tags){
+                    tagsBlock = this.state.tags.map(t=><Flex.Layout center style={{marginRight: 8}}>
+                        <span style={{width:12, height:12, backgroundColor: t.color, marginRight:4}}></span><span>{t.name}</span>
+                    </Flex.Layout>);
+                }
                 return <div style={{position:'relative', height:'100%', maxWidth: 1024, padding:24, margin:'0 auto'}}>
                     <PerfectScroll noScrollX style={{height: '100%'}}>
                     <Common.Display type='headline' style={{marginBottom:12}}>{this.state.title}</Common.Display>
                     <SmartDisplay value={this.state.body}/>
-                    <Common.Display type='caption' style={{display:'flex', alignItems:'center', justifyContent:'flex-end', margin:'24px 0'}}>
-                        <Member.Avatar scale={0.5} member={user}/>
-                        <Member.Name member={user} style={{marginLeft: 4}}/>
-                        <span style={{marginLeft: 4}}>created at <SmartTimeDisplay start={this.state.created_at} format='MMM Do YYYY' /></span>
-                        {this.state.created_at !== this.state.updated_at? <span>, updated at <SmartTimeDisplay start={this.state.updated_at} format='MMM Do YYYY' /></span>:undefined}
+                    <Common.Display type='caption' style={{display:'flex', alignItems:'center', justifyContent:'space-between', margin:'24px 0'}}>
+                        <Flex.Layout>
+                            {tagsBlock}
+                        </Flex.Layout>
+                        <Flex.Layout endJustified>
+                            <Member.Avatar scale={0.5} member={user}/>
+                            <Member.Name member={user} style={{marginLeft: 4}}/>
+                            <span style={{marginLeft: 4}}>created at <SmartTimeDisplay start={this.state.created_at} format='MMM Do YYYY' /></span>
+                            {this.state.created_at !== this.state.updated_at? <span>, updated at <SmartTimeDisplay start={this.state.updated_at} format='MMM Do YYYY' /></span>:undefined}
+                        </Flex.Layout>
                     </Common.Display>
                     <Common.Display type='title' style={{marginTop:24}}>Comments</Common.Display>
                     <Thread threadKey={this.context.router.getCurrentPathname()} threadTitle={`Post ${this.state.title}`}
@@ -485,7 +521,7 @@ const PostDetail = React.createClass({
                 return <div>
                     <Tabs style={{width:'100%', position:'absolute', top:0, bottom:0, left:0, right:0}}>
                         <Tab label="EDIT">
-                            <Editor ref='editor' title={this.state.title} body={this.state.body}/>
+                            <Editor ref='editor' title={this.state.title} body={this.state.body} tags={this.state.tags}/>
                         </Tab>
                         <Tab label="PREVIEW" onActive={this._preview}>
                             <PerfectScroll
@@ -510,18 +546,20 @@ const PostDetail = React.createClass({
     },
     _savePost(){
         let post = this.refs.editor.getValue();
+        let dataToSend = $.extend({}, post);
+        dataToSend.tags = dataToSend.tags.map(t=>t.id);
         if(this.state.mode === 'edit'){
             $.ajax({
                 url: `/post/v1/posts/${this.state.id}`,
                 method: 'PUT',
-                data: post
+                data: dataToSend
             }).then(()=>{
                 post.mode = 'view';
                 this.setState(post);
                 this.forceUpdate();
             })
         } else {
-            $.post(`/post/v1/posts`,post).then((data)=>{
+            $.post(`/post/v1/posts`,dataToSend).then((data)=>{
                 this.context.router.transitionTo(`/platform/post/${data.id}`);
                 data.mode = 'view';
                 data.body = data.body || '';

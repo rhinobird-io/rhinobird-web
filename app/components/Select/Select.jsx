@@ -85,7 +85,7 @@ let Select = React.createClass({
         let selected = this.state.selected;
         delete selected[value];
         this._updateLayout(false, selected);
-        this.setState({selected: selected, toDelete: false, children: this._getFilteredChildren(this.refs.text.getValue())});
+        this.setState({selected: selected, toDelete: false, children: this._getFilteredChildren(this.props.children,this.refs.text.getValue())});
         if (this.props.valueLink || this.props.onChange) {
             this.getValueLink(this.props).requestChange(Object.keys(selected));
             if (this.props.onChange) {
@@ -183,6 +183,10 @@ let Select = React.createClass({
             this.refs.popupSelect.show();
         }
         this.setState({children: children});
+    },
+
+    getSelected(){
+        return this.state.selected;
     },
 
     _getFilteredChildren(children, keyword, selected) {
