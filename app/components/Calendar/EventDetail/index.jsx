@@ -164,7 +164,7 @@ const EventDetail = React.createClass({
             // Event Description
             eventContent.push(
                 <Flex.Layout horizontal key="description" style={styles.eventDetailItem}>
-                    <Flex.Layout center style={styles.eventDetailIcon}><MUI.FontIcon className="icon-description"/></Flex.Layout>
+                    <Flex.Layout center style={styles.eventDetailIcon}><MUI.FontIcon className="icon-details"/></Flex.Layout>
                     <Flex.Layout center>
                         <SmartDisplay
                             key="description"
@@ -183,7 +183,7 @@ const EventDetail = React.createClass({
                 let u = UserStore.getUser(p.id);
                 participants.push(
                     <Flex.Layout horizontal center key={"user_" + u.id} style={{marginBottom: 16, marginRight: 16}}>
-                        <Member.Avatar scale={1.0} member={u} style={{borderRadius: "50%"}} />
+                        <Member.Avatar scale={1.0} member={u} style={{borderRadius: "0%"}} />
                         <Member.Name style={{marginLeft: 6, width: 100, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}} member={u}></Member.Name>
                     </Flex.Layout>
                 );
@@ -194,14 +194,14 @@ const EventDetail = React.createClass({
                 teamParticipants.push(
                     <Flex.Layout horizontal center key={"team_" + t.id} style={{marginBottom: 16, marginRight: 16}}>
                         <Flex.Layout>
-                            <MUI.FontIcon className="icon-group" style={{borderRadius: "50%"}} />
+                            <MUI.FontIcon className="icon-group" style={{borderRadius: "0%"}} />
                         </Flex.Layout>
                         <span style={{marginLeft: 6, width: 100, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}}>{t.name}</span>
                     </Flex.Layout>
                 );
             });
 
-            // Event Description
+            // Event Participants
             eventContent.push(
                 <Flex.Layout horizontal key="participants" style={styles.eventDetailItem}>
                     <Flex.Layout startJustified style={styles.eventDetailIcon}>
@@ -215,10 +215,17 @@ const EventDetail = React.createClass({
             );
 
             eventComment = [];
-            eventComment.push(<h4 key="commentTitle" style={{marginTop: 12, marginBottom: 0}}>Comments</h4>);
             eventComment.push(
-                <Thread threadKey={this.state.threadKey} threadTitle={`Event ${this.state.event.title}`}
-                        participants={{users: this.state.event.participants, teams: this.state.event.team_participants}} />);
+                <Flex.Layout horizontal key="comments" style={styles.eventDetailItem}>
+                    <Flex.Layout startJustified style={styles.eventDetailIcon}>
+                        <MUI.FontIcon className="icon-comment"/>
+                    </Flex.Layout>
+                    <Flex.Layout vertical startJustified flex={1}>
+                        <Thread style={{width: "100%"}} threadKey={this.state.threadKey} threadTitle={`Event ${this.state.event.title}`}
+                                participants={{users: this.state.event.participants, teams: this.state.event.team_participants}} />
+                    </Flex.Layout>
+                </Flex.Layout>
+            );
 
         }
 

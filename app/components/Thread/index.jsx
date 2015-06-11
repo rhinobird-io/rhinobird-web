@@ -24,7 +24,7 @@ const Comment = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     render() {
         let c = this.props.comment;
-        return <div style={{padding: "6px 0"}} id={`rb_comment_${c.cid}`}><Flex.Layout>
+        return <div style={{paddingBottom: 12}} id={`rb_comment_${c.cid}`}><Flex.Layout>
             <div style={{paddingTop:2.5}}>
                 <Avatar member={UserStore.getUser(c.user)}/>
             </div>
