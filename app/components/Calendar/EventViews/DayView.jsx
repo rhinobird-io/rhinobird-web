@@ -2,6 +2,8 @@ const React = require('react');
 const CalendarStore = require("../../../stores/CalendarStore");
 const CalendarActions = require("../../../actions/CalendarActions");
 const Moment = require('moment');
+const StylePropable = require('material-ui/lib/mixins/style-propable');
+const Flex = require('../../Flex');
 
 let EventRect = React.createClass({
     getInitialState() {
@@ -22,9 +24,9 @@ let EventRect = React.createClass({
 
         style.position = "absolute";
         style.border = "1px solid rgb(33, 150, 243)";
-        style.background = "rgba(33, 150, 243, .7)";
-        style.left = 0;
-        style.right = 10;
+        style.background = "rgba(33, 150, 243, .6)";
+        style.left = 6;
+        style.right = 6;
         //style.borderRadius = 2;
 
         if (event) {
@@ -41,7 +43,6 @@ let EventRect = React.createClass({
             style.top = top;
             style.height = height;
             style.minHeight = minHeight;
-            console.log(style);
         }
         return (
             <div style={style} {...other}>
@@ -53,6 +54,8 @@ let EventRect = React.createClass({
 });
 
 let DayView = React.createClass({
+    mixins: [StylePropable],
+
     contextTypes: {
         muiTheme: React.PropTypes.object
     },
@@ -88,22 +91,24 @@ let DayView = React.createClass({
         if (!style) {
             style = {};
         }
-
+        style.width = "100%";
         style.position = "relative";
-        style.borderRight = "1px solid lightgray";
 
         let styles = {
             top: {
-                height: 20,
-                borderTop: "1px solid lightgray"
+                width: "100%",
+                height: 30,
+                borderBottom: "1px dashed lightgray"
             },
             bottom: {
-                height: 20,
-                borderTop: "1px dashed lightgray"
+                width: "100%",
+                height: 30,
+                borderBottom: "1px solid lightgray"
             },
             nowBar: {
                 position: "absolute",
                 height: 2,
+                zIndex: 10,
                 overflow: "hidden",
                 width: "100%",
                 backgroundColor: this.context.muiTheme.palette.accent1Color
@@ -127,13 +132,12 @@ let DayView = React.createClass({
         let nowBar = null;
         if (now.toDateString() === new Date(date).toDateString()) {
             let time = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-            console.log(time);
             styles.nowBar.top = `${(time / 864)}%`;
             nowBar = <div style={styles.nowBar}></div>
         }
 
         return (
-            <div style={style}>
+            <div vertical style={style}>
                 {times}
                 {nowBar}
                 {eventsRect}
