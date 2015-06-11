@@ -96,7 +96,7 @@ const PostDetail = React.createClass({
             case 'create':
             case 'edit':
                 return <div>
-                    <Tabs style={{width:'100%', zIndex: 9, position:'absolute', top:0, bottom:0, left:0, right:0}}>
+                    <Tabs style={{width:'100%', position:'absolute', top:0, bottom:0, left:0, right:0}}>
                         <Tab label="EDIT">
                             <Editor ref='editor' title={this.state.title} body={this.state.body}/>
                         </Tab>
