@@ -4,8 +4,11 @@ const CalendarActions = require("../../../actions/CalendarActions");
 const Moment = require('moment');
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 const Flex = require('../../Flex');
+const Resizable = require('../../Mixins').Resizable;
 
 let EventRect = React.createClass({
+    mixins: [Resizable],
+
     getInitialState() {
         return {
         };
@@ -22,11 +25,11 @@ let EventRect = React.createClass({
             style = {};
         }
 
+        style.paddingTop = 5;
+        style.paddingBottom = 5;
         style.position = "absolute";
         style.border = "1px solid rgb(33, 150, 243)";
         style.background = "rgba(33, 150, 243, .6)";
-        style.left = 6;
-        style.right = 6;
         //style.borderRadius = 2;
 
         if (event) {
@@ -122,10 +125,24 @@ let DayView = React.createClass({
             times.push(<div key={i + "b"} style={styles.bottom}></div>);
         }
 
-        let eventsRect = (this.state.events || []).map(event => {
+        let events = {};
+        (this.state.events || []).forEach(e => {
+            let fromTime = new Date(e.from_time);
+            let key = Moment(fromTime).format("HH:mm");
+            if (!events[key]) {
+                events[key] = [];
+            }
+            events[key].push(e);
+        });
+        let eventsRect = Object.keys(events).map(key => {
+            let es = events[key];
+            let percent = 100 / es.length;
+            let results = es.map(e => <Flex.Layout flex={1} style={{padding: 4}}><EventRect event={e} style={{width: "100%"}}/></Flex.Layout>);
             return (
-                <EventRect event={event}/>
-            );
+                <Flex.Layout flex={1} horizontal stretch>
+                    {results}
+                </Flex.Layout>
+            )
         });
 
         let now = new Date();
