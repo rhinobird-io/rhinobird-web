@@ -30,6 +30,10 @@ const commands = [
             </a>`;
 
         }
+    },
+    {
+        name: 'image',
+        hint: "Select to upload & insert an image"
     }
 ];
 

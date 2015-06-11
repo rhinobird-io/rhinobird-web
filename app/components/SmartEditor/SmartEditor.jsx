@@ -220,11 +220,45 @@ const SmartEditor = React.createClass({
     let commandName = replace.substr(1, replace.length - 2);
     if(commandName === 'file') {
       this._uploadFile(callback);
-    } else {
+    } else if(commandName === 'image'){
+      this._uploadImage(callback);
+    }
+    else {
       callback(replace);
     }
   },
+  _uploadImage(callback) {
+    var input = $(document.createElement('input'));
+    input.attr("type", "file");
+    input.attr("accept", "image/*");
 
+    input.change(function(e) {
+      let file = e.target.files[0];
+      let reader = new FileReader();
+      let image = new Image();
+      reader.readAsDataURL(file);
+      reader.onload = (_file) => {
+        image.src = _file.target.result;
+        image.onload = function() {
+          let w = this.width,
+              h = this.height;
+          let formData = new FormData();
+          formData.append('file', file);
+          $.post('/file/files', {name: file.name}).done((newFile)=>{
+            $.ajax({
+              url: `/file/files/${newFile.id}`,
+              type: 'PUT',
+              processData: false,
+              contentType: false,
+              data: formData
+            });
+            callback(`![${file.name}](/file/files/${newFile.id}/download =${w}x${h})`);
+          });
+        };
+      };
+    });
+    input.trigger('click'); // opening dialog
+  },
   _uploadFile(callback) {
     var input = $(document.createElement('input'));
     input.attr("type", "file");

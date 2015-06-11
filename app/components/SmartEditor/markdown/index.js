@@ -70,7 +70,7 @@ let md = MarkdownIt({
     },
     html: false,
     linkify: true
-}).use(md => {
+}).use(require('markdown-it-imsize')).use(md => {
     md.inline.ruler.before("text", "at", atPlugin);
 }).use(md => {
     md.inline.ruler.before("text", "command", commandPlugin);
