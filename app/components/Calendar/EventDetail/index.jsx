@@ -184,7 +184,7 @@ const EventDetail = React.createClass({
                 participants.push(
                     <Flex.Layout horizontal center key={"user_" + u.id} style={{marginBottom: 16, marginRight: 16}}>
                         <Member.Avatar scale={1.0} member={u} style={{borderRadius: "50%"}} />
-                        <Member.Name style={{marginLeft: 6, width: 90, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}} member={u}></Member.Name>
+                        <Member.Name style={{marginLeft: 6, width: 100, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}} member={u}></Member.Name>
                     </Flex.Layout>
                 );
             });
@@ -196,18 +196,18 @@ const EventDetail = React.createClass({
                         <Flex.Layout>
                             <MUI.FontIcon className="icon-group" style={{borderRadius: "50%"}} />
                         </Flex.Layout>
-                        <span style={{marginLeft: 6, width: 90, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}}>{t.name}</span>
+                        <span style={{marginLeft: 6, width: 100, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}}>{t.name}</span>
                     </Flex.Layout>
                 );
             });
 
             // Event Description
             eventContent.push(
-                <Flex.Layout horizontal justified key="participants" style={styles.eventDetailItem}>
+                <Flex.Layout horizontal key="participants" style={styles.eventDetailItem}>
                     <Flex.Layout startJustified style={styles.eventDetailIcon}>
                         <MUI.FontIcon className="icon-person"/>
                     </Flex.Layout>
-                    <Flex.Layout center horizontal wrap>
+                    <Flex.Layout horizontal center wrap>
                         {participants}
                         {teamParticipants}
                     </Flex.Layout>
