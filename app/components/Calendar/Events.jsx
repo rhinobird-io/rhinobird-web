@@ -100,6 +100,10 @@ let Events = React.createClass({
         }
     },
 
+    componentDidMount() {
+        this.refs.content.getDOMNode().style.top = this.refs.header.getDOMNode().offsetHeight + "px";
+    },
+
     render() {
         let {
         } = this.props;
@@ -170,12 +174,11 @@ let Events = React.createClass({
 
         return (
             <div style={{height: "100%", overflow: "auto"}}>
-                <Flex.Layout horizontal style={styles.dayHeaderBar}>
+                <Flex.Layout ref="header" horizontal style={styles.dayHeaderBar}>
                     <div style={{width: 60}}></div>
                     <Flex.Layout flex={1} stretch>{dateBars}</Flex.Layout>
                 </Flex.Layout>
-                <PerfectScroll style={{bottom: 0, top: 98, left: 0, right: 0, position: "absolute",
-                borderTop: "1px solid " + this.context.muiTheme.palette.borderColor}} alwaysVisible>
+                <PerfectScroll ref="content" style={{bottom: 0, left: 0, right: 0, position: "absolute", borderTop: "1px solid " + this.context.muiTheme.palette.borderColor}} alwaysVisible>
                     {eventTable}
                 </PerfectScroll>
             </div>
