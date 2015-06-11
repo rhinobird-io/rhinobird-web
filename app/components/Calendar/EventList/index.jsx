@@ -213,7 +213,7 @@ const EventList = React.createClass({
                                         <RouterLink
                                             tooltip={event.title}
                                             style={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}
-                                            to="event-detail" params={{ id: event.id, repeatedNumber: event.repeated_number }}>
+                                            to="event-detail" params={{ id: event.id, repeatedNumber: event.repeated_number || 1 }}>
                                             <span title={event.title}>{event.title}</span>
                                         </RouterLink>
                                         <DropDownAny style={{padding: "8px 12px"}} ref="dropdown" control={control} menu={menu} />
