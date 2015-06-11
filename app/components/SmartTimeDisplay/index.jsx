@@ -1,12 +1,13 @@
 "use strict";
 
-let React  = require("react/addons"),
-    Moment = require("moment"),
-    MUI    = require("material-ui"),
-    Tooltip = MUI.Tooltip;
+const React  = require("react/addons");
+const Moment = require("moment");
+const MUI    = require("material-ui");
+const Tooltip = MUI.Tooltip;
+const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 export default React.createClass({
-    mixins: [React.addons.PureRenderMixin],
+    mixins: [React.addons.PureRenderMixin, StylePropable],
     propTypes: {
         end: React.PropTypes.oneOfType([
             React.PropTypes.object,
@@ -16,6 +17,7 @@ export default React.createClass({
             React.PropTypes.object,
             React.PropTypes.string
         ]),
+        message: React.PropTypes.func,
         format: React.PropTypes.string,
         relative: React.PropTypes.bool
     },
@@ -69,7 +71,7 @@ export default React.createClass({
                 display: "inline",
                 cursor: "pointer",
                 position: "relative",
-                color: 'rgba(0,0,0,0.54)'
+                color: this.context.muiTheme.palette.disabledColor
             },
             triangleDown: {
                 position: "absolute",
@@ -99,7 +101,7 @@ export default React.createClass({
 
         return (
             <span ref="wrapper"
-                style={styles.time}
+                style={this.mergeStyles(styles.time, this.props.style)}
                 onMouseOver={() => {
                     this.setState({tipShow: true});
                     //if (this.props.relative) {

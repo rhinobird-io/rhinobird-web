@@ -112,10 +112,10 @@ const SmartEditor = React.createClass({
             u.email.toLowerCase().indexOf(k) >= 0;
         }
       ).map(u =>
-          <div key={u.id} value={[keyword, "@" + u.name + " "]} style={style}>
+          <Flex.Layout horizontal center key={u.id} value={[keyword, "@" + u.name + " "]} style={style}>
             <Avatar member={u} link={false} /> &ensp;
             <span style={{fontWeight: 500}}>{u.name}</span>
-          </div>
+          </Flex.Layout>
       );
     } else if (keyword.charAt(0) === "#") {
       options = COMMANDS.filter(c =>

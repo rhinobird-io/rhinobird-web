@@ -20,12 +20,15 @@ function _addEvent(event, type) {
         _events[dateFormat] = {};
     }
 
-    if (!_eventsIdMap[event.id.toString()] || !_eventsIdMap[event.id.toString()][event.repeated_number.toString()]) {
-        _events[dateFormat][event.id.toString()] = event;
-        if (!_eventsIdMap[event.id.toString()]) {
-            _eventsIdMap[event.id.toString()] = {};
+    let id = event.id.toString();
+    let repeated_number = event.repeated_number || 1;
+
+    if (id && (!_eventsIdMap[id] || !_eventsIdMap[id][repeated_number.toString()])) {
+        _events[dateFormat][id] = event;
+        if (!_eventsIdMap[id]) {
+            _eventsIdMap[id] = {};
         }
-        _eventsIdMap[event.id.toString()][event.repeated_number.toString()] = event;
+        _eventsIdMap[id][repeated_number.toString()] = event;
     }
 
     if (type && type === ActionTypes.CREATE_EVENT) {

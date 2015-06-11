@@ -86,10 +86,10 @@ module.exports = React.createClass({
         </mui.MenuItem>);
 
         let header = <Flex.Layout horizontal center justified className='header'>
-            <div className='member-info'>
+            <Flex.Layout horizontal center className='member-info'>
                 <Member.Avatar scale={1.5} member={this.state.user} link={false}/>
                 <Member.Name member={this.state.user} link={false} />
-            </div>
+            </Flex.Layout>
             <Flex.Layout vertical centerJustified>
                 <DropDownAny ref="dropdown" control={control} menu={menus} menuClasses={'notification-menu'}
                              onClickAway={this._onClickAway}/>

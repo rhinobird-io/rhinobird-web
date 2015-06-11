@@ -200,6 +200,7 @@ export default React.createClass({
                                             <MUI.DatePicker
                                                 ref="fromDate"
                                                 hintText="From Date"
+                                                style={styles.picker}
                                                 floatingLabelText="From Date"
                                                 defaultDate={this.state.toDate} />
                                                 {!this.state.fullDay ? fromTime : null}
@@ -214,7 +215,7 @@ export default React.createClass({
                                 </Flex.Layout>
                                 <Flex.Layout horizontal centerJustified>
                                     <Flex.Layout vertical selfCenter>
-                                        <label title={this._getSummary()} style={{maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}>
+                                        <label title={this._getSummary()} style={{maxWidth: 240}}>
                                             {this._getSummary()}
                                         </label>
                                     </Flex.Layout>
@@ -252,7 +253,7 @@ export default React.createClass({
                     <MUI.Paper zDepth={2} style={styles.repeated} className="cal-create-event">
                         <div style={{padding: 20}}>
                             <Flex.Layout horizontal>
-                                <h3>Repeat Infomation</h3>
+                                <h3>Repeat Information</h3>
                             </Flex.Layout>
                             {this._getRepeatedInfoContent()}
                         </div>
@@ -263,23 +264,25 @@ export default React.createClass({
     },
 
     _onFromDateChange(e, newDate) {
-        let state = {};
-        state.fromTime = newDate;
-        if (newDate > this.state.toTime) {
-            state.toTime = newDate;
+        if (newDate > this.refs.toDate.getDate()) {
             this.refs.toDate.setDate(newDate);
         }
-        this.setState(state);
+        if (newDate.toDateString() === this.refs.toDate.getDate().toDateString()) {
+            if (this.refs.fromTime.getTime().toTimeString() > this.refs.toTime.getTime().toTimeString()) {
+                this.refs.toTime.setTime(this.refs.fromTime.getTime());
+            }
+        }
     },
 
     _onToDateChange(e, newDate) {
-        let state = {};
-        state.toTime = newDate;
-        if (newDate < this.state.fromTime) {
-            state.fromTime = newDate;
+        if (newDate < this.refs.fromDate.getDate()) {
             this.refs.fromDate.setDate(newDate);
         }
-        this.setState(state);
+        if (newDate.toDateString() === this.refs.fromDate.getDate().toDateString()) {
+            if (this.refs.fromTime.getTime().toTimeString() > this.refs.toTime.getTime().toTimeString()) {
+                this.refs.fromTime.setTime(this.refs.toTime.getTime());
+            }
+        }
     },
 
     _handleSubmit: function(e) {
@@ -334,23 +337,27 @@ export default React.createClass({
         let weeklyRepeats = this.daysInWeek.map(day => <span name={day}>{day}</span>);
         let weeklyRepeatOn =
             <Flex.Layout horizontal justified hidden={this.state.repeatedType !== "Weekly"} style={styles.row}>
-                <label>Repeated On:</label>
-                <Selector
-                    multiple
-                    valueLink={this.linkState("repeatedOn")}
-                    onSelectChange={this._repeatedOnChange}>
-                    {weeklyRepeats}
-                </Selector>
+                <Flex.Layout>Repeated On:</Flex.Layout>
+                <Flex.Layout>
+                    <Selector
+                        multiple
+                        valueLink={this.linkState("repeatedOn")}
+                        onSelectChange={this._repeatedOnChange}>
+                        {weeklyRepeats}
+                    </Selector>
+                </Flex.Layout>
             </Flex.Layout>;
 
         let monthlyRepeatBy =
             <Flex.Layout horizontal justified hidden={this.state.repeatedType !== "Monthly"} style={styles.row}>
                 <label>Repeated By:</label>
-                <Selector
-                    valueLink={this.linkState("repeatedBy")}>
-                    <span className="cal-event-repeated-item" name="Month">Month</span>
-                    <span className="cal-event-repeated-item" name="Week">Week</span>
-                </Selector>
+                <Flex.Layout>
+                    <Selector
+                        valueLink={this.linkState("repeatedBy")}>
+                        <span className="cal-event-repeated-item" name="Month">Day of The Month</span>
+                        <span className="cal-event-repeated-item" name="Week">Day of The Week</span>
+                    </Selector>
+                </Flex.Layout>
             </Flex.Layout>;
 
         let occurrence =
@@ -432,8 +439,8 @@ export default React.createClass({
                 {endDate}
 
                 <Flex.Layout horizonal justified style={styles.row}>
-                    <label>Repeat Summary:</label>
-                    <label>{this._getSummary()}</label>
+                    <Flex.Layout flex={1} style={{whiteSpace: "nowrap", minWidth: 120}}>Repeat Summary:</Flex.Layout>
+                    <Flex.Layout>{this._getSummary()}</Flex.Layout>
                 </Flex.Layout>
 
                 <Flex.Layout horizontal justified>

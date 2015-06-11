@@ -160,10 +160,10 @@ let TeamDisplay = React.createClass({
                             </Flex.Layout>
                             <Flex.Layout wrap>
                                 {users.map((user, index)=> {
-                                    return <div style={{margin: 6, flex: '0 1 100px', whiteSpace:'nowrap', textOverflow:'ellipsis', overflow:'hidden'}} key={index}>
-                                        <Member.Avatar member={user}/>
-                                        <Member.Name style={{marginLeft: 4}} member={user}/>
-                                    </div>;
+                                    return <Flex.Layout horizontal center style={{margin: 6}} key={index}>
+                                        <Member.Avatar member={user}/> &ensp;
+                                        <Member.Name style={{marginLeft: 4, width: 100, whiteSpace:'nowrap', textOverflow:'ellipsis', overflow:'hidden'}} member={user}/>
+                                    </Flex.Layout>;
                                 })}
                             </Flex.Layout>
                             {users.length !== 0?

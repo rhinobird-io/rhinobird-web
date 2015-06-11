@@ -2,6 +2,7 @@ const React = require('react/addons');
 
 const Colors = require('material-ui/lib/styles/colors.js');
 const StylePropable = require('material-ui/lib/mixins/style-propable');
+const Flex = require('../Flex');
 
 const Link = React.createClass({
     mixins: [StylePropable],

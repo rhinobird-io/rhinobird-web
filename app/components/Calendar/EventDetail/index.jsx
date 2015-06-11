@@ -11,9 +11,12 @@ const React           = require("react"),
       CalendarStore   = require('../../../stores/CalendarStore'),
       CalendarActions = require('../../../actions/CalendarActions'),
       RouterLink      = require('../../Common').RouterLink,
-      Thread          = require('../../Thread');
+      Thread          = require('../../Thread'),
+      StylePropable = require('material-ui/lib/mixins/style-propable');
 
-export default React.createClass({
+const EventDetail = React.createClass({
+    mixins: [StylePropable],
+
     contextTypes: {
         router: React.PropTypes.func.isRequired,
         muiTheme: React.PropTypes.object
@@ -43,14 +46,32 @@ export default React.createClass({
     render() {
         let styles = {
             eventTitle: {
+                position: "relative",
+                overflow: "hidden",
                 fontSize: "2em",
-                lineHeight: "1.2em",
-                marginBottom: "0.2em",
-                wordBreak: "break-all"
+                lineHeight: "2em",
+                wordBreak: "break-all",
+                padding: "0 0.8em",
+                color: this.context.muiTheme.palette.canvasColor,
+                backgroundColor: this.context.muiTheme.palette.primary1Color
             },
-            eventTime: {
+            eventAction: {
+                height: 120,
+                padding: 6,
+                backgroundColor: this.context.muiTheme.palette.primary1Color
+            },
+            eventInfo: {
+                fontSize: "1em"
+            },
+            eventSchedule: {
+            },
+            eventDetailItem: {
                 fontSize: "1em",
-                color: "rgba(0, 0, 0, .6)"
+                padding: "1em 0"
+            },
+            eventDetailIcon: {
+                minWidth: 24,
+                marginRight: 24
             },
             repeatSymbol: {
                 width: "64px",
@@ -67,48 +88,55 @@ export default React.createClass({
                 width: "50%",
                 height: "50%",
                 marginLeft: "3px",
-                fontSize: "1.1em",
+                fontSize: "14px",
                 verticalAlign: "baseline",
                 lineHeight: "34px",
                 textAlign: "center"
             },
             deleteButton: {
-                color: this.context.muiTheme.palette.accent1Color
+                color: this.context.muiTheme.palette.canvasColor
             }
         };
 
+        let eventTitle = null;
         let eventActions = null;
         let eventContent = null;
+        let eventComment = null;
         let event = this.state.event;
 
         if (this.state.notFound || event === null || event === undefined) {
-            eventContent = <h3 style={{textAlign: "center"}}>Event not found</h3>
+            eventContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Event not found</h3>
         } else {
+            let backToList = (
+                <RouterLink to="event-list">
+                    <MUI.IconButton iconClassName="icon-arrow-back" title="Back to List"/>
+                </RouterLink>
+            );
             let deleteEvent = LoginStore.getUser().id === event.creator_id ?
                 <MUI.IconButton
                     iconStyle={styles.deleteButton}
                     iconClassName="icon-delete"
                     onClick={this._onEventDelete} /> : null;
 
-            eventActions = <Flex.Layout horizontal justified>
-                <RouterLink to="event-list">
-                    <MUI.IconButton style={{marginLeft: -16}} iconClassName="icon-arrow-back" title="Back to List"/>
-                </RouterLink>
+            eventActions = <Flex.Layout horizontal endJustified style={styles.eventAction}>
                 {deleteEvent}
-                {
-                    event && event.repeated ?
-                        <div style={styles.repeatSymbol}>
-                            <div style={styles.repeatSymbolInner}>{event.repeated_number}</div>
-                        </div> :
-                        null
-                }
+
             </Flex.Layout>;
 
-            eventContent = [];
-
-            eventContent.push(
-                <div key="title" style={styles.eventTitle}>{event.title}</div>
+            eventTitle = (
+                <Flex.Layout vertical selfEnd key="title" style={styles.eventTitle}>
+                    <span>{event.title}</span>
+                    {
+                        event && event.repeated ?
+                            <div style={styles.repeatSymbol}>
+                                <div style={styles.repeatSymbolInner}>{event.repeated_number}</div>
+                            </div> :
+                            null
+                    }
+                </Flex.Layout>
             );
+
+            eventContent = [];
 
             let format;
             if (event.full_day) {
@@ -124,51 +152,81 @@ export default React.createClass({
             if (event.period && formattedFrom !== formattedTo) {
                 formatTime += " ~ " + Moment(event.to_time).format(format)
             }
+
+            // Event Schedule
             eventContent.push(
-                <div key="time" style={styles.eventTime}>{formatTime}</div>
+                <Flex.Layout horizontal key="schedule" style={this.mergeStyles(styles.eventDetailItem, styles.eventSchedule)}>
+                    <Flex.Layout center style={styles.eventDetailIcon}><MUI.FontIcon className="icon-schedule"/></Flex.Layout>
+                    <Flex.Layout center>{formatTime}</Flex.Layout>
+                </Flex.Layout>
             );
 
+            // Event Description
             eventContent.push(
-                <SmartDisplay
-                    key="description"
-                    disabled
-                    multiLine
-                    floatingLabelText="Description"
-                    value={this.state.event.description} />
+                <Flex.Layout horizontal key="description" style={styles.eventDetailItem}>
+                    <Flex.Layout center style={styles.eventDetailIcon}><MUI.FontIcon className="icon-details"/></Flex.Layout>
+                    <Flex.Layout center>
+                        <SmartDisplay
+                            key="description"
+                            disabled
+                            multiLine
+                            floatingLabelText="Description"
+                            value={this.state.event.description} />
+                    </Flex.Layout>
+                </Flex.Layout>
             );
 
-            eventContent.push(<br key="br"/>);
-
-            let members = [];
-
+            // Event participants
+            let participants = [];
+            let teamParticipants = [];
             event.participants.forEach(p => {
                 let u = UserStore.getUser(p.id);
-                members.push(
-                    <span key={"user_" + u.id} style={{display: "inline-block", marginRight: 5}}>
-                        <Flex.Layout horizontal value={"user_" + u.id} index={u.name}>
-                            <Flex.Layout vertical selfCenter>
-                               <Member.Avatar scale={0.5} member={u} />
-                            </Flex.Layout>&ensp;
-                            <Member.Name style={{width: "100px", overflow: "hidden", textOverflow: "ellipsis"}} member={u}></Member.Name>
-                        </Flex.Layout>
-                    </span>
+                participants.push(
+                    <Flex.Layout horizontal center key={"user_" + u.id} style={{marginBottom: 16, marginRight: 16}}>
+                        <Member.Avatar scale={1.0} member={u} style={{borderRadius: "0%"}} />
+                        <Member.Name style={{marginLeft: 6, width: 100, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}} member={u}></Member.Name>
+                    </Flex.Layout>
                 );
             });
 
             event.team_participants.forEach(p => {
                 let t = UserStore.getTeam(p.id);
-                members.push(
-                    <span key={"team_" + t.id} style={{display: "inline-block", marginRight: 5}}>
-                        <Flex.Layout horizontal  value={"team_" + t.id} index={t.name}>
-                            <Flex.Layout vertical selfCenter>
-                                <span className="icon-group" style={{fontSize: "12px"}} />
-                            </Flex.Layout>&ensp;
-                            <span style={{width: "100px", overflow: "hidden", textOverflow: "ellipsis"}}>{t.name}</span>
+                teamParticipants.push(
+                    <Flex.Layout horizontal center key={"team_" + t.id} style={{marginBottom: 16, marginRight: 16}}>
+                        <Flex.Layout>
+                            <MUI.FontIcon className="icon-group" style={{borderRadius: "0%"}} />
                         </Flex.Layout>
-                    </span>
+                        <span style={{marginLeft: 6, width: 100, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}}>{t.name}</span>
+                    </Flex.Layout>
                 );
             });
-            eventContent.push(<div key="members">{members}</div>);
+
+            // Event Participants
+            eventContent.push(
+                <Flex.Layout horizontal key="participants" style={styles.eventDetailItem}>
+                    <Flex.Layout startJustified style={styles.eventDetailIcon}>
+                        <MUI.FontIcon className="icon-person"/>
+                    </Flex.Layout>
+                    <Flex.Layout horizontal center wrap>
+                        {participants}
+                        {teamParticipants}
+                    </Flex.Layout>
+                </Flex.Layout>
+            );
+
+            eventComment = [];
+            eventComment.push(
+                <Flex.Layout horizontal key="comments" style={styles.eventDetailItem}>
+                    <Flex.Layout startJustified style={styles.eventDetailIcon}>
+                        <MUI.FontIcon className="icon-comment"/>
+                    </Flex.Layout>
+                    <Flex.Layout vertical startJustified flex={1}>
+                        <Thread style={{width: "100%"}} threadKey={this.state.threadKey} threadTitle={`Event ${this.state.event.title}`}
+                                participants={{users: this.state.event.participants, teams: this.state.event.team_participants}} />
+                    </Flex.Layout>
+                </Flex.Layout>
+            );
+
         }
 
         let confirmDeleteDialog = null;
@@ -193,24 +251,20 @@ export default React.createClass({
                 <p style={{margin: 0}}>Would you like to delete only this event or all events in the series?</p>
             </MUI.Dialog>
         }
-        if(!this.state.event){
-            return null;
-        }
+
         return (
             <PerfectScroll style={{height: "100%", position: "relative", margin: "0 auto", padding: 20}}>
                 <Flex.Layout horizontal centerJustified wrap>
-                    <MUI.Paper zDepth={3} style={{position: "relative", padding: 20, width: 600, overflow: "hidden"}}>
+                    <MUI.Paper zDepth={3} style={{position: "relative", width: 540, overflow: "hidden"}}>
                         {eventActions}
-                        <div>
+                        {eventTitle}
+                        <div style={{padding: "0.6em 1.6em"}}>
                             {eventContent}
+                            {eventComment}
                         </div>
                         {confirmDeleteDialog}
-                        <h2 style={{margin:"24px 0"}}>Comments</h2>
-                        <Thread threadKey={this.state.threadKey} threadTitle={`Event ${this.state.event.title}`}
-                                participants={{users: this.state.event.participants, teams: this.state.event.team_participants}}/>
                     </MUI.Paper>
                 </Flex.Layout>
-
             </PerfectScroll>
         );
     },
@@ -232,3 +286,5 @@ export default React.createClass({
         }
     }
 });
+
+module.exports = EventDetail;
