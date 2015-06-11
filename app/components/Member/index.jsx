@@ -52,10 +52,10 @@ Member.Avatar = React.createClass({
     render: function () {
         let size = 24 * this.props.scale;
         if (this.props.member) {
-            let display = <Flex.Layout vertical center><img className='avatar' style={{display: "inline-block", verticalAlign: "middle"}} width={size} height={size} {...this.props}
-                               src={`http://www.gravatar.com/avatar/${this.props.member.emailMd5}?d=identicon`}/></Flex.Layout>;
+            let display = <img className='avatar' style={{display: "inline-block", verticalAlign: "middle"}} width={size} height={size} {...this.props}
+                               src={`http://www.gravatar.com/avatar/${this.props.member.emailMd5}?d=identicon`}/>;
             if (this.props.link) {
-                return <Common.Link onClick={_showMemberProfile.bind(this)}>
+                return <Common.Link onClick={_showMemberProfile.bind(this)} style={{display:'inline-flex', justifyContent:'center', flexDirection:'column'}}>
                     {display}
                 </Common.Link>;
             } else {
