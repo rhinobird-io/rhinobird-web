@@ -72,7 +72,8 @@ let DayView = React.createClass({
 
     getInitialState() {
         return {
-            events: []
+            events: [],
+            newEvent: null
         }
     },
 
@@ -134,17 +135,19 @@ let DayView = React.createClass({
             }
             events[key].push(e);
         });
+
         let eventsRect = Object.keys(events).map(key => {
             let es = events[key];
             let percent = 100 / es.length;
-            let results = es.map(e => <Flex.Layout flex={1} style={{padding: 4}}><EventRect event={e} style={{width: "100%"}}/></Flex.Layout>);
+            let results = es.map(e => <EventRect event={e} style={{width: "100%"}}/>);
             return (
-                <Flex.Layout flex={1} horizontal stretch>
-                    {results}
-                </Flex.Layout>
+                {results}
             )
         });
 
+        if (this.state.newEvent) {
+            eventsRect.push(<EventRect event={this.state.newEvent} style={{width: "100%"}}/>)
+        }
         let now = new Date();
         let nowBar = null;
         if (now.toDateString() === new Date(date).toDateString()) {
@@ -154,7 +157,10 @@ let DayView = React.createClass({
         }
 
         return (
-            <div vertical style={style}>
+            <div vertical style={style}
+                 onMouseMove={this._handleMouseMove}
+                 onMouseDown={this._handleMouseDown}
+                 onMouseUp={this._handleMouseUp}>
                 {times}
                 {nowBar}
                 {eventsRect}
@@ -162,6 +168,80 @@ let DayView = React.createClass({
         );
     },
 
+    _handleMouseDown(e) {
+        let node = this.getDOMNode();
+        let rect = node.getBoundingClientRect();
+        this.startPosY = e.clientY - rect.top;
+        this.mouseDown = true;
+    },
+
+    _handleMouseMove(e) {
+        let node = this.getDOMNode();
+        let rect = node.getBoundingClientRect();
+        let endPosY = e.clientY - rect.top;
+        if (this.mouseDown) {
+            let date = new Date(this.props.date);
+            let fromSeconds = (this.startPosY / rect.height) * 86400;
+            let toSeconds = (endPosY / rect.height) * 86400;
+            let fromTime = new Date(date);
+
+            let fromHour = Math.floor(fromSeconds / 3600);
+            let fromMinute = Math.floor((fromSeconds - fromHour * 3600) / 60);
+            //if (fromMinute < 30) {
+            //    fromMinute = 0;
+            //}
+            fromTime.setHours(fromHour);
+            fromTime.setMinutes(fromMinute)
+
+            let toTime = new Date(date);
+
+            let toHour = Math.floor(toSeconds / 3600);
+            let toMinute = Math.floor((toSeconds - toHour * 3600) / 60);
+            //if (toMinute < 30) {
+            //    toMinute = 0;
+            //}
+            toTime.setHours(toHour);
+            toTime.setMinutes(toMinute);
+
+            let newEvent = {from_time: fromTime, to_time: toTime};
+            this.setState({newEvent: newEvent})
+        }
+    },
+
+    _handleMouseUp(e) {
+        let node = this.getDOMNode();
+        let rect = node.getBoundingClientRect();
+        let endPosY = e.clientY - rect.top;
+        if (this.mouseDown) {
+            let date = new Date(this.props.date);
+            let fromSeconds = (this.startPosY / rect.height) * 86400;
+            let toSeconds = (endPosY / rect.height) * 86400;
+            let fromTime = new Date(date);
+
+            let fromHour = Math.floor(fromSeconds / 3600);
+            let fromMinute = Math.floor((fromSeconds - fromHour * 3600) / 60);
+            //if (fromMinute < 30) {
+            //    fromMinute = 0;
+            //}
+            fromTime.setHours(fromHour);
+            fromTime.setMinutes(fromMinute)
+
+            let toTime = new Date(date);
+
+            let toHour = Math.floor(toSeconds / 3600);
+            let toMinute = Math.floor((toSeconds - toHour * 3600) / 60);
+            //if (toMinute < 30) {
+            //    toMinute = 0;
+            //}
+            toTime.setHours(toHour);
+            toTime.setMinutes(toMinute);
+
+            let newEvent = {from_time: fromTime, to_time: toTime};
+            this.setState({newEvent: newEvent})
+        }
+
+        this.mouseDown = false;
+    },
 
     _onChange() {
         this.setState({
