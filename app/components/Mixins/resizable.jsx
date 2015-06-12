@@ -20,43 +20,39 @@ module.exports = {
     componentDidMount() {
         this.getDOMNode().addEventListener("mousemove", this._mouseMoveListener);
         this.getDOMNode().addEventListener("mousedown", this._mouseDownListener);
-        this.getDOMNode().addEventListener("mouseout", this._mouseOutListener);
-        this.getDOMNode().addEventListener("mouseup", this._mouseUpListener);
+        this.getDOMNode().addEventListener("mouseup", this._handleMouseUp);
     },
 
     componentWillUnmount() {
         this.getDOMNode().removeEventListener("mousemove", this._mouseMoveListener);
         this.getDOMNode().removeEventListener("mousedown", this._mouseDownListener);
-        this.getDOMNode().removeEventListener("mouseup", this._mouseUpListener);
-        this.getDOMNode().removeEventListener("mouseout", this._mouseOutListener);
+        this.getDOMNode().removeEventListener("mouseout", this._handleMouseUp);
     },
 
     _mouseMoveListener(e) {
         let node = this.getDOMNode();
         let rect = node.getBoundingClientRect();
-        console.log(rect.bottom);
-        console.log(e.y);
-        console.log(e);
-        if (rect.bottom - e.y <= 60) {
-            node.style.cursor = "ns-resize";
-            if (this._isMouseDown) {
-                node.style.height = (rect.height + (e.y - this._oldMouseY)) + "px";
-            }
-        } else {
-            node.style.cursor = "default";
-        }
-        this._oldMouseY = e.y;
+
     },
 
     _mouseDownListener(e) {
         this._isMouseDown = true;
+        this._oldMouseY = e.y;
+        document.addEventListener("mousemove", this._handleDocumentMouseMove);
     },
 
-    _mouseUpListener(e) {
+    _handleMouseUp(e) {
         this._isMouseDown = false;
+        document.removeEventListener("mousemove", this._handleDocumentMouseMove);
     },
 
-    _mouseOutListener(e) {
-        this._isMouseDown = false;
+    _handleDocumentMouseMove(e) {
+        console.log("move");
+        let node = this.getDOMNode();
+        let rect = node.getBoundingClientRect();
+        if (rect.bottom - e.y <= 20) {
+            node.style.height = (rect.height + (e.y - this._oldMouseY)) + "px";
+        }
+        this._oldMouseY = e.y;
     }
 };
