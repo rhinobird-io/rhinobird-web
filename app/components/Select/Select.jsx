@@ -270,7 +270,7 @@ let Select = React.createClass({
             <PopupSelect
                 hRestrict={this.props.hRestrict}
                 ref="popupSelect"
-                relatedTo={() => this.refs.text.getDOMNode().getBoundingClientRect()}
+                relatedTo={() => this.getDOMNode().getBoundingClientRect()}
                 onItemSelect={(value, e) => {
                         this._addSelectedOption(value);
                         this.refs.text.setValue("");
