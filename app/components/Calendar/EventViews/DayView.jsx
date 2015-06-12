@@ -25,6 +25,8 @@ let EventRect = React.createClass({
             style = {};
         }
 
+        style.WebkitUserSelect = "none";
+        style.userSelect = "none";
         style.paddingTop = 5;
         style.paddingBottom = 5;
         style.position = "absolute";
@@ -95,6 +97,8 @@ let DayView = React.createClass({
         if (!style) {
             style = {};
         }
+        style.WebkitUserSelect = "none";
+        style.userSelect = "none";
         style.width = "100%";
         style.position = "relative";
 
@@ -146,7 +150,7 @@ let DayView = React.createClass({
         });
 
         if (this.state.newEvent) {
-            eventsRect.push(<EventRect event={this.state.newEvent} style={{width: "100%"}}/>)
+            eventsRect.push(<EventRect onClick={() => this.setState({newEvent: null})} event={this.state.newEvent} style={{width: "100%"}}/>)
         }
         let now = new Date();
         let nowBar = null;
