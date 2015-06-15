@@ -97,7 +97,7 @@ const Thread = React.createClass({
         let env = {atMembers: []};
         md.parse(comment, env);
         let memberIds = Array.from(new Set(env.atMembers).values()).map(m => UserStore.getUserByName(m).id);
-        let idx = memberIds.indexOf(LoginStore.getUser.id);
+        let idx = memberIds.indexOf(LoginStore.getUser().id);
         if(idx > -1) {
             memberIds.splice(idx, 1);
         }
@@ -115,9 +115,8 @@ const Thread = React.createClass({
             );
         }
         if (this.props.participants){
-            debugger;
             let userIds = this.props.participants.users.map(u => u.id);
-            let idx = userIds.indexOf(LoginStore.getUser.id);
+            let idx = userIds.indexOf(LoginStore.getUser().id);
             if(idx > -1) {
                 userIds.splice(idx, 1);
             }
