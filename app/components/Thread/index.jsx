@@ -115,12 +115,13 @@ const Thread = React.createClass({
             );
         }
         if (this.props.participants){
+            debugger;
             let userIds = this.props.participants.users.map(u => u.id);
             let idx = userIds.indexOf(LoginStore.getUser.id);
             if(idx > -1) {
                 userIds.splice(idx, 1);
             }
-            let teamIds = this.props.participants.teams.map(t => t.id);
+            let teamIds = (this.props.participants.teams || []).map(t => t.id);
             $.post('/platform/api/users/notifications', {
                     users: userIds,
                     teams: teamIds,

@@ -508,7 +508,7 @@ const PostDetail = React.createClass({
                     </Common.Display>
                     <Common.Display type='title' style={{marginTop:24}}>Comments</Common.Display>
                     <Thread threadKey={this.context.router.getCurrentPathname()} threadTitle={`Post ${this.state.title}`}
-                                participants={{users: [LoginStore.getUser().id]}}/>
+                                participants={{users: [user]}}/>
                 </PerfectScroll>
                     {LoginStore.getUser().id === this.state.creator_id? <mui.FloatingActionButton onClick={this._editPost}
                                                                                         style={{position:'absolute', right: 24, bottom: 24}}
