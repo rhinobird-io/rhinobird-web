@@ -145,7 +145,7 @@ let Events = React.createClass({
                 </Flex.Layout>;
                 break;
             case "week":
-                let weekDays = date.weekDays()
+                let weekDays = date.weekDays();
                 dayContents = weekDays.map(d => (
                     <Flex.Layout flex={1} style={styles.dayContent} >
                         <DayView date={Moment(d).format("YYYY-MM-DD")}/>
