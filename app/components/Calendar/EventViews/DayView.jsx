@@ -2,8 +2,13 @@ const React = require('react');
 const CalendarStore = require("../../../stores/CalendarStore");
 const CalendarActions = require("../../../actions/CalendarActions");
 const Moment = require('moment');
+const StylePropable = require('material-ui/lib/mixins/style-propable');
+const Flex = require('../../Flex');
+const Resizable = require('../../Mixins').Resizable;
 
 let EventRect = React.createClass({
+    mixins: [Resizable],
+
     getInitialState() {
         return {
         };
@@ -20,11 +25,13 @@ let EventRect = React.createClass({
             style = {};
         }
 
+        style.WebkitUserSelect = "none";
+        style.userSelect = "none";
+        style.paddingTop = 5;
+        style.paddingBottom = 5;
         style.position = "absolute";
         style.border = "1px solid rgb(33, 150, 243)";
-        style.background = "rgba(33, 150, 243, .7)";
-        style.left = 0;
-        style.right = 10;
+        style.background = "rgba(33, 150, 243, .6)";
         //style.borderRadius = 2;
 
         if (event) {
@@ -41,7 +48,6 @@ let EventRect = React.createClass({
             style.top = top;
             style.height = height;
             style.minHeight = minHeight;
-            console.log(style);
         }
         return (
             <div style={style} {...other}>
@@ -53,6 +59,8 @@ let EventRect = React.createClass({
 });
 
 let DayView = React.createClass({
+    mixins: [StylePropable],
+
     contextTypes: {
         muiTheme: React.PropTypes.object
     },
@@ -66,7 +74,8 @@ let DayView = React.createClass({
 
     getInitialState() {
         return {
-            events: []
+            events: [],
+            newEvent: null
         }
     },
 
@@ -88,22 +97,26 @@ let DayView = React.createClass({
         if (!style) {
             style = {};
         }
-
+        style.WebkitUserSelect = "none";
+        style.userSelect = "none";
+        style.width = "100%";
         style.position = "relative";
-        style.borderRight = "1px solid lightgray";
 
         let styles = {
             top: {
-                height: 20,
-                borderTop: "1px solid lightgray"
+                width: "100%",
+                height: 30,
+                borderBottom: "1px dashed lightgray"
             },
             bottom: {
-                height: 20,
-                borderTop: "1px dashed lightgray"
+                width: "100%",
+                height: 30,
+                borderBottom: "1px solid lightgray"
             },
             nowBar: {
                 position: "absolute",
                 height: 2,
+                zIndex: 10,
                 overflow: "hidden",
                 width: "100%",
                 backgroundColor: this.context.muiTheme.palette.accent1Color
@@ -117,23 +130,41 @@ let DayView = React.createClass({
             times.push(<div key={i + "b"} style={styles.bottom}></div>);
         }
 
-        let eventsRect = (this.state.events || []).map(event => {
-            return (
-                <EventRect event={event}/>
-            );
+        let events = {};
+        (this.state.events || []).forEach(e => {
+            let fromTime = new Date(e.from_time);
+            let key = Moment(fromTime).format("HH:mm");
+            if (!events[key]) {
+                events[key] = [];
+            }
+            events[key].push(e);
         });
 
+        let eventsRect = Object.keys(events).map(key => {
+            let es = events[key];
+            let percent = 100 / es.length;
+            let results = es.map(e => <EventRect event={e} style={{width: "100%"}}/>);
+            return (
+                {results}
+            )
+        });
+
+        if (this.state.newEvent) {
+            eventsRect.push(<EventRect onClick={() => this.setState({newEvent: null})} event={this.state.newEvent} style={{width: "100%"}}/>)
+        }
         let now = new Date();
         let nowBar = null;
         if (now.toDateString() === new Date(date).toDateString()) {
             let time = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-            console.log(time);
             styles.nowBar.top = `${(time / 864)}%`;
             nowBar = <div style={styles.nowBar}></div>
         }
 
         return (
-            <div style={style}>
+            <div vertical style={style}
+                 onMouseMove={this._handleMouseMove}
+                 onMouseDown={this._handleMouseDown}
+                 onMouseUp={this._handleMouseUp}>
                 {times}
                 {nowBar}
                 {eventsRect}
@@ -141,6 +172,80 @@ let DayView = React.createClass({
         );
     },
 
+    _handleMouseDown(e) {
+        let node = this.getDOMNode();
+        let rect = node.getBoundingClientRect();
+        this.startPosY = e.clientY - rect.top;
+        this.mouseDown = true;
+    },
+
+    _handleMouseMove(e) {
+        let node = this.getDOMNode();
+        let rect = node.getBoundingClientRect();
+        let endPosY = e.clientY - rect.top;
+        if (this.mouseDown) {
+            let date = new Date(this.props.date);
+            let fromSeconds = (this.startPosY / rect.height) * 86400;
+            let toSeconds = (endPosY / rect.height) * 86400;
+            let fromTime = new Date(date);
+
+            let fromHour = Math.floor(fromSeconds / 3600);
+            let fromMinute = Math.floor((fromSeconds - fromHour * 3600) / 60);
+            //if (fromMinute < 30) {
+            //    fromMinute = 0;
+            //}
+            fromTime.setHours(fromHour);
+            fromTime.setMinutes(fromMinute)
+
+            let toTime = new Date(date);
+
+            let toHour = Math.floor(toSeconds / 3600);
+            let toMinute = Math.floor((toSeconds - toHour * 3600) / 60);
+            //if (toMinute < 30) {
+            //    toMinute = 0;
+            //}
+            toTime.setHours(toHour);
+            toTime.setMinutes(toMinute);
+
+            let newEvent = {from_time: fromTime, to_time: toTime};
+            this.setState({newEvent: newEvent})
+        }
+    },
+
+    _handleMouseUp(e) {
+        let node = this.getDOMNode();
+        let rect = node.getBoundingClientRect();
+        let endPosY = e.clientY - rect.top;
+        if (this.mouseDown) {
+            let date = new Date(this.props.date);
+            let fromSeconds = (this.startPosY / rect.height) * 86400;
+            let toSeconds = (endPosY / rect.height) * 86400;
+            let fromTime = new Date(date);
+
+            let fromHour = Math.floor(fromSeconds / 3600);
+            let fromMinute = Math.floor((fromSeconds - fromHour * 3600) / 60);
+            //if (fromMinute < 30) {
+            //    fromMinute = 0;
+            //}
+            fromTime.setHours(fromHour);
+            fromTime.setMinutes(fromMinute)
+
+            let toTime = new Date(date);
+
+            let toHour = Math.floor(toSeconds / 3600);
+            let toMinute = Math.floor((toSeconds - toHour * 3600) / 60);
+            //if (toMinute < 30) {
+            //    toMinute = 0;
+            //}
+            toTime.setHours(toHour);
+            toTime.setMinutes(toMinute);
+
+            let newEvent = {from_time: fromTime, to_time: toTime};
+            this.setState({newEvent: newEvent})
+        }
+
+        this.mouseDown = false;
+    },
 
     _onChange() {
         this.setState({
