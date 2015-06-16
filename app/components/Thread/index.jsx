@@ -25,7 +25,7 @@ const Comment = React.createClass({
     render() {
         let c = this.props.comment;
         return <div style={{paddingBottom: 12}} id={`rb_comment_${c.cid}`}><Flex.Layout>
-            <div style={{paddingTop:2.5}}>
+            <div style={{paddingTop:2.5, flexShrink:0}}>
                 <Avatar member={UserStore.getUser(c.user)}/>
             </div>
             <Flex.Layout flex={1} vertical style={{marginLeft:12}}>
@@ -37,7 +37,7 @@ const Comment = React.createClass({
                 </Flex.Layout>
                 <SmartDisplay value={c.body} key={c.cid}/>
             </Flex.Layout>
-            <mui.IconButton onMouseOver={()=>{this.setState({mouseOver: true})}}
+            <mui.IconButton style={{flexShrink:0}} onMouseOver={()=>{this.setState({mouseOver: true})}}
                             onMouseOut={()=>{this.setState({mouseOver: false})}}
                             iconStyle={{color:this.state.mouseOver? this.context.muiTheme.palette.textColor:this.context.muiTheme.palette.borderColor}}
                             iconClassName='icon-reply' onClick={this.props.onReply.bind(null, c)}/>
