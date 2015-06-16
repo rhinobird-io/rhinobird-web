@@ -314,7 +314,7 @@ export default React.createClass({
         event.description = description;
         event.fromDate = this.refs.fromDate.getDate();
         event.toDate = this.refs.toDate ? this.refs.toDate.getDate() : new Date();
-        event.fromTime = this.refs.fromTime.getTime();
+        event.fromTime = this.refs.fromTime ? this.refs.fromTime.getTime() : event.fromDate;
         event.toTime = this.refs.toTime ? this.refs.toTime.getTime() : new Date();
         CalendarActions.create(event, () => this.context.router.transitionTo("event-list"));
     },
