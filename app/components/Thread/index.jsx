@@ -136,16 +136,19 @@ const Thread = React.createClass({
         }
     },
     _handleKeyDown(e) {
+        let comment = this.state.comment;
         if (e.keyCode === 13 && !e.shiftKey) {
-            $.post('/comment/comments', {key: this.props.threadKey, body:this.state.comment}).then((c)=>{
-                this._getComments(this.props.threadKey);
-                let comment = this.state.comment;
-                this.setState({
-                    comment: ''
+            if (comment.trim().length > 0) {
+                $.post('/comment/comments', {key: this.props.threadKey, body: comment}).then((c)=>{
+                    this._getComments(this.props.threadKey);
+                    let comment = this.state.comment;
+                    this.setState({
+                        comment: ''
+                    });
+                    this.forceUpdate();
+                    this._sendNotifications(comment, c);
                 });
-                this.forceUpdate();
-                this._sendNotifications(comment, c);
-            });
+            }
             e.preventDefault();
         }
     },
