@@ -33,6 +33,10 @@ module.exports = (
           <Route name="talk" key="imTalk" path="talk/:backEndChannelId" handler={ require("react-router-proxy!./components/InstantMessage/ImMain/Main") }/>
           <Route name="setting" path="setting" handler={require("react-proxy!./components/InstantMessage/ImSetting")} />
         </Route>
+        <Route name="resource" path="resource" handler={require("react-proxy!./components/Resource")}>
+            <Route name="resources" path="resources" handler={require("react-proxy!./components/Resource/ResourceList")} />
+            <DefaultRoute handler={require("react-proxy!./components/Resource/ResourceList")} />
+        </Route>
         <Route name="post" path="post" handler={require("react-proxy!./components/Post")}>
         </Route>
         <Route name="post-detail" path="post/:id" handler={require("react-router-proxy!./components/Post/PostDetail")}>
