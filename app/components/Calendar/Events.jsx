@@ -18,6 +18,16 @@ Date.prototype.weekDays = function() {
     return result;
 };
 
+// Yesterday, today, tomorrow, the day after tomorrow
+Date.prototype.fourDays = function() {
+    let days = [];
+    for (let i = -1; i <= 2; i++) {
+        let day = new Date(this);
+        day.setDate(this.getDate() + i);
+        days.push(day);
+    }
+    return days;
+};
 
 let TimeBar = React.createClass({
     render() {
@@ -88,6 +98,43 @@ let DayHeader = React.createClass({
     }
 });
 
+let AllDayEvents = React.createClass({
+    contextTypes: {
+        muiTheme: React.PropTypes.object
+    },
+
+    propTypes: {
+        events: React.PropTypes.arrayOf(React.PropTypes.object)
+    },
+
+    render() {
+        let styles = {
+            allDayEvent: {
+                padding: 2,
+                margin: 2,
+                color: this.context.muiTheme.palette.textColor,
+                backgroundColor: this.context.muiTheme.palette.primary1Color,
+                border: "1px solid " + this.context.muiTheme.palette.borderColor
+            }
+        };
+
+        let {
+            events,
+            ...others
+        } = this.props;
+
+        let content = events.map((e) => (
+            <div style={styles.allDayEvent}>{e.title}</div>
+        ));
+
+        return (
+            <Flex.Layout vertical style={this.props.style}>
+                {content}
+            </Flex.Layout>
+        );
+    }
+});
+
 let Events = React.createClass({
     contextTypes: {
         muiTheme: React.PropTypes.object
@@ -96,12 +143,22 @@ let Events = React.createClass({
     getInitialState() {
         return {
             viewType: "week",
-            date: new Date()
+            date: new Date(),
+            events: []
         }
     },
 
     componentDidMount() {
+        CalendarStore.addChangeListener(this._onChange);
         this.refs.content.getDOMNode().style.top = this.refs.header.getDOMNode().offsetHeight + "px";
+    },
+
+    componentDidUpdate() {
+        this.refs.content.getDOMNode().style.top = this.refs.header.getDOMNode().offsetHeight + "px";
+    },
+
+    componentWillUnmount() {
+        CalendarStore.removeChangeListener(this._onChange);
     },
 
     render() {
@@ -111,14 +168,14 @@ let Events = React.createClass({
         let styles = {
             timeBar: {
                 width: 60,
-                paddingRight: 10,
+                paddingRight: 10
             },
             dayHeaderBar: {
             },
             dayHeader: {
-                width: "100%",
                 padding: "0.2em 0.5em",
-                borderLeft: "1px solid " + this.context.muiTheme.palette.borderColor
+                borderLeft: "1px solid " + this.context.muiTheme.palette.borderColor,
+                borderBottom: "1px solid " + this.context.muiTheme.palette.borderColor
             },
             dayContent: {
                 width: "100%",
@@ -130,37 +187,42 @@ let Events = React.createClass({
 
         // Date Bar
         let dateBars = null;
-
+        let days = [];
         let dayContents = [];
-
+        let fullDayEvents = [];
+        console.log(this.state.viewType);
         switch (this.state.viewType) {
             case "day":
-                dayContents = (
-                    <Flex.Layout flex={1} style={styles.dayContent}>
-                        <DayView date={Moment(date).format("YYYY-MM-DD")}/>
-                    </Flex.Layout>
-                );
-                dateBars = <Flex.Layout flex={1} style={styles.dayHeader}>
-                    <DayHeader date={Moment(date).format("YYYY-MM-DD")}/>
-                </Flex.Layout>;
+                days.push(date);
                 break;
             case "week":
-                let weekDays = date.weekDays();
-                dayContents = weekDays.map(d => (
-                    <Flex.Layout flex={1} style={styles.dayContent} >
-                        <DayView date={Moment(d).format("YYYY-MM-DD")}/>
-                    </Flex.Layout>
-                ));
-                dateBars = weekDays.map(d => (
-                    <Flex.Layout flex={1} style={styles.dayHeader}>
-                        <DayHeader date={Moment(d).format("YYYY-MM-DD")}/>
-                    </Flex.Layout>
-                ));
+                days = date.weekDays();
                 break;
             case "4days":
+                days = date.fourDays();
                 break;
             case "month":
                 break;
+        }
+
+        if (this.state.viewType !== "month") {
+            dayContents = days.map(d => (
+                <Flex.Layout flex={1} style={styles.dayContent} >
+                    <DayView date={Moment(d).format("YYYY-MM-DD")} />
+                </Flex.Layout>
+            ));
+
+            dateBars = days.map(d => (
+                <Flex.Layout flex={1} vertical style={styles.dayHeader}>
+                    <DayHeader date={Moment(d).format("YYYY-MM-DD")} />
+                </Flex.Layout>
+            ));
+
+            fullDayEvents = days.map(d => (
+                <Flex.Layout flex={1} style={styles.dayContent}>
+                    <AllDayEvents style={{width: "100%"}} events={CalendarStore.getAllDayEventsByDate(d)}/>
+                </Flex.Layout>
+            ));
         }
 
         let eventTable = (
@@ -174,15 +236,27 @@ let Events = React.createClass({
 
         return (
             <div style={{height: "100%", overflow: "auto"}}>
-                <Flex.Layout ref="header" horizontal style={styles.dayHeaderBar}>
-                    <div style={{width: 60}}></div>
-                    <Flex.Layout flex={1} stretch>{dateBars}</Flex.Layout>
+                <Flex.Layout ref="header" vertical>
+                    <Flex.Layout horizontal>
+                        <div style={{width: 60}}></div>
+                        <Flex.Layout flex={1} stretch>{dateBars}</Flex.Layout>
+                    </Flex.Layout>
+                    <Flex.Layout horizonta>
+                        <div style={{width: 60}}></div>
+                        <Flex.Layout flex={1} stretch>{fullDayEvents}</Flex.Layout>
+                    </Flex.Layout>
                 </Flex.Layout>
                 <PerfectScroll ref="content" style={{bottom: 0, left: 0, right: 0, position: "absolute", borderTop: "1px solid " + this.context.muiTheme.palette.borderColor}} alwaysVisible>
                     {eventTable}
                 </PerfectScroll>
             </div>
         );
+    },
+
+    _onChange() {
+        this.setState({
+            events: CalendarStore.getAllEvents()
+        });
     }
 });
 
