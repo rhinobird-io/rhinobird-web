@@ -1,17 +1,22 @@
 const React = require('react/addons');
-const Paper = require('material-ui').Paper;
+const mui = require('material-ui');
+const Paper = mui.Paper;
 const Flexible = require('../Mixins').Flexible;
 const Layout = require('../Flex').Layout;
 const PerfectScroll = require('../PerfectScroll');
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 let Popup = React.createClass({
-    mixins: [Flexible, StylePropable, React.addons.PureRenderMixin],
+    mixins: [Flexible, StylePropable, mui.Mixins.ClickAwayable, React.addons.PureRenderMixin],
 
     getInitialState() {
         return {
             shown: false
         }
+    },
+
+    componentClickAway() {
+        this.dismiss();
     },
 
     dismiss() {

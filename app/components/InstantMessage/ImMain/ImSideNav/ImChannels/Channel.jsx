@@ -106,7 +106,7 @@ module.exports = React.createClass({
             textColor = this.context.muiTheme.palette.disabledColor;
         }
         return (
-            <div className="instant-message-channel-container" style={style}>
+            <div className="instant-message-channel-container" style={style} onTouchTap={this.props.onTouchTap}>
                 <FlatButton style={{
                 backgroundColor: this.state._imCurrentChannel?   this.context.muiTheme.palette.accent1Color : undefined,
                 color: this.state._imCurrentChannel? this.context.muiTheme.palette.canvasColor : this.context.muiTheme.palette.textColor,
