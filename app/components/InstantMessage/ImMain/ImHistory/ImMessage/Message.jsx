@@ -37,7 +37,7 @@ module.exports = React.createClass({
               <div className="time"><SmartTimeDisplay start={this.props.messages.first().createdAt} relative /></div>
             </Layout>
             {this.props.messages.map(msg=>{
-              return <SmartDisplay key={msg.id} value={msg.text} onLinkPreviewWillUpdate={this.props.onLinkPreviewWillUpdate}
+              return <SmartDisplay enableLinkPreview={true} key={msg.id} value={msg.text} onLinkPreviewWillUpdate={this.props.onLinkPreviewWillUpdate}
                                    onLinkPreviewDidUpdate={this.props.onLinkPreviewDidUpdate}></SmartDisplay>
             })}
           </Layout>

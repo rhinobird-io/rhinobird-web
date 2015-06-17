@@ -26,7 +26,7 @@ const SmartDisplay = React.createClass({
     },
     getDefaultProps(){
         return {
-            enableLinkPreview: true
+            enableLinkPreview: false
         };
     },
     contextTypes: {
