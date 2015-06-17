@@ -17,12 +17,13 @@ const { Menu, FontIcon, FlatButton, IconButton, TextField } = mui;
 const Flex = require('../../../../Flex');
 const PerfectScroll = require('../../../../PerfectScroll');
 const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+const Popup = require('../../../../Popup');
 
 const showLimit = 10;
 require('./style.less');
 module.exports = React.createClass({
 
-    mixins: [PureRenderMixin],
+    mixins: [PureRenderMixin, React.addons.LinkedStateMixin],
 
     contextTypes: {
         router: React.PropTypes.func.isRequired
@@ -38,7 +39,8 @@ module.exports = React.createClass({
     getInitialState() {
         return {
             _channels: this.props.isGroup?RecentChannelStore.getOrderedRecentPublicChannels():RecentChannelStore.getOrderedRecentDirectChannels(),
-            _currentChannel : ChannelStore.getCurrentChannel()
+            _currentChannel : ChannelStore.getCurrentChannel(),
+            filterText: ''
 
         };
     },
@@ -85,16 +87,41 @@ module.exports = React.createClass({
 
     render() {
 
-        let control = <IconButton iconClassName="icon-more-vert" style={{ maxWidth : '48px'}}/>;
-        let menu = this.state._channels.map((item,idx) => {
-            return <ImChannel key={item.backEndChannelId} Channel={item}></ImChannel>
+        let filterText = this.state.filterText.toLowerCase();
+        let menu = this.state._channels.filter(ch => {
+            if (ch.channel.name.toLowerCase().indexOf(filterText) !== -1){
+                return true;
+            }
+            if (ch.channel.realname && ch.channel.realname.toLowerCase().indexOf(filterText) !== -1) {
+                return true;
+            }
+            return false;
+        }).map((item,idx) => {
+            return <ImChannel key={item.backEndChannelId} Channel={item} onTouchTap={()=>{this.refs.popup.dismiss()}}></ImChannel>
         });
         return (
             <Flex.Layout vertical className={'instant-message-channels ' + this.props.className}>
                 <Flex.Layout style={{padding:12}} center justified>
                     <Flex.Item flex={1} style={{fontSize:'1.2em', fontWeight: 'bold'}}>{this.props.channelGroup}</Flex.Item>
                     {
-                        !this.props.isGroup?<DropDownAny ref="directMessageMenu" control={control} menu={menu} menuClasses="instant-message-channels-menu" />:undefined
+                        !this.props.isGroup?<div>
+                            <IconButton ref='control' iconClassName="icon-more-vert" onClick={()=>{
+                                this.refs.popup.updatePosition();
+                                if (this.refs.popup.isShown()) {
+                                  this.refs.popup.dismiss();
+                                } else {
+                                  this.refs.popup.show();
+                                  this.refs.filter.focus();
+                                }
+                            }}/>
+                            <Popup ref="popup"
+                            selfAlignOrigin="rt"
+                            relatedAlignOrigin="rt" relatedTo={()=>this.refs.control} >
+                                <div style={{padding:12}}>
+                                    <mui.TextField valueLink={this.linkState('filterText')} ref='filter' hintText='Find by name' style={{width:'100%'}}/>
+                                </div>
+                                {menu}
+                            </Popup></div>:undefined
                     }
 
                 </Flex.Layout>
