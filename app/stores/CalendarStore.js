@@ -139,6 +139,19 @@ let CalendarStore = assign({}, BaseStore, {
         return events;
     },
 
+    getAllDayEventsByDate(date) {
+        let formattedDate = _formatDate(date);
+        let events = [];
+        if (_events[formattedDate]) {
+            Object.keys(_events[formattedDate]).forEach(key => {
+                if (_events[formattedDate][key].full_day) {
+                    events.push(_events[formattedDate][key]);
+                }
+            });
+        }
+        return events;
+    },
+
     getEventTimeRange() {
         return _eventRange;
     },
