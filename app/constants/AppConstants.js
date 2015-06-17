@@ -27,6 +27,11 @@ export default {
     LOAD_MORE_OLDER_EVENTS: null
   }),
 
+  ResourceActionTypes: keyMirror({
+    RECEIVE_RESOURCES: null,
+    LOAD_MORE_RESOURCES: null
+  }),
+
   ChannelActionTypes : keyMirror({
     RECEIVE_ALL: null,
     RECEIVE_CURRENT_CHANNEL : null,
