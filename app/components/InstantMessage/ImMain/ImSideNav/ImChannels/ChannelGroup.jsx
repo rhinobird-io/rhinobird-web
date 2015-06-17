@@ -94,7 +94,7 @@ module.exports = React.createClass({
                 <Flex.Layout style={{padding:12}} center justified>
                     <Flex.Item flex={1} style={{fontSize:'1.2em', fontWeight: 'bold'}}>{this.props.channelGroup}</Flex.Item>
                     {
-                        !this.props.isGroup?<DropDownAny style={{width:48}} ref="directMessageMenu" control={control} menu={menu} menuClasses="instant-message-channels-menu" />:undefined
+                        !this.props.isGroup?<DropDownAny ref="directMessageMenu" control={control} menu={menu} menuClasses="instant-message-channels-menu" />:undefined
                     }
 
                 </Flex.Layout>
