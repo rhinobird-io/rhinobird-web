@@ -4,7 +4,6 @@ const MUI = require('material-ui');
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 const Resizable = require('../../Mixins').Resizable;
 
-
 let DayView = React.createClass({
     mixins: [StylePropable],
 
@@ -16,18 +15,21 @@ let DayView = React.createClass({
         date: React.PropTypes.oneOfType([
             React.PropTypes.object,
             React.PropTypes.string
-        ])
+        ]),
+        objects: React.PropTypes.array,
+        allowCover: React.PropTypes.bool,
+        rectContent: React.PropTypes.func
+    },
+
+    getDefaultProps() {
+        return {
+            allowCover: true
+        }
     },
 
     getInitialState() {
         return {
         }
-    },
-
-    componentDidMount() {
-    },
-
-    componentWillUnmount() {
     },
 
     render() {

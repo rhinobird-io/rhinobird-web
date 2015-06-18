@@ -5,104 +5,8 @@ const DayView = require('./EventViews/DayView');
 const Moment = require('moment');
 const Flex = require('../Flex');
 const PerfectScroll = require('../PerfectScroll');
-
-// Get weekdays of the week of this date
-Date.prototype.weekDays = function() {
-    let result = [];
-    let weekStartDay = new Date(this);
-    weekStartDay.setDate(this.getDate() - this.getDay());
-    for (let i = 0; i <= 6; i++) {
-        let day = new Date(weekStartDay);
-        day.setDate(weekStartDay.getDate() + i);
-        result.push(day);
-    }
-    return result;
-};
-
-// Four days from this date
-Date.prototype.fourDays = function() {
-    let days = [];
-    for (let i = 0; i <= 3; i++) {
-        let day = new Date(this);
-        day.setDate(this.getDate() + i);
-        days.push(day);
-    }
-    return days;
-};
-
-Date.prototype.elapsedPercentageOfDay = function() {
-    let seconds = 3600 * this.getHours() + 60 * this.getMinutes() + this.getSeconds();
-    return seconds / 86400;
-};
-
-let TimeBar = React.createClass({
-    render() {
-        let styles = {
-            time: {
-                height: 60,
-                lineHeight: "120px",
-                textAlign: "right",
-                boxSizing: "border-box"
-            }
-        };
-        let times = [];
-
-        for (let i = 1; i <= 11; i++) {
-            times.push(<div style={styles.time}>{`${i}a`}</div>);
-        }
-        times.push(<div style={styles.time}>{'12p'}</div>);
-        for (let i = 1; i < 12; i++) {
-            times.push(<div style={styles.time}>{`${i}p`}</div>);
-        }
-
-        return (
-            <div style={this.props.style}>
-                {times}
-            </div>
-        );
-    }
-});
-
-let DayHeader = React.createClass({
-    propTypes: {
-        date: React.PropTypes.object
-    },
-
-    contextTypes: {
-        muiTheme: React.PropTypes.object
-    },
-
-    render() {
-        let styles = {
-            weekDay: {
-                fontSize: "1.1em",
-                padding: "0.2em 0.4em",
-                fontWeight: 600,
-                color: this.context.muiTheme.palette.disabledColor
-            },
-            date: {
-                fontSize: "3em",
-                padding: "0.1em",
-                lineHeight: "1.4em"
-            }
-        };
-
-        let today = new Date();
-        let date = this.props.date || today;
-        let weekdayDOM = <div style={styles.weekDay}>{Moment(date).format("ddd")}</div>;
-        let dateDOM = <div style={styles.date}>{Moment(date).format("D")}</div>;
-
-        if (today.toDateString() === new Date(date).toDateString()) {
-            styles.date.color = this.context.muiTheme.palette.accent1Color;
-        }
-        return (
-            <div style={this.props.style}>
-                {weekdayDOM}
-                {dateDOM}
-            </div>
-        );
-    }
-});
+const TimeBar = require('../Calendar/CommonComponents').TimeBar;
+const DaysHeader = require('../Calendar/CommonComponents').DaysHeader;
 
 let AllDayEvents = React.createClass({
     contextTypes: {
@@ -156,8 +60,8 @@ let Events = React.createClass({
 
     componentDidMount() {
         CalendarStore.addChangeListener(this._onChange);
-        this._scrollToNow();
         this.refs.content.getDOMNode().style.top = this.refs.header.getDOMNode().offsetHeight + "px";
+        this._scrollToNow();
     },
 
     componentDidUpdate() {
@@ -176,11 +80,6 @@ let Events = React.createClass({
             timeBar: {
                 width: 60,
                 paddingRight: 10
-            },
-            dayHeader: {
-                padding: "0.2em 0.5em",
-                borderLeft: "1px solid " + this.context.muiTheme.palette.borderColor,
-                borderBottom: "1px solid " + this.context.muiTheme.palette.borderColor
             },
             dayContent: {
                 width: "100%",
@@ -217,11 +116,7 @@ let Events = React.createClass({
                 </Flex.Layout>
             ));
 
-            dateBars = days.map(d => (
-                <Flex.Layout flex={1} vertical style={styles.dayHeader}>
-                    <DayHeader date={Moment(d).format("YYYY-MM-DD")} />
-                </Flex.Layout>
-            ));
+            dateBars = <DaysHeader dates={days} />
 
             fullDayEvents = days.map(d => (
                 <Flex.Layout flex={1} style={styles.dayContent}>
@@ -244,7 +139,7 @@ let Events = React.createClass({
                 <Flex.Layout ref="header" vertical>
                     <Flex.Layout horizontal>
                         <div style={{width: 60, borderBottom: "1px solid " + this.context.muiTheme.palette.borderColor}}></div>
-                        <Flex.Layout flex={1} stretch>{dateBars}</Flex.Layout>
+                        {dateBars}
                     </Flex.Layout>
                     <Flex.Layout horizontal>
                         <Flex.Layout center style={{width: 60}}></Flex.Layout>

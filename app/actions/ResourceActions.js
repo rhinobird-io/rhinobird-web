@@ -4,7 +4,7 @@ const AppDispatcher = require('../dispatchers/AppDispatcher');
 const ResourceStore = require('../stores/ResourceStore');
 const ResourceActionTypes = require('../constants/AppConstants').ResourceActionTypes;
 
-let ResourceAction =  {
+let ResourceAction = {
     receive(success) {
         $.get("/resource/resources").done(data => {
             AppDispatcher.dispatch({
@@ -17,6 +17,25 @@ let ResourceAction =  {
         }).fail(e => {
             console.error(e);
         });
+    },
+
+    receiveById(id) {
+        let resource = ResourceStore.getResourceById(id);
+        if (resource !== null && resource !== undefined) {
+            AppDispatcher.dispatch({
+                type: ResourceActionTypes.RECEIVE_RESOURCE,
+                data: resource
+            });
+        } else {
+            $.get("/resource/resources/" + id).done(data => {
+                AppDispatcher.dispatch({
+                    type: ResourceActionTypes.RECEIVE_RESOURCE,
+                    data: JSON.parse(data)
+                });
+            }).fail(e => {
+                console.error(e);
+            });
+        }
     }
 };
 

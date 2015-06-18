@@ -28,6 +28,7 @@ export default {
   }),
 
   ResourceActionTypes: keyMirror({
+    RECEIVE_RESOURCE: null,
     RECEIVE_RESOURCES: null,
     LOAD_MORE_RESOURCES: null
   }),
