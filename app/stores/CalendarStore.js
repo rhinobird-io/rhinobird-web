@@ -139,6 +139,10 @@ let CalendarStore = assign({}, BaseStore, {
         return events;
     },
 
+    getEventsByDates(dateArray) {
+
+    },
+
     getAllDayEventsByDate(date) {
         let formattedDate = _formatDate(date);
         let events = [];

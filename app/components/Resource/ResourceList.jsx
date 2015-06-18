@@ -6,6 +6,7 @@ const PerfectScroll = require('../PerfectScroll');
 const InfiniteScroll = require('../InfiniteScroll');
 const MUI = require('material-ui');
 const Common = require('../Common');
+const Link = require("react-router").Link;
 
 let ResourceList = React.createClass({
     contextTypes: {
@@ -41,7 +42,9 @@ let ResourceList = React.createClass({
                                     <div style={{height: 200, backgroundColor: this.context.muiTheme.palette.primary3Color}}>
                                     </div>
                                     <div style={{padding: "10px 12px"}}>
-                                        <Common.Display type="body2">{resource.name}</Common.Display>
+                                        <Link to="resource-detail" params={{id: resource._id}}>
+                                            <Common.Display type="body2">{resource.name}</Common.Display>
+                                        </Link>
                                         <div style={{color: this.context.muiTheme.palette.disabledColor}}>Shanghai</div>
                                     </div>
                                 </Flex.Layout>
