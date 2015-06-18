@@ -6,6 +6,7 @@ const Moment = require('moment');
 const Flex = require('../Flex');
 const PerfectScroll = require('../PerfectScroll');
 
+// Get weekdays of the week of this date
 Date.prototype.weekDays = function() {
     let result = [];
     let weekStartDay = new Date(this);
@@ -18,15 +19,20 @@ Date.prototype.weekDays = function() {
     return result;
 };
 
-// Yesterday, today, tomorrow, the day after tomorrow
+// Four days from this date
 Date.prototype.fourDays = function() {
     let days = [];
-    for (let i = -1; i <= 2; i++) {
+    for (let i = 0; i <= 3; i++) {
         let day = new Date(this);
         day.setDate(this.getDate() + i);
         days.push(day);
     }
     return days;
+};
+
+Date.prototype.elapsedPercentageOfDay = function() {
+    let seconds = 3600 * this.getHours() + 60 * this.getMinutes() + this.getSeconds();
+    return seconds / 86400;
 };
 
 let TimeBar = React.createClass({
@@ -114,7 +120,7 @@ let AllDayEvents = React.createClass({
                 margin: 2,
                 color: this.context.muiTheme.palette.textColor,
                 backgroundColor: this.context.muiTheme.palette.primary1Color,
-                border: "1px solid " + this.context.muiTheme.palette.borderColor
+                border: "1px solid " + this.context.muiTheme.palette.primary2Color
             }
         };
 
@@ -150,6 +156,7 @@ let Events = React.createClass({
 
     componentDidMount() {
         CalendarStore.addChangeListener(this._onChange);
+        this._scrollToNow();
         this.refs.content.getDOMNode().style.top = this.refs.header.getDOMNode().offsetHeight + "px";
     },
 
@@ -170,8 +177,6 @@ let Events = React.createClass({
                 width: 60,
                 paddingRight: 10
             },
-            dayHeaderBar: {
-            },
             dayHeader: {
                 padding: "0.2em 0.5em",
                 borderLeft: "1px solid " + this.context.muiTheme.palette.borderColor,
@@ -190,7 +195,7 @@ let Events = React.createClass({
         let days = [];
         let dayContents = [];
         let fullDayEvents = [];
-        console.log(this.state.viewType);
+
         switch (this.state.viewType) {
             case "day":
                 days.push(date);
@@ -238,11 +243,11 @@ let Events = React.createClass({
             <div style={{height: "100%", overflow: "auto"}}>
                 <Flex.Layout ref="header" vertical>
                     <Flex.Layout horizontal>
-                        <div style={{width: 60}}></div>
+                        <div style={{width: 60, borderBottom: "1px solid " + this.context.muiTheme.palette.borderColor}}></div>
                         <Flex.Layout flex={1} stretch>{dateBars}</Flex.Layout>
                     </Flex.Layout>
-                    <Flex.Layout horizonta>
-                        <div style={{width: 60}}></div>
+                    <Flex.Layout horizontal>
+                        <Flex.Layout center style={{width: 60}}></Flex.Layout>
                         <Flex.Layout flex={1} stretch>{fullDayEvents}</Flex.Layout>
                     </Flex.Layout>
                 </Flex.Layout>
@@ -257,6 +262,20 @@ let Events = React.createClass({
         this.setState({
             events: CalendarStore.getAllEvents()
         });
+    },
+
+    _scrollToNow() {
+        let content = this.refs.content.getDOMNode();
+        let scrollHeight = content.scrollHeight;
+        let clientHeight = content.clientHeight;
+        let elapsed = new Date().elapsedPercentageOfDay();
+        let offsetTop = elapsed * scrollHeight;
+
+        let scrollTop =  offsetTop - clientHeight / 2;
+        if (scrollTop < 0) {
+            scrollTop = 0;
+        }
+        content.scrollTop = scrollTop;
     }
 });
 
