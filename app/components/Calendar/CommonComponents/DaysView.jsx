@@ -9,7 +9,8 @@ const PerfectScroll = require('../../PerfectScroll');
 let DaysView = React.createClass({
     propTypes: {
         dates: React.PropTypes.arrayOf(React.PropTypes.object),
-        data: React.PropTypes.array
+        data: React.PropTypes.array,
+        onRectCreate: React.PropTypes.func
     },
 
     contextTypes: {
@@ -35,6 +36,7 @@ let DaysView = React.createClass({
         let {
             data,
             dates,
+            onRectCreate,
             style
         } = this.props;
 
@@ -50,7 +52,14 @@ let DaysView = React.createClass({
         };
 
         let dateBars = <DaysHeader dates={dates} />;
-        let dateContents = <DaysContent dates={dates} data={data} />;
+        let dateContents = (
+            <DaysContent
+                data={data}
+                dates={dates}
+                onRectCreate={onRectCreate}/>
+        );
+
+        let addons = null;
 
         let table = (
             <Flex.Layout horitonzal>
@@ -66,6 +75,10 @@ let DaysView = React.createClass({
                     <Flex.Layout horizontal>
                         <div style={{width: 60, borderBottom: "1px solid " + this.context.muiTheme.palette.borderColor}}></div>
                         {dateBars}
+                    </Flex.Layout>
+                    <Flex.Layout horizontal>
+                        <div style={{width: 60, borderBottom: "1px solid " + this.context.muiTheme.palette.borderColor}}></div>
+                        {addons}
                     </Flex.Layout>
                 </Flex.Layout>
                 <PerfectScroll ref="content" style={{position: "relative", borderTop: "1px solid " + this.context.muiTheme.palette.borderColor}} alwaysVisible>
