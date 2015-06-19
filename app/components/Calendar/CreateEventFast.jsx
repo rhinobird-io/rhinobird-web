@@ -1,6 +1,6 @@
 const React = require('react');
 
-let CalendarView = React.createClass({
+let CreateEventFast = React.createClass({
     render() {
         return <div/>
     }

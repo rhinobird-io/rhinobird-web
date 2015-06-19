@@ -51,6 +51,7 @@ let FloatingContent = React.createClass({
     }
 });
 
+global.muiTheme = null;
 let Application = React.createClass({
 
     childContextTypes: {
@@ -79,6 +80,7 @@ let Application = React.createClass({
         //window.addEventListener("keydown", this._keyDownListener);
         Redirect.addRedirectListener(this._onRequestRedirect);
         MessageStore.on(ImConstants.EVENTS.REQUEST_REDIRECT, this._onRequestRedirect);
+        global.muiTheme = ThemeManager.getCurrentTheme();
     },
 
     componentWillUnmount() {

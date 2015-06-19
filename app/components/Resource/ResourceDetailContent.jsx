@@ -1,6 +1,7 @@
 const React = require('react');
 const Flex = require('../Flex');
 const WeekView = require('../Calendar/CommonComponents').WeekView;
+const CalendarView = require('../Calendar/CommonComponents').CalendarView;
 
 let ResourceDetailContent = React.createClass({
     propTypes: {
@@ -35,7 +36,7 @@ let ResourceDetailContent = React.createClass({
         return (
             <Flex.Layout vertical style={{height: "100%"}}>
                 {actions}
-                <WeekView date={new Date()} data={resource.resourceBookings}/>
+                <CalendarView date={new Date()} data={resource.resourceBookings}/>
             </Flex.Layout>
         );
     }
