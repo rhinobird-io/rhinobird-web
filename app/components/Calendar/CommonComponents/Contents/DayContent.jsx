@@ -4,7 +4,7 @@ const MUI = require('material-ui');
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 let DayContent = React.createClass({
-    mixins: [StylePropable],
+    mixins: [StylePropable, MUI.Mixins.ClickAwayable],
 
     contextTypes: {
         muiTheme: React.PropTypes.object
@@ -22,6 +22,12 @@ let DayContent = React.createClass({
         onRectCreate: React.PropTypes.func
     },
 
+    componentClickAway() {
+        this.setState({
+            newRange: null
+        })
+    },
+
     getDefaultProps() {
         return {
             exclusive: true,
@@ -31,7 +37,7 @@ let DayContent = React.createClass({
 
     getInitialState() {
         return {
-            newObject: null
+            newRange: null
         }
     },
 
@@ -80,8 +86,6 @@ let DayContent = React.createClass({
 
         let content = this._constructContent(data);
 
-        console.log(content);
-
         let now = new Date();
         let nowBar = null;
         if (now.toDateString() === new Date(date).toDateString()) {
@@ -93,6 +97,7 @@ let DayContent = React.createClass({
         return (
             <div vertical style={style}
                  onMouseUp={this._handleMouseUp}
+                 onMouseOut={this._handleMouseOut}
                  onMouseMove={this._handleMouseMove}
                  onMouseDown={this._handleMouseDown}>
                 {times}
@@ -105,18 +110,29 @@ let DayContent = React.createClass({
     _constructContent(data) {
         let styles = {
             outer: {
-                padding: 4,
+                padding: 2,
                 position: "absolute"
-            },
-            inner: {
-                height: "100%",
-                overflow: "hidden",
-                backgroundColor: this.context.muiTheme.palette.disabledColor
             }
         };
 
+        let sorted = data.map(d => d);
+        if (this.state.newRange) {
+            sorted.push(this.state.newRange);
+        }
+
+        sorted.sort((a, b) => {
+            let aFromTime = a.fromTime || a.from_time;
+            let bFromTime = b.fromTime || b.from_time;
+            if (aFromTime < bFromTime) {
+                return -1;
+            } else if (aFromTime > bFromTime) {
+                return 1;
+            }
+            return 0;
+        });
+
         let dataPositions = [];
-        dataPositions = data.map(d => {
+        dataPositions = sorted.map(d => {
             let fromTime = new Date(d.from_time || d.fromTime);
             let toTime = new Date(d.to_time || d.toTime);
 
@@ -125,7 +141,7 @@ let DayContent = React.createClass({
 
             let top = `${time / 864}%`;
             let height = `${range / 864}%`;
-            let minHeight = "20px";
+            let minHeight = "30px";
 
             let contentStyle = {};
             contentStyle.top = top;
@@ -136,19 +152,27 @@ let DayContent = React.createClass({
 
         if (this.props.exclusive) {
             dataPositions = dataPositions.map(p => {
-                console.log(p);
                 p.width = "100%";
                 return p;
             });
         }
 
-        return data.map((d, index) => {
+        return sorted.map((d, index) => {
             let style = dataPositions[index];
             Object.keys(styles.outer).forEach(k => style[k] = styles.outer[k]);
-            console.log(style);
+            let innerStyle = {
+                height: "100%",
+                overflow: "hidden",
+                border: "1px solid " + this.context.muiTheme.palette.primary2Color,
+                backgroundColor: this.context.muiTheme.palette.primary3Color,
+                opacity: 0.7
+            };
+            if (d.backgroundColor) {
+                innerStyle.backgroundColor = d.backgroundColor;
+            }
             return (
                 <div style={style}>
-                    <div style={styles.inner}>
+                    <div style={innerStyle}>
                         123123
                     </div>
                 </div>
@@ -187,39 +211,22 @@ let DayContent = React.createClass({
             toTime.setHours(toHour);
             toTime.setMinutes(toMinute);
 
-            let newEvent = {from_time: fromTime, to_time: toTime};
-            this.setState({newEvent: newEvent})
+            let newRange = fromTime < toTime ? {from_time: fromTime, to_time: toTime} : {from_time: toTime, to_time: fromTime};
+            newRange.backgroundColor = this.context.muiTheme.palette.primary1Color;
+            this.setState({newRange: newRange})
         }
     },
 
     _handleMouseUp(e) {
-        let node = this.getDOMNode();
-        let rect = node.getBoundingClientRect();
-        let endPosY = e.clientY - rect.top;
-        if (this.mouseDown) {
-            let date = new Date(this.props.date);
-            let fromSeconds = (this.startPosY / rect.height) * 86400;
-            let toSeconds = (endPosY / rect.height) * 86400;
-            let fromTime = new Date(date);
-
-            let fromHour = Math.floor(fromSeconds / 3600);
-            let fromMinute = Math.floor((fromSeconds - fromHour * 3600) / 60);
-
-            fromTime.setHours(fromHour);
-            fromTime.setMinutes(fromMinute)
-
-            let toTime = new Date(date);
-
-            let toHour = Math.floor(toSeconds / 3600);
-            let toMinute = Math.floor((toSeconds - toHour * 3600) / 60);
-            toTime.setHours(toHour);
-            toTime.setMinutes(toMinute);
-
-            let newEvent = {from_time: fromTime, to_time: toTime};
-            this.setState({newEvent: newEvent})
-        }
-
+        this._handleMouseMove(e);
         this.mouseDown = false;
+        if (this.props.onRectCreate) {
+            this.props.onRectCreate();
+        }
+    },
+
+    _handleMouseOut(e) {
+        let self = this.getDOMNode();
     }
 });
 
