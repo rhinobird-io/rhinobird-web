@@ -35,7 +35,7 @@ let ResourceDetailContent = React.createClass({
         return (
             <Flex.Layout vertical style={{height: "100%"}}>
                 {actions}
-                <WeekView date={new Date()}/>
+                <WeekView date={new Date()} data={resource.resourceBookings}/>
             </Flex.Layout>
         );
     }

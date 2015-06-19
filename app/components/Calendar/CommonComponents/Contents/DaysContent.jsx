@@ -5,6 +5,7 @@ const DayContent = require('./DayContent');
 
 let DaysContent = React.createClass({
     propTypes: {
+        data: React.PropTypes.array,
         dates: React.PropTypes.arrayOf(React.PropTypes.object)
     },
 
@@ -12,17 +13,25 @@ let DaysContent = React.createClass({
         muiTheme: React.PropTypes.object
     },
 
+    getDefaultProps() {
+        return {
+            data: []
+        }
+    },
+
     render() {
+        let {
+            data
+        } = this.props;
         let styles = {
             dayContent: {
                 width: "100%",
                 borderLeft: "1px solid " + this.context.muiTheme.palette.borderColor
             }
         };
-
         let daysContent = this.props.dates.map(d => (
             <Flex.Layout flex={1} style={styles.dayContent} >
-                <DayContent date={Moment(d).format("YYYY-MM-DD")} />
+                <DayContent date={Moment(d).format("YYYY-MM-DD")} data={data.filter(_ => new Date(_.fromTime).toDateString() == d.toDateString())} />
             </Flex.Layout>
         ));
 

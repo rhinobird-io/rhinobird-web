@@ -15,8 +15,8 @@ let DayContent = React.createClass({
             React.PropTypes.object,
             React.PropTypes.string
         ]),
-        objects: React.PropTypes.array,
-        allowCover: React.PropTypes.bool,
+        data: React.PropTypes.array,
+        exclusive: React.PropTypes.bool,
         rectContent: React.PropTypes.func,
         rectStyle: React.PropTypes.object,
         onRectCreate: React.PropTypes.func
@@ -24,17 +24,20 @@ let DayContent = React.createClass({
 
     getDefaultProps() {
         return {
-            allowCover: true
+            exclusive: true,
+            data: []
         }
     },
 
     getInitialState() {
         return {
+            newObject: null
         }
     },
 
     render() {
         let {
+            data,
             style,
             date
             } = this.props;
@@ -75,15 +78,9 @@ let DayContent = React.createClass({
             times.push(<div key={i + "b"} style={styles.bottom}></div>);
         }
 
-        let events = {};
-        (this.state.events || []).forEach(e => {
-            let fromTime = new Date(e.from_time);
-            let key = Moment(fromTime).format("HH:mm");
-            if (!events[key]) {
-                events[key] = [];
-            }
-            events[key].push(e);
-        });
+        let content = this._constructContent(data);
+
+        console.log(content);
 
         let now = new Date();
         let nowBar = null;
@@ -100,12 +97,66 @@ let DayContent = React.createClass({
                  onMouseDown={this._handleMouseDown}>
                 {times}
                 {nowBar}
+                {content}
             </div>
         );
     },
 
+    _constructContent(data) {
+        let styles = {
+            outer: {
+                padding: 4,
+                position: "absolute"
+            },
+            inner: {
+                height: "100%",
+                overflow: "hidden",
+                backgroundColor: this.context.muiTheme.palette.disabledColor
+            }
+        };
+
+        let dataPositions = [];
+        dataPositions = data.map(d => {
+            let fromTime = new Date(d.from_time || d.fromTime);
+            let toTime = new Date(d.to_time || d.toTime);
+
+            let time = fromTime.getHours() * 3600 + fromTime.getMinutes() * 60 + fromTime.getSeconds();
+            let range = (toTime - fromTime) / 1000;
+
+            let top = `${time / 864}%`;
+            let height = `${range / 864}%`;
+            let minHeight = "20px";
+
+            let contentStyle = {};
+            contentStyle.top = top;
+            contentStyle.height = height;
+            contentStyle.minHeight = minHeight;
+            return contentStyle;
+        });
+
+        if (this.props.exclusive) {
+            dataPositions = dataPositions.map(p => {
+                console.log(p);
+                p.width = "100%";
+                return p;
+            });
+        }
+
+        return data.map((d, index) => {
+            let style = dataPositions[index];
+            Object.keys(styles.outer).forEach(k => style[k] = styles.outer[k]);
+            console.log(style);
+            return (
+                <div style={style}>
+                    <div style={styles.inner}>
+                        123123
+                    </div>
+                </div>
+            );
+        });
+    },
+
     _handleMouseDown(e) {
-        console.log(e);
         let node = this.getDOMNode();
         let rect = node.getBoundingClientRect();
         this.startPosY = e.clientY - rect.top;
