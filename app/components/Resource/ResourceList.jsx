@@ -56,7 +56,7 @@ let ResourceList = React.createClass({
         } else {
         }
         return (
-            <PerfectScroll style={{padding: 24, position: 'relative'}}>
+            <PerfectScroll style={{height: "100%", padding: 24, position: 'relative'}}>
                 {content}
             </PerfectScroll>
         );

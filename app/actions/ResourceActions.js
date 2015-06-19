@@ -9,7 +9,7 @@ let ResourceAction = {
         $.get("/resource/resources").done(data => {
             AppDispatcher.dispatch({
                 type: ResourceActionTypes.RECEIVE_RESOURCES,
-                data: JSON.parse(data)
+                data: data
             });
             if (success && typeof success === "function") {
                 success();
@@ -30,7 +30,7 @@ let ResourceAction = {
             $.get("/resource/resources/" + id).done(data => {
                 AppDispatcher.dispatch({
                     type: ResourceActionTypes.RECEIVE_RESOURCE,
-                    data: JSON.parse(data)
+                    data: data
                 });
             }).fail(e => {
                 console.error(e);
