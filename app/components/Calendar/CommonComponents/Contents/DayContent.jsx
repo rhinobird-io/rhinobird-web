@@ -3,6 +3,7 @@ const Flex = require('../../../Flex');
 const MUI = require('material-ui');
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 
+Date.prototype
 let DayContent = React.createClass({
     mixins: [StylePropable, MUI.Mixins.ClickAwayable],
 
@@ -17,6 +18,7 @@ let DayContent = React.createClass({
         ]),
         data: React.PropTypes.array,
         exclusive: React.PropTypes.bool,
+        accuracy: React.PropTypes.number,
         rectContent: React.PropTypes.func,
         rectStyle: React.PropTypes.object,
         onRectCreate: React.PropTypes.func
@@ -24,7 +26,8 @@ let DayContent = React.createClass({
 
     componentClickAway() {
         this.setState({
-            newRange: null
+            newRange: null,
+            accuracy: 15
         })
     },
 
@@ -163,6 +166,7 @@ let DayContent = React.createClass({
             let innerStyle = {
                 height: "100%",
                 overflow: "hidden",
+                padding: "2px 4px",
                 border: "1px solid " + this.context.muiTheme.palette.primary2Color,
                 backgroundColor: this.context.muiTheme.palette.primary3Color,
                 opacity: 0.7
@@ -173,7 +177,7 @@ let DayContent = React.createClass({
             return (
                 <div style={style}>
                     <div style={innerStyle}>
-                        123123
+                        <span>Booked</span>
                     </div>
                 </div>
             );
@@ -226,7 +230,6 @@ let DayContent = React.createClass({
     },
 
     _handleMouseOut(e) {
-        let self = this.getDOMNode();
     }
 });
 
