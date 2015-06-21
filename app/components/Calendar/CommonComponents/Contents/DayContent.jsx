@@ -2,10 +2,10 @@ const React = require('react');
 const Flex = require('../../../Flex');
 const MUI = require('material-ui');
 const StylePropable = require('material-ui/lib/mixins/style-propable');
+const MouseDownAwayable = require('../../../Mixins/mousedown-awayable');
 
-Date.prototype
 let DayContent = React.createClass({
-    mixins: [StylePropable, MUI.Mixins.ClickAwayable],
+    mixins: [StylePropable, MouseDownAwayable],
 
     contextTypes: {
         muiTheme: React.PropTypes.object
@@ -24,11 +24,13 @@ let DayContent = React.createClass({
         onRectCreate: React.PropTypes.func
     },
 
-    componentClickAway() {
-        this.setState({
-            newRange: null,
-            accuracy: 15
-        })
+    componentMouseDownAway(e) {
+        console.log(e);
+        if (!this.state.mouseDown) {
+            this.setState({
+               newRange: null
+            });
+        }
     },
 
     getDefaultProps() {
@@ -99,9 +101,9 @@ let DayContent = React.createClass({
 
         return (
             <div vertical style={style}
-                 onMouseUp={this._handleMouseUp}
-                 onMouseOut={this._handleMouseOut}
-                 onMouseMove={this._handleMouseMove}
+                 onMouseUp1={this._handleMouseUp}
+                 onMouseOut1={this._handleMouseOut}
+                 onMouseMove1={this._handleMouseMove}
                  onMouseDown={this._handleMouseDown}>
                 {times}
                 {nowBar}
@@ -189,6 +191,8 @@ let DayContent = React.createClass({
         let rect = node.getBoundingClientRect();
         this.startPosY = e.clientY - rect.top;
         this.mouseDown = true;
+        document.addEventListener("mousemove", this._handleMouseMove);
+        document.addEventListener("mouseup", this._handleMouseUp)
     },
 
     _handleMouseMove(e) {
@@ -224,6 +228,8 @@ let DayContent = React.createClass({
     _handleMouseUp(e) {
         this._handleMouseMove(e);
         this.mouseDown = false;
+        document.removeEventListener("mousemove", this._handleMouseMove);
+        document.removeEventListener("mouseup", this._handleMouseUp);
         if (this.props.onRectCreate) {
             this.props.onRectCreate();
         }
