@@ -21,8 +21,13 @@ let DaysContent = React.createClass({
 
     render() {
         let {
-            data
+            data,
+            onRectCreate,
+            onRectCancel,
+            awayExceptions,
+            ...others
         } = this.props;
+
         let styles = {
             dayContent: {
                 width: "100%",
@@ -31,12 +36,17 @@ let DaysContent = React.createClass({
         };
         let daysContent = this.props.dates.map(d => (
             <Flex.Layout flex={1} style={styles.dayContent} >
-                <DayContent date={Moment(d).format("YYYY-MM-DD")} data={data.filter(_ => new Date(_.fromTime).toDateString() == d.toDateString())} />
+                <DayContent
+                    onRectCreate={onRectCreate}
+                    onRectCancel={onRectCancel}
+                    awayExceptions={awayExceptions}
+                    date={Moment(d).format("YYYY-MM-DD")}
+                    data={data.filter(_ => new Date(_.fromTime).toDateString() == d.toDateString())} />
             </Flex.Layout>
         ));
 
         return (
-            <Flex.Layout flex={1} stretch>
+            <Flex.Layout flex={1} stretch {...others}>
                 {daysContent}
             </Flex.Layout>
         );

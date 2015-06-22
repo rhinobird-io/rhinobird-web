@@ -37,6 +37,8 @@ let DaysView = React.createClass({
             data,
             dates,
             onRectCreate,
+            onRectCancel,
+            awayExceptions,
             style
         } = this.props;
 
@@ -56,7 +58,9 @@ let DaysView = React.createClass({
             <DaysContent
                 data={data}
                 dates={dates}
-                onRectCreate={onRectCreate}/>
+                onRectCancel={onRectCancel}
+                onRectCreate={onRectCreate}
+                awayExceptions={awayExceptions}/>
         );
 
         let addons = null;
