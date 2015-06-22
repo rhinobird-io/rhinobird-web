@@ -17,8 +17,15 @@ module.exports = {
     _checkMouseDownAway: function(e) {
         var el = React.findDOMNode(this);
 
+        var awayExceptions = this.props.awayExceptions ? this.props.awayExceptions() : null;
+
+        var isException = false;
+
+        if (awayExceptions && (e.target == awayExceptions || Dom.isDescendant(awayExceptions, e.target))) {
+            isException = true;
+        }
         // Check if the target is inside the current component
-        if (e.target != el &&
+        if (!isException && e.target != el &&
             !Dom.isDescendant(el, e.target) &&
             document.documentElement.contains(e.target)) {
             if (this.componentMouseDownAway) this.componentMouseDownAway();

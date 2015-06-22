@@ -1,7 +1,7 @@
 const React = require('react');
 const DaysView = require('./DaysView');
 
-let WeekView = React.createClass({
+let FourDaysView = React.createClass({
     propTypes: {
         date: React.PropTypes.object,
         data: React.PropTypes.array,
@@ -21,9 +21,9 @@ let WeekView = React.createClass({
             ...others
         } = this.props;
 
-        let dates = date.weekDays();
+        let dates = date.fourDays();
         return <DaysView dates={dates} {...others} />
     }
 });
 
-module.exports = WeekView;
+module.exports = FourDaysView;

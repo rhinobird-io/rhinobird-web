@@ -20,22 +20,24 @@ let DayContent = React.createClass({
         exclusive: React.PropTypes.bool,
         accuracy: React.PropTypes.number,
         rectContent: React.PropTypes.func,
-        rectStyle: React.PropTypes.object,
-        onRectCreate: React.PropTypes.func
+        onRectCreate: React.PropTypes.func,
+        onRectCancel: React.PropTypes.func
     },
 
     componentMouseDownAway(e) {
-        console.log(e);
-        if (!this.state.mouseDown) {
-            this.setState({
-               newRange: null
-            });
-        }
+        this.setState({
+           newRange: null
+        }, () => {
+            if (this.props.onRectCancel) {
+                this.props.onRectCancel();
+            }
+        });
     },
 
     getDefaultProps() {
         return {
             exclusive: true,
+            accuracy: 15,
             data: []
         }
     },
@@ -51,7 +53,7 @@ let DayContent = React.createClass({
             data,
             style,
             date
-            } = this.props;
+        } = this.props;
 
         if (!style) {
             style = {};
@@ -101,9 +103,6 @@ let DayContent = React.createClass({
 
         return (
             <div vertical style={style}
-                 onMouseUp1={this._handleMouseUp}
-                 onMouseOut1={this._handleMouseOut}
-                 onMouseMove1={this._handleMouseMove}
                  onMouseDown={this._handleMouseDown}>
                 {times}
                 {nowBar}
@@ -151,7 +150,7 @@ let DayContent = React.createClass({
             let contentStyle = {};
             contentStyle.top = top;
             contentStyle.height = height;
-            contentStyle.minHeight = minHeight;
+            //contentStyle.minHeight = minHeight;
             return contentStyle;
         });
 
@@ -176,8 +175,13 @@ let DayContent = React.createClass({
             if (d.backgroundColor) {
                 innerStyle.backgroundColor = d.backgroundColor;
             }
+
+            let ref;
+            if (d === this.state.newRange) {
+                ref = "newRange";
+            }
             return (
-                <div style={style}>
+                <div ref={ref} key={"rect" + index} style={style}>
                     <div style={innerStyle}>
                         <span>Booked</span>
                     </div>
@@ -199,6 +203,7 @@ let DayContent = React.createClass({
         let node = this.getDOMNode();
         let rect = node.getBoundingClientRect();
         let endPosY = e.clientY - rect.top;
+
         if (this.mouseDown) {
             let date = new Date(this.props.date);
             let fromSeconds = (this.startPosY / rect.height) * 86400;
@@ -207,19 +212,22 @@ let DayContent = React.createClass({
 
             let fromHour = Math.floor(fromSeconds / 3600);
             let fromMinute = Math.floor((fromSeconds - fromHour * 3600) / 60);
+            let fromSecond = Math.floor(fromSeconds - fromHour * 3600 - fromMinute * 60);
 
             fromTime.setHours(fromHour);
             fromTime.setMinutes(fromMinute)
+            fromTime.setSeconds(fromSecond);
 
             let toTime = new Date(date);
 
             let toHour = Math.floor(toSeconds / 3600);
             let toMinute = Math.floor((toSeconds - toHour * 3600) / 60);
-
+            let toSecond = Math.floor(toSeconds - toHour * 3600 - toMinute * 60);
             toTime.setHours(toHour);
             toTime.setMinutes(toMinute);
+            toTime.setSeconds(toSecond);
 
-            let newRange = fromTime < toTime ? {from_time: fromTime, to_time: toTime} : {from_time: toTime, to_time: fromTime};
+            let newRange = fromTime <= toTime ? {from_time: fromTime, to_time: toTime} : {from_time: toTime, to_time: fromTime};
             newRange.backgroundColor = this.context.muiTheme.palette.primary1Color;
             this.setState({newRange: newRange})
         }
@@ -231,7 +239,10 @@ let DayContent = React.createClass({
         document.removeEventListener("mousemove", this._handleMouseMove);
         document.removeEventListener("mouseup", this._handleMouseUp);
         if (this.props.onRectCreate) {
-            this.props.onRectCreate();
+            console.log("On Rect");
+            let newRange = this.refs.newRange;
+            let rect = newRange ? newRange.getDOMNode().getBoundingClientRect() : null;
+            this.props.onRectCreate(rect);
         }
     },
 
