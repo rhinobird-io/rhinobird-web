@@ -45,7 +45,6 @@ let Popup = React.createClass({
                 position: "fixed",
                 transition: "opacity 300ms",
                 zIndex: this.state.shown ? 100 : -1,
-                height: 250,
                 opacity: this.state.shown ? 1 : 0
             },
             scroll: {
@@ -59,9 +58,10 @@ let Popup = React.createClass({
         if (!this.state.shown) {
             styles.popupWrapper.height = 0;
         } else {
-            styles.popupWrapper.height = style && style.height ? style.height : 250;
+            //styles.popupWrapper.height = style && style.height ? style.height : 250;
         }
 
+        console.log(position)
         let padding = <div style={{flex: 1}}></div>;
         let topPadding = position === "top" ? padding : null;
         let bottomPadding = position === "bottom" ? padding : null;

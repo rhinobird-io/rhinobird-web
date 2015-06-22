@@ -2,7 +2,6 @@ const React = require('react');
 
 module.exports = {
     propTypes: {
-        cover: React.PropTypes.bool,
         hRestrict: React.PropTypes.bool,
         vRestrict: React.PropTypes.bool,
         relatedTo: React.PropTypes.func,
@@ -12,9 +11,10 @@ module.exports = {
 
     position: "",
 
+    relatedTo: null,
+
     getDefaultProps() {
         return {
-            cover: false,
             hRestrict: false,
             vRestrict: false,
             selfAlignOrigin: null,
@@ -37,16 +37,26 @@ module.exports = {
         //window.removeEventListener("wheel", this._onWindowScroll)
     },
 
+    componentWillReceiveProps(nextProps) {
+        this.relatedTo = nextProps.relatedTo;
+    },
+
+    setRelatedTo(relatedTo) {
+        this.relatedTo = relatedTo;
+    },
+
     updatePosition(callback) {
         let base = null;
 
         let {
-            hRestrict,
-            relatedTo
-            } = this.props;
+            hRestrict
+        } = this.props;
 
+        let relatedTo = this.relatedTo;
         if (relatedTo && typeof relatedTo === "function") {
             base = relatedTo();
+        } else {
+            base = relatedTo;
         }
 
         if (base) {
@@ -92,8 +102,6 @@ module.exports = {
             let selfLeft = null;
             let selfRight = null;
 
-            //let relatedHeight = this.props.cover ? 0 : baseHeight;
-            //let relatedWidth = this.props.cover ? baseWidth : 0;
             if (this.props.relatedAlignOrigin && this.props.selfAlignOrigin) {
                 let relatedAlignOriginX = this.props.relatedAlignOrigin.substring(0, 1);
                 let relatedAlignOriginY = this.props.relatedAlignOrigin.substring(1);
