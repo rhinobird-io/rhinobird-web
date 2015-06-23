@@ -43,15 +43,15 @@ let ResourceDetailContent = React.createClass({
 
         let actions = <Flex.Layout flex={1} center horizontal style={styles.action}>{resource.name}</Flex.Layout>;
         return (
-            <Flex.Layout vertical style={{height: "100%"}}>
+            <Flex.Layout vertical style={{height: "100%", WebkitUserSelect: "none", userSelect: "none"}}>
                 {actions}
                 <CalendarView
                     ref="calendar"
                     date={new Date()}
                     data={resource.resourceBookings}
                     awayExceptions={() => this.refs.resourceBooking.getDOMNode()}
-                    onRectCreate={this._showResourceBookingPopup}
-                    onRectCancel={this._dismissResourceBookingPopup} />
+                    onRangeCreate={this._showResourceBookingPopup}
+                    onRangeCancel={this._dismissResourceBookingPopup} />
                 <Popup
                     position="none"
                     ref="resourceBooking"
@@ -77,8 +77,8 @@ let ResourceDetailContent = React.createClass({
                                 floatingLabelText="To Time" />
                         </div>
                         <Flex.Layout style={{padding: "8px 8px 8px 24px"}} horizontal endJustified>
-                            <MUI.FlatButton secondary onClick={() => console.log("cancel")}>Cancel</MUI.FlatButton>
-                            <MUI.FlatButton secondary>Create</MUI.FlatButton>
+                            <MUI.FlatButton secondary onClick={() => this.refs.calendar.cancelCreateNewRange()}>Cancel</MUI.FlatButton>
+                            <MUI.FlatButton secondary>Book</MUI.FlatButton>
                         </Flex.Layout>
                     </div>
                 </Popup>

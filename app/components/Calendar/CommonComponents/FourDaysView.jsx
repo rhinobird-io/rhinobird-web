@@ -5,7 +5,11 @@ let FourDaysView = React.createClass({
     propTypes: {
         date: React.PropTypes.object,
         data: React.PropTypes.array,
-        onRectCreate: React.PropTypes.func
+        onRangeCreate: React.PropTypes.func
+    },
+
+    cancelNewRangeCreate() {
+        this.refs.days.cancelNewRangeCreate();
     },
 
     getDefaultProps() {
@@ -22,7 +26,7 @@ let FourDaysView = React.createClass({
         } = this.props;
 
         let dates = date.fourDays();
-        return <DaysView dates={dates} {...others} />
+        return <DaysView ref="days" dates={dates} {...others} />
     }
 });
 
