@@ -25,7 +25,9 @@ let ResourceDetailContent = React.createClass({
     },
 
     getInitialState() {
-        return {}
+        return {
+            createResourceBookPopupPos: "r"
+        }
     },
 
     render() {
@@ -62,13 +64,19 @@ let ResourceDetailContent = React.createClass({
     },
 
     _getCreateResourceBookingPopup() {
+        let className = "resource-booking-popup";
+        if (this.state.createResourceBookPopupPos === 'r') {
+            className += " right";
+        } else {
+            className += " left";
+        }
         return (
             <Popup
                 position="none"
                 ref="resourceBooking"
                 selfAlignOrigin="lt"
                 relatedAlignOrigin="rt"
-                className="resource-booking-popup"
+                className={className}
                 onMouseDown={(e) => console.log(e.target)}
                 style={{overflow: "visible !important"}}>
                 <div style={{minWidth: 250}}>
@@ -150,20 +158,31 @@ let ResourceDetailContent = React.createClass({
     },
 
     _showResourceBookingPopup(rect, range) {
+        let resourceBooking = this.refs.resourceBooking;
+        let position = 'r';
+
         let newRect = {
             left: rect.left,
             width: rect.width + 10,
-            top: rect.top - (this.refs.resourceBooking.getDOMNode().clientHeight - rect.height) / 2,
+            top: rect.top - (resourceBooking.getDOMNode().clientHeight - rect.height) / 2,
             height: rect.height
         };
 
-        let resourceBooking = this.refs.resourceBooking;
+        if (resourceBooking.getDOMNode().clientWidth > window.innerWidth - rect.right) {
+            position = 'l';
+            newRect.width = rect.width;
+            newRect.left = rect.left - 10;
+        }
 
-        resourceBooking.setRelatedTo(newRect);
-        resourceBooking.show();
+        this.setState({
+            createResourceBookPopupPos: position
+        }, () => {
+            resourceBooking.setRelatedTo(newRect);
+            resourceBooking.show();
 
-        this.refs.toTime.setTime(range.toTime);
-        this.refs.fromTime.setTime(range.fromTime);
+            this.refs.toTime.setTime(range.toTime);
+            this.refs.fromTime.setTime(range.fromTime);
+        });
     },
 
     _showUpdateResourceBookingPopup(rect, range) {
