@@ -4,9 +4,9 @@ const AppDispatcher = require('../dispatchers/AppDispatcher');
 const ResourceStore = require('../stores/ResourceStore');
 const ResourceActionTypes = require('../constants/AppConstants').ResourceActionTypes;
 
-let ResourceAction = {
+let ResourceActions = {
     receive(success) {
-        $.get("/resource/resources").done(data => {
+        $.get(`/resource/resources`).done(data => {
             AppDispatcher.dispatch({
                 type: ResourceActionTypes.RECEIVE_RESOURCES,
                 data: data
@@ -27,7 +27,7 @@ let ResourceAction = {
                 data: resource
             });
         } else {
-            $.get("/resource/resources/" + id).done(data => {
+            $.get(`/resource/resources/${id}`).done(data => {
                 AppDispatcher.dispatch({
                     type: ResourceActionTypes.RECEIVE_RESOURCE,
                     data: data
@@ -36,7 +36,21 @@ let ResourceAction = {
                 console.error(e);
             });
         }
+    },
+
+    bookResource(id, fromTime, toTime, success, fail) {
+        $.post(`/resource/resources/${id}/book/${fromTime}/${toTime}`).done(data => {
+            AppDispatcher.dispatch({
+                type: ResourceActionTypes.BOOK_RESOURCE,
+                data: data
+            });
+            if (success && typeof success === "function") {
+                success();
+            }
+        }).fail(e => {
+            console.error(e);
+        })
     }
 };
 
-module.exports = ResourceAction;
+module.exports = ResourceActions;

@@ -5,6 +5,7 @@ const MUI = require('material-ui');
 const Display = require('../Common').Display;
 const WeekView = require('../Calendar/CommonComponents').WeekView;
 const CalendarView = require('../Calendar/CommonComponents').CalendarView;
+const ResourceActions = require('../../actions/ResourceActions');
 
 require("./style.less");
 
@@ -78,12 +79,19 @@ let ResourceDetailContent = React.createClass({
                         </div>
                         <Flex.Layout style={{padding: "8px 8px 8px 24px"}} horizontal endJustified>
                             <MUI.FlatButton secondary onClick={() => this.refs.calendar.cancelCreateNewRange()}>Cancel</MUI.FlatButton>
-                            <MUI.FlatButton secondary>Book</MUI.FlatButton>
+                            <MUI.FlatButton secondary onClick={() => this._bookResource()}>Book</MUI.FlatButton>
                         </Flex.Layout>
                     </div>
                 </Popup>
             </Flex.Layout>
         );
+    },
+
+    _bookResource() {
+        let id = this.props.resource._id;
+        let fromTime = this.refs.fromTime.getTime();
+        let toTime = this.refs.toTime.getTime();
+        ResourceActions.bookResource(id, fromTime, toTime);
     },
 
     _dismissResourceBookingPopup() {
