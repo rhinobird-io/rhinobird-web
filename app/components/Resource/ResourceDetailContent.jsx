@@ -33,10 +33,6 @@ let ResourceDetailContent = React.createClass({
             resource
         } = this.props;
 
-
-
-        console.log("Resource Detail Content");
-        console.log(resource.resourceBookings);
         let styles = {
             action: {
                 fontSize: "2em",
@@ -56,40 +52,85 @@ let ResourceDetailContent = React.createClass({
                     data={resource.resourceBookings}
                     awayExceptions={() => this.refs.resourceBooking.getDOMNode()}
                     onRangeCreate={this._showResourceBookingPopup}
-                    onRangeCancel={this._dismissResourceBookingPopup} />
-                <Popup
-                    position="none"
-                    ref="resourceBooking"
-                    selfAlignOrigin="lt"
-                    relatedAlignOrigin="rt"
-                    className="resource-booking-popup"
-                    onMouseDown={(e) => console.log(e.target)}
-                    style={{overflow: "visible !important"}}>
-                    <div style={{minWidth: 250}}>
-                        <h3 style={{padding: "24px 24px 20px 24px"}}><Display type="headline">Confirm Booking</Display></h3>
-                        <div style={{padding: "0 24px"}}>
-                            <MUI.TimePicker
-                                style={{marginTop: -24, zIndex: 1}}
-                                format="ampm"
-                                ref="fromTime"
-                                hintText="From Time"
-                                floatingLabelText="From Time" />
-                            <MUI.TimePicker
-                                style={{marginTop: -24}}
-                                format="ampm"
-                                ref="toTime"
-                                hintText="To Time"
-                                floatingLabelText="To Time" />
-                        </div>
-                        <Flex.Layout style={{padding: "8px 8px 8px 24px"}} horizontal endJustified>
-                            <MUI.FlatButton secondary onClick={() => this.refs.calendar.
-                            dismissCreateNewRange()}>Cancel</MUI.FlatButton>
-                            <MUI.FlatButton secondary onClick={() => this._bookResource()}>Book</MUI.FlatButton>
-                        </Flex.Layout>
-                    </div>
-                </Popup>
+                    onRangeCancel={this._dismissResourceBookingPopup}
+                    onRangeClicked={this._showUpdateResourceBookingPopup} />
+                {this._getCreateResourceBookingPopup()}
+                {this._getUpdateResourceBookingPopup()}
                 <MUI.Snackbar ref="bookingSuccess" message={`Booking ${resource.name} successfully`} />
             </Flex.Layout>
+        );
+    },
+
+    _getCreateResourceBookingPopup() {
+        return (
+            <Popup
+                position="none"
+                ref="resourceBooking"
+                selfAlignOrigin="lt"
+                relatedAlignOrigin="rt"
+                className="resource-booking-popup"
+                onMouseDown={(e) => console.log(e.target)}
+                style={{overflow: "visible !important"}}>
+                <div style={{minWidth: 250}}>
+                    <h3 style={{padding: "24px 24px 20px 24px"}}><Display type="headline">Confirm Booking</Display></h3>
+                    <div style={{padding: "0 24px"}}>
+                        <MUI.TimePicker
+                            style={{marginTop: -24, zIndex: 1}}
+                            format="ampm"
+                            ref="fromTime"
+                            hintText="From Time"
+                            floatingLabelText="From Time" />
+                        <MUI.TimePicker
+                            style={{marginTop: -24}}
+                            format="ampm"
+                            ref="toTime"
+                            hintText="To Time"
+                            floatingLabelText="To Time" />
+                    </div>
+                    <Flex.Layout style={{padding: "8px 8px 8px 24px"}} horizontal endJustified>
+                        <MUI.FlatButton secondary onClick={() => this.refs.calendar.
+                            dismissCreateNewRange()}>Cancel</MUI.FlatButton>
+                        <MUI.FlatButton secondary onClick={() => this._bookResource()}>Book</MUI.FlatButton>
+                    </Flex.Layout>
+                </div>
+            </Popup>
+        );
+    },
+
+    _getUpdateResourceBookingPopup() {
+        return (
+            <Popup
+                position="none"
+                ref="updateResourceBooking"
+                selfAlignOrigin="lt"
+                relatedAlignOrigin="rt"
+                className="resource-booking-popup"
+                style={{overflow: "visible !important"}}>
+                <div style={{minWidth: 250}}>
+                    <h3 style={{padding: "24px 24px 20px 24px"}}>
+                        <Display type="headline">Update Booking</Display>
+                    </h3>
+                    <div style={{padding: "0 24px"}}>
+                        <MUI.TimePicker
+                            style={{marginTop: -24, zIndex: 1}}
+                            format="ampm"
+                            ref="bookFromTime"
+                            hintText="From Time"
+                            floatingLabelText="From Time" />
+                        <MUI.TimePicker
+                            style={{marginTop: -24}}
+                            format="ampm"
+                            ref="bookToTime"
+                            hintText="To Time"
+                            floatingLabelText="To Time" />
+                    </div>
+                    <Flex.Layout style={{padding: "8px 8px 8px 24px"}} horizontal endJustified>
+                        <MUI.FlatButton secondary>Cancel</MUI.FlatButton>
+                        <MUI.FlatButton secondary>Update</MUI.FlatButton>
+                        <MUI.FlatButton primary>Delete</MUI.FlatButton>
+                    </Flex.Layout>
+                </div>
+            </Popup>
         );
     },
 
@@ -123,6 +164,22 @@ let ResourceDetailContent = React.createClass({
 
         this.refs.toTime.setTime(range.toTime);
         this.refs.fromTime.setTime(range.fromTime);
+    },
+
+    _showUpdateResourceBookingPopup(rect, range) {
+        let updateResourceBooking = this.refs.updateResourceBooking;
+        let newRect = {
+            left: rect.left,
+            width: rect.width + 10,
+            top: rect.top - (updateResourceBooking.getDOMNode().clientHeight - rect.height) / 2,
+            height: rect.height
+        };
+
+        updateResourceBooking.setRelatedTo(newRect);
+        updateResourceBooking.show();
+
+        this.refs.bookToTime.setTime(new Date(range.toTime));
+        this.refs.bookFromTime.setTime(new Date(range.fromTime));
     }
 });
 

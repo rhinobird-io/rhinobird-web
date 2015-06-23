@@ -38,12 +38,9 @@ let DaysView = React.createClass({
 
     render() {
         let {
-            data,
+            style,
             dates,
-            onRangeCreate,
-            onRangeCancel,
-            awayExceptions,
-            style
+            ...other
         } = this.props;
 
         let styles = {
@@ -59,13 +56,7 @@ let DaysView = React.createClass({
 
         let dateBars = <DaysHeader dates={dates} />;
         let dateContents = (
-            <DaysContent
-                ref="days"
-                data={data}
-                dates={dates}
-                onRangeCancel={onRangeCancel}
-                onRangeCreate={onRangeCreate}
-                awayExceptions={awayExceptions}/>
+            <DaysContent {...other} ref="days" dates={dates} />
         );
 
         let addons = null;
