@@ -29,7 +29,7 @@ let DaysHeader = React.createClass({
 
         console.log(dateBars);
         return (
-            <Flex.Layout flex={1} stretch>{dateBars}</Flex.Layout>
+            <Flex.Layout flex={1} horizontal stretch>{dateBars}</Flex.Layout>
         );
     }
 });
