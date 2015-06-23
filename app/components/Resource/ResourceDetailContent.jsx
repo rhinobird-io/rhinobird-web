@@ -33,6 +33,10 @@ let ResourceDetailContent = React.createClass({
             resource
         } = this.props;
 
+
+
+        console.log("Resource Detail Content");
+        console.log(resource.resourceBookings);
         let styles = {
             action: {
                 fontSize: "2em",
@@ -78,11 +82,13 @@ let ResourceDetailContent = React.createClass({
                                 floatingLabelText="To Time" />
                         </div>
                         <Flex.Layout style={{padding: "8px 8px 8px 24px"}} horizontal endJustified>
-                            <MUI.FlatButton secondary onClick={() => this.refs.calendar.cancelCreateNewRange()}>Cancel</MUI.FlatButton>
+                            <MUI.FlatButton secondary onClick={() => this.refs.calendar.
+                            dismissCreateNewRange()}>Cancel</MUI.FlatButton>
                             <MUI.FlatButton secondary onClick={() => this._bookResource()}>Book</MUI.FlatButton>
                         </Flex.Layout>
                     </div>
                 </Popup>
+                <MUI.Snackbar ref="bookingSuccess" message={`Booking ${resource.name} successfully`} />
             </Flex.Layout>
         );
     },
@@ -91,7 +97,11 @@ let ResourceDetailContent = React.createClass({
         let id = this.props.resource._id;
         let fromTime = this.refs.fromTime.getTime();
         let toTime = this.refs.toTime.getTime();
-        ResourceActions.bookResource(id, fromTime, toTime);
+        ResourceActions.bookResource(id, fromTime, toTime, () => {
+            this.refs.bookingSuccess.show();
+            setTimeout(this.refs.bookingSuccess.dismiss, 2000);
+            this.refs.calendar.dismissCreateNewRange();
+        });
     },
 
     _dismissResourceBookingPopup() {

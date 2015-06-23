@@ -21,7 +21,6 @@ let ResourceDetail = React.createClass({
 
     render() {
         let resource = this.state.resource || {};
-        console.log(resource);
         return (
             <PerfectScroll style={{height: "100%", position: "relative", margin: "0 auto", padding: 20}}>
                 <MUI.Paper zDepth={3} style={{position: "relative", width: "80%", height: "100%", margin: "0 auto"}}>
@@ -32,6 +31,7 @@ let ResourceDetail = React.createClass({
     },
 
     _onChange() {
+        console.log("update");
         this.setState({
            resource: ResourceStore.getResourceById(this.props.params.id)
         });
