@@ -23,6 +23,10 @@ let ResourceDetailContent = React.createClass({
         }
     },
 
+    getInitialState() {
+        return {}
+    },
+
     render() {
         let {
             resource
@@ -47,8 +51,7 @@ let ResourceDetailContent = React.createClass({
                     data={resource.resourceBookings}
                     awayExceptions={() => this.refs.resourceBooking.getDOMNode()}
                     onRectCreate={this._showResourceBookingPopup}
-                    onRectCancel={this._dismissResourceBookingPopup}>
-                </CalendarView>
+                    onRectCancel={this._dismissResourceBookingPopup} />
                 <Popup
                     position="none"
                     ref="resourceBooking"
@@ -74,7 +77,7 @@ let ResourceDetailContent = React.createClass({
                                 floatingLabelText="To Time" />
                         </div>
                         <Flex.Layout style={{padding: "8px 8px 8px 24px"}} horizontal endJustified>
-                            <MUI.FlatButton secondary>Cancel</MUI.FlatButton>
+                            <MUI.FlatButton secondary onClick={() => console.log("cancel")}>Cancel</MUI.FlatButton>
                             <MUI.FlatButton secondary>Create</MUI.FlatButton>
                         </Flex.Layout>
                     </div>
@@ -87,18 +90,21 @@ let ResourceDetailContent = React.createClass({
         this.refs.resourceBooking.dismiss();
     },
 
-    _showResourceBookingPopup(rect) {
-        console.log(this.refs.resourceBooking.getDOMNode().clientHeight)
-        console.log(rect.height);
-        console.log((this.refs.resourceBooking.getDOMNode().clientHeight - rect.height) / 2)
+    _showResourceBookingPopup(rect, range) {
         let newRect = {
             left: rect.left,
             width: rect.width + 10,
-            top: rect.top + (this.refs.resourceBooking.getDOMNode().clientHeight - rect.height) / 2,
+            top: rect.top - (this.refs.resourceBooking.getDOMNode().clientHeight - rect.height) / 2,
             height: rect.height
         };
-        this.refs.resourceBooking.setRelatedTo(newRect);
-        this.refs.resourceBooking.show();
+
+        let resourceBooking = this.refs.resourceBooking;
+
+        resourceBooking.setRelatedTo(newRect);
+        resourceBooking.show();
+
+        this.refs.toTime.setTime(range.toTime);
+        this.refs.fromTime.setTime(range.fromTime);
     }
 });
 

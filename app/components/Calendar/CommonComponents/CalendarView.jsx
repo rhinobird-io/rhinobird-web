@@ -29,6 +29,10 @@ let CalendarView = React.createClass({
         }
     },
 
+    cancelCreateNewRange() {
+
+    },
+
     render() {
         let {
             awayExceptions,
@@ -39,15 +43,14 @@ let CalendarView = React.createClass({
         let viewType = this.state.viewType;
         let switcher = this._getViewTypeSwitcher();
 
-        console.log(this.awayExceptions);
         let calendarView = null;
         if (viewType === "week") {
             calendarView = <WeekView awayExceptions={awayExceptions} onRectCreate={onRectCreate} onRectCancel={onRectCancel} date={this.state.date} data={this.props.data} />
         } else if (viewType === "day") {
             let dates = [].concat(this.state.date);
-            calendarView = <DaysView dates={dates} data={this.props.data} />
+            calendarView = <DaysView awayExceptions={awayExceptions} onRectCreate={onRectCreate} onRectCancel={onRectCancel} dates={dates} data={this.props.data} />
         } else if (viewType === "fourDays") {
-            calendarView = <FourDaysView date={this.state.date} data={this.props.data} />
+            calendarView = <FourDaysView awayExceptions={awayExceptions} onRectCreate={onRectCreate} onRectCancel={onRectCancel} date={this.state.date} data={this.props.data} />
         } else if (viewType === "month") {
 
         }
