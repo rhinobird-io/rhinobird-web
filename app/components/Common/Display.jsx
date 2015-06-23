@@ -7,13 +7,13 @@ const Typography = require('material-ui/lib/styles/typography');
 const fonts = {
     'caption': {
         size: 12,
-        weight: Typography.fontWeightRegular,
+        weight: Typography.fontWeightNormal,
         lineHeight: 20,
         contrast: 54
     },
     'body1': {
         size: 14,
-        weight: Typography.fontWeightRegular,
+        weight: Typography.fontWeightNormal,
         lineHeight: 20,
         contrast: 87
     },
@@ -25,7 +25,7 @@ const fonts = {
     },
     'subhead': {
         size: 16,
-        weight: Typography.fontWeightRegular,
+        weight: Typography.fontWeightNormal,
         lineHeight: 24,
         contrast: 87
     },
@@ -37,25 +37,25 @@ const fonts = {
     },
     'headline': {
         size: 24,
-        weight: Typography.fontWeightRegular,
+        weight: Typography.fontWeightNormal,
         lineHeight: 32,
         contrast: 87
     },
     'display1': {
         size: 34,
-        weight: Typography.fontWeightRegular,
+        weight: Typography.fontWeightNormal,
         lineHeight: 40,
         contrast: 54
     },
     'display2': {
         size: 45,
-        weight: Typography.fontWeightRegular,
+        weight: Typography.fontWeightNormal,
         lineHeight: 48,
         contrast: 54
     },
     'display3': {
         size: 56,
-        weight: Typography.fontWeightRegular,
+        weight: Typography.fontWeightNormal,
         lineHeight: 60,
         contrast: 54
     },
