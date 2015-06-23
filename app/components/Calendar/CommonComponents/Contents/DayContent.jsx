@@ -36,9 +36,9 @@ let DayContent = React.createClass({
 
     getDefaultProps() {
         return {
-            exclusive: true,
+            data: [],
             accuracy: 15,
-            data: []
+            exclusive: true
         }
     },
 
@@ -58,11 +58,13 @@ let DayContent = React.createClass({
         if (!style) {
             style = {};
         }
+
         style.WebkitUserSelect = "none";
         style.userSelect = "none";
         style.width = "100%";
         style.position = "relative";
-
+        style.cursor = "default";
+        
         let styles = {
             top: {
                 width: "100%",
@@ -114,7 +116,8 @@ let DayContent = React.createClass({
     _constructContent(data) {
         let styles = {
             outer: {
-                padding: 2,
+                padding: "0 2px",
+                cursor: "pointer",
                 position: "absolute"
             }
         };
@@ -206,28 +209,34 @@ let DayContent = React.createClass({
 
         if (this.mouseDown) {
             let date = new Date(this.props.date);
-            let fromSeconds = (this.startPosY / rect.height) * 86400;
-            let toSeconds = (endPosY / rect.height) * 86400;
-            let fromTime = new Date(date);
+            let startSeconds = (this.startPosY / rect.height) * 86400;
+            let endSeconds = (endPosY / rect.height) * 86400;
+            let fromSeconds = Math.min(startSeconds, endSeconds);
+            let toSeconds = Math.max(startSeconds, endSeconds);
 
+            let accuracy = this.props.accuracy;
+
+            let fromTime = new Date(date);
             let fromHour = Math.floor(fromSeconds / 3600);
             let fromMinute = Math.floor((fromSeconds - fromHour * 3600) / 60);
-            let fromSecond = Math.floor(fromSeconds - fromHour * 3600 - fromMinute * 60);
+            let fromSecond = 0; //Math.floor(fromSeconds - fromHour * 3600 - fromMinute * 60);
 
+            fromMinute = Math.floor(fromMinute / accuracy) * accuracy;
             fromTime.setHours(fromHour);
             fromTime.setMinutes(fromMinute)
             fromTime.setSeconds(fromSecond);
 
             let toTime = new Date(date);
-
             let toHour = Math.floor(toSeconds / 3600);
             let toMinute = Math.floor((toSeconds - toHour * 3600) / 60);
-            let toSecond = Math.floor(toSeconds - toHour * 3600 - toMinute * 60);
+            let toSecond = 0; //Math.floor(toSeconds - toHour * 3600 - toMinute * 60);
+
+            toMinute = Math.ceil(toMinute / accuracy) * accuracy;
             toTime.setHours(toHour);
             toTime.setMinutes(toMinute);
             toTime.setSeconds(toSecond);
 
-            let newRange = fromTime <= toTime ? {from_time: fromTime, to_time: toTime} : {from_time: toTime, to_time: fromTime};
+            let newRange = {from_time: fromTime, to_time: toTime};
             newRange.backgroundColor = this.context.muiTheme.palette.primary1Color;
             this.setState({newRange: newRange})
         }
@@ -244,9 +253,6 @@ let DayContent = React.createClass({
             let rect = newRange ? newRange.getDOMNode().getBoundingClientRect() : null;
             this.props.onRectCreate(rect);
         }
-    },
-
-    _handleMouseOut(e) {
     }
 });
 
