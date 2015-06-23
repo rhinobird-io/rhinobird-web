@@ -13,14 +13,14 @@ let DayHeader = React.createClass({
     render() {
         let styles = {
             weekDay: {
-                width: 30,
+                width: 0,
                 fontWeight: 600,
                 fontSize: "1.1em",
                 padding: "0.2em 0.4em",
                 color: this.context.muiTheme.palette.disabledColor
             },
             date: {
-                width: 30,
+                width: 0,
                 fontSize: "3em",
                 padding: "0.1em",
                 lineHeight: "1.4em"
