@@ -26,6 +26,7 @@ let WeekView = React.createClass({
         } = this.props;
 
         let dates = date.weekDays();
+        console.log(date);
         return <DaysView ref="days" dates={dates} {...others} />
     }
 });

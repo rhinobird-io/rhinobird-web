@@ -51,6 +51,7 @@ let CalendarView = React.createClass({
 
     render() {
         let {
+            date,
             ...other
         } = this.props;
 
@@ -60,16 +61,16 @@ let CalendarView = React.createClass({
         let calendarView = null;
         if (viewType === "week") {
             calendarView = (
-                <WeekView ref="calendarView" date={this.state.date} {...other}  />
+                <WeekView ref="calendarView" {...other} date={this.state.date} />
             );
         } else if (viewType === "day") {
             let dates = [].concat(this.state.date);
             calendarView = (
-                <DaysView ref="calendarView" dates={dates} {...other} />
+                <DaysView ref="calendarView" {...other} dates={dates} />
             );
         } else if (viewType === "fourDays") {
             calendarView = (
-                <FourDaysView ref="calendarView" date={this.state.date} {...other} />
+                <FourDaysView ref="calendarView" {...other} date={this.state.date} />
             );
         } else if (viewType === "month") {
 
