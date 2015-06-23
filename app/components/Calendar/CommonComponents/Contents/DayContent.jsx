@@ -236,7 +236,7 @@ let DayContent = React.createClass({
             toTime.setMinutes(toMinute);
             toTime.setSeconds(toSecond);
 
-            let newRange = {from_time: fromTime, to_time: toTime};
+            let newRange = {fromTime: fromTime, toTime: toTime};
             newRange.backgroundColor = this.context.muiTheme.palette.primary1Color;
             this.setState({newRange: newRange})
         }
@@ -248,10 +248,9 @@ let DayContent = React.createClass({
         document.removeEventListener("mousemove", this._handleMouseMove);
         document.removeEventListener("mouseup", this._handleMouseUp);
         if (this.props.onRectCreate) {
-            console.log("On Rect");
             let newRange = this.refs.newRange;
             let rect = newRange ? newRange.getDOMNode().getBoundingClientRect() : null;
-            this.props.onRectCreate(rect);
+            this.props.onRectCreate(rect, this.state.newRange);
         }
     }
 });
