@@ -13,11 +13,11 @@ let DaysContent = React.createClass({
         muiTheme: React.PropTypes.object
     },
 
-    cancelCreateNewRange() {
+    dismissCreateNewRange() {
         for (let i = 0; i < this.props.dates.length; i++) {
             let day = this.refs["day" + i];
             if (day) {
-                day.cancelCreateNewRange();
+                day.dismissCreateNewRange();
             }
         }
     },

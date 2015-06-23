@@ -8,8 +8,8 @@ let WeekView = React.createClass({
         onRangeCreate: React.PropTypes.func
     },
 
-    cancelCreateNewRange() {
-        this.refs.days.cancelCreateNewRange();
+    dismissCreateNewRange() {
+        this.refs.days.dismissCreateNewRange();
     },
 
     getDefaultProps() {

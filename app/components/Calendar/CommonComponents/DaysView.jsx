@@ -23,8 +23,8 @@ let DaysView = React.createClass({
         }
     },
 
-    cancelCreateNewRange() {
-        this.refs.days.cancelCreateNewRange();
+    dismissCreateNewRange() {
+        this.refs.days.dismissCreateNewRange();
     },
 
     componentDidMount() {

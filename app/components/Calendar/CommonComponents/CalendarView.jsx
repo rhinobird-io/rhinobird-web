@@ -42,10 +42,10 @@ let CalendarView = React.createClass({
         }
     },
 
-    cancelCreateNewRange() {
+    dismissCreateNewRange() {
         let calendarView = this.refs.calendarView;
         if (calendarView) {
-            calendarView.cancelCreateNewRange();
+            calendarView.dismissCreateNewRange();
         }
     },
 

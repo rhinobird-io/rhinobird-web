@@ -24,7 +24,7 @@ let DayContent = React.createClass({
         onRangeCancel: React.PropTypes.func
     },
 
-    cancelCreateNewRange() {
+    dismissCreateNewRange() {
         if (this.state.newRange) {
             this.setState({
                 newRange: null
@@ -37,7 +37,7 @@ let DayContent = React.createClass({
     },
 
     componentMouseDownAway(e) {
-        this.cancelCreateNewRange();
+        this.dismissCreateNewRange();
     },
 
     getDefaultProps() {
@@ -122,7 +122,7 @@ let DayContent = React.createClass({
     _constructContent(data) {
         let styles = {
             outer: {
-                padding: "0 2px",
+                padding: "0 4px",
                 cursor: "pointer",
                 position: "absolute"
             }
