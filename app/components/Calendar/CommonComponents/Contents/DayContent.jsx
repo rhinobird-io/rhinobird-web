@@ -64,7 +64,7 @@ let DayContent = React.createClass({
         style.width = "100%";
         style.position = "relative";
         style.cursor = "default";
-        
+
         let styles = {
             top: {
                 width: "100%",
