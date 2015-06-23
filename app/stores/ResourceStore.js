@@ -34,9 +34,11 @@ let ResourceStore = assign({}, BaseStore, {
                 }
                 break;
             case ActionTypes.RECEIVE_RESOURCE:
-                console.log(data._id);
                 _resources.concat(data);
                 _resourceMap[data._id] = data;
+                break;
+            case ActionTypes.BOOK_RESOURCE:
+                console.log(data);
                 break;
         }
 
