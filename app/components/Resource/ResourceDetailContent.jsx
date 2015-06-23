@@ -2,6 +2,7 @@ const React = require('react');
 const Flex = require('../Flex');
 const Popup = require('../Popup');
 const MUI = require('material-ui');
+const Display = require('../Common').Display;
 const WeekView = require('../Calendar/CommonComponents').WeekView;
 const CalendarView = require('../Calendar/CommonComponents').CalendarView;
 
@@ -56,26 +57,26 @@ let ResourceDetailContent = React.createClass({
                     className="resource-booking-popup"
                     onMouseDown={(e) => console.log(e.target)}
                     style={{overflow: "visible !important"}}>
-                    <div style={{padding: 12, minWidth: 250}}>
-                        <h3>Confirm Booking</h3>
-                        <div style={{padding: 4}}>
+                    <div style={{minWidth: 250}}>
+                        <h3 style={{padding: "24px 24px 20px 24px"}}><Display type="headline">Confirm Booking</Display></h3>
+                        <div style={{padding: "0 24px"}}>
                             <MUI.TimePicker
-                                style={{marginTop: -20}}
+                                style={{marginTop: -24, zIndex: 1}}
                                 format="ampm"
                                 ref="fromTime"
                                 hintText="From Time"
                                 floatingLabelText="From Time" />
                             <MUI.TimePicker
-                                style={{marginTop: -20}}
+                                style={{marginTop: -24}}
                                 format="ampm"
                                 ref="toTime"
                                 hintText="To Time"
                                 floatingLabelText="To Time" />
-                            <Flex.Layout horizontal endJustified>
-                                <MUI.FlatButton>Cancel</MUI.FlatButton>
-                                <MUI.FlatButton primary>Create</MUI.FlatButton>
-                            </Flex.Layout>
                         </div>
+                        <Flex.Layout style={{padding: "8px 8px 8px 24px"}} horizontal endJustified>
+                            <MUI.FlatButton secondary>Cancel</MUI.FlatButton>
+                            <MUI.FlatButton secondary>Create</MUI.FlatButton>
+                        </Flex.Layout>
                     </div>
                 </Popup>
             </Flex.Layout>
@@ -87,12 +88,15 @@ let ResourceDetailContent = React.createClass({
     },
 
     _showResourceBookingPopup(rect) {
+        console.log(this.refs.resourceBooking.getDOMNode().clientHeight)
+        console.log(rect.height);
+        console.log((this.refs.resourceBooking.getDOMNode().clientHeight - rect.height) / 2)
         let newRect = {
             left: rect.left,
             width: rect.width + 10,
-            top: rect.top,
+            top: rect.top + (this.refs.resourceBooking.getDOMNode().clientHeight - rect.height) / 2,
             height: rect.height
-        }
+        };
         this.refs.resourceBooking.setRelatedTo(newRect);
         this.refs.resourceBooking.show();
     }

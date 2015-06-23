@@ -23,9 +23,9 @@ let Popup = React.createClass({
         this.setState({shown: false});
     },
 
-    show() {
+    show(callback) {
         this.updatePosition();
-        setTimeout(() => this.setState({shown: true}));
+        setTimeout(() => this.setState({shown: true}), callback);
     },
 
     isShown() {
