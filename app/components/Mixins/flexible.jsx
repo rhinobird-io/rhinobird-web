@@ -95,7 +95,7 @@ module.exports = {
             let baseWidth = baseRect.width;
             let baseHeight = baseRect.height;
 
-            let selfWidth = self.getBoundingClientRect().width;
+            let selfWidth = self.offsetWidth;
             let selfHeight = self.offsetHeight;
 
             let selfTop = 0;
@@ -110,21 +110,38 @@ module.exports = {
 
                 let spaceX = 0;
                 let spaceY = 0;
+
                 if (selfAlignOriginX === 'l') {
                     if (relatedAlignOriginX === 'l') {
-                        selfLeft = baseLeft;
                         spaceX = innerWidth - baseLeft;
-                    } else {
-                        selfLeft = baseRight;
+                        if (spaceX >= selfWidth) {
+                            selfLeft = baseLeft;
+                        } else {
+                            selfLeft = baseRight - selfWidth;
+                        }
+                    } else if (relatedAlignOriginX === 'r') {
                         spaceX = innerWidth - baseRight;
+                        if (spaceX >= selfWidth) {
+                            selfLeft = baseRight;
+                        } else {
+                            selfLeft = baseRight - baseWidth - selfWidth;
+                        }
                     }
-                } else {
+                } else if (selfAlignOriginX === 'r') {
                     if (relatedAlignOriginX === 'r') {
-                        selfLeft = baseRight - selfWidth;
                         spaceX = baseRight;
-                    } else {
-                        selfLeft = baseLeft - selfWidth;
+                        if (spaceX >= selfWidth) {
+                            selfLeft = baseRight - selfWidth;
+                        } else {
+                            selfLeft = baseLeft;
+                        }
+                    } else if (relatedAlignOriginX === 'l') {
                         spaceX = baseLeft;
+                        if (spaceX >= selfWidth) {
+                            selfLeft = baseLeft - selfWidth;
+                        } else {
+                            selfLeft = baseRight;
+                        }
                     }
                 }
 
@@ -145,6 +162,8 @@ module.exports = {
                         spaceY = baseTop;
                     }
                 }
+
+
             } else {
                 if (innerHeight - baseBottom - selfHeight >= 0) {
                     selfTop = baseTop + baseHeight;

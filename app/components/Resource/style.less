@@ -4,7 +4,6 @@
     position: absolute;
     width: 0;
     height: 0;
-    left: -6px;
     margin-top: -6px;
     top: 50%;
     box-sizing: border-box;
@@ -13,8 +12,21 @@
     border-color: transparent white white transparent;
 
     transform-origin: 50% 50%;
-    transform: rotate(135deg);
 
     box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.4);
+  }
+}
+
+.resource-booking-popup.right {
+  &::before {
+    left: -6px;
+    transform: rotate(135deg);
+  }
+}
+
+.resource-booking-popup.left {
+  &::before {
+    right: -6px;
+    transform: rotate(-45deg);
   }
 }
