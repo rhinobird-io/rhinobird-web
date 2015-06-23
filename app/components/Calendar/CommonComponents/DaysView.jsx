@@ -10,7 +10,7 @@ let DaysView = React.createClass({
     propTypes: {
         dates: React.PropTypes.arrayOf(React.PropTypes.object),
         data: React.PropTypes.array,
-        onRectCreate: React.PropTypes.func
+        onRangeCreate: React.PropTypes.func
     },
 
     contextTypes: {
@@ -21,6 +21,10 @@ let DaysView = React.createClass({
         return {
             dates: []
         }
+    },
+
+    cancelCreateNewRange() {
+        this.refs.days.cancelCreateNewRange();
     },
 
     componentDidMount() {
@@ -36,8 +40,8 @@ let DaysView = React.createClass({
         let {
             data,
             dates,
-            onRectCreate,
-            onRectCancel,
+            onRangeCreate,
+            onRangeCancel,
             awayExceptions,
             style
         } = this.props;
@@ -56,10 +60,11 @@ let DaysView = React.createClass({
         let dateBars = <DaysHeader dates={dates} />;
         let dateContents = (
             <DaysContent
+                ref="days"
                 data={data}
                 dates={dates}
-                onRectCancel={onRectCancel}
-                onRectCreate={onRectCreate}
+                onRangeCancel={onRangeCancel}
+                onRangeCreate={onRangeCreate}
                 awayExceptions={awayExceptions}/>
         );
 

@@ -72,7 +72,7 @@ let DayView = React.createClass({
     },
 
     propTypes: {
-        onRectCreate: React.PropTypes.func,
+        onRangeCreate: React.PropTypes.func,
         date: React.PropTypes.oneOfType([
             React.PropTypes.object,
             React.PropTypes.string

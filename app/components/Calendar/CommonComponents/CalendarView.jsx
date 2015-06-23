@@ -23,7 +23,7 @@ let NEXT_TOOLTIPS = {
 let CalendarView = React.createClass({
     propType: {
         date: React.PropTypes.object,
-        onRectCreate: React.PropTypes.func,
+        onRangeCreate: React.PropTypes.func,
         onTypeChange: React.PropTypes.string,
         initialViewType: React.PropTypes.oneOf(VIEW_TYPES)
     },
@@ -43,14 +43,15 @@ let CalendarView = React.createClass({
     },
 
     cancelCreateNewRange() {
-
+        let calendarView = this.refs.calendarView;
+        if (calendarView) {
+            calendarView.cancelCreateNewRange();
+        }
     },
 
     render() {
         let {
-            awayExceptions,
-            onRectCancel,
-            onRectCreate
+            ...other
         } = this.props;
 
         let viewType = this.state.viewType;
@@ -58,12 +59,18 @@ let CalendarView = React.createClass({
 
         let calendarView = null;
         if (viewType === "week") {
-            calendarView = <WeekView awayExceptions={awayExceptions} onRectCreate={onRectCreate} onRectCancel={onRectCancel} date={this.state.date} data={this.props.data} />
+            calendarView = (
+                <WeekView ref="calendarView" date={this.state.date} {...other}  />
+            );
         } else if (viewType === "day") {
             let dates = [].concat(this.state.date);
-            calendarView = <DaysView awayExceptions={awayExceptions} onRectCreate={onRectCreate} onRectCancel={onRectCancel} dates={dates} data={this.props.data} />
+            calendarView = (
+                <DaysView ref="calendarView" dates={dates} {...other} />
+            );
         } else if (viewType === "fourDays") {
-            calendarView = <FourDaysView awayExceptions={awayExceptions} onRectCreate={onRectCreate} onRectCancel={onRectCancel} date={this.state.date} data={this.props.data} />
+            calendarView = (
+                <FourDaysView ref="calendarView" date={this.state.date} {...other} />
+            );
         } else if (viewType === "month") {
 
         }

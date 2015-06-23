@@ -5,7 +5,11 @@ let WeekView = React.createClass({
     propTypes: {
         date: React.PropTypes.object,
         data: React.PropTypes.array,
-        onRectCreate: React.PropTypes.func
+        onRangeCreate: React.PropTypes.func
+    },
+
+    cancelCreateNewRange() {
+        this.refs.days.cancelCreateNewRange();
     },
 
     getDefaultProps() {
@@ -22,7 +26,7 @@ let WeekView = React.createClass({
         } = this.props;
 
         let dates = date.weekDays();
-        return <DaysView dates={dates} {...others} />
+        return <DaysView ref="days" dates={dates} {...others} />
     }
 });
 

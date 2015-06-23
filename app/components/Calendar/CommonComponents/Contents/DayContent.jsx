@@ -20,18 +20,24 @@ let DayContent = React.createClass({
         exclusive: React.PropTypes.bool,
         accuracy: React.PropTypes.number,
         rectContent: React.PropTypes.func,
-        onRectCreate: React.PropTypes.func,
-        onRectCancel: React.PropTypes.func
+        onRangeCreate: React.PropTypes.func,
+        onRangeCancel: React.PropTypes.func
+    },
+
+    cancelCreateNewRange() {
+        if (this.state.newRange) {
+            this.setState({
+                newRange: null
+            }, () => {
+                if (this.props.onRangeCancel) {
+                    this.props.onRangeCancel();
+                }
+            });
+        }
     },
 
     componentMouseDownAway(e) {
-        this.setState({
-           newRange: null
-        }, () => {
-            if (this.props.onRectCancel) {
-                this.props.onRectCancel();
-            }
-        });
+        this.cancelCreateNewRange();
     },
 
     getDefaultProps() {
@@ -247,10 +253,10 @@ let DayContent = React.createClass({
         this.mouseDown = false;
         document.removeEventListener("mousemove", this._handleMouseMove);
         document.removeEventListener("mouseup", this._handleMouseUp);
-        if (this.props.onRectCreate) {
+        if (this.props.onRangeCreate) {
             let newRange = this.refs.newRange;
             let rect = newRange ? newRange.getDOMNode().getBoundingClientRect() : null;
-            this.props.onRectCreate(rect, this.state.newRange);
+            this.props.onRangeCreate(rect, this.state.newRange);
         }
     }
 });
