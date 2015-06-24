@@ -1,4 +1,5 @@
 const React = require('react');
+const Moment = require('moment');
 const MUI = require('material-ui');
 const Flex = require('../../Flex');
 const WeekView = require('./WeekView');
@@ -58,7 +59,7 @@ let CalendarView = React.createClass({
 
         let viewType = this.state.viewType;
         let switcher = this._getViewTypeSwitcher();
-        let calendarHeader = this._getCalendarHeader();
+        let calendarHeader = this._getCalendarHeader(viewType);
 
         let calendarView = null;
         if (viewType === "week") {
@@ -87,12 +88,25 @@ let CalendarView = React.createClass({
         );
     },
 
-    _getCalendarHeader() {
-        let tooltipNavigateBefore = BEFORE_TOOLTIPS[this.state.viewType];
-        let tooltipNavigateNext = NEXT_TOOLTIPS[this.state.viewType];
+
+    _getCalendarHeader(viewType) {
+        let tooltipNavigateBefore = BEFORE_TOOLTIPS[viewType];
+        let tooltipNavigateNext = NEXT_TOOLTIPS[viewType];
         let isTodayInView = false;
         if (this.state.date.toDateString() === new Date().toDateString()) {
             isTodayInView = true;
+        }
+
+        let currentDate = null;
+        if (viewType === "week") {
+            let days = this.state.date.weekDays();
+            currentDate = (
+                <Flex.Layout center>
+                    <span>{Moment(days[0]).format("YYYY")}</span>
+                </Flex.Layout>
+            );
+        } else if (viewType === "day") {
+
         }
         return (
             <Flex.Layout horizontal center style={{minHeight: 48, textAlign: "center"}}>
@@ -108,7 +122,7 @@ let CalendarView = React.createClass({
                         title={tooltipNavigateBefore}
                         onClick={this._navigateBefore}
                         iconClassName="icon-navigate-before" />
-                    <span>2015 123123</span>
+                    <Display type="subhead">{currentDate}</Display>
                     <MUI.IconButton
                         title={tooltipNavigateNext}
                         onClick={this._navigateNext}

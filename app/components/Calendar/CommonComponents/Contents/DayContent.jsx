@@ -19,7 +19,7 @@ let DayContent = React.createClass({
         data: React.PropTypes.array,
         exclusive: React.PropTypes.bool,
         accuracy: React.PropTypes.number,
-        rectContent: React.PropTypes.func,
+        rangeContent: React.PropTypes.func,
         onRangeCreate: React.PropTypes.func,
         onRangeCancel: React.PropTypes.func,
         onRangeClicked: React.PropTypes.func
@@ -192,6 +192,13 @@ let DayContent = React.createClass({
             } else {
                 ref = `range_${index}`;
             }
+
+            let rangeContent = null;
+            if (this.props.rangeContent && typeof this.props.rangeContent === "function") {
+                rangeContent = this.props.rangeContent(d);
+            } else {
+                rangeContent = "";
+            }
             return (
                 <div
                     ref={ref}
@@ -200,7 +207,7 @@ let DayContent = React.createClass({
                     onClick={() => this._handleRangeClick(ref, d)}
                     onMouseDown={this._handleRangeMouseDown}>
                     <div style={innerStyle}>
-                        <span>Booked</span>
+                        {rangeContent}
                     </div>
                 </div>
             );
