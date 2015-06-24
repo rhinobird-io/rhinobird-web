@@ -4,6 +4,7 @@ const Flex = require('../../Flex');
 const WeekView = require('./WeekView');
 const DaysView = require('./DaysView');
 const FourDaysView = require('./FourDaysView');
+const Display = require('../../Common').Display;
 const Selector = require('../../Select').Selector;
 
 let VIEW_TYPES = ['week', 'month', 'day', 'fourDays'];
@@ -57,6 +58,7 @@ let CalendarView = React.createClass({
 
         let viewType = this.state.viewType;
         let switcher = this._getViewTypeSwitcher();
+        let calendarHeader = this._getCalendarHeader();
 
         let calendarView = null;
         if (viewType === "week") {
@@ -77,15 +79,15 @@ let CalendarView = React.createClass({
         }
 
         return (
-            <Flex.Layout vertical>
+            <Flex.Layout vertical stretch>
+                {calendarHeader}
                 {calendarView}
                 {switcher}
             </Flex.Layout>
         );
     },
 
-    _getViewTypeSwitcher() {
-        let viewTypes = VIEW_TYPES.map(type => <span name={type}>{type}</span>);
+    _getCalendarHeader() {
         let tooltipNavigateBefore = BEFORE_TOOLTIPS[this.state.viewType];
         let tooltipNavigateNext = NEXT_TOOLTIPS[this.state.viewType];
         let isTodayInView = false;
@@ -93,29 +95,38 @@ let CalendarView = React.createClass({
             isTodayInView = true;
         }
         return (
-            <Flex.Layout horizontal center style={{minHeight: 48, borderTop: "1px solid " + muiTheme.palette.borderColor}}>
-                <Flex.Layout flex={1}>
+            <Flex.Layout horizontal center style={{minHeight: 48, textAlign: "center"}}>
+                <Flex.Layout flex={1} style={{width: 0}}>
                     <MUI.FlatButton
                         label="Go To Today"
                         onClick={this._gotoToday}
                         disabled={isTodayInView}
                         secondary={!isTodayInView}/>
                 </Flex.Layout>
-                <Flex.Layout flex={1} center centerJustified>
+                <Flex.Layout flex={1} style={{width: 0}} center centerJustified>
                     <MUI.IconButton
                         title={tooltipNavigateBefore}
                         onClick={this._navigateBefore}
                         iconClassName="icon-navigate-before" />
-                    <Selector value={this.state.viewType} onSelectChange={v => this.setState({viewType: v})}>
-                        {viewTypes}
-                    </Selector>
+                    <span>2015 123123</span>
                     <MUI.IconButton
                         title={tooltipNavigateNext}
                         onClick={this._navigateNext}
                         iconClassName="icon-navigate-next" />
                 </Flex.Layout>
-                <Flex.Layout flex={1}>
+                <Flex.Layout flex={1} style={{width: 0}}>
                 </Flex.Layout>
+            </Flex.Layout>
+        )
+    },
+
+    _getViewTypeSwitcher() {
+        let viewTypes = VIEW_TYPES.map(type => <span name={type}>{type}</span>);
+        return (
+            <Flex.Layout horizontal center centerJustified style={{minHeight: 48, borderTop: "1px solid " + muiTheme.palette.borderColor}}>
+                <Selector value={this.state.viewType} onSelectChange={v => this.setState({viewType: v})}>
+                    {viewTypes}
+                </Selector>
             </Flex.Layout>
         );
     },

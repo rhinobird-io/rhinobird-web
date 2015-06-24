@@ -23,7 +23,7 @@ let ResourceDetail = React.createClass({
         let resource = this.state.resource || {};
         return (
             <PerfectScroll style={{height: "100%", position: "relative", margin: "0 auto", padding: 20}}>
-                <MUI.Paper zDepth={3} style={{position: "relative", width: "80%", height: "100%", margin: "0 auto"}}>
+                <MUI.Paper zDepth={1} style={{position: "relative", width: "80%", height: "100%", margin: "0 auto"}}>
                     <ResourceDetailContent resource={resource} />
                 </MUI.Paper>
             </PerfectScroll>

@@ -26,7 +26,8 @@ let ResourceDetailContent = React.createClass({
 
     getInitialState() {
         return {
-            createResourceBookPopupPos: "r"
+            createResourceBookPopupPos: "r",
+            updateResourceBookPopupPos: "r"
         }
     },
 
@@ -106,13 +107,19 @@ let ResourceDetailContent = React.createClass({
     },
 
     _getUpdateResourceBookingPopup() {
+        let className = "resource-booking-popup";
+        if (this.state.updateResourceBookPopupPos === 'r') {
+            className += " right";
+        } else {
+            className += " left";
+        }
         return (
             <Popup
                 position="none"
                 ref="updateResourceBooking"
                 selfAlignOrigin="lt"
                 relatedAlignOrigin="rt"
-                className="resource-booking-popup"
+                className={className}
                 style={{overflow: "visible !important"}}>
                 <div style={{minWidth: 250}}>
                     <h3 style={{padding: "24px 24px 20px 24px"}}>
