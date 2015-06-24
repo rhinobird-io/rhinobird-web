@@ -450,7 +450,8 @@ const Editor = React.createClass({
 });
 const PostDetail = React.createClass({
     contextTypes: {
-        router: React.PropTypes.func.isRequired
+        router: React.PropTypes.func.isRequired,
+        muiTheme: React.PropTypes.object
     },
     mixins: [React.addons.LinkedStateMixin],
     componentDidMount() {
@@ -489,31 +490,50 @@ const PostDetail = React.createClass({
                 <span style={{width:12, height:12, backgroundColor: t.color, marginRight:4}}></span><span>{t.name}</span>
             </Flex.Layout>);
         }
+        let dialogActions = [
+            <mui.FlatButton
+                label="Cancel"
+                secondary={true}
+                onTouchTap={this._handleDeleteDialogCancel} />,
+            <mui.FlatButton
+                label="Delete"
+                primary={true}
+                onTouchTap={this._handleDeleteDialogSubmit} />
+        ];
         switch (this.state.mode) {
             case 'view':
                 return <div style={{position:'relative', height:'100%', maxWidth: 1024, padding:24, margin:'0 auto'}}>
                     <PerfectScroll noScrollX style={{height: '100%'}}>
-                    <Common.Display type='headline' style={{marginBottom:12}}>{this.state.title}</Common.Display>
-                    <SmartDisplay value={this.state.body}/>
-                    <Common.Display type='caption' style={{display:'flex', alignItems:'center', justifyContent:'space-between', margin:'24px 0'}}>
-                        <Flex.Layout>
-                            {tagsBlock}
-                        </Flex.Layout>
-                        <Flex.Layout endJustified>
-                            <Member.Avatar scale={0.5} member={user}/>
-                            <Member.Name member={user} style={{marginLeft: 4}}/>
-                            <span style={{marginLeft: 4}}>created at <SmartTimeDisplay start={this.state.created_at} format='MMM Do YYYY' /></span>
-                            {this.state.created_at !== this.state.updated_at? <span>, updated at <SmartTimeDisplay start={this.state.updated_at} format='MMM Do YYYY' /></span>:undefined}
-                        </Flex.Layout>
-                    </Common.Display>
-                    <Common.Display type='title' style={{marginTop:24}}>Comments</Common.Display>
-                    <Thread threadKey={this.context.router.getCurrentPathname()} threadTitle={`Post ${this.state.title}`}
-                                participants={{users: [user]}}/>
+                        <mui.Paper zDepth={1} style={{margin:4}}>
+                            <div style={{backgroundColor:this.context.muiTheme.palette.primary1Color, width:'100%', padding:24}}>
+                                {LoginStore.getUser().id === this.state.creator_id? <Flex.Layout endJustified style={{backgroundColor:this.context.muiTheme.palette.primary1Color}}>
+                                    <mui.IconButton onClick={this._editPost} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit" tooltip="Edit this post"/>
+                                    <mui.IconButton onClick={this._deletePost} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-delete" tooltip="Delete this post"/>
+                                    <mui.Dialog actions={dialogActions} title="Deleting post" ref='dialog'>
+                                        Are you sure to delete this post?
+                                    </mui.Dialog>
+                                </Flex.Layout> : undefined}
+                                <Common.Display style={{color: this.context.muiTheme.palette.canvasColor}} type='headline'>{this.state.title}</Common.Display>
+                            </div>
+                            <div style={{padding:24, width:'100%'}}>
+                                <SmartDisplay value={this.state.body}/>
+                                <Common.Display type='caption' style={{display:'flex', alignItems:'center', justifyContent:'space-between', margin:'24px 0'}}>
+                                    <Flex.Layout>
+                                        {tagsBlock}
+                                    </Flex.Layout>
+                                    <Flex.Layout endJustified>
+                                        <Member.Avatar scale={0.5} member={user}/>
+                                        <Member.Name member={user} style={{marginLeft: 4}}/>
+                                        <span style={{marginLeft: 4}}>created at <SmartTimeDisplay start={this.state.created_at} format='MMM Do YYYY' /></span>
+                                        {this.state.created_at !== this.state.updated_at? <span>, updated at <SmartTimeDisplay start={this.state.updated_at} format='MMM Do YYYY' /></span>:undefined}
+                                    </Flex.Layout>
+                                </Common.Display>
+                                <Common.Display type='title' style={{marginTop:24}}>Comments</Common.Display>
+                                <Thread threadKey={this.context.router.getCurrentPathname()} threadTitle={`Post ${this.state.title}`}
+                                            participants={{users: [user]}}/>
+                            </div>
+                            </mui.Paper>
                 </PerfectScroll>
-                    {LoginStore.getUser().id === this.state.creator_id? <mui.FloatingActionButton onClick={this._editPost}
-                                                                                        style={{position:'absolute', right: 24, bottom: 24}}
-                                                                                        iconClassName="icon-edit"/>: undefined}
-
                 </div>;
             case 'create':
             case 'edit':
@@ -586,6 +606,20 @@ const PostDetail = React.createClass({
     _editPost(){
         this.setState({mode: 'edit'});
         this.forceUpdate();
+    },
+    _deletePost(){
+        this.refs.dialog.show();
+    },
+    _handleDeleteDialogCancel(){
+        this.refs.dialog.dismiss();
+    },
+    _handleDeleteDialogSubmit(){
+        $.ajax({
+            type: 'DELETE',
+            url: `/post/v1/posts/${this.state.id}`
+        }).then(()=>{
+            this.context.router.transitionTo('/platform/post');
+        });
     }
 });
 
