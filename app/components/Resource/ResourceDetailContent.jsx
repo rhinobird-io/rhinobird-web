@@ -3,6 +3,7 @@ const Flex = require('../Flex');
 const Popup = require('../Popup');
 const MUI = require('material-ui');
 const Display = require('../Common').Display;
+const UserStore = require('../../stores/UserStore');
 const WeekView = require('../Calendar/CommonComponents').WeekView;
 const CalendarView = require('../Calendar/CommonComponents').CalendarView;
 const ResourceActions = require('../../actions/ResourceActions');
@@ -53,6 +54,7 @@ let ResourceDetailContent = React.createClass({
                     ref="calendar"
                     date={new Date()}
                     data={resource.resourceBookings}
+                    rangeContent={this._rangeContent}
                     awayExceptions={() => this.refs.resourceBooking.getDOMNode()}
                     onRangeCreate={this._showResourceBookingPopup}
                     onRangeCancel={this._dismissResourceBookingPopup}
@@ -63,6 +65,11 @@ let ResourceDetailContent = React.createClass({
             </Flex.Layout>
         );
     },
+
+    _rangeContent(range) {
+
+    },
+
 
     _getCreateResourceBookingPopup() {
         let className = "resource-booking-popup";
