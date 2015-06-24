@@ -11,6 +11,8 @@ const mui = require('material-ui');
 const md = require('../SmartEditor/markdown');
 const LoginStore = require('../../stores/LoginStore');
 
+require('./style.less');
+
 const Comment = React.createClass({
     contextTypes: {
         muiTheme: React.PropTypes.object
@@ -136,20 +138,23 @@ const Thread = React.createClass({
         }
     },
     _handleKeyDown(e) {
-        let comment = this.state.comment;
-        if (e.keyCode === 13 && !e.shiftKey) {
-            if (comment.trim().length > 0) {
-                $.post('/comment/comments', {key: this.props.threadKey, body: comment}).then((c)=>{
-                    this._getComments(this.props.threadKey);
-                    let comment = this.state.comment;
-                    this.setState({
-                        comment: ''
-                    });
-                    this.forceUpdate();
-                    this._sendNotifications(comment, c);
-                });
-            }
+        if (e.keyCode === 13 && e.ctrlKey) {
+            this._submit();
             e.preventDefault();
+        }
+    },
+    _submit() {
+        let comment = this.state.comment;
+        if (comment.trim().length > 0) {
+            $.post('/comment/comments', {key: this.props.threadKey, body: comment}).then((c)=>{
+                this._getComments(this.props.threadKey);
+                let comment = this.state.comment;
+                this.setState({
+                    comment: ''
+                });
+                this.forceUpdate();
+                this._sendNotifications(comment, c);
+            });
         }
     },
     _reply(c){
@@ -164,7 +169,7 @@ const Thread = React.createClass({
         let {children, threadKey, ...other} = this.props;
         return <div {...other}>
             {this.comments.map(c => <Comment onReply={this._reply} comment={c}/>)}
-            <SmartEditor ref='commentBox' floatingLabelText="New comment" onKeyDown={this._handleKeyDown} multiLine valueLink={this.linkState('comment')}/>
+            <SmartEditor ref='commentBox' floatingLabelText="Add comment (ctrl+enter to submit)" onKeyDown={this._handleKeyDown} multiLine valueLink={this.linkState('comment')}/>
         </div>;
     }
 });
