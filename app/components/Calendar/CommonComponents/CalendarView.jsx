@@ -51,6 +51,13 @@ let CalendarView = React.createClass({
         }
     },
 
+    updateNewRange(newRange) {
+        let calendarView = this.refs.calendarView;
+        if (calendarView) {
+            calendarView.updateNewRange(newRange);
+        }
+    },
+
     render() {
         let {
             date,
@@ -87,7 +94,6 @@ let CalendarView = React.createClass({
             </Flex.Layout>
         );
     },
-
 
     _getCalendarHeader(viewType) {
         let tooltipNavigateBefore = BEFORE_TOOLTIPS[viewType];

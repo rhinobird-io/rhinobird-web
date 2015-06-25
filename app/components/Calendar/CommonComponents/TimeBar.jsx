@@ -14,11 +14,11 @@ let TimeBar = React.createClass({
         let times = [];
 
         for (let i = 1; i <= 11; i++) {
-            times.push(<div style={styles.time}>{`${i} AM`}</div>);
+            times.push(<div style={styles.time} key={`${i}am`}>{`${i} AM`}</div>);
         }
-        times.push(<div style={styles.time}>{'12 PM'}</div>);
+        times.push(<div style={styles.time} key="12pm">{'12 PM'}</div>);
         for (let i = 1; i < 12; i++) {
-            times.push(<div style={styles.time}>{`${i} PM`}</div>);
+            times.push(<div style={styles.time} key={`${i}pm`}>{`${i} PM`}</div>);
         }
 
         return (
