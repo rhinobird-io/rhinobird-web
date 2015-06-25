@@ -29,9 +29,11 @@ export default {
 
   ResourceActionTypes: keyMirror({
     BOOK_RESOURCE: null,
+    DELETE_RESOURCE: null,
     RECEIVE_RESOURCE: null,
     RECEIVE_RESOURCES: null,
-    LOAD_MORE_RESOURCES: null
+    LOAD_MORE_RESOURCES: null,
+    DELETE_RESOURCE_BOOK: null
   }),
 
   ChannelActionTypes : keyMirror({
