@@ -105,7 +105,7 @@ module.exports = React.createClass({
             }} scrollTarget={()=>{
                 return this.getDOMNode();
             }}/>
-                {this.state.noMore?<div><div style={{paddingLeft:54,
+                {this.state.noMore?<div style={{flexShrink:0}}><div style={{paddingLeft:54,
                 fontSize:16,
                 marginBottom: 12}}>This is the very beginning of this channel, you can start to talk freely.</div>
                 <Common.Hr style={{width:'100%'}}/></div> : undefined}
