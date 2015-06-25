@@ -21,6 +21,7 @@ let NotifiItem = React.createClass({
         sender: React.PropTypes.object.isRequired,
         time: React.PropTypes.string.isRequired,
         message: React.PropTypes.string.isRequired,
+        url: React.PropTypes.string,
         read: React.PropTypes.bool
     },
     contextTypes: {
@@ -31,7 +32,8 @@ let NotifiItem = React.createClass({
         let messageStyle = {
             wordWrap: "break-word",
             maxWidth: "100%",
-            color: this.props.read ? this.context.muiTheme.palette.disabledColor : this.context.muiTheme.palette.textColor
+            color: this.props.read ? this.context.muiTheme.palette.disabledColor : this.context.muiTheme.palette.textColor,
+            textDecoration:"none"
         };
         let nameStyle = {
             maxWidth: 250,
@@ -54,7 +56,7 @@ let NotifiItem = React.createClass({
                         <div className="name" style={nameStyle}><Name member={this.props.sender}/></div>
                         <div className="time" style={timeStyle} flex={1}><SmartTimeDisplay start={this.props.time} relative/></div>
                     </Layout>
-                    <div style={messageStyle}>{this.props.message}</div>
+                    <a href={this.props.url} style={messageStyle}>{this.props.message}</a>
                 </Layout>
             </Layout>
         );
@@ -129,7 +131,7 @@ let Notification = React.createClass({
                                   iconClassName={iconClassName}/>;
         let menu = this.state.notifications.map(n => {
             let sender = UserStore.getUser(n.from_user_id);
-            return <NotifiItem key={n.id} sender={sender} time={n.created_at} message={n.content} read={n.checked}/>;
+            return <NotifiItem key={n.id} url={n.url} sender={sender} time={n.created_at} message={n.content} read={n.checked}/>;
         });
 
         if (this.state.notifications.length >= NotificationStore.getTotal()) {
