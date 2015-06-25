@@ -3,7 +3,10 @@ const Moment = require('moment');
 
 let DayHeader = React.createClass({
     propTypes: {
-        date: React.PropTypes.object
+        date: React.PropTypes.oneOfType([
+            React.PropTypes.object,
+            React.PropTypes.string
+        ])
     },
 
     contextTypes: {
