@@ -30,7 +30,8 @@ let ResourceDetailContent = React.createClass({
     getInitialState() {
         return {
             createResourceBookPopupPos: "r",
-            updateResourceBookPopupPos: "r"
+            updateResourceBookPopupPos: "r",
+            activeRange: null
         }
     },
 
@@ -65,6 +66,7 @@ let ResourceDetailContent = React.createClass({
                 {this._getCreateResourceBookingPopup()}
                 {this._getUpdateResourceBookingPopup()}
                 <MUI.Snackbar ref="bookingSuccess" message={`Booking ${resource.name} successfully`} />
+                <MUI.Snackbar ref="deleteBookingSuccess" message={`Delete booking of ${resource.name} successfully`} />
             </Flex.Layout>
         );
     },
@@ -186,6 +188,7 @@ let ResourceDetailContent = React.createClass({
         } else {
             className += " left";
         }
+
         return (
             <Popup
                 position="none"
@@ -215,7 +218,7 @@ let ResourceDetailContent = React.createClass({
                     <Flex.Layout style={{padding: "8px 8px 8px 24px"}} horizontal endJustified>
                         <MUI.FlatButton secondary onClick={() => this.refs.updateResourceBooking.dismiss()}>Cancel</MUI.FlatButton>
                         <MUI.FlatButton secondary>Update</MUI.FlatButton>
-                        <MUI.FlatButton primary>Delete</MUI.FlatButton>
+                        <MUI.FlatButton primary onClick={this._deleteResourceBook}>Delete</MUI.FlatButton>
                     </Flex.Layout>
                 </div>
             </Popup>
@@ -230,6 +233,13 @@ let ResourceDetailContent = React.createClass({
             this.refs.bookingSuccess.show();
             setTimeout(this.refs.bookingSuccess.dismiss, 2000);
             this.refs.calendar.dismissCreateNewRange();
+        });
+    },
+
+    _deleteResourceBook() {
+        ResourceActions.deleteResourceBook(this.props.resource._id, this.state.activeRange._id, () => {
+            this.refs.updateResourceBooking.dismiss();
+            this.refs.deleteBookingSuccess.show();
         });
     },
 
@@ -266,7 +276,14 @@ let ResourceDetailContent = React.createClass({
     },
 
     _showUpdateResourceBookingPopup(rect, range) {
+        if (range.userId !== LoginStore.getUser().id) {
+            return;
+        }
         let updateResourceBooking = this.refs.updateResourceBooking;
+
+        if (updateResourceBooking.isShown()) {
+            return;
+        }
         let position = 'r';
 
         let newRect = {
@@ -283,6 +300,7 @@ let ResourceDetailContent = React.createClass({
         }
 
         this.setState({
+            activeRange: range,
             updateResourceBookPopupPos: position
         }, () => {
             updateResourceBooking.setRelatedTo(newRect);

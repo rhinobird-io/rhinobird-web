@@ -49,7 +49,27 @@ let ResourceActions = {
             }
         }).fail(e => {
             console.error(e);
-        })
+        });
+    },
+
+    deleteResourceBook(id, bookId, success, fail) {
+        console.log(id);
+        $.ajax({
+            url: `/resource/resources/${id}/book/${bookId}`,
+            type: "delete"
+        }).done((data) => {
+            AppDispatcher.dispatch({
+                type: ResourceActionTypes.DELETE_RESOURCE_BOOK,
+                data: data
+            });
+            if (success && typeof success === "function") {
+                success();
+            }
+        }).fail((e) => {
+            console.log(e);
+        }).always(() => {
+            console.log("always");
+        });
     }
 };
 
