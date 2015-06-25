@@ -87,7 +87,7 @@ let UserStore = assign({}, BaseStore, {
      * get all teams of current user can see
      * @returns {*}
      */
-        getTeamsMap() {
+    getTeamsMap() {
         return _teams;
     },
 
@@ -99,7 +99,7 @@ let UserStore = assign({}, BaseStore, {
      * get all users current user can see among all teams
      * @returns {*}
      */
-        getUsersMap() {
+    getUsersMap() {
         return _users;
     },
 
