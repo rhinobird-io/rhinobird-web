@@ -117,6 +117,10 @@ let CalendarStore = assign({}, BaseStore, {
         return null;
     },
 
+    getAll() {
+        return Object.keys(_eventsIdMap).map(k => _eventsIdMap[k]);
+    },
+
     getAllEvents() {
         let events = {};
         Object.keys(_events).forEach(key => {
