@@ -165,9 +165,9 @@ let CalendarView = React.createClass({
     },
 
     _getViewTypeSwitcher() {
-        let viewTypes = VIEW_TYPES.map(type => <span name={type}>{type}</span>);
+        let viewTypes = VIEW_TYPES.map((type, index) => <span key={`switcher${index}`} name={type}>{type}</span>);
         return (
-            <Flex.Layout horizontal center centerJustified style={{minHeight: 48, borderTop: "1px solid " + muiTheme.palette.borderColor}}>
+            <Flex.Layout  horizontal center centerJustified style={{minHeight: 48, borderTop: "1px solid " + muiTheme.palette.borderColor}}>
                 <Selector value={this.state.viewType} onSelectChange={v => this.setState({viewType: v})}>
                     {viewTypes}
                 </Selector>

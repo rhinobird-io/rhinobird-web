@@ -52,10 +52,10 @@ let DaysContent = React.createClass({
         };
 
         let daysContent = this.props.dates.map((d, index) => (
-            <Flex.Layout flex={1} style={styles.dayContent} >
+            <Flex.Layout flex={1} style={styles.dayContent} key={`day${index}`}>
                 <DayContent
                     {...others}
-                    ref={"day" + index}
+                    ref={`day${index}`}
                     data={data.filter(_ => new Date(_.fromTime).toDateString() == d.toDateString())}
                     date={Moment(d).format("YYYY-MM-DD")}/>
             </Flex.Layout>
