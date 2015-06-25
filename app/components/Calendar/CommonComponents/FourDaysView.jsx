@@ -8,8 +8,12 @@ let FourDaysView = React.createClass({
         onRangeCreate: React.PropTypes.func
     },
 
-    cancelNewRangeCreate() {
-        this.refs.days.cancelNewRangeCreate();
+    dismissCreateNewRange() {
+        this.refs.days.dismissCreateNewRange();
+    },
+
+    updateNewRange(newRange) {
+        this.refs.days.updateNewRange(newRange);
     },
 
     getDefaultProps() {

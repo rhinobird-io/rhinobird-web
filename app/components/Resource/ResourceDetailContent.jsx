@@ -71,25 +71,31 @@ let ResourceDetailContent = React.createClass({
     _rangeContent(range) {
         let userId = range.userId;
         let user = UserStore.getUser(userId);
-        let style = {
-            height: "100%",
-            padding: "2px 4px"
+        let styles = {
+            wrapper: {
+                height: "100%",
+                padding: "2px 4px"
+            },
+            timeRange: {
+                fontSize: "0.8em",
+                fontWeight: 500
+            }
         };
 
         let innerContent = [];
-        let rangeFormat = `${Moment(range.fromTime).format("h:mm a")} ~ ${Moment(range.toTime).format("h:mm a")}`;
+        let timeRange = `${Moment(range.fromTime).format("h:mm a")} ~ ${Moment(range.toTime).format("h:mm a")}`;
 
-        innerContent.push(<div key="range">{rangeFormat}</div>);
+        innerContent.push(<div key="range" style={styles.timeRange}>{timeRange}</div>);
 
         if (user) {
             if (LoginStore.getUser().id === userId) {
-                style.backgroundColor = this.context.muiTheme.palette.accent3Color;
-                style.border = "1px solid " + this.context.muiTheme.palette.accent1Color;
+                styles.wrapper.backgroundColor = this.context.muiTheme.palette.accent3Color;
+                styles.wrapper.border = "1px solid " + this.context.muiTheme.palette.accent1Color;
                 innerContent.push(<div>Booked By You</div>)
             } else {
-                style.backgroundColor = this.context.muiTheme.palette.primary3Color;
-                style.border = "1px solid " + this.context.muiTheme.palette.primary1Color;
-                innerContent.push(<Flex.Layout key="member" horizontal>
+                styles.wrapper.backgroundColor = this.context.muiTheme.palette.primary3Color;
+                styles.wrapper.border = "1px solid " + this.context.muiTheme.palette.primary1Color;
+                innerContent.push(<Flex.Layout key="member" flex={1} horizontal end>
                     <Member.Avatar member={user} style={{minWidth: 24, marginRight: 6}}/>
                     <div>{user.realname}</div>
                 </Flex.Layout>);
@@ -97,7 +103,7 @@ let ResourceDetailContent = React.createClass({
         }
 
         return (
-            <Flex.Layout vertical style={style}>
+            <Flex.Layout vertical style={styles.wrapper}>
                 {innerContent}
             </Flex.Layout>
         );
@@ -128,6 +134,7 @@ let ResourceDetailContent = React.createClass({
                             format="ampm"
                             ref="fromTime"
                             hintText="From Time"
+                            onChange={(e) => this._handleResourceBookingRangeChange()}
                             floatingLabelText="From Time" />
                         <MUI.TimePicker
                             style={{marginTop: -24}}
@@ -144,6 +151,18 @@ let ResourceDetailContent = React.createClass({
                 </div>
             </Popup>
         );
+    },
+
+    _handleResourceBookingRangeChange() {
+        let fromTime = this.refs.fromTime.getTime();
+        let toTime = this.refs.toTime.getTime();
+        if (toTime < fromTime) {
+            toTime = fromTime;
+        }
+        this.refs.calendar.updateNewRange({
+            toTime: toTime,
+            fromTime: fromTime
+        });
     },
 
     _getUpdateResourceBookingPopup() {
@@ -180,7 +199,7 @@ let ResourceDetailContent = React.createClass({
                             floatingLabelText="To Time" />
                     </div>
                     <Flex.Layout style={{padding: "8px 8px 8px 24px"}} horizontal endJustified>
-                        <MUI.FlatButton secondary>Cancel</MUI.FlatButton>
+                        <MUI.FlatButton secondary onClick={() => this.refs.updateResourceBooking.dismiss()}>Cancel</MUI.FlatButton>
                         <MUI.FlatButton secondary>Update</MUI.FlatButton>
                         <MUI.FlatButton primary>Delete</MUI.FlatButton>
                     </Flex.Layout>
@@ -234,6 +253,8 @@ let ResourceDetailContent = React.createClass({
 
     _showUpdateResourceBookingPopup(rect, range) {
         let updateResourceBooking = this.refs.updateResourceBooking;
+        let position = 'r';
+
         let newRect = {
             left: rect.left,
             width: rect.width + 10,
@@ -241,11 +262,21 @@ let ResourceDetailContent = React.createClass({
             height: rect.height
         };
 
-        updateResourceBooking.setRelatedTo(newRect);
-        updateResourceBooking.show();
+        if (updateResourceBooking.getDOMNode().clientWidth > window.innerWidth - rect.right) {
+            position = 'l';
+            newRect.width = rect.width;
+            newRect.left = rect.left - 10;
+        }
 
-        this.refs.bookToTime.setTime(new Date(range.toTime));
-        this.refs.bookFromTime.setTime(new Date(range.fromTime));
+        this.setState({
+            updateResourceBookPopupPos: position
+        }, () => {
+            updateResourceBooking.setRelatedTo(newRect);
+            updateResourceBooking.show();
+
+            this.refs.bookToTime.setTime(new Date(range.toTime));
+            this.refs.bookFromTime.setTime(new Date(range.fromTime));
+        });
     }
 });
 

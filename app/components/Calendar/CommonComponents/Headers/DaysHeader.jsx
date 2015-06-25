@@ -21,8 +21,8 @@ let DaysHeader = React.createClass({
             }
         };
 
-        let dateBars = this.props.dates.map(d => (
-            <Flex.Layout flex={1} style={styles.dayHeader}>
+        let dateBars = this.props.dates.map((d, index) => (
+            <Flex.Layout flex={1} style={styles.dayHeader} key={"header_" + index}>
                 <DayHeader date={Moment(d).format("YYYY-MM-DD")} />
             </Flex.Layout>
         ));

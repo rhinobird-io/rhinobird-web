@@ -111,13 +111,18 @@ let DayContent = React.createClass({
         }
 
         return (
-            <div vertical style={style}
-                 onMouseDown={this._handleMouseDown}>
+            <div vertical style={style} onMouseDown={this._handleMouseDown}>
                 {times}
                 {nowBar}
                 {content}
             </div>
         );
+    },
+
+    updateNewRange(newRange) {
+        if (this.state.newRange && newRange.fromTime && newRange.toTime) {
+            this.setState({newRange: newRange});
+        }
     },
 
     _constructContent(data) {
