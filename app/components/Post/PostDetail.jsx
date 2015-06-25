@@ -502,8 +502,7 @@ const PostDetail = React.createClass({
         ];
         switch (this.state.mode) {
             case 'view':
-                return <div style={{position:'relative', height:'100%', maxWidth: 1024, padding:24, margin:'0 auto'}}>
-                    <PerfectScroll noScrollX style={{height: '100%'}}>
+                return <PerfectScroll noScrollX style={{position:'relative', height:'100%', maxWidth: 1024, padding:24, margin:'0 auto'}}>
                         <mui.Paper zDepth={1} style={{margin:4}}>
                             <div style={{backgroundColor:this.context.muiTheme.palette.primary1Color, width:'100%', padding:24}}>
                                 {LoginStore.getUser().id === this.state.creator_id? <Flex.Layout endJustified style={{backgroundColor:this.context.muiTheme.palette.primary1Color}}>
@@ -533,8 +532,7 @@ const PostDetail = React.createClass({
                                             participants={{users: [user]}}/>
                             </div>
                             </mui.Paper>
-                </PerfectScroll>
-                </div>;
+                </PerfectScroll>;
             case 'create':
             case 'edit':
                 user = UserStore.getUser(LoginStore.getUser().id);
