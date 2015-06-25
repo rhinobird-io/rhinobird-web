@@ -44,6 +44,7 @@ let ResourceDetailContent = React.createClass({
                 fontSize: "2em",
                 padding: 12,
                 minHeight: 60,
+                maxHeight: 60,
                 backgroundColor: this.context.muiTheme.palette.primary1Color
             }
         };
