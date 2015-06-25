@@ -103,16 +103,38 @@ let CalendarView = React.createClass({
             isTodayInView = true;
         }
 
-        let currentDate = null;
+        let currentDate = this.state.date;
+        let headerDateRange = null;
+        let rangeStart = null, rangeEnd = null;
         if (viewType === "week") {
-            let days = this.state.date.weekDays();
-            currentDate = (
-                <Flex.Layout center>
-                    <span>{Moment(days[0]).format("YYYY")}</span>
-                </Flex.Layout>
-            );
+            let days = currentDate.weekDays();
+            rangeStart = days[0];
+            rangeEnd = days[6];
         } else if (viewType === "day") {
+            rangeStart = rangeEnd = this.state.date;
+        } else if (viewType === "fourDays") {
+            let days = currentDate.fourDays();
+            rangeStart = days[0];
+            rangeEnd = days[3];
+        } else if (viewType === "month") {
+            rangeStart = rangeEnd = new Date();
+        }
 
+        let endFormat;
+        if (rangeStart.getYear() === rangeEnd.getYear()) {
+            if (rangeStart.getMonth() === rangeEnd.getMonth()) {
+                if (rangeStart.getDay() !== rangeEnd.getDay()) {
+                    endFormat = "Do";
+                }
+            } else {
+                endFormat = "MMM Do";
+            }
+        } else {
+            endFormat = "YYYY MMM Do";
+        }
+        headerDateRange = `${Moment(rangeStart).format("YYYY MMM Do")}`;
+        if (endFormat) {
+            headerDateRange += ` ~ ${Moment(rangeEnd).format(endFormat)}`;
         }
         return (
             <Flex.Layout horizontal center style={{minHeight: 48, textAlign: "center"}}>
@@ -128,7 +150,9 @@ let CalendarView = React.createClass({
                         title={tooltipNavigateBefore}
                         onClick={this._navigateBefore}
                         iconClassName="icon-navigate-before" />
-                    <Display type="subhead">{currentDate}</Display>
+                    <Flex.Layout center centerJustified style={{width: 280}}>
+                        <Display type="title">{headerDateRange}</Display>
+                    </Flex.Layout>
                     <MUI.IconButton
                         title={tooltipNavigateNext}
                         onClick={this._navigateNext}
