@@ -79,7 +79,7 @@ module.exports = React.createClass({
                             <mui.TextField className='textField' floatingLabelText='Unique name'
                                            valueLink={this.linkState('uniqueName')} disabled={true} style={{width:'100%'}}/>
                         </div>
-                        <mui.TextField floatingLabelText='Display name' valueLink={this.linkState('displayName')} />
+                        <mui.TextField style={{width:'100%'}} floatingLabelText='Display name' valueLink={this.linkState('displayName')} />
                         <div className="rightButton">
                             <mui.RaisedButton primary={true} label='Save' onClick={this._updateUser}></mui.RaisedButton>
                         </div>
