@@ -27,7 +27,6 @@ let DaysHeader = React.createClass({
             </Flex.Layout>
         ));
 
-        console.log(this.props.dates);
         return (
             <Flex.Layout flex={1} horizontal stretch>{dateBars}</Flex.Layout>
         );

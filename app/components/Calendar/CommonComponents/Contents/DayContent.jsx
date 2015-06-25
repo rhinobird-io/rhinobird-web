@@ -96,8 +96,8 @@ let DayContent = React.createClass({
         let times = [];
 
         for (let i = 0; i < 24; i++) {
-            times.push(<div key={i + "t"} style={styles.top}></div>);
-            times.push(<div key={i + "b"} style={styles.bottom}></div>);
+            times.push(<div key={`${i}t`} style={styles.top}></div>);
+            times.push(<div key={`${i}b`} style={styles.bottom}></div>);
         }
 
         let content = this._constructContent(data);
@@ -107,7 +107,7 @@ let DayContent = React.createClass({
         if (now.toDateString() === new Date(date).toDateString()) {
             let time = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
             styles.nowBar.top = `${(time / 864)}%`;
-            nowBar = <div style={styles.nowBar}></div>
+            nowBar = <div key="nowBar" style={styles.nowBar}></div>
         }
 
         return (
@@ -207,7 +207,7 @@ let DayContent = React.createClass({
                 <div
                     ref={ref}
                     style={style}
-                    key={"rect" + index}
+                    key={`rect${index}`}
                     onClick={() => this._handleRangeClick(ref, d)}
                     onMouseDown={this._handleRangeMouseDown}>
                     <div style={innerStyle}>
