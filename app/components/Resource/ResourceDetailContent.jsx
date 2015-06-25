@@ -1,13 +1,15 @@
 const React = require('react');
 const Flex = require('../Flex');
+const Moment = require('moment');
 const Popup = require('../Popup');
 const MUI = require('material-ui');
+const Member = require('../Member');
 const Display = require('../Common').Display;
 const UserStore = require('../../stores/UserStore');
+const LoginStore = require('../../stores/LoginStore');
 const WeekView = require('../Calendar/CommonComponents').WeekView;
 const CalendarView = require('../Calendar/CommonComponents').CalendarView;
 const ResourceActions = require('../../actions/ResourceActions');
-
 require("./style.less");
 
 let ResourceDetailContent = React.createClass({
@@ -67,7 +69,38 @@ let ResourceDetailContent = React.createClass({
     },
 
     _rangeContent(range) {
+        let userId = range.userId;
+        let user = UserStore.getUser(userId);
+        let style = {
+            height: "100%",
+            padding: "2px 4px"
+        };
 
+        let innerContent = [];
+        let rangeFormat = `${Moment(range.fromTime).format("h:mm a")} ~ ${Moment(range.toTime).format("h:mm a")}`;
+
+        innerContent.push(<div key="range">{rangeFormat}</div>);
+
+        if (user) {
+            if (LoginStore.getUser().id === userId) {
+                style.backgroundColor = this.context.muiTheme.palette.accent3Color;
+                style.border = "1px solid " + this.context.muiTheme.palette.accent1Color;
+                innerContent.push(<div>Booked By You</div>)
+            } else {
+                style.backgroundColor = this.context.muiTheme.palette.primary3Color;
+                style.border = "1px solid " + this.context.muiTheme.palette.primary1Color;
+                innerContent.push(<Flex.Layout key="member" horizontal>
+                    <Member.Avatar member={user} style={{minWidth: 24, marginRight: 6}}/>
+                    <div>{user.realname}</div>
+                </Flex.Layout>);
+            }
+        }
+
+        return (
+            <Flex.Layout vertical style={style}>
+                {innerContent}
+            </Flex.Layout>
+        );
     },
 
 

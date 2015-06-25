@@ -177,11 +177,10 @@ let DayContent = React.createClass({
             let innerStyle = {
                 height: "100%",
                 overflow: "hidden",
-                padding: "2px 4px",
-                border: "1px solid " + this.context.muiTheme.palette.primary2Color,
-                backgroundColor: this.context.muiTheme.palette.primary3Color,
-                opacity: 0.7
+                //border: "1px solid " + this.context.muiTheme.palette.primary2Color,
+                backgroundColor: this.context.muiTheme.palette.primary3Color
             };
+
             if (d.backgroundColor) {
                 innerStyle.backgroundColor = d.backgroundColor;
             }
