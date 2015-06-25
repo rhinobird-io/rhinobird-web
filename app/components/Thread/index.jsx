@@ -11,6 +11,35 @@ const mui = require('material-ui');
 const md = require('../SmartEditor/markdown');
 const LoginStore = require('../../stores/LoginStore');
 
+let HelpDialog = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
+    show: function(){
+        this.refs.infoDialog.show();
+    },
+
+    hideInfoDialog() {
+        this.refs.infoDialog.dismiss();
+    },
+    render(){
+        var customActions = [
+            <mui.FlatButton
+                key={1}
+                label="OK"
+                secondary={true}
+                onTouchTap={this.hideInfoDialog} />
+        ];
+        return <mui.Dialog
+            ref="infoDialog"
+            title="Hints"
+            actions={customActions}
+            modal={false}
+            contentClassName="mui-font-style-title">
+            <p>1. ENTER for new line.</p>
+            <p>2. CTRL + ENTER to send.</p>
+        </mui.Dialog>;
+    }
+});
+
 const Comment = React.createClass({
     contextTypes: {
         muiTheme: React.PropTypes.object
@@ -44,6 +73,7 @@ const Comment = React.createClass({
         </Flex.Layout><Common.Hr style={{marginTop: 6}}/></div>;
     }
 });
+
 const Thread = React.createClass({
     mixins: [StylePropable, React.addons.LinkedStateMixin],
     propTypes: {
@@ -52,7 +82,8 @@ const Thread = React.createClass({
     },
     getInitialState(){
         return {
-            comment: ''
+            comment: '',
+            upperThreshold: 100
         };
     },
     comments:[],
@@ -136,20 +167,23 @@ const Thread = React.createClass({
         }
     },
     _handleKeyDown(e) {
-        let comment = this.state.comment;
-        if (e.keyCode === 13 && !e.shiftKey) {
-            if (comment.trim().length > 0) {
-                $.post('/comment/comments', {key: this.props.threadKey, body: comment}).then((c)=>{
-                    this._getComments(this.props.threadKey);
-                    let comment = this.state.comment;
-                    this.setState({
-                        comment: ''
-                    });
-                    this.forceUpdate();
-                    this._sendNotifications(comment, c);
-                });
-            }
+        if (e.keyCode === 13 && e.ctrlKey) {
+            this._submit();
             e.preventDefault();
+        }
+    },
+    _submit() {
+        let comment = this.state.comment;
+        if (comment.trim().length > 0) {
+            $.post('/comment/comments', {key: this.props.threadKey, body: comment}).then((c)=>{
+                this._getComments(this.props.threadKey);
+                let comment = this.state.comment;
+                this.setState({
+                    comment: ''
+                });
+                this.forceUpdate();
+                this._sendNotifications(comment, c);
+            });
         }
     },
     _reply(c){
@@ -160,11 +194,20 @@ const Thread = React.createClass({
         this.forceUpdate();
         this.refs.commentBox.focus();
     },
+    _showInfoDialog() {
+        this.refs.infoDialog.show();
+    },
     render() {
         let {children, threadKey, ...other} = this.props;
         return <div {...other}>
+
             {this.comments.map(c => <Comment onReply={this._reply} comment={c}/>)}
-            <SmartEditor ref='commentBox' floatingLabelText="New comment" onKeyDown={this._handleKeyDown} multiLine valueLink={this.linkState('comment')}/>
+
+            <HelpDialog ref='infoDialog'/>
+            <Flex.Layout center>
+                <SmartEditor ref='commentBox' floatingLabelText="New comment" onKeyDown={this._handleKeyDown} multiLine valueLink={this.linkState('comment')}/>
+                <mui.IconButton iconClassName="icon-info-outline" onClick={this._showInfoDialog}></mui.IconButton>
+            </Flex.Layout>            
         </div>;
     }
 });
