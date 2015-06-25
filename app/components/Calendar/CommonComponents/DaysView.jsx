@@ -27,6 +27,10 @@ let DaysView = React.createClass({
         this.refs.days.dismissCreateNewRange();
     },
 
+    updateNewRange(newRange) {
+        this.refs.days.updateNewRange(newRange);
+    },
+
     componentDidMount() {
         //this.refs.content.getDOMNode().style.marginTop = this.refs.header.getDOMNode().offsetHeight + "px";
         this._scrollToNow();

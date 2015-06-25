@@ -22,6 +22,15 @@ let DaysContent = React.createClass({
         }
     },
 
+    updateNewRange(newRange) {
+        for (let i = 0; i < this.props.dates.length; i++) {
+            let day = this.refs["day" + i];
+            if (day) {
+                day.updateNewRange(newRange);
+            }
+        }
+    },
+
     getDefaultProps() {
         return {
             data: []

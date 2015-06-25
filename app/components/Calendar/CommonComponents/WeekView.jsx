@@ -12,6 +12,10 @@ let WeekView = React.createClass({
         this.refs.days.dismissCreateNewRange();
     },
 
+    updateNewRange(newRange) {
+        this.refs.days.updateNewRange(newRange);
+    },
+
     getDefaultProps() {
         return {
             date: new Date(),
