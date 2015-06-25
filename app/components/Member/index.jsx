@@ -105,6 +105,7 @@ Member.MemberSelect = React.createClass({
         hintText: React.PropTypes.string,
         label: React.PropTypes.string
     },
+
     focus() {
         this.refs.select.focus();
     },
