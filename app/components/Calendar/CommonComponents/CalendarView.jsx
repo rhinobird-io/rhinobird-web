@@ -8,18 +8,18 @@ const FourDaysView = require('./FourDaysView');
 const Display = require('../../Common').Display;
 const Selector = require('../../Select').Selector;
 
-let VIEW_TYPES = ['week', 'month', 'day', 'fourDays'];
+let VIEW_TYPES = ['week', 'month', 'day', 'fourDays', 'timeLine'];
 let BEFORE_TOOLTIPS = {
     'week': 'Last Week',
     'month': 'Last Month',
     'day': 'Last Day',
-    'fourDays': 'Last Four Days',
+    'fourDays': 'Last Four Days'
 };
 let NEXT_TOOLTIPS = {
     'week': 'Next Week',
     'month': 'Next Month',
     'day': 'Next Day',
-    'fourDays': 'Next Four Days',
+    'fourDays': 'Next Four Days'
 };
 
 let CalendarView = React.createClass({
@@ -27,12 +27,14 @@ let CalendarView = React.createClass({
         date: React.PropTypes.object,
         onRangeCreate: React.PropTypes.func,
         onTypeChange: React.PropTypes.string,
-        initialViewType: React.PropTypes.oneOf(VIEW_TYPES)
+        initialViewType: React.PropTypes.oneOf(VIEW_TYPES),
+        views: React.PropTypes.arrayOf(React.PropTypes.oneOf(VIEW_TYPES))
     },
 
     getDefaultProps() {
         return {
             date: new Date(),
+            views: VIEW_TYPES,
             initialViewType: "week"
         }
     },
@@ -42,6 +44,10 @@ let CalendarView = React.createClass({
             date: this.props.date,
             viewType: this.props.initialViewType
         }
+    },
+
+    getViewType() {
+        return this.state.viewType;
     },
 
     dismissCreateNewRange() {
@@ -165,7 +171,8 @@ let CalendarView = React.createClass({
     },
 
     _getViewTypeSwitcher() {
-        let viewTypes = VIEW_TYPES.map((type, index) => <span key={`switcher${index}`} name={type}>{type}</span>);
+        let views = this.props.views;
+        let viewTypes = views.map((type, index) => <span key={`switcher${index}`} name={type}>{type}</span>);
         return (
             <Flex.Layout  horizontal center centerJustified style={{minHeight: 48, borderTop: "1px solid " + muiTheme.palette.borderColor}}>
                 <Selector value={this.state.viewType} onSelectChange={v => this.setState({viewType: v})}>

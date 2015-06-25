@@ -25,6 +25,7 @@ module.exports = (
             <Route name="create-event" path="create-event" handler={require("react-proxy!./components/Calendar/CreateEvent")} />
             <Route name="event-list" path="events" handler={require("react-proxy!./components/Calendar/EventList")} />
             <Route name="events" path="events_" handler={require("react-proxy!./components/Calendar/Events")} />
+            <Route name="all-events" path="all_events" handler={require("react-proxy!./components/Calendar/AllEvents")} />
             <Route name="event-detail" path="events/:id/:repeatedNumber" handler={require("react-proxy!./components/Calendar/EventDetail")} />
             <DefaultRoute handler={require("react-proxy!./components/Calendar/EventList")} />
         </Route>

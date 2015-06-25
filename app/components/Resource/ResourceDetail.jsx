@@ -31,7 +31,6 @@ let ResourceDetail = React.createClass({
     },
 
     _onChange() {
-        console.log("update");
         this.setState({
            resource: ResourceStore.getResourceById(this.props.params.id)
         });
