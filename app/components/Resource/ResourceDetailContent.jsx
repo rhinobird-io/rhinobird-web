@@ -74,7 +74,7 @@ let ResourceDetailContent = React.createClass({
         let styles = {
             wrapper: {
                 height: "100%",
-                padding: "2px 4px"
+                padding: 6
             },
             timeRange: {
                 fontSize: "0.8em",
@@ -134,13 +134,14 @@ let ResourceDetailContent = React.createClass({
                             format="ampm"
                             ref="fromTime"
                             hintText="From Time"
-                            onChange={(e) => this._handleResourceBookingRangeChange()}
+                            onChange={(e, v) => this._handleResourceBookingFromTimeChange(v)}
                             floatingLabelText="From Time" />
                         <MUI.TimePicker
                             style={{marginTop: -24}}
                             format="ampm"
                             ref="toTime"
                             hintText="To Time"
+                            onChange={(e, v) => this._handleResourceBookingToTimeChange(v)}
                             floatingLabelText="To Time" />
                     </div>
                     <Flex.Layout style={{padding: "8px 8px 8px 24px"}} horizontal endJustified>
@@ -153,9 +154,21 @@ let ResourceDetailContent = React.createClass({
         );
     },
 
-    _handleResourceBookingRangeChange() {
-        let fromTime = this.refs.fromTime.getTime();
+    _handleResourceBookingFromTimeChange(v) {
+        let fromTime = v;
         let toTime = this.refs.toTime.getTime();
+        if (toTime < fromTime) {
+            toTime = fromTime;
+        }
+        this.refs.calendar.updateNewRange({
+            toTime: toTime,
+            fromTime: fromTime
+        });
+    },
+
+    _handleResourceBookingToTimeChange(v) {
+        let toTime = v;
+        let fromTime = this.refs.fromTime.getTime();
         if (toTime < fromTime) {
             toTime = fromTime;
         }
