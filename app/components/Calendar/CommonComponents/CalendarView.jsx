@@ -83,7 +83,7 @@ let CalendarView = React.createClass({
                 <FourDaysView ref="calendarView" {...other} date={this.state.date} />
             );
         } else if (viewType === "month") {
-
+            calendarView = <Flex.Layout flex={1} style={{minHeight: 0}}></Flex.Layout>;
         }
 
         return (

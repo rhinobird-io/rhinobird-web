@@ -36,6 +36,11 @@ let ResourceStore = assign({}, BaseStore, {
             case ActionTypes.BOOK_RESOURCE:
                 _resourceMap[data._id] = data;
                 break;
+            case ActionTypes.DELETE_RESOURCE_BOOK:
+                console.log("hioajsdfasdf")
+                console.log(data);
+                _resourceMap[data._id] = data;
+                break;
         }
 
         if (changed) {
