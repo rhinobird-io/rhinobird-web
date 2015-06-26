@@ -15,6 +15,7 @@ const NotificationStore = require("../../stores/NotificationStore");
 const UserStore = require("../../stores/UserStore");
 const SmartTimeDisplay = require("../SmartTimeDisplay");
 const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+const RouterLink = require('../Common').RouterLink;
 
 let NotifiItem = React.createClass({
     propTypes: {
@@ -27,12 +28,6 @@ let NotifiItem = React.createClass({
     contextTypes: {
         muiTheme: React.PropTypes.object,
         router: React.PropTypes.func.isRequired
-    },
-
-    _transitionToPost(){
-        var parser = document.createElement('a');
-        parser.href = this.props.url;
-        this.context.router.transitionTo(parser.pathname);
     },
 
     render() {
@@ -54,7 +49,7 @@ let NotifiItem = React.createClass({
             fontSize: "0.9em"
         };
         let achorStyle = {
-            cursor: "pointer"
+            color: "black"
         };
         return (
             <Layout horizontal style={{padding: "8px 24px"}}>
@@ -66,7 +61,7 @@ let NotifiItem = React.createClass({
                         <div className="name" style={nameStyle}><Name member={this.props.sender}/></div>
                         <div className="time" style={timeStyle} flex={1}><SmartTimeDisplay start={this.props.time} relative/></div>
                     </Layout>
-                    <span style={achorStyle} onClick={this._transitionToPost}>{this.props.message}</span>
+                    <RouterLink style={achorStyle} to={(function(url){var parser=document.createElement('a');parser.href=url;return parser.pathname;})(this.props.url)}>{this.props.message}</RouterLink>
                 </Layout>
             </Layout>
         );
