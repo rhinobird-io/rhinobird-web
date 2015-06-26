@@ -127,6 +127,7 @@ export default React.createClass({
             style={styles.picker}
             defaultDate={this.state.fromTime}
             defaultTime={this.state.fromTime}
+            onChange={this._onFromTimeChange}
             floatingLabelText="From Time" />
 
         let toTime = <MUI.TimePicker
@@ -136,6 +137,7 @@ export default React.createClass({
             style={styles.picker}
             defaultDate={this.state.toTime}
             defaultTime={this.state.toTime}
+            onChange={this._onToTimeChange}
             floatingLabelText="To Time" />
 
         return (
@@ -172,13 +174,13 @@ export default React.createClass({
                                     <div className="tab-template-container">
                                         <Flex.Layout horizontal justified style={{marginTop: -10}}>
                                             <Flex.Layout horizontal justified style={{minWidth: 0}}>
-                                                <MUI.DatePicker
+                                                {this.state.isPeriod ? <MUI.DatePicker
                                                     ref="fromDate"
                                                     hintText="From Date"
                                                     style={styles.picker}
                                                     floatingLabelText="From Date"
                                                     onChange={this._onFromDateChange}
-                                                    defaultDate={this.state.fromDate} />
+                                                    defaultDate={this.state.fromDate} /> : null}
                                                 {!this.state.fullDay ? fromTime : null}
                                             </Flex.Layout>
                                             <Flex.Layout horizontal justified style={{minWidth: 0}}>
@@ -197,13 +199,13 @@ export default React.createClass({
                                 <MUI.Tab label="Point" onActive={() => this.setState({isPeriod: false})}>
                                     <div className="tab-template-container">
                                         <Flex.Layout horizontal justified style={{marginTop: -10}}>
-                                            <MUI.DatePicker
+                                            {!this.state.isPeriod ? <MUI.DatePicker
                                                 ref="fromDate"
                                                 hintText="From Date"
                                                 style={styles.picker}
                                                 floatingLabelText="From Date"
-                                                defaultDate={this.state.toDate} />
-                                                {!this.state.fullDay ? fromTime : null}
+                                                onChange={this._onFromDateChange}
+                                                defaultDate={this.state.fromDate} /> : null}
                                         </Flex.Layout>
                                     </div>
                                 </MUI.Tab>
@@ -267,10 +269,24 @@ export default React.createClass({
         if (newDate > this.refs.toDate.getDate()) {
             this.refs.toDate.setDate(newDate);
         }
+        console.log(this.refs.fromDate.getDate());
+        console.log(newDate);
         if (newDate.toDateString() === this.refs.toDate.getDate().toDateString()) {
             if (this.refs.fromTime.getTime().toTimeString() > this.refs.toTime.getTime().toTimeString()) {
                 this.refs.toTime.setTime(this.refs.fromTime.getTime());
             }
+        }
+    },
+
+    _onFromTimeChange(e, newTime) {
+        if (newTime > this.refs.toTime.getTime()) {
+            this.refs.toTime.setTime(newTime);
+        }
+    },
+
+    _onToTimeChange(e, newTime) {
+        if (newTime < this.refs.fromTime.getTime()) {
+            this.refs.fromTime.setTime(newTime);
         }
     },
 
@@ -315,7 +331,8 @@ export default React.createClass({
         event.fromDate = this.refs.fromDate.getDate();
         event.toDate = this.refs.toDate ? this.refs.toDate.getDate() : new Date();
         event.fromTime = this.refs.fromTime ? this.refs.fromTime.getTime() : event.fromDate;
-        event.toTime = this.refs.toTime ? this.refs.toTime.getTime() : new Date();
+        event.toTime = this.refs.toTime ? this.refs.toTime.getTime() : event.toDate;
+
         CalendarActions.create(event, () => this.context.router.transitionTo("event-list"));
     },
 
