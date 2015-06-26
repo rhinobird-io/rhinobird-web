@@ -82,12 +82,18 @@ let NotificationActions = {
     });
   },
 
-  markAsRead() {
+  markAsRead(pathname) {
     let socket = NotificationStore.getWebSocket();
     if (socket === null) return;
     let data = [];
-    NotificationStore.getAll().map(n => {
-      if (!n.checked) data.push({id: n.id});
+    NotificationStore.getAll().map(n => 
+    {
+      var parser=document.createElement('a');
+      parser.href=n.url;
+      if (parser.pathname == pathname)
+      {
+        data.push({id: n.id});
+      }
     });
     if (data.length === 0) return;
     socket.send(JSON.stringify(data));
