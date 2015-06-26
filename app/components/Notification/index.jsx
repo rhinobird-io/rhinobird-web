@@ -25,7 +25,14 @@ let NotifiItem = React.createClass({
         read: React.PropTypes.bool
     },
     contextTypes: {
-        muiTheme: React.PropTypes.object
+        muiTheme: React.PropTypes.object,
+        router: React.PropTypes.func.isRequired
+    },
+
+    _transitionToPost(){
+        var parser = document.createElement('a');
+        parser.href = this.props.url;
+        this.context.router.transitionTo(parser.pathname);
     },
 
     render() {
@@ -45,7 +52,10 @@ let NotifiItem = React.createClass({
         };
         let timeStyle = {
             fontSize: "0.9em"
-        }
+        };
+        let achorStyle = {
+            cursor: "pointer"
+        };
         return (
             <Layout horizontal style={{padding: "8px 24px"}}>
                 <Layout vertical top className="avatar-wrapper" style={{marginRight: 12, marginTop: 4, minWidth: 38}}>
@@ -56,7 +66,7 @@ let NotifiItem = React.createClass({
                         <div className="name" style={nameStyle}><Name member={this.props.sender}/></div>
                         <div className="time" style={timeStyle} flex={1}><SmartTimeDisplay start={this.props.time} relative/></div>
                     </Layout>
-                    <a href={this.props.url} style={messageStyle}>{this.props.message}</a>
+                    <span style={achorStyle} onClick={this._transitionToPost}>{this.props.message}</span>
                 </Layout>
             </Layout>
         );
