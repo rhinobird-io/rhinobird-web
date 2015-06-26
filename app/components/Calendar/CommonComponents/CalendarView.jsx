@@ -46,6 +46,10 @@ let CalendarView = React.createClass({
         }
     },
 
+    componentDidMount() {
+        setTimeout(this.forceUpdate, 60000);
+    },
+
     getViewType() {
         return this.state.viewType;
     },

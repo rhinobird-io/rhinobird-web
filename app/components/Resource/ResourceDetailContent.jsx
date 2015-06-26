@@ -112,7 +112,6 @@ let ResourceDetailContent = React.createClass({
         );
     },
 
-
     _getCreateResourceBookingPopup() {
         let className = "resource-booking-popup";
         if (this.state.createResourceBookPopupPos === 'r') {
