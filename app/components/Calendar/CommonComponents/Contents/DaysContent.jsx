@@ -56,7 +56,7 @@ let DaysContent = React.createClass({
                 <DayContent
                     {...others}
                     ref={`day${index}`}
-                    data={data.filter(_ => new Date(_.fromTime).toDateString() == d.toDateString())}
+                    data={data.filter(_ => new Date(_.fromTime || _.from_time).toDateString() == d.toDateString())}
                     date={Moment(d).format("YYYY-MM-DD")}/>
             </Flex.Layout>
         ));

@@ -118,7 +118,12 @@ let CalendarStore = assign({}, BaseStore, {
     },
 
     getAll() {
-        return Object.keys(_eventsIdMap).map(k => _eventsIdMap[k]);
+        let result = Object.keys(_eventsIdMap).map(k => {
+            return Object.keys(_eventsIdMap[k]).map(r => _eventsIdMap[k][r]);
+        });
+        let merged = [];
+        merged = merged.concat.apply(merged, result);
+        return merged;
     },
 
     getAllEvents() {
