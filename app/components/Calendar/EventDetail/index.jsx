@@ -281,7 +281,7 @@ const EventDetail = React.createClass({
             this.refs.deleteConfirmDialog.show();
         } else {
             if (confirm("Are you sure to delete this event?")) {
-                CalendarActions.deleteNoRepeatEvent(this.state.event.id, () => this.context.router.transitionTo("event-list"));
+                CalendarActions.deleteEvent({id: this.state.event.id}, () => this.context.router.transitionTo("event-list"));
             }
         }
     }
