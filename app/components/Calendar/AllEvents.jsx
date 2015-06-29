@@ -62,7 +62,7 @@ let AllEvents = React.createClass({
         };
 
         let innerContent = [];
-        let timeRange = `${Moment(range.fromTime).format("h:mm a")} ~ ${Moment(range.toTime).format("h:mm a")}`;
+        let timeRange = `${Moment(range.from_time).format("h:mm a")} ~ ${Moment(range.to_time).format("h:mm a")}`;
 
         innerContent.push(<div key="range" style={styles.timeRange}>{timeRange}</div>);
 

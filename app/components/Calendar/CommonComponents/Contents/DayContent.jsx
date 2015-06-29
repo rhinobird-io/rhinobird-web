@@ -66,9 +66,6 @@ let DayContent = React.createClass({
             style = {};
         }
 
-        console.log(this.props.date);
-        console.log(this.props.data);
-
         style.WebkitUserSelect = "none";
         style.userSelect = "none";
         style.width = "100%";
