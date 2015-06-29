@@ -4,6 +4,7 @@ const MUI = require('material-ui');
 const Flex = require('../../Flex');
 const WeekView = require('./WeekView');
 const DaysView = require('./DaysView');
+const MonthView = require('./MonthView');
 const FourDaysView = require('./FourDaysView');
 const Display = require('../../Common').Display;
 const Selector = require('../../Select').Selector;
@@ -93,11 +94,13 @@ let CalendarView = React.createClass({
                 <FourDaysView ref="calendarView" {...other} date={this.state.date} />
             );
         } else if (viewType === "month") {
-            calendarView = <Flex.Layout flex={1} style={{minHeight: 0}}></Flex.Layout>;
+            calendarView = (
+                <MonthView ref="calendarView" {...other} data={this.state.date} />
+            );
         }
 
         return (
-            <Flex.Layout vertical stretch>
+            <Flex.Layout vertical stretch style={{height: "100%"}}>
                 {calendarHeader}
                 {calendarView}
                 {switcher}
@@ -127,22 +130,30 @@ let CalendarView = React.createClass({
             rangeStart = days[0];
             rangeEnd = days[3];
         } else if (viewType === "month") {
-            rangeStart = rangeEnd = new Date();
+            rangeStart = this.state.date;
         }
 
+        let startFormat;
         let endFormat;
-        if (rangeStart.getYear() === rangeEnd.getYear()) {
-            if (rangeStart.getMonth() === rangeEnd.getMonth()) {
-                if (rangeStart.getDay() !== rangeEnd.getDay()) {
-                    endFormat = "Do";
+        if (viewType === "month") {
+            startFormat = "YYYY MMMM";
+        } else {
+            startFormat = "YYYY MMM Do";
+
+            if (rangeStart.getYear() === rangeEnd.getYear()) {
+                if (rangeStart.getMonth() === rangeEnd.getMonth()) {
+                    if (rangeStart.getDay() !== rangeEnd.getDay()) {
+                        endFormat = "Do";
+                    }
+                } else {
+                    endFormat = "MMM Do";
                 }
             } else {
-                endFormat = "MMM Do";
+                endFormat = "YYYY MMM Do";
             }
-        } else {
-            endFormat = "YYYY MMM Do";
         }
-        headerDateRange = `${Moment(rangeStart).format("YYYY MMM Do")}`;
+
+        headerDateRange = `${Moment(rangeStart).format(startFormat)}`;
         if (endFormat) {
             headerDateRange += ` ~ ${Moment(rangeEnd).format(endFormat)}`;
         }
@@ -202,6 +213,10 @@ let CalendarView = React.createClass({
             date.setDate(date.getDate() - 1);
         } else if (viewType === "fourDays") {
             date.setDate(date.getDate() - 4);
+        } else if (viewType === "month") {
+            let month = date.getMonth();
+            date.setMonth(month - 1);
+            date.setDate(1);
         }
         this.setState({
             date: date
@@ -218,6 +233,10 @@ let CalendarView = React.createClass({
             date.setDate(date.getDate() + 1);
         } else if (viewType === "fourDays") {
             date.setDate(date.getDate() + 4);
+        } else if (viewType === "month") {
+            let month = date.getMonth();
+            date.setMonth(month + 1);
+            date.setDate(1);
         }
         this.setState({
             date: date
