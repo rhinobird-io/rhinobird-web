@@ -16,6 +16,7 @@ const UserStore = require("../../stores/UserStore");
 const SmartTimeDisplay = require("../SmartTimeDisplay");
 const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 const RouterLink = require('../Common').RouterLink;
+const URI = require('URIjs');
 
 let NotifiItem = React.createClass({
     propTypes: {
@@ -70,7 +71,10 @@ let NotifiItem = React.createClass({
                         <div className="name" style={nameStyle}><Name member={this.props.sender}/></div>
                         <div className="time" style={timeStyle} flex={1}><SmartTimeDisplay start={this.props.time} relative/></div>
                     </Layout>
-                    <RouterLink onClick={this._markAsRead} style={this.props.read ? achorReadStyle : achorUnReadStyle} to={(function(url){var parser=document.createElement('a');parser.href=url;return parser.pathname;})(this.props.url)}>{this.props.message}</RouterLink>
+                    {this.props.url ?
+                        <RouterLink onClick={this._markAsRead} style={this.props.read ? achorReadStyle : achorUnReadStyle} to={this.props.url}>{this.props.message}</RouterLink>
+                        :<span onClick={this._markAsRead} style={this.props.read ? achorReadStyle : achorUnReadStyle}>{this.props.message}</span>
+                    }
                 </Layout>
             </Layout>
         );
