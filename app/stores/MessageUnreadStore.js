@@ -10,8 +10,6 @@ import MessageStore from './MessageStore';
 import assign from 'object-assign';
 import _ from 'lodash';
 import Immutable from 'immutable';
-import $ from 'jquery';
-import Util from '../util.jsx';
 
 const {IM_HOST, IM_API} = IMConstants;
 // key channelid, value, true or false
