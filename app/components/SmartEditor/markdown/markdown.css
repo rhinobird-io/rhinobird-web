@@ -31,6 +31,8 @@
   max-width: 100%;
   box-sizing: border-box;
   height: auto;
+}
+.markdown-body img:not(.emoji) {
   margin: 12px;
 }
 
