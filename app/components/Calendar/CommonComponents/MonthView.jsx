@@ -43,22 +43,27 @@ let MonthView = React.createClass({
 
     _getWeekDaysBar() {
         let weekdays = Moment.weekdaysShort();
-        let style = {
-            width: 0,
-            fontWeight: 600,
-            fontSize: "1.1em",
-            padding: "0.2em 0.4em",
-            color: this.context.muiTheme.palette.disabledColor
+        let styles = {
+            outer: {
+                paddingBottom: 10
+            },
+            inner: {
+                width: 0,
+                fontWeight: 600,
+                fontSize: "1.1em",
+                padding: "0.2em 0.4em",
+                color: this.context.muiTheme.palette.disabledColor
+            }
         };
         let weekdaysBar = weekdays.map(d => {
             return (
-                <Flex.Layout flex={1} style={style}>
+                <Flex.Layout flex={1} style={styles.inner}>
                     {d}
                 </Flex.Layout>
             );
         });
         return (
-            <Flex.Layout horizontal stretch>
+            <Flex.Layout horizontal stretch style={styles.outer}>
                 {weekdaysBar}
             </Flex.Layout>
         )
@@ -74,7 +79,31 @@ let MonthView = React.createClass({
             weeks.push(new Date(start));
             start.setDate(start.getDate() + 7);
         }
-        console.log(weeks);
+
+        let contents = weeks.map(w => this._getWeekContent(w));
+        return (
+            <Flex.Layout vertical stretch flex={1}>
+                {contents}
+            </Flex.Layout>
+        )
+    },
+
+    _getWeekContent(date) {
+        let style = {
+            width: 0,
+            padding: "0.2em 0.5em"
+        };
+        let weekdays = date.weekDays();
+        let weekContent = weekdays.map(d => (
+           <Flex.Layout flex={1} style={style}>
+               {d.getDate()}
+           </Flex.Layout>
+        ));
+        return (
+            <Flex.Layout flex={1} horizontal stretch>
+                {weekContent}
+            </Flex.Layout>
+        );
     }
 });
 
