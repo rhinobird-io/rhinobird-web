@@ -1,6 +1,7 @@
 const React = require('react');
 const Moment = require('moment');
 const Flex = require('../../Flex');
+const PerfectScroll = require('../../PerfectScroll');
 
 let MonthView = React.createClass({
     propTypes: {
@@ -82,8 +83,12 @@ let MonthView = React.createClass({
 
         let contents = weeks.map(w => this._getWeekContent(w));
         return (
-            <Flex.Layout vertical stretch flex={1}>
-                {contents}
+            <Flex.Layout flex={1}  style={{position: "relative"}}>
+                <PerfectScroll style={{position: "absolute", top: 0, bottom: 0, left: 0, right: 0}}>
+                    <Flex.Layout vertical stretch style={{height: "100%"}}>
+                        {contents}
+                    </Flex.Layout>
+                </PerfectScroll>
             </Flex.Layout>
         )
     },
@@ -100,7 +105,7 @@ let MonthView = React.createClass({
            </Flex.Layout>
         ));
         return (
-            <Flex.Layout flex={1} horizontal stretch>
+            <Flex.Layout flex={1} horizontal stretch style={{minHeight: 100}}>
                 {weekContent}
             </Flex.Layout>
         );
