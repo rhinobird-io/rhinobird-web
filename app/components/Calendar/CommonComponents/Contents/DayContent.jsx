@@ -155,27 +155,61 @@ let DayContent = React.createClass({
         }
 
         let dataPositions = [];
-        let horizontalPositions = sorted.map(() => {});
         let i = 0;
-        while (i < sorted.length - 1) {
+        while (i < sorted.length) {
             let range = sorted[i];
-            let horizontalSet = [];
-            horizontalSet.push(range);
+            let columns = [];
+
+            columns[0] = [range];
+
             let j = i + 1;
+            loop1:
             for (; j < sorted.length; j++) {
-                if (sorted[j].from >= sorted[j - 1].from && sorted[j].from < sorted[j - 1].to) {
-                    horizontalSet.push(sorted[j]);
+                let from = sorted[j].from;
+                let to = sorted[j].to;
+                if (sorted[j].from >= sorted[j - 1].from && sorted[j].from <= sorted[j - 1].to) {
+                    let placed = false;
+                    loop2:
+                    for (let i1 = 0; i1 < columns.length; i1++) {
+                        let hasPlace = true;
+                        loop3:
+                        for (let i2 = 0; i2 < columns[i1].length; i2++) {
+                            let row = columns[i1][i2];
+                            if (from >= row.from && from <= row.to) {
+                                console.log(sorted[j]);
+                                hasPlace = false;
+                                break loop3;
+                            }
+                        }
+                        if (hasPlace) {
+                            console.log(`${i1}`);
+                            console.log(sorted[j]);
+                            columns[i1].push(sorted[j]);
+                            placed = true;
+                            break loop2;
+                        }
+                    }
+
+                    if (!placed) {
+                        columns.push([sorted[j]]);
+                    }
                 } else {
-                    break;
+                    break loop1;
                 }
             }
-            for (var k = i; k < j; k++) {
-                let width = 100 / horizontalSet.length;
-                horizontalPositions[k] = {
-                    width: `${width}%`,
-                    left: `${(k - i) * width}%`
-                };
-            }
+
+            //console.log("Hello");
+            //console.log(columns);
+            let width = 100 / columns.length;
+            columns.forEach((column, index) => {
+                column.forEach(row => {
+                    row.horizontalPositions =  {
+                        width: `${width}%`,
+                        left: `${index * width}%`
+                    };
+                });
+            });
+
             i = j;
         }
         dataPositions = sorted.map((d, index) => {
@@ -190,10 +224,10 @@ let DayContent = React.createClass({
             let minHeight = "30px";
 
             let contentStyle = {};
-            contentStyle.left = horizontalPositions[index].left || 0;
+            contentStyle.left = d.horizontalPositions ? d.horizontalPositions.left || 0 : 0;
             contentStyle.top = top;
             contentStyle.height = height;
-            contentStyle.width = horizontalPositions[index].width || "100%";
+            contentStyle.width = d.horizontalPositions ? d.horizontalPositions.width || "100%" : "100%";
             //contentStyle.minHeight = minHeight;
             return contentStyle;
         });
@@ -204,7 +238,7 @@ let DayContent = React.createClass({
                 return p;
             });
         }
-        
+
         if (this.state.newRange) {
             dataPositions[dataPositions.length - 1].width = "100%";
         }
