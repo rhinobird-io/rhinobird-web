@@ -89,7 +89,6 @@ const EventList = React.createClass({
     _loadMoreOlderEvents() {
         let eventRange = this.state.eventRange;
         if (eventRange.min && this.state.hasMoreOlderEvents) {
-
             let container = this.getDOMNode();
             let oldScrollHeight = container.scrollHeight;
             CalendarActions.loadMoreOlderEvents(eventRange.min, () => container.scrollTop = container.scrollHeight - oldScrollHeight);

@@ -58,6 +58,8 @@ let DaysView = React.createClass({
             }
         };
 
+        console.log("Update")
+        console.log(this.props.data);
         let dateBars = <DaysHeader dates={dates} />;
         let dateContents = (
             <DaysContent {...other} ref="days" dates={dates} />
