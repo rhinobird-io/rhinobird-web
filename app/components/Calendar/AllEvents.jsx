@@ -1,13 +1,17 @@
 const React = require('react');
 const Flex = require('../Flex');
 const Moment = require('moment');
+const Popup = require('../Popup');
 const MUI = require('material-ui');
 const Link = require('react-router').Link;
+const Display = require('../Common').Display;
 const UserStore = require('../../stores/UserStore');
 const LoginStore = require('../../stores/LoginStore');
 const CalendarStore = require('../../stores/CalendarStore');
 const CalendarActions = require('../../actions/CalendarActions');
 const CalendarView = require('../Calendar/CommonComponents').CalendarView;
+
+require('./style.less');
 
 let AllEvents = React.createClass({
     contextTypes: {
@@ -23,15 +27,14 @@ let AllEvents = React.createClass({
 
     },
 
-
     getInitialState() {
         return {
-            events: []
+            events: [],
+            createEventPopupPos: 'r'
         }
     },
 
     render() {
-        console.log(this.state.events);
         return (
             <Flex.Layout vertical style={{height: "100%", WebkitUserSelect: "none", userSelect: "none"}}>
                 <CalendarView
@@ -39,7 +42,12 @@ let AllEvents = React.createClass({
                     date={new Date()}
                     exclusive={false}
                     data={this.state.events}
-                    rangeContent={this._rangeContent}/>
+                    rangeContent={this._rangeContent}
+                    onRangeCreate={this._showCreateEventPopup}
+                    onRangeCancel={this._dismissCreateEventPopup}
+                    onRangeClicked={this._showEventDetailPopup}
+                    awayExceptions={() => this.refs.createEventPopup.getDOMNode()} />
+                {this._getCreateEventPopup()}
                 <Link to="create-event">
                     <MUI.FloatingActionButton
                         style={{position: "fixed", bottom: 24, right: 24}}
@@ -70,7 +78,6 @@ let AllEvents = React.createClass({
         };
 
         let innerContent = [];
-        console.log(range);
         let timeRange = `${Moment(range.from_time || range.fromTime).format("h:mm a")} ~ ${Moment(range.to_time || range.toTime).format("h:mm a")}`;
 
         innerContent.push(<div key="range" style={styles.timeRange}>{timeRange}</div>);
@@ -96,6 +103,67 @@ let AllEvents = React.createClass({
             </Flex.Layout>
         );
     },
+
+    _getCreateEventPopup() {
+        let className = "event-popup";
+        if (this.state.createEventPopupPos === 'r') {
+            className += " right";
+        } else {
+            className += " left";
+        }
+
+        return (
+            <Popup
+                position="none"
+                ref="createEventPopup"
+                selfAlignOrigin="lt"
+                relatedAlignOrigin="rt"
+                className={className}
+                style={{overflow: "visible !important"}}>
+                <div style={{minWidth: 250}}>
+                    <h3 style={{padding: "24px 24px 20px 24px"}}>
+                        <Display type="headline">Create </Display>
+                    </h3>
+
+                </div>
+            </Popup>
+        );
+    },
+
+    _showCreateEventPopup(rect, range) {
+        let createEventPopup = this.refs.createEventPopup;
+        let position = 'r';
+
+        let newRect = {
+            left: rect.left,
+            width: rect.width + 10,
+            top: rect.top - (createEventPopup.getDOMNode().clientHeight - rect.height) / 2,
+            height: rect.height
+        };
+
+        if (createEventPopup.getDOMNode().clientWidth > window.innerWidth - rect.right) {
+            position = 'l';
+            newRect.width = rect.width;
+            newRect.left = rect.left - 10;
+        }
+
+        this.setState({
+            createEventPopupPos: position
+        }, () => {
+            createEventPopup.setRelatedTo(newRect);
+            createEventPopup.show();
+        });
+    },
+
+    _dismissCreateEventPopup() {
+        this.refs.createEventPopup.dismiss();
+    },
+
+    _showEventDetailPopup(rect, range) {
+        if (range.userId !== LoginStore.getUser().id) {
+            return;
+        }
+    }
 });
 
 module.exports = AllEvents;

@@ -10,6 +10,7 @@ const LoginStore = require('../../stores/LoginStore');
 const WeekView = require('../Calendar/CommonComponents').WeekView;
 const CalendarView = require('../Calendar/CommonComponents').CalendarView;
 const ResourceActions = require('../../actions/ResourceActions');
+
 require("./style.less");
 
 let ResourceDetailContent = React.createClass({
@@ -67,6 +68,7 @@ let ResourceDetailContent = React.createClass({
                 {this._getUpdateResourceBookingPopup()}
                 <MUI.Snackbar ref="bookingSuccess" message={`Booking ${resource.name} successfully`} />
                 <MUI.Snackbar ref="deleteBookingSuccess" message={`Delete booking of ${resource.name} successfully`} />
+                <MUI.Snackbar ref="updateBookingSuccess" message={`Update booking of ${resource.name} successfully`} />
             </Flex.Layout>
         );
     },
@@ -216,7 +218,7 @@ let ResourceDetailContent = React.createClass({
                     </div>
                     <Flex.Layout style={{padding: "8px 8px 8px 24px"}} horizontal endJustified>
                         <MUI.FlatButton secondary onClick={() => this.refs.updateResourceBooking.dismiss()}>Cancel</MUI.FlatButton>
-                        <MUI.FlatButton secondary>Update</MUI.FlatButton>
+                        <MUI.FlatButton secondary onClick={() => this._updateResourceBook()}>Update</MUI.FlatButton>
                         <MUI.FlatButton primary onClick={this._deleteResourceBook}>Delete</MUI.FlatButton>
                     </Flex.Layout>
                 </div>
@@ -239,6 +241,17 @@ let ResourceDetailContent = React.createClass({
         ResourceActions.deleteResourceBook(this.props.resource._id, this.state.activeRange._id, () => {
             this.refs.updateResourceBooking.dismiss();
             this.refs.deleteBookingSuccess.show();
+        });
+    },
+
+    _updateResourceBook() {
+        ResourceActions.updateResourceBook(this.props.resource._id,
+            this.state.activeRange._id,
+            this.refs.bookFromTime.getTime(),
+            this.refs.bookToTime.getTime(),
+            () => {
+            this.refs.updateResourceBooking.dismiss();
+            this.refs.updateBookingSuccess.show();
         });
     },
 

@@ -74,11 +74,12 @@ let CalendarView = React.createClass({
             date,
             ...other
         } = this.props;
-
         let viewType = this.state.viewType;
         let switcher = this._getViewTypeSwitcher();
         let calendarHeader = this._getCalendarHeader(viewType);
 
+        console.log("Calendar Update")
+        console.log(this.props.data);
         let calendarView = null;
         if (viewType === "week") {
             calendarView = (
