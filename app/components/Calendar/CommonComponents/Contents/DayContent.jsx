@@ -198,8 +198,6 @@ let DayContent = React.createClass({
                 }
             }
 
-            //console.log("Hello");
-            //console.log(columns);
             let width = 100 / columns.length;
             columns.forEach((column, index) => {
                 column.forEach(row => {
@@ -293,10 +291,8 @@ let DayContent = React.createClass({
     },
 
     _handleRangeMouseDown(e) {
-        if (this.props.exclusive) {
-            this.dismissCreateNewRange();
-            e.stopPropagation();
-        }
+        this.dismissCreateNewRange();
+        e.stopPropagation();
     },
 
     _handleMouseDown(e) {

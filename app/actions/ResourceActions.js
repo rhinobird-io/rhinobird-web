@@ -53,13 +53,31 @@ let ResourceActions = {
     },
 
     deleteResourceBook(id, bookId, success, fail) {
-        console.log(id);
         $.ajax({
             url: `/resource/resources/${id}/book/${bookId}`,
             type: "delete"
         }).done((data) => {
             AppDispatcher.dispatch({
                 type: ResourceActionTypes.DELETE_RESOURCE_BOOK,
+                data: data
+            });
+            if (success && typeof success === "function") {
+                success();
+            }
+        }).fail((e) => {
+            console.log(e);
+        }).always(() => {
+            console.log("always");
+        });
+    },
+
+    updateResourceBook(id, bookId, newFromTime, newEndTime, success, fail) {
+        $.ajax({
+            url: `/resource/resources/${id}/book/${bookId}/${newFromTime}/${newEndTime}`,
+            type: "put"
+        }).done((data) => {
+            AppDispatcher.dispatch({
+                type: ResourceActionTypes.UPDATE_RESOURCE_BOOK,
                 data: data
             });
             if (success && typeof success === "function") {
