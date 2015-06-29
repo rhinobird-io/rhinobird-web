@@ -134,11 +134,11 @@ let DayContent = React.createClass({
             }
         };
 
-        let sorted = data.map(d => d);
-        if (this.state.newRange) {
-            sorted.push(this.state.newRange);
-        }
-
+        let sorted = data.map(d => {
+            d.from = d.fromTime || d.from_time;
+            d.to = d.toTime || d.to_time;
+            return d;
+        });
         sorted.sort((a, b) => {
             let aFromTime = a.fromTime || a.from_time;
             let bFromTime = b.fromTime || b.from_time;
@@ -150,8 +150,35 @@ let DayContent = React.createClass({
             return 0;
         });
 
+        if (this.state.newRange) {
+            sorted.push(this.state.newRange);
+        }
+
         let dataPositions = [];
-        dataPositions = sorted.map(d => {
+        let horizontalPositions = sorted.map(() => {});
+        let i = 0;
+        while (i < sorted.length - 1) {
+            let range = sorted[i];
+            let horizontalSet = [];
+            horizontalSet.push(range);
+            let j = i + 1;
+            for (; j < sorted.length; j++) {
+                if (sorted[j].from >= sorted[j - 1].from && sorted[j].from < sorted[j - 1].to) {
+                    horizontalSet.push(sorted[j]);
+                } else {
+                    break;
+                }
+            }
+            for (var k = i; k < j; k++) {
+                let width = 100 / horizontalSet.length;
+                horizontalPositions[k] = {
+                    width: `${width}%`,
+                    left: `${(k - i) * width}%`
+                };
+            }
+            i = j;
+        }
+        dataPositions = sorted.map((d, index) => {
             let fromTime = new Date(d.from_time || d.fromTime);
             let toTime = new Date(d.to_time || d.toTime);
 
@@ -163,8 +190,10 @@ let DayContent = React.createClass({
             let minHeight = "30px";
 
             let contentStyle = {};
+            contentStyle.left = horizontalPositions[index].left || 0;
             contentStyle.top = top;
             contentStyle.height = height;
+            contentStyle.width = horizontalPositions[index].width || "100%";
             //contentStyle.minHeight = minHeight;
             return contentStyle;
         });
@@ -174,6 +203,10 @@ let DayContent = React.createClass({
                 p.width = "100%";
                 return p;
             });
+        }
+        
+        if (this.state.newRange) {
+            dataPositions[dataPositions.length - 1].width = "100%";
         }
 
         return sorted.map((d, index) => {

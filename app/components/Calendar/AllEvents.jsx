@@ -1,6 +1,8 @@
 const React = require('react');
 const Flex = require('../Flex');
 const Moment = require('moment');
+const MUI = require('material-ui');
+const Link = require('react-router').Link;
 const UserStore = require('../../stores/UserStore');
 const LoginStore = require('../../stores/LoginStore');
 const CalendarStore = require('../../stores/CalendarStore');
@@ -35,8 +37,14 @@ let AllEvents = React.createClass({
                 <CalendarView
                     ref="calendar"
                     date={new Date()}
+                    exclusive={false}
                     data={this.state.events}
                     rangeContent={this._rangeContent}/>
+                <Link to="create-event">
+                    <MUI.FloatingActionButton
+                        style={{position: "fixed", bottom: 24, right: 24}}
+                        iconClassName="icon-add" />
+                </Link>
             </Flex.Layout>
         )
     },
@@ -62,7 +70,8 @@ let AllEvents = React.createClass({
         };
 
         let innerContent = [];
-        let timeRange = `${Moment(range.from_time).format("h:mm a")} ~ ${Moment(range.to_time).format("h:mm a")}`;
+        console.log(range);
+        let timeRange = `${Moment(range.from_time || range.fromTime).format("h:mm a")} ~ ${Moment(range.to_time || range.toTime).format("h:mm a")}`;
 
         innerContent.push(<div key="range" style={styles.timeRange}>{timeRange}</div>);
 
