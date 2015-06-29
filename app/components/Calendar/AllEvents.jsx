@@ -7,6 +7,7 @@ const Link = require('react-router').Link;
 const Display = require('../Common').Display;
 const UserStore = require('../../stores/UserStore');
 const LoginStore = require('../../stores/LoginStore');
+const Colors = require('material-ui/lib/styles/colors.js');
 const CalendarStore = require('../../stores/CalendarStore');
 const CalendarActions = require('../../actions/CalendarActions');
 const CalendarView = require('../Calendar/CommonComponents').CalendarView;
@@ -82,18 +83,29 @@ let AllEvents = React.createClass({
 
         innerContent.push(<div key="range" style={styles.timeRange}>{timeRange}</div>);
 
+        let now = new Date();
+        let toTime = new Date(range.to_time);
         if (user) {
             if (LoginStore.getUser().id === creatorId) {
-                styles.wrapper.backgroundColor = this.context.muiTheme.palette.accent3Color;
-                styles.wrapper.border = "1px solid " + this.context.muiTheme.palette.accent1Color;
+                let background = null;
+                if (toTime < now) {
+                    background = Colors.pink100;
+                } else {
+                    background = this.context.muiTheme.palette.accent3Color;
+                }
+                styles.wrapper.backgroundColor = background;
+                //styles.wrapper.border = "1px solid " + this.context.muiTheme.palette.accent2Color;
                 innerContent.push(<div>{range.title}</div>)
             } else {
-                styles.wrapper.backgroundColor = this.context.muiTheme.palette.primary3Color;
-                styles.wrapper.border = "1px solid " + this.context.muiTheme.palette.primary1Color;
-                innerContent.push(<Flex.Layout key="member" flex={1} horizontal end>
-                    <Member.Avatar member={user} style={{minWidth: 24, marginRight: 6}}/>
-                    <div>{user.realname}</div>
-                </Flex.Layout>);
+                let background = null;
+                if (toTime < now) {
+                    background = Colors.cyan100;
+                } else {
+                    background = this.context.muiTheme.palette.primary1Color;
+                }
+                styles.wrapper.backgroundColor = background;
+                //styles.wrapper.border = "1px solid " + this.context.muiTheme.palette.primary2Color;
+
             }
         }
 
