@@ -199,23 +199,15 @@ let CreateEvent = React.createClass({
                                     <MUI.Tab label="Point" onActive={() => this.setState({isPeriod: false})}>
                                         <div className="tab-template-container">
                                             <Flex.Layout horizontal justified style={{marginTop: -10}}>
-                                                <MUI.DatePicker
+                                                {!this.state.isPeriod ? <MUI.DatePicker
                                                     ref="fromDate"
                                                     hintText="From Date"
                                                     style={styles.picker}
                                                     floatingLabelText="From Date"
                                                     onChange={this._onFromDateChange}
-                                                    defaultDate={this.state.fromDate} /> : null}
-                                                {!this.state.fullDay ? fromTime : null}
-                                            </Flex.Layout>
-                                            <Flex.Layout horizontal justified style={{minWidth: 0}}>
-                                                <MUI.DatePicker
-                                                    ref="toDate"
-                                                    hintText="To Date"
-                                                    style={styles.picker}
-                                                    floatingLabelText="To Date"
-                                                    onChange={this._onToDateChange}
                                                     defaultDate={this.state.fromDate} />
+                                                    : null}
+                                                {!this.state.fullDay && !this.state.isPeriod ? fromTime : null}
                                             </Flex.Layout>
                                         </div>
                                     </MUI.Tab>
