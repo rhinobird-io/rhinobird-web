@@ -147,8 +147,11 @@ module.exports = React.createClass({
   _onChannelChange() {
     var currentChannel = ChannelStore.getCurrentChannel();
     if (currentChannel) {
-      this.props.setTitle("Instant Message - Talk - " + (currentChannel.isGroup?currentChannel.channel.name:currentChannel.channel.realname));
-      localStorage[IMConstant.LOCALSTORAGE_CHANNEL] = currentChannel.backEndChannelId;
+        if (currentChannel.channel)
+            this.props.setTitle("Instant Message - Talk - " + (currentChannel.isGroup?currentChannel.channel.name:currentChannel.channel.realname));
+        else
+            this.props.setTitle("Instant Message - Talk");
+        localStorage[IMConstant.LOCALSTORAGE_CHANNEL] = currentChannel.backEndChannelId;
     }
 
   },

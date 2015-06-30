@@ -95,11 +95,11 @@ let UnreadStore = assign({}, BaseStore, {
                             channelId: backEndChannelId
                         });
                     } else {
-                        _unread[backEndChannelId].lastSeenMessageId = latestAndLastSeen[backEndChannelId].lastSeenMessageId;
+                        _unread[backEndChannelId].lastSeenMessageId = latestAndLastSeen[backEndChannelId].lastSeenMessageId ? latestAndLastSeen[backEndChannelId].lastSeenMessageId : 0;
                     }
 
                     _unreadBool = _unreadBool.set(backEndChannelId, _unread[backEndChannelId].latestMessageId > _unread[backEndChannelId].lastSeenMessageId);
-                    getMessagesCount(backEndChannelId, {id:_unread[backEndChannelId].lastSeenMessageId});
+                    getMessagesCount(backEndChannelId, {id:_unread[backEndChannelId].lastSeenMessageId?_unread[backEndChannelId].lastSeenMessageId:0});
                     
                     if (_unreadBool.get(backEndChannelId)) {
                         UnreadStore.emit(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + backEndChannelId, {unread : true, unreadCount : _unreadCount.get(backEndChannelId)});
@@ -116,10 +116,8 @@ let UnreadStore = assign({}, BaseStore, {
                 _unreadCount = _unreadCount.set(backEndChannelId, 0);
                 UnreadStore.emit(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + backEndChannelId, {unread : false, unreadCount : 0});
                 // cauz socket may not ready
-                if (!hasUnread)
-                	return;
                 SocketStore.pushDeferTasks(function(socket){
-                  if (_unread[backEndChannelId].latestMessageId !== 0) {
+                  if (hasUnread && _unread[backEndChannelId].latestMessageId !== 0) {
                     socket.emit('message:seen', {
                       userId: LoginStore.getUser().id,
                       messageId: _unread[backEndChannelId].latestMessageId,//MessageStore.getCurrentChannelLatestMessageId(),
