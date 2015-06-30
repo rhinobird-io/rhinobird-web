@@ -16,7 +16,6 @@ const UserStore = require("../../stores/UserStore");
 const SmartTimeDisplay = require("../SmartTimeDisplay");
 const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 const RouterLink = require('../Common').RouterLink;
-const URI = require('URIjs');
 
 let NotifiItem = React.createClass({
     propTypes: {
@@ -24,6 +23,7 @@ let NotifiItem = React.createClass({
         time: React.PropTypes.string.isRequired,
         message: React.PropTypes.string.isRequired,
         url: React.PropTypes.string,
+        id: React.PropTypes.number.isRequired,
         read: React.PropTypes.bool
     },
     contextTypes: {
@@ -32,9 +32,7 @@ let NotifiItem = React.createClass({
     },
     _markAsRead()
     {
-        var parser=document.createElement('a');
-        parser.href=this.props.url;
-        NotificationActions.markAsRead(parser.pathname);
+        NotificationActions.markAsRead(this.props.url, this.props.id);
     },
 
     render() {
@@ -56,10 +54,12 @@ let NotifiItem = React.createClass({
             fontSize: "0.9em"
         };
         let achorReadStyle = {
-            color: "#aaa"
+            color: "#aaa",
+            cursor: "pointer"
         };
         let achorUnReadStyle = {
-            color: "black"
+            color: "black",
+            cursor: "pointer"
         };
         return (
             <Layout horizontal style={{padding: "8px 24px"}}>
@@ -145,7 +145,7 @@ let Notification = React.createClass({
                                   iconClassName={iconClassName}/>;
         let menu = this.state.notifications.map(n => {
             let sender = UserStore.getUser(n.from_user_id);
-            return <NotifiItem key={n.id} url={n.url} sender={sender} time={n.created_at} message={n.content} read={n.checked}/>;
+            return <NotifiItem id={n.id} url={n.url} sender={sender} time={n.created_at} message={n.content} read={n.checked}/>;
         });
 
         if (this.state.notifications.length >= NotificationStore.getTotal()) {

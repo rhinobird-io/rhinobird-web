@@ -82,17 +82,25 @@ let NotificationActions = {
     });
   },
 
-  markAsRead(pathname) {
+  markAsRead(pathname, id) {
     let socket = NotificationStore.getWebSocket();
     if (socket === null) return;
     let data = [];
     NotificationStore.getAll().map(n => 
     {
-      var parser=document.createElement('a');
-      parser.href=n.url;
-      if (parser.pathname == pathname)
+      if (pathname)
       {
-        data.push({id: n.id});
+        if (n.url == pathname)
+        {
+          data.push({id: n.id});
+        }
+      }
+      else
+      {
+        if (n.id == id)
+        {
+          data.push({id: n.id});
+        }
       }
     });
     if (data.length === 0) return;
