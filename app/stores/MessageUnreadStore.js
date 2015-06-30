@@ -80,11 +80,6 @@ let UnreadStore = assign({}, BaseStore, {
                     if ( _unreadBool.get(backEndChannelId) === false) {
                         // the unread flag already been set, fix lastSeenMessageId to be the latest one and tell socket
                         _unread[backEndChannelId].lastSeenMessageId = _unread[backEndChannelId].latestMessageId;
-                        SocketStore.getSocket().emit('message:seen', {
-                            userId: LoginStore.getUser().id,
-                            messageId: _unread[backEndChannelId].lastSeenMessageId,
-                            channelId: backEndChannelId
-                        });
                     } else {
                         _unread[backEndChannelId].lastSeenMessageId = latestAndLastSeen[backEndChannelId].lastSeenMessageId;
                     }
@@ -111,7 +106,19 @@ let UnreadStore = assign({}, BaseStore, {
                       channelId: backEndChannelId
                     })
                   }
-
+                });
+                break;
+            case Constants.MessageActionTypes.RECEIVE_INIT_MESSAGES:
+                let channel = payload.channel; // current Channel
+                let messages = payload.messages; // from older to newer
+                SocketStore.pushDeferTasks(function(socket){
+                    if (messages.length!== 0) {
+                        socket.emit('message:seen', {
+                            userId: LoginStore.getUser().id,
+                            messageId: messages[messages.length - 1].id,
+                            channelId: channel.backEndChannelId
+                        })
+                    }
                 });
                 break;
             default:
