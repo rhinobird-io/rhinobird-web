@@ -33,6 +33,7 @@ let NotifiItem = React.createClass({
     _markAsRead()
     {
         NotificationActions.markAsRead(this.props.url, this.props.id);
+        return true;
     },
 
     render() {
@@ -54,11 +55,11 @@ let NotifiItem = React.createClass({
             fontSize: "0.9em"
         };
         let achorReadStyle = {
-            color: "#aaa",
+            color: this.context.muiTheme.palette.disabledColor,
             cursor: "pointer"
         };
         let achorUnReadStyle = {
-            color: "black",
+            color: this.context.muiTheme.palette.textColor,
             cursor: "pointer"
         };
         return (
