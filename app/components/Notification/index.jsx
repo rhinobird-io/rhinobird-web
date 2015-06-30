@@ -146,7 +146,7 @@ let Notification = React.createClass({
                                   iconClassName={iconClassName}/>;
         let menu = this.state.notifications.map(n => {
             let sender = UserStore.getUser(n.from_user_id);
-            return <NotifiItem id={n.id} url={n.url} sender={sender} time={n.created_at} message={n.content} read={n.checked}/>;
+            return <NotifiItem key={n.id} id={n.id} url={n.url} sender={sender} time={n.created_at} message={n.content} read={n.checked}/>;
         });
 
         if (this.state.notifications.length >= NotificationStore.getTotal()) {
