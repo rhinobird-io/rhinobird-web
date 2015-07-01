@@ -109,7 +109,7 @@ let UnreadStore = assign({}, BaseStore, {
                     }
 					_unreadCount = _unreadCount.set(backEndChannelId, _unread[backEndChannelId].lastSeenMessageId > 0 ? unreadCountMap[backEndChannelId] : totalCountMap[backEndChannelId]);
                     _unreadBool = _unreadBool.set(backEndChannelId, _unread[backEndChannelId].latestMessageId > _unread[backEndChannelId].lastSeenMessageId);
-                    //getMessagesCount(backEndChannelId, {id:_unread[backEndChannelId].lastSeenMessageId?_unread[backEndChannelId].lastSeenMessageId:0});
+                    
                     console.log(backEndChannelId, _unreadCount.get(backEndChannelId));
                     if (_unreadBool.get(backEndChannelId)) {
                         UnreadStore.emit(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + backEndChannelId, {unread : true, unreadCount : _unreadCount.get(backEndChannelId)});
@@ -143,17 +143,4 @@ let UnreadStore = assign({}, BaseStore, {
     })
 
 });
-function getMessagesCount(channel, oldestMessage) {
-    return $.ajax(
-        {
-            url: IM_API + 'channels/' + channel + '/messagescount?sinceId=' + (oldestMessage ? oldestMessage.id : 1 << 30),
-            type: 'GET',
-            async:false,
-            dataType: 'json'
-        }).done(function (data){
-            _unreadCount = _unreadCount.set(channel, data);
-        }).fail(function (){
-        	console.log("error");
-        });
-}
 export default UnreadStore;
