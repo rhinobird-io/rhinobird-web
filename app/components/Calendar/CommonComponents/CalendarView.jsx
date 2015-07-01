@@ -26,6 +26,7 @@ let NEXT_TOOLTIPS = {
 let CalendarView = React.createClass({
     propType: {
         date: React.PropTypes.object,
+        onDateChange: React.PropTypes.func,
         onRangeCreate: React.PropTypes.func,
         onTypeChange: React.PropTypes.string,
         initialViewType: React.PropTypes.oneOf(VIEW_TYPES),
@@ -51,9 +52,14 @@ let CalendarView = React.createClass({
         //setTimeout(this.forceUpdate, 60000);
     },
 
+    getDate() {
+        return this.state.date;
+    },
+
     getViewType() {
         return this.state.viewType;
     },
+
 
     dismissCreateNewRange() {
         let calendarView = this.refs.calendarView;
