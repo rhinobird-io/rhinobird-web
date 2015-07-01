@@ -110,7 +110,6 @@ let UnreadStore = assign({}, BaseStore, {
 					_unreadCount = _unreadCount.set(backEndChannelId, _unread[backEndChannelId].lastSeenMessageId > 0 ? unreadCountMap[backEndChannelId] : totalCountMap[backEndChannelId]);
                     _unreadBool = _unreadBool.set(backEndChannelId, _unread[backEndChannelId].latestMessageId > _unread[backEndChannelId].lastSeenMessageId);
                     
-                    console.log(backEndChannelId, _unreadCount.get(backEndChannelId));
                     if (_unreadBool.get(backEndChannelId)) {
                         UnreadStore.emit(IMConstants.EVENTS.CHANNEL_UNREAD_CHANGE_PREFIX + backEndChannelId, {unread : true, unreadCount : _unreadCount.get(backEndChannelId)});
                     }
