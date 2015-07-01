@@ -139,9 +139,12 @@ let DayContent = React.createClass({
             d.to = d.toTime || d.to_time;
             return d;
         });
+
+
+        // Sort by fromTime
         sorted.sort((a, b) => {
-            let aFromTime = a.fromTime || a.from_time;
-            let bFromTime = b.fromTime || b.from_time;
+            let aFromTime = a.from;
+            let bFromTime = b.from;
             if (aFromTime < bFromTime) {
                 return -1;
             } else if (aFromTime > bFromTime) {
@@ -166,7 +169,7 @@ let DayContent = React.createClass({
             loop1:
             for (; j < sorted.length; j++) {
                 let from = sorted[j].from;
-                let to = sorted[j].to;
+                // let to = sorted[j].to;
                 if (sorted[j].from >= sorted[j - 1].from && sorted[j].from <= sorted[j - 1].to) {
                     let placed = false;
                     loop2:
@@ -201,8 +204,17 @@ let DayContent = React.createClass({
             let width = 100 / columns.length;
             columns.forEach((column, index) => {
                 column.forEach(row => {
+                    let widthWeight = 1;
+                    for (let k = index + 1; k < columns.length; k++) {
+                        let last = columns[k][columns[k].length - 1];
+                        if (row.from < last.to) {
+                            break;
+                        } else {
+                            widthWeight++;
+                        }
+                    }
                     row.horizontalPositions =  {
-                        width: `${width}%`,
+                        width: `${width * widthWeight}%`,
                         left: `${index * width}%`
                     };
                 });
