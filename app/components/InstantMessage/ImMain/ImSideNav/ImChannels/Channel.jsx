@@ -121,7 +121,7 @@ module.exports = React.createClass({
                         color: textColor}}>{ this.props.Channel.isGroup? this.props.Channel.channel.name : this.props.Channel.channel.realname}</span>
                     </div>
                 </FlatButton>
-                <span className={ (!this.state._imCurrentChannel && this.state._hasUnread)?'instant-message-channel-item-unread icon-message':''}>
+                <span className={ (!this.state._imCurrentChannel && this.state._hasUnread)?'instant-message-channel-item-unread-count':''}>
                 	{this.state._unreadCount > 0 ? (this.state._unreadCount > 99 ? '99+' : this.state._unreadCount) : ''}
                 </span>
             </div>
