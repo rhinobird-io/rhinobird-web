@@ -68,7 +68,7 @@ let DaysView = React.createClass({
         let addons = null;
 
         let table = (
-            <Flex.Layout horitonzal>
+            <Flex.Layout horitonzal style={{overflow: "hidden"}}>
                 <TimeBar style={styles.timeBar}/>
                 <Flex.Layout flex={1} stretch>
                     {dateContents}
@@ -76,7 +76,7 @@ let DaysView = React.createClass({
             </Flex.Layout>
         );
         return (
-            <Flex.Layout vertical style={{position: "relative", minHeight: 0, borderTop: "1px solid " + this.context.muiTheme.palette.borderColor}}>
+            <Flex.Layout vertical style={{position: "relative", minHeight: 0, overflow: "hidden", borderTop: "1px solid " + this.context.muiTheme.palette.borderColor}}>
                 <Flex.Layout ref="header" vertical style={{minHeight: 120}}>
                     <Flex.Layout horizontal>
                         <div style={{width: 60, borderBottom: "1px solid " + this.context.muiTheme.palette.borderColor}}></div>
