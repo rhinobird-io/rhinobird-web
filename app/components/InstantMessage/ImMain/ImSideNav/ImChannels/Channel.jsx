@@ -110,7 +110,7 @@ module.exports = React.createClass({
         return (
             <div className="instant-message-channel-container" style={style} onTouchTap={this.props.onTouchTap}>
                 <FlatButton style={{
-                backgroundColor: this.state._imCurrentChannel?   this.context.muiTheme.palette.accent1Color : "white",
+                backgroundColor: this.state._imCurrentChannel?   this.context.muiTheme.palette.accent1Color : this.context.muiTheme.palette.canvasColor,
                 color: this.state._imCurrentChannel? this.context.muiTheme.palette.canvasColor : this.context.muiTheme.palette.textColor,
                 padding:6
                 }} className={this.state._imCurrentChannel?'instant-message-channel-item-selected instant-message-channel-item ':'instant-message-channel-item '}  onTouchTap={self._onItemTap.bind(self, this.props.Channel)}>

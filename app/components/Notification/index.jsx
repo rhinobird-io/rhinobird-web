@@ -15,23 +15,33 @@ const NotificationStore = require("../../stores/NotificationStore");
 const UserStore = require("../../stores/UserStore");
 const SmartTimeDisplay = require("../SmartTimeDisplay");
 const PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+const RouterLink = require('../Common').RouterLink;
 
 let NotifiItem = React.createClass({
     propTypes: {
         sender: React.PropTypes.object.isRequired,
         time: React.PropTypes.string.isRequired,
         message: React.PropTypes.string.isRequired,
+        url: React.PropTypes.string,
+        id: React.PropTypes.number.isRequired,
         read: React.PropTypes.bool
     },
     contextTypes: {
-        muiTheme: React.PropTypes.object
+        muiTheme: React.PropTypes.object,
+        router: React.PropTypes.func.isRequired
+    },
+    _markAsRead()
+    {
+        NotificationActions.markAsRead(this.props.url, this.props.id);
+        return true;
     },
 
     render() {
         let messageStyle = {
             wordWrap: "break-word",
             maxWidth: "100%",
-            color: this.props.read ? this.context.muiTheme.palette.disabledColor : this.context.muiTheme.palette.textColor
+            color: this.props.read ? this.context.muiTheme.palette.disabledColor : this.context.muiTheme.palette.textColor,
+            textDecoration:"none"
         };
         let nameStyle = {
             maxWidth: 250,
@@ -43,7 +53,15 @@ let NotifiItem = React.createClass({
         };
         let timeStyle = {
             fontSize: "0.9em"
-        }
+        };
+        let achorReadStyle = {
+            color: this.context.muiTheme.palette.disabledColor,
+            cursor: "pointer"
+        };
+        let achorUnReadStyle = {
+            color: this.context.muiTheme.palette.textColor,
+            cursor: "pointer"
+        };
         return (
             <Layout horizontal style={{padding: "8px 24px"}}>
                 <Layout vertical top className="avatar-wrapper" style={{marginRight: 12, marginTop: 4, minWidth: 38}}>
@@ -54,7 +72,10 @@ let NotifiItem = React.createClass({
                         <div className="name" style={nameStyle}><Name member={this.props.sender}/></div>
                         <div className="time" style={timeStyle} flex={1}><SmartTimeDisplay start={this.props.time} relative/></div>
                     </Layout>
-                    <div style={messageStyle}>{this.props.message}</div>
+                    {this.props.url ?
+                        <RouterLink onClick={this._markAsRead} style={this.props.read ? achorReadStyle : achorUnReadStyle} to={this.props.url}>{this.props.message}</RouterLink>
+                        :<span onClick={this._markAsRead} style={this.props.read ? achorReadStyle : achorUnReadStyle}>{this.props.message}</span>
+                    }
                 </Layout>
             </Layout>
         );
@@ -105,10 +126,6 @@ let Notification = React.createClass({
         NotificationActions.receive(this.state.notifications.length);
     },
 
-    _onClickAway() {
-        NotificationActions.markAsRead();
-    },
-
     render() {
         let themeVariables = this.context.muiTheme.component.appBar;
         let iconStyle = {
@@ -129,7 +146,7 @@ let Notification = React.createClass({
                                   iconClassName={iconClassName}/>;
         let menu = this.state.notifications.map(n => {
             let sender = UserStore.getUser(n.from_user_id);
-            return <NotifiItem key={n.id} sender={sender} time={n.created_at} message={n.content} read={n.checked}/>;
+            return <NotifiItem key={n.id} id={n.id} url={n.url} sender={sender} time={n.created_at} message={n.content} read={n.checked}/>;
         });
 
         if (this.state.notifications.length >= NotificationStore.getTotal()) {
@@ -143,7 +160,7 @@ let Notification = React.createClass({
         return (
             <span>
                 <DropDownAny ref="dropdown" control={control} menu={menu} menuClasses={'notification-menu'}
-                     onClickAway={this._onClickAway} style={{width: 400, maxHeight: 500, fontSize: "15px"}}/>
+                    style={{width: 400, maxHeight: 500, fontSize: "15px"}}/>
                 <InfiniteScroll scrollTarget={() => this.refs.dropdown.refs.scroll.getDOMNode()}
                         lowerThreshold={5} onLowerTrigger={this._loadMore}/>
             </span>

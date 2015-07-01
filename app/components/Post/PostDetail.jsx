@@ -424,8 +424,8 @@ const Editor = React.createClass({
                         <span style={{width:14, height:14, backgroundColor: t.color, marginRight:12}}></span><span>{t.name}</span>
                     </Flex.Layout>;
                 }) : null;
-        return <PerfectScroll
-            style={{position:'absolute', bottom:0, left:0, right:0, top: 48, maxWidth: 1024, padding:24, margin:'0 auto',display:'flex', flexDirection:'column'}}>
+        return <div
+            style={{maxWidth: 1024, padding:24, margin:'0 auto'}}>
             <label style={{fontSize: 16, color: 'rgba(0,0,0,0.54)'}}>Title</label>
             <mui.TextField ref='textField' valueLink={this.linkState('title')} style={{width: '100%'}}/>
             <Flex.Layout center style={{fontSize: 16, marginTop: 12, color: 'rgba(0,0,0,0.54)'}}>
@@ -445,7 +445,7 @@ const Editor = React.createClass({
             </Select.Select>
             <label style={{fontSize: 16, marginTop: 12,display:'block', color: 'rgba(0,0,0,0.54)'}}>Body</label>
             <SmartEditor ref="editor" valueLink={this.linkState('body')} multiLine/>
-        </PerfectScroll>;
+        </div>;
     }
 });
 const PostDetail = React.createClass({
@@ -536,14 +536,14 @@ const PostDetail = React.createClass({
             case 'create':
             case 'edit':
                 user = UserStore.getUser(LoginStore.getUser().id);
-                return <div>
-                    <Tabs style={{width:'100%', position:'absolute', top:0, bottom:0, left:0, right:0}}>
+                return <PerfectScroll style={{position:'absolute', bottom:0, left:0, right:0, top: 0,  maxWidth: 1024, padding:24, margin:'0 auto'}}>
+                    <Tabs style={{width:'100%'}}>
                         <Tab label="EDIT">
                             <Editor ref='editor' title={this.state.title} body={this.state.body} tags={this.state.tags}/>
                         </Tab>
                         <Tab label="PREVIEW" onActive={this._preview}>
-                            <PerfectScroll
-                                style={{position:'absolute', bottom:0, left:0, right:0, top: 48,  maxWidth: 1024, padding:24, margin:'0 auto'}}>
+                            <div
+                                >
                                 <Common.Display type='headline' style={{marginBottom:12}}>{this.state.title}</Common.Display>
                                 <SmartDisplay value={this.state.body}/>
                                 <Common.Display type='caption' style={{display:'flex', alignItems:'center', justifyContent:'space-between', margin:'24px 0'}}>
@@ -556,18 +556,18 @@ const PostDetail = React.createClass({
                                         <span style={{marginLeft: 4}}>created at <SmartTimeDisplay start={new Date()} format='MMM Do YYYY' /></span>
                                     </Flex.Layout>
                                 </Common.Display>
-                            </PerfectScroll>
+                            </div>
                         </Tab>
                     </Tabs>
 
-                    <div style={{position:'absolute', left:0, right: 0, bottom: 0, zIndex:100}}>
+                    <div style={{position:'fixed', left:0, right: 0, bottom: 0, zIndex:100}}>
                         <div style={{position:'relative',margin:'0 auto', maxWidth: 1024}}>
                             <mui.FloatingActionButton onClick={this._savePost}
                                                       style={{position:'absolute', right: 24, bottom: 24}}
                                                       iconClassName="icon-save"/>
                         </div>
                     </div>
-                </div>;
+                </PerfectScroll>;
             default:
                 return null;
         }

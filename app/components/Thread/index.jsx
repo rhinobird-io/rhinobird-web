@@ -141,7 +141,7 @@ const Thread = React.createClass({
                     email_subject: `[RhinoBird] ${LoginStore.getUser().realname} mentioned you in comment`,
                     email_body: `${LoginStore.getUser().realname} mentioned you in comment of <a href="${window.location.href.split('#')[0]}">${this.props.threadTitle}</a>
                     <br/><br/> ${comment}`,
-                    url: `window.location.pathname#${c.cid}`
+                    url: `${window.location.pathname}#${c.cid}`
                 }
             );
         }
@@ -161,7 +161,7 @@ const Thread = React.createClass({
                     email_subject: `[RhinoBird] ${LoginStore.getUser().realname} posted new comment`,
                     email_body: `${LoginStore.getUser().realname} posted new comment of <a href="${window.location.href.split('#')[0]}">${this.props.threadTitle}</a>
                     <br/><br/> ${comment}`,
-                    url: `window.location.pathname#${c.cid}`
+                    url: `${window.location.pathname}#${c.cid}`
                 }
             );
         }
