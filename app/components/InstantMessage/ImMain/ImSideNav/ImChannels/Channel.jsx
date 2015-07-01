@@ -34,7 +34,8 @@ module.exports = React.createClass({
             _currentChannel : ChannelStore.getCurrentChannel(),
             _onlineStatus : this.props.Channel.isDirect?OnlineStore.isOnline(this.props.Channel.channel.id):true,
             _imCurrentChannel : ChannelStore.getCurrentChannel().backEndChannelId === this.props.Channel.backEndChannelId,
-            _hasUnread : UnreadStore.hasUnread(this.props.Channel.backEndChannelId)
+            _hasUnread : UnreadStore.hasUnread(this.props.Channel.backEndChannelId),
+            _unreadCount : UnreadStore.getUnreadCount(this.props.Channel.backEndChannelId)
         }
     },
 
@@ -81,7 +82,8 @@ module.exports = React.createClass({
 
     _onUnreadChange(myUnreadState) {
         this.setState({
-            _hasUnread : myUnreadState.unread
+            _hasUnread : myUnreadState.unread,
+            _unreadCount : myUnreadState.unreadCount
         });
     },
 
@@ -119,7 +121,9 @@ module.exports = React.createClass({
                         color: textColor}}>{ this.props.Channel.isGroup? this.props.Channel.channel.name : this.props.Channel.channel.realname}</span>
                     </div>
                 </FlatButton>
-                <span className={ (!this.state._imCurrentChannel && this.state._hasUnread)?'instant-message-channel-item-unread icon-message':''}></span>
+                <span className={ (!this.state._imCurrentChannel && this.state._hasUnread)?'instant-message-channel-item-unread-count':''}>
+                	{this.state._unreadCount > 0 ? (this.state._unreadCount > 99 ? '99+' : this.state._unreadCount) : ''}
+                </span>
             </div>
         );
     }
