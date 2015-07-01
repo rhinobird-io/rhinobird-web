@@ -19,6 +19,8 @@ let _allDayEvents = {};
 let _dailyLoaded = {};      // Map: "YYYY-MM-DD" => true, whether certain date's events are loaded.
 let _weeklyLoaded = {};     // Map: "YYYY-MM-DD" => true, key is first day of week, whether certain week's events are loaded.
 let _monthlyLoaded = {};    // Map: "YYYY-MM-DD" => true, key is frist day of month, whether certain month's events are loaded.
+let _allEvents = {};
+let _allEventsMap = {};
 
 function _addEvent(event, type) {
     let dateFormat = _formatDate(event.from_time);
@@ -127,6 +129,22 @@ Date.prototype.firstDayOfMonth = function() {
     return date;
 };
 
+let addEvents = function(events) {
+    let res = [];
+    if (Array.isArray(events)) {
+        res = events;
+    } else {
+        res.push(events);
+    }
+    res.forEach(e => {
+        let format = Moment(e.from_time).format("YYYY-MM-DD");
+        if (!_allEvents[format]) {
+            _allEvents[format] = {};
+        }
+        _allEvents[format][e.id] = e;
+    });
+};
+
 let CalendarStore = assign({}, BaseStore, {
     isDateLoaded(date) {
         let format = Moment(new Date(date)).format("YYYY-MM-DD");
@@ -183,6 +201,19 @@ let CalendarStore = assign({}, BaseStore, {
 
     getEventsByDates(dateArray) {
 
+    },
+
+    getEventsByWeek(date) {
+        let days = new Date(date).weekDays();
+        let res = [];
+        days.forEach(day => {
+            let format = Moment(day).format("YYYY-MM-DD");
+            if (_allEvents[format]) {
+                let events = Object.keys(_allEvents[format]).map(k => _allEvents[format][k]);
+                res = res.concat(events);
+            }
+        });
+        return res;
     },
 
     getAllDayEventsByDate(date) {
@@ -276,7 +307,7 @@ let CalendarStore = assign({}, BaseStore, {
             case ActionTypes.UPDATE_VIEW:
                 break;
             case ActionTypes.RECEIVE_EVENTS_BY_WEEK:
-
+                addEvents(data);
                 break;
             default:
                 changed = false;
