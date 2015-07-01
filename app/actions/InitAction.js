@@ -79,6 +79,34 @@ export default {
                     }).done(function (res) {
                         cb(null, res);
                     }).fail(cb);
+            },
+            
+            function(cb) {
+                $.ajax(
+                    {
+                        url: IM_HOST + 'api/messages/unreadCount',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data : JSON.stringify({
+                            channelIds: channelIds
+                        })
+                    }).done(function (res) {
+                        cb(null, res);
+                    }).fail(cb);
+            },
+            
+            function(cb) {
+                $.ajax(
+                    {
+                        url: IM_HOST + 'api/messages/totalCount',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data : JSON.stringify({
+                            channelIds: channelIds
+                        })
+                    }).done(function (res) {
+                        cb(null, res);
+                    }).fail(cb);
             }
         ], function(err, results) {
             if (err) {
@@ -88,6 +116,8 @@ export default {
 
             let latestMessageIds = results[1];
             let lastSeenMessage = results[2];
+            let unreadCount = results[3];
+            let totalCount = results[4];
             latestMessageIds.forEach(latestMessage => {
                 latestAndLastSeen[latestMessage.channelId] = latestAndLastSeen[latestMessage.channelId] || {};
                 latestAndLastSeen[latestMessage.channelId].latestMessageId = latestMessage.messageId;
@@ -101,7 +131,9 @@ export default {
                 type: Constants.MessageActionTypes.INIT_UNREAD,
                 publicGroupChannels: channels.publicGroupChannels,
                 directMessageChannels:channels.directMessageChannels,
-                latestAndLastSeen : latestAndLastSeen
+                latestAndLastSeen : latestAndLastSeen,
+                unreadCount: unreadCount,
+                totalCount: totalCount
             });
         });
     }
