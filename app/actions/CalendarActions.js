@@ -29,7 +29,24 @@ let CalendarAction =  {
                 data: event
             });
         } else {
-            $.get("/platform/api/events/" + id + "/" + repeatedNumber).done(data => {
+            $.get(`/platform/api/events/${id}/${repeatedNumber}`).done(data => {
+                AppDispatcher.dispatch({
+                    type: CalendarActionTypes.RECEIVE_EVENT,
+                    data: data
+                });
+            }).fail(e => {
+                console.error(e);
+            });
+        }
+    },
+
+    receiveByWeek(date, success) {
+        if (CalendarStore.isWeekLoaded(date)) {
+            AppDispatcher.dispatch({
+                type: CalendarActionTypes.UPDATE_VIEW
+            });
+        } else {
+            $.get(`/platform/api/events/week/${date}`).done(data => {
                 AppDispatcher.dispatch({
                     type: CalendarActionTypes.RECEIVE_EVENT,
                     data: data

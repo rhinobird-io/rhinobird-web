@@ -136,7 +136,6 @@ let AllEvents = React.createClass({
                     <h3 style={{padding: "24px 24px 20px 24px"}}>
                         <Display type="headline">Create </Display>
                     </h3>
-
                 </div>
             </Popup>
         );
