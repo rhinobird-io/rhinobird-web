@@ -4,6 +4,7 @@ const AppDispatcher = require("../dispatchers/AppDispatcher");
 const ActionTypes = require("../constants/AppConstants").CalendarActionTypes;
 const BaseStore = require("./BaseStore");
 const assign = require("object-assign");
+const Moment = require("moment");
 
 let _eventsIdMap = {};
 let _events = {};       /* Events arranged by date. */
@@ -13,6 +14,11 @@ let _hasMoreOlderEvents = true;
 let _hasReceived = false;
 let _newCreated = null;
 let _lastDeleted = null;
+
+let _allDayEvents = {};
+let _dailyLoaded = {};      // Map: "YYYY-MM-DD" => true, whether certain date's events are loaded.
+let _weeklyLoaded = {};     // Map: "YYYY-MM-DD" => true, key is first day of week, whether certain week's events are loaded.
+let _monthlyLoaded = {};    // Map: "YYYY-MM-DD" => true, key is frist day of month, whether certain month's events are loaded.
 
 function _addEvent(event, type) {
     let dateFormat = _formatDate(event.from_time);
@@ -109,7 +115,34 @@ function _sortByFromTime(e1, e2) {
     return 0;
 }
 
+Date.prototype.firstDayOfWeek = function() {
+    let date = new Date(this);
+    date.setDate(date.getDate() - date.getDay());
+    return date;
+};
+
+Date.prototype.firstDayOfMonth = function() {
+    let date = new Date(this);
+    date.setDate(1);
+    return date;
+};
+
 let CalendarStore = assign({}, BaseStore, {
+    isDateLoaded(date) {
+        let format = Moment(new Date(date)).format("YYYY-MM-DD");
+        return !!_dailyLoaded[format];
+    },
+
+    isWeekLoaded(date) {
+        let format = Moment(new Date(date).firstDayOfWeek()).format("YYYY-MM-DD")
+        return !!_weeklyLoaded[format];
+    },
+
+    isMonthLoaded(date) {
+        let format = Moment(new Date(date).firstDayOfMonth()).format("YYYY-MM-DD")
+        return !!_weeklyLoaded[format];
+    },
+
     getEvent(eventId, repeatedNumber) {
         if (_eventsIdMap[eventId]) {
             return _eventsIdMap[eventId][repeatedNumber];
@@ -239,6 +272,11 @@ let CalendarStore = assign({}, BaseStore, {
                 if (data.length === 0) {
                     _hasMoreOlderEvents = false;
                 }
+                break;
+            case ActionTypes.UPDATE_VIEW:
+                break;
+            case ActionTypes.RECEIVE_EVENTS_BY_WEEK:
+
                 break;
             default:
                 changed = false;
