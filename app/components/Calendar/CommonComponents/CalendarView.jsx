@@ -225,9 +225,14 @@ let CalendarView = React.createClass({
             date.setMonth(month - 1);
             date.setDate(1);
         }
+
         this.setState({
             date: date
         });
+
+        if (this.props.onDateChange && typeof this.props.onDateChange === "function") {
+            this.props.onDateChange(date, viewType);
+        }
     },
 
     _navigateNext() {
@@ -248,6 +253,10 @@ let CalendarView = React.createClass({
         this.setState({
             date: date
         });
+
+        if (this.props.onDateChange && typeof this.props.onDateChange === "function") {
+            this.props.onDateChange(date, viewType);
+        }
     }
 });
 
