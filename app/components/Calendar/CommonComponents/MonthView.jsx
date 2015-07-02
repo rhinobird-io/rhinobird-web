@@ -20,10 +20,16 @@ let MonthView = React.createClass({
         }
     },
 
+    getInitialState() {
+        return {
+
+        }
+    },
+
     render() {
         let {
             date,
-            ...others
+            data
         } = this.props;
 
         let styles = {
@@ -96,7 +102,9 @@ let MonthView = React.createClass({
     _getWeekContent(date) {
         let style = {
             width: 0,
-            padding: "0.2em 0.5em"
+            padding: "0.2em 0.5em",
+            borderTop: `1px solid ${this.context.muiTheme.palette.borderColor}`,
+            borderRight: `1px solid ${this.context.muiTheme.palette.borderColor}`
         };
         let weekdays = date.weekDays();
         let weekContent = weekdays.map(d => (
