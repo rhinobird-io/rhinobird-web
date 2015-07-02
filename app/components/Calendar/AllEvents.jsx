@@ -47,6 +47,7 @@ let AllEvents = React.createClass({
                     data={this.state.normalEvents}
                     allDayData={this.state.allDayEvents}
                     rangeContent={this._rangeContent}
+                    allDayRangeContent={this._allDayRangeContent}
                     onDateChange={this._handleDateChange}
                     onRangeCreate={this._showCreateEventPopup}
                     onRangeCancel={this._dismissCreateEventPopup}
@@ -93,6 +94,18 @@ let AllEvents = React.createClass({
             allDayEvents: allDayEvents,
             normalEvents: normalEvents
         })
+    },
+
+    _allDayRangeContent(range) {
+        let style = {
+            height: "100%",
+            width: "100%",
+            padding: "0 4px",
+            backgroundColor: Colors.pink100
+        };
+        return (
+            <Flex.Layout center style={style}>{range.title}</Flex.Layout>
+        );
     },
 
     _rangeContent(range) {
