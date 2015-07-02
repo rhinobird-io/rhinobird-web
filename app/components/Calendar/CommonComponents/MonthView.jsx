@@ -6,7 +6,8 @@ const PerfectScroll = require('../../PerfectScroll');
 let MonthView = React.createClass({
     propTypes: {
         data: React.PropTypes.array,
-        date: React.PropTypes.object
+        date: React.PropTypes.object,
+        rangeContent: React.PropTypes.func
     },
 
     contextTypes: {
@@ -22,14 +23,21 @@ let MonthView = React.createClass({
 
     getInitialState() {
         return {
+            allRanges: this._parseData(this.props.data || [])
+        }
+    },
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.data !== this.props.data) {
+            this.setState({
+                allRanges: this._parseData(nextProps.data || [])
+            });
         }
     },
 
     render() {
         let {
             date,
-            data
         } = this.props;
 
         let styles = {
@@ -46,6 +54,18 @@ let MonthView = React.createClass({
                 {this._getMonthContent(date)}
             </Flex.Layout>
         )
+    },
+
+    _parseData(data) {
+        let result = {};
+        data.forEach(item => {
+            let format = Moment(item.from_time).format("YYYY-MM-DD");
+            if (!result[format]) {
+                result[format] = [];
+            }
+            result[format].push(item);
+        });
+        return result;
     },
 
     _getWeekDaysBar() {
@@ -100,18 +120,54 @@ let MonthView = React.createClass({
     },
 
     _getWeekContent(date) {
-        let style = {
-            width: 0,
-            padding: "0.2em 0.5em",
-            borderTop: `1px solid ${this.context.muiTheme.palette.borderColor}`,
-            borderRight: `1px solid ${this.context.muiTheme.palette.borderColor}`
+        let styles = {
+            outer: {
+                width: 0,
+                minHeight: 0,
+                overflow: "hidden",
+                padding: "0.2em 0.5em",
+                borderTop: `1px solid ${this.context.muiTheme.palette.borderColor}`,
+                borderRight: `1px solid ${this.context.muiTheme.palette.borderColor}`
+            },
+            dayHeader: {
+                padding: 2,
+                minHeight: 24,
+                fontSize: "1.2em"
+            },
+            rangeOuter: {
+                minHeight: 24,
+                padding: 2
+            },
+            rangeInner: {
+                backgroundColor: this.context.muiTheme.palette.primary3Color
+            }
+
         };
         let weekdays = date.weekDays();
-        let weekContent = weekdays.map(d => (
-           <Flex.Layout flex={1} style={style}>
-               {d.getDate()}
-           </Flex.Layout>
-        ));
+        let weekContent = weekdays.map(d => {
+            let dayRanges = this.state.allRanges[Moment(d).format("YYYY-MM-DD")] || [];
+
+            let dayContents = dayRanges.map(dayRange => {
+                let dayContent = null;
+                return (
+                    <div style={styles.rangeOuter}>
+                        <div style={styles.rangeInner}>
+                            123123123
+                        </div>
+                    </div>
+                );
+            });
+
+            return (
+                <Flex.Layout vertical flex={1} style={styles.outer}>
+                    <div style={styles.dayHeader}>{d.getDate()}</div>
+                    <Flex.Layout style={{height: 0}} vertical>
+                        {dayContents}
+                    </Flex.Layout>
+                </Flex.Layout>
+            )
+        });
+
         return (
             <Flex.Layout flex={1} horizontal stretch style={{minHeight: 100}}>
                 {weekContent}
