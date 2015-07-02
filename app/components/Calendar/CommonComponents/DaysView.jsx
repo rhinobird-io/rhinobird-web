@@ -62,6 +62,7 @@ let DaysView = React.createClass({
             style,
             dates,
             withAllDay,
+            allDayRangeContent,
             ...other
         } = this.props;
 
@@ -76,8 +77,6 @@ let DaysView = React.createClass({
             }
         };
 
-        console.log("AllDayData");
-        console.log(this.props.allDayData);
         let dateBars = <DaysHeader dates={dates} />;
         let dateContents = (
             <DaysContent {...other} ref="days" dates={dates} />
@@ -92,8 +91,7 @@ let DaysView = React.createClass({
                     height: 28
                 },
                 inner: {
-                    padding: "0 4px",
-                    fontSize: "0.8em",
+                    fontSize: "0.9em",
                     height: "100%",
                     backgroundColor: this.context.muiTheme.palette.accent3Color
                 }
@@ -104,18 +102,22 @@ let DaysView = React.createClass({
                 if (ranges.length > maxRange) {
                     maxRange = ranges.length;
                 }
-                let allDayContent = ranges.map(range => {
-                   return (
-                       <div style={rangeStyles.outer}>
-                           <Flex.Layout center style={rangeStyles.inner}>
-                               1231231123
-                           </Flex.Layout>
-                       </div>
-                   );
+                let allDayContents = ranges.map(range => {
+                    let allDayContent = null;
+                    if (allDayRangeContent) {
+                        allDayContent = allDayRangeContent(range);
+                    }
+                    return (
+                        <div style={rangeStyles.outer}>
+                            <Flex.Layout center style={rangeStyles.inner}>
+                                {allDayContent}
+                            </Flex.Layout>
+                        </div>
+                    );
                 });
                 return (
                     <Flex.Layout vertical stretch flex={1} style={{width: 0, borderLeft: "1px solid " + this.context.muiTheme.palette.borderColor}}>
-                        {allDayContent}
+                        {allDayContents}
                     </Flex.Layout>
                 );
             });
