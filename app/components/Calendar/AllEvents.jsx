@@ -21,12 +21,11 @@ let AllEvents = React.createClass({
 
     componentDidMount() {
         CalendarStore.addChangeListener(this._onChange);
-
         this._fetchEvents(this.refs.calendar.getDate(), this.refs.calendar.getViewType());
     },
 
     componentWillUnmount() {
-
+        CalendarStore.removeChangeListener(this._onChange);
     },
 
     getInitialState() {
@@ -66,6 +65,10 @@ let AllEvents = React.createClass({
     _fetchEvents(date, viewType) {
         if (viewType === "week") {
             CalendarActions.receiveByWeek(date);
+        } else if (viewType === "month") {
+            CalendarActions.receiveByMonth(date);
+        } else if (viewType === "date") {
+
         }
     },
 
@@ -79,6 +82,8 @@ let AllEvents = React.createClass({
 
         if (viewType === "week") {
             events = CalendarStore.getEventsByWeek(this.refs.calendar.getDate());
+        } else if (viewType === "month") {
+            events = CalendarStore.getEventsByMonth(this.refs.calendar.getDate());
         }
 
         let normalEvents = [];

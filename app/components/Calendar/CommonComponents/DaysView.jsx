@@ -125,7 +125,9 @@ let DaysView = React.createClass({
             headerHeight += 28 * maxRange;
             allDays = (
                 <Flex.Layout flex={1} horizontal style={{minHeight: 0}}>
-                    <Flex.Layout center style={{width: 60, textAlign: "right"}}>All Day</Flex.Layout>
+                    <Flex.Layout center style={{width: 60}}>
+                        <div style={{width: "100%", fontSize: "0.9em", padding: 4, textAlign: "right"}}>All Day</div>
+                    </Flex.Layout>
                     <Flex.Layout flex={1} stretch>
                         {allDaysContent}
                     </Flex.Layout>
