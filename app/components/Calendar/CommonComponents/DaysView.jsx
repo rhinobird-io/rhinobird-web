@@ -8,9 +8,12 @@ const PerfectScroll = require('../../PerfectScroll');
 
 let DaysView = React.createClass({
     propTypes: {
-        dates: React.PropTypes.arrayOf(React.PropTypes.object),
         data: React.PropTypes.array,
-        onRangeCreate: React.PropTypes.func
+        date: React.PropTypes.object,
+        withAllDay: React.PropTypes.bool,
+        allDayData: React.PropTypes.array,
+        onRangeCreate: React.PropTypes.func,
+        allDayRangeContent: React.PropTypes.func
     },
 
     contextTypes: {
@@ -20,6 +23,20 @@ let DaysView = React.createClass({
     getDefaultProps() {
         return {
             dates: []
+        }
+    },
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.allDayData !== this.props.allDayData) {
+            this.setState({
+               allDayRanges: this._parseAllDayData(nextProps.allDayData || [])
+            });
+        }
+    },
+
+    getInitialState() {
+        return {
+            allDayRanges: this._parseAllDayData(this.props.allDayData || [])
         }
     },
 
@@ -44,6 +61,7 @@ let DaysView = React.createClass({
         let {
             style,
             dates,
+            withAllDay,
             ...other
         } = this.props;
 
@@ -58,14 +76,60 @@ let DaysView = React.createClass({
             }
         };
 
-        console.log("Update")
-        console.log(this.props.data);
+        console.log("AllDayData");
+        console.log(this.props.allDayData);
         let dateBars = <DaysHeader dates={dates} />;
         let dateContents = (
             <DaysContent {...other} ref="days" dates={dates} />
         );
 
-        let addons = null;
+        let allDays = null;
+        let headerHeight = 100;
+        if (withAllDay) {
+            let rangeStyles = {
+                outer: {
+                    padding: 2,
+                    height: 28
+                },
+                inner: {
+                    padding: "0 4px",
+                    fontSize: "0.8em",
+                    height: "100%",
+                    backgroundColor: this.context.muiTheme.palette.accent3Color
+                }
+            };
+            let maxRange = 1;
+            let allDaysContent = dates.map(date => {
+                let ranges = this.state.allDayRanges[Moment(date).format("YYYY-MM-DD")] || [];
+                if (ranges.length > maxRange) {
+                    maxRange = ranges.length;
+                }
+                let allDayContent = ranges.map(range => {
+                   return (
+                       <div style={rangeStyles.outer}>
+                           <Flex.Layout center style={rangeStyles.inner}>
+                               1231231123
+                           </Flex.Layout>
+                       </div>
+                   );
+                });
+                return (
+                    <Flex.Layout vertical stretch flex={1} style={{width: 0, borderLeft: "1px solid " + this.context.muiTheme.palette.borderColor}}>
+                        {allDayContent}
+                    </Flex.Layout>
+                );
+            });
+
+            headerHeight += 28 * maxRange;
+            allDays = (
+                <Flex.Layout flex={1} horizontal style={{minHeight: 0}}>
+                    <Flex.Layout center style={{width: 60, textAlign: "right"}}>All Day</Flex.Layout>
+                    <Flex.Layout flex={1} stretch>
+                        {allDaysContent}
+                    </Flex.Layout>
+                </Flex.Layout>
+            );
+        }
 
         let table = (
             <Flex.Layout horitonzal style={{overflow: "hidden"}}>
@@ -75,23 +139,35 @@ let DaysView = React.createClass({
                 </Flex.Layout>
             </Flex.Layout>
         );
+
         return (
-            <Flex.Layout vertical style={{position: "relative", minHeight: 0, overflow: "hidden", borderTop: "1px solid " + this.context.muiTheme.palette.borderColor}}>
-                <Flex.Layout ref="header" vertical style={{minHeight: 120}}>
-                    <Flex.Layout horizontal>
+            <Flex.Layout vertical stretch style={{position: "relative", minHeight: 0, overflow: "hidden", borderTop: "1px solid " + this.context.muiTheme.palette.borderColor}}>
+                <Flex.Layout ref="header" vertical style={{minHeight: headerHeight}}>
+                    <Flex.Layout horizontal style={{minHeight: 100}}>
                         <div style={{width: 60, borderBottom: "1px solid " + this.context.muiTheme.palette.borderColor}}></div>
                         {dateBars}
                     </Flex.Layout>
-                    <Flex.Layout horizontal>
-                        <div style={{width: 60, borderBottom: "1px solid " + this.context.muiTheme.palette.borderColor}}></div>
-                        {addons}
-                    </Flex.Layout>
+                    {allDays}
                 </Flex.Layout>
-                <PerfectScroll ref="content" style={{position: "relative", borderTop: "1px solid " + this.context.muiTheme.palette.borderColor}} alwaysVisible>
-                    {table}
-                </PerfectScroll>
+                <Flex.Layout flex={1}>
+                    <PerfectScroll ref="content" style={{position: "relative", width: "100%", borderTop: "1px solid " + this.context.muiTheme.palette.borderColor}} alwaysVisible>
+                        {table}
+                    </PerfectScroll>
+                </Flex.Layout>
             </Flex.Layout>
         );
+    },
+
+    _parseAllDayData(allDayData) {
+        let result = {};
+        allDayData.forEach(item => {
+            let format = Moment(item.from_time).format("YYYY-MM-DD");
+            if (!result[format]) {
+                result[format] = [];
+            }
+            result[format].push(item);
+        });
+        return result;
     },
 
     _scrollToNow() {
