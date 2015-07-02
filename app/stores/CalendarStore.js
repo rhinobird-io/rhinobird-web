@@ -308,6 +308,9 @@ let CalendarStore = assign({}, BaseStore, {
                 break;
             case ActionTypes.RECEIVE_EVENTS_BY_WEEK:
                 addEvents(data);
+                let week = payload.date;
+                let weekStart = new Date(week).firstDayOfWeek();
+                _weeklyLoaded[Moment(weekStart).format("YYYY-MM-DD")] = true;
                 break;
             default:
                 changed = false;

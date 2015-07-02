@@ -49,7 +49,8 @@ let CalendarAction =  {
             $.get(`/platform/api/events/week/${date}`).done(data => {
                 AppDispatcher.dispatch({
                     type: CalendarActionTypes.RECEIVE_EVENTS_BY_WEEK,
-                    data: data
+                    data: data,
+                    date: date
                 });
             }).fail(e => {
                 console.error(e);

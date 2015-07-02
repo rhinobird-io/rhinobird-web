@@ -22,9 +22,7 @@ let AllEvents = React.createClass({
     componentDidMount() {
         CalendarStore.addChangeListener(this._onChange);
 
-        if (this.refs.calendar.getViewType() === "week") {
-            CalendarActions.receiveByWeek(this.refs.calendar.getDate());
-        }
+        this._fetchEvents(this.refs.calendar.getDate(), this.refs.calendar.getViewType());
     },
 
     componentWillUnmount() {
@@ -47,6 +45,7 @@ let AllEvents = React.createClass({
                     exclusive={false}
                     data={this.state.events}
                     rangeContent={this._rangeContent}
+                    onDateChange={this._handleDateChange}
                     onRangeCreate={this._showCreateEventPopup}
                     onRangeCancel={this._dismissCreateEventPopup}
                     onRangeClicked={this._showEventDetailPopup}
@@ -61,6 +60,16 @@ let AllEvents = React.createClass({
         )
     },
 
+    _fetchEvents(date, viewType) {
+        if (viewType === "week") {
+            CalendarActions.receiveByWeek(date);
+        }
+    },
+
+    _handleDateChange(date, viewType) {
+        this._fetchEvents(date, viewType);
+    },
+
     _onChange() {
         let viewType = this.refs.calendar.getViewType();
         let events = [];
@@ -72,6 +81,7 @@ let AllEvents = React.createClass({
             events: events
         })
     },
+
 
     _rangeContent(range) {
         let creatorId = range.creator_id;
