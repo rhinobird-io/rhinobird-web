@@ -129,6 +129,10 @@ Date.prototype.firstDayOfMonth = function() {
     return date;
 };
 
+Date.prototype.monthDays = function() {
+
+};
+
 let addEvents = function(events) {
     let res = [];
     if (Array.isArray(events)) {
@@ -200,13 +204,8 @@ let CalendarStore = assign({}, BaseStore, {
     },
 
     getEventsByDates(dateArray) {
-
-    },
-
-    getEventsByWeek(date) {
-        let days = new Date(date).weekDays();
         let res = [];
-        days.forEach(day => {
+        dateArray.forEach(day => {
             let format = Moment(day).format("YYYY-MM-DD");
             if (_allEvents[format]) {
                 let events = Object.keys(_allEvents[format]).map(k => _allEvents[format][k]);
@@ -214,6 +213,16 @@ let CalendarStore = assign({}, BaseStore, {
             }
         });
         return res;
+    },
+
+    getEventsByWeek(date) {
+        let days = new Date(date).weekDays();
+        return this.getEventsByDates(days)
+    },
+
+    getEventsByMonth(date) {
+        let days = new Date(date).monthDays();
+        return this.getEventsByDates(days)
     },
 
     getAllDayEventsByDate(date) {
@@ -313,6 +322,10 @@ let CalendarStore = assign({}, BaseStore, {
                 _weeklyLoaded[Moment(weekStart).format("YYYY-MM-DD")] = true;
                 break;
             case ActionTypes.RECEIVE_EVENTS_BY_MONTH:
+                addEvents(data);
+                let month = payload.date;
+                let monthStart = new Date(month).firstDayOfMonth();
+                _monthlyLoaded[Moment(monthStart).format("YYYY-MM-DD")] = true;
                 break;
             default:
                 changed = false;
