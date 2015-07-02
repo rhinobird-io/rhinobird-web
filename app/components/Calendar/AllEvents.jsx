@@ -41,9 +41,11 @@ let AllEvents = React.createClass({
             <Flex.Layout vertical style={{height: "100%", WebkitUserSelect: "none", userSelect: "none"}}>
                 <CalendarView
                     ref="calendar"
+                    withAllDay={true}
                     date={new Date()}
                     exclusive={false}
-                    data={this.state.events}
+                    data={this.state.normalEvents}
+                    allDayData={this.state.allDayEvents}
                     rangeContent={this._rangeContent}
                     onDateChange={this._handleDateChange}
                     onRangeCreate={this._showCreateEventPopup}
@@ -77,11 +79,21 @@ let AllEvents = React.createClass({
         if (viewType === "week") {
             events = CalendarStore.getEventsByWeek(this.refs.calendar.getDate());
         }
+
+        let normalEvents = [];
+        let allDayEvents = [];
+        events.forEach(event => {
+            if (event.full_day) {
+                allDayEvents.push(event);
+            } else {
+                normalEvents.push(event);
+            }
+        });
         this.setState({
-            events: events
+            allDayEvents: allDayEvents,
+            normalEvents: normalEvents
         })
     },
-
 
     _rangeContent(range) {
         let creatorId = range.creator_id;
@@ -89,7 +101,7 @@ let AllEvents = React.createClass({
         let styles = {
             wrapper: {
                 height: "100%",
-                padding: 6
+                padding: "0 4px"
             },
             timeRange: {
                 fontSize: "0.8em",

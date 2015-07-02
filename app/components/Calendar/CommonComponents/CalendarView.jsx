@@ -25,10 +25,15 @@ let NEXT_TOOLTIPS = {
 
 let CalendarView = React.createClass({
     propType: {
+        data: React.PropTypes.array,
         date: React.PropTypes.object,
+        withAllDay: React.PropTypes.bool,
+        allDayData: React.PropTypes.array,
+        rangeContent: React.PropTypes.func,
         onDateChange: React.PropTypes.func,
         onRangeCreate: React.PropTypes.func,
         onTypeChange: React.PropTypes.string,
+        allDayRangeContent: React.PropTypes.func,
         initialViewType: React.PropTypes.oneOf(VIEW_TYPES),
         views: React.PropTypes.arrayOf(React.PropTypes.oneOf(VIEW_TYPES))
     },
@@ -37,6 +42,7 @@ let CalendarView = React.createClass({
         return {
             date: new Date(),
             views: VIEW_TYPES,
+            withAllDay: false,
             initialViewType: "week"
         }
     },
@@ -80,12 +86,13 @@ let CalendarView = React.createClass({
             date,
             ...other
         } = this.props;
+
         let viewType = this.state.viewType;
         let switcher = this._getViewTypeSwitcher();
         let calendarHeader = this._getCalendarHeader(viewType);
 
         console.log("Calendar Update")
-        console.log(this.props.data);
+        console.log(this.props.allDayData);
         let calendarView = null;
         if (viewType === "week") {
             calendarView = (
@@ -124,7 +131,6 @@ let CalendarView = React.createClass({
         }
 
         let currentDate = this.state.date;
-        let headerDateRange = null;
         let rangeStart = null, rangeEnd = null;
         if (viewType === "week") {
             let days = currentDate.weekDays();
@@ -160,7 +166,7 @@ let CalendarView = React.createClass({
             }
         }
 
-        headerDateRange = `${Moment(rangeStart).format(startFormat)}`;
+        let headerDateRange = `${Moment(rangeStart).format(startFormat)}`;
         if (endFormat) {
             headerDateRange += ` ~ ${Moment(rangeEnd).format(endFormat)}`;
         }
