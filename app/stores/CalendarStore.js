@@ -269,6 +269,11 @@ let CalendarStore = assign({}, BaseStore, {
         return this.getEventsByDays(days)
     },
 
+    getEventsByFourDays(date) {
+        let days = new Date(date).fourDays();
+        return this.getEventsByDays(days);
+    },
+
     getAllDayEventsByDate(date) {
         let formattedDate = _formatDate(date);
         let events = [];
