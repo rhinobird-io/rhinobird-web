@@ -7,7 +7,7 @@ let MonthView = React.createClass({
     propTypes: {
         data: React.PropTypes.array,
         date: React.PropTypes.object,
-        rangeContent: React.PropTypes.func
+        monthRangeContent: React.PropTypes.func
     },
 
     contextTypes: {
@@ -136,12 +136,13 @@ let MonthView = React.createClass({
             },
             rangeOuter: {
                 minHeight: 24,
-                padding: 2
+                padding: 2,
+                overflow: "hidden"
             },
             rangeInner: {
+                padding: "0 4px",
                 backgroundColor: this.context.muiTheme.palette.primary3Color
             }
-
         };
         let weekdays = date.weekDays();
         let weekContent = weekdays.map(d => {
@@ -149,10 +150,13 @@ let MonthView = React.createClass({
 
             let dayContents = dayRanges.map(dayRange => {
                 let dayContent = null;
+                if (this.props.monthRangeContent) {
+                    dayContent = this.props.monthRangeContent(dayRange);
+                }
                 return (
                     <div style={styles.rangeOuter}>
                         <div style={styles.rangeInner}>
-                            123123123
+                            {dayContent}
                         </div>
                     </div>
                 );
@@ -161,8 +165,10 @@ let MonthView = React.createClass({
             return (
                 <Flex.Layout vertical flex={1} style={styles.outer}>
                     <div style={styles.dayHeader}>{d.getDate()}</div>
-                    <Flex.Layout style={{height: 0}} vertical>
-                        {dayContents}
+                    <Flex.Layout flex={1} style={{height: 0}}>
+                        <PerfectScroll style={{position: "relative", width: "100%"}}>
+                            {dayContents}
+                        </PerfectScroll>
                     </Flex.Layout>
                 </Flex.Layout>
             )
