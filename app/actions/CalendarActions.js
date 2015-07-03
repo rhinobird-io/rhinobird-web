@@ -40,6 +40,25 @@ let CalendarAction =  {
         }
     },
 
+    receiveByDay(date, success) {
+        console.log("jioasdf");
+        if (CalendarStore.isDayLoaded(date)) {
+            AppDispatcher.dispatch({
+                type: CalendarActionTypes.UPDATE_VIEW
+            });
+        } else {
+            $.get(`/platform/api/events/day/${date}`).done(data => {
+                AppDispatcher.dispatch({
+                    type: CalendarActionTypes.RECEIVE_EVENTS_BY_DAY,
+                    data: data,
+                    date: date
+                });
+            }).fail(e => {
+                console.error(e);
+            });
+        }
+    },
+
     receiveByMonth(date, success) {
         if (CalendarStore.isMonthLoaded(date)) {
             AppDispatcher.dispatch({

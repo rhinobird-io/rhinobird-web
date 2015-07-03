@@ -47,6 +47,7 @@ let AllEvents = React.createClass({
                     rangeContent={this._rangeContent}
                     allDayData={this.state.allDayEvents}
                     onDateChange={this._handleDateChange}
+                    onViewTypeChange={this._handleViewTypeChange}
                     monthRangeContent={this._monthRangeContent}
                     onRangeCreate={this._showCreateEventPopup}
                     onRangeClicked={this._showEventDetailPopup}
@@ -64,13 +65,19 @@ let AllEvents = React.createClass({
     },
 
     _fetchEvents(date, viewType) {
+        console.log(viewType);
+
         if (viewType === "week") {
             CalendarActions.receiveByWeek(date);
         } else if (viewType === "month") {
             CalendarActions.receiveByMonth(date);
-        } else if (viewType === "date") {
-
+        } else if (viewType === "day") {
+            CalendarActions.receiveByDay(date);
         }
+    },
+
+    _handleViewTypeChange(date, viewType) {
+        this._fetchEvents(date, viewType);
     },
 
     _handleDateChange(date, viewType) {
@@ -80,13 +87,18 @@ let AllEvents = React.createClass({
     _onChange() {
         let viewType = this.refs.calendar.getViewType();
         let events = [];
-
+        let date = this.refs.calendar.getDate();
         if (viewType === "week") {
-            events = CalendarStore.getEventsByWeek(this.refs.calendar.getDate());
+            events = CalendarStore.getEventsByWeek(date);
         } else if (viewType === "month") {
-            events = CalendarStore.getEventsByMonth(this.refs.calendar.getDate());
+            events = CalendarStore.getEventsByMonth(date);
+        } else if (viewType === "day") {
+            events = CalendarStore.getEventsByDay(date);
+        } else if (viewType === "fourDays") {
+
         }
 
+        console.log(events);
         let normalEvents = [];
         let allDayEvents = [];
         events.forEach(event => {
