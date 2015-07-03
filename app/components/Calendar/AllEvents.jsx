@@ -91,7 +91,7 @@ let AllEvents = React.createClass({
         if (viewType === "week") {
             events = CalendarStore.getEventsByWeek(date);
         } else if (viewType === "month") {
-            events = CalendarStore.getEventsByMonth(date);
+            events = CalendarStore.getEventsByCalendarMonth(date);
         } else if (viewType === "day") {
             events = CalendarStore.getEventsByDay(date);
         } else if (viewType === "fourDays") {
