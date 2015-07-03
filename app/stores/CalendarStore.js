@@ -144,7 +144,22 @@ Date.prototype.monthDays = function() {
 
 Date.prototype.calendarMonthDays = function() {
     let result = this.monthDays();
-    return result;
+    let firstDay = result[0];
+    let lastDay = result[result.length - 1];
+    let pres = [];
+    let nexts = [];
+    for (let i = 0; i < firstDay.getDay(); i++) {
+        let preDay = new Date(firstDay);
+        preDay.setDate(i - firstDay.getDay());
+        pres.push(preDay);
+    }
+    for (let i = lastDay.getDay() + 1; i <= 6; i++) {
+        let nextDay = new Date(lastDay);
+        nextDay.setDate(i - lastDay.getDay());
+        nexts.push(nextDay);
+    }
+
+    return pres.concat(result).concat(nexts);
 };
 
 let addEvents = function(events) {
@@ -223,7 +238,6 @@ let CalendarStore = assign({}, BaseStore, {
 
     getEventsByDays(dateArray) {
         let res = [];
-        console.log(_allEvents);
         dateArray.forEach(day => {
             let format = Moment(day).format("YYYY-MM-DD");
             if (_allEvents[format]) {
@@ -252,7 +266,7 @@ let CalendarStore = assign({}, BaseStore, {
 
     getEventsByCalendarMonth(date) {
         let days = new Date(date).calendarMonthDays();
-        return this.getEventsByDates(days)
+        return this.getEventsByDays(days)
     },
 
     getAllDayEventsByDate(date) {
