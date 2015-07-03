@@ -130,7 +130,21 @@ Date.prototype.firstDayOfMonth = function() {
 };
 
 Date.prototype.monthDays = function() {
+    let month = this.getMonth();
+    let result = [];
+    for (let i = 0; i <= 30; i++) {
+        let date = new Date(this);
+        date.setDate(i - this.getDay());
+        if (date.getMonth() === month) {
+            result.push(date);
+        }
+    }
+    return result;
+};
 
+Date.prototype.calendarMonthDays = function() {
+    let result = this.monthDays();
+    return result;
 };
 
 let addEvents = function(events) {
@@ -150,9 +164,13 @@ let addEvents = function(events) {
 };
 
 let CalendarStore = assign({}, BaseStore, {
-    isDateLoaded(date) {
+    isDayLoaded(date) {
         let format = Moment(new Date(date)).format("YYYY-MM-DD");
-        return !!_dailyLoaded[format];
+        let firstDayOfMonth = new Date(date);
+        let firstDayOfWeek = new Date(date);
+        firstDayOfMonth.setDate(1);
+        firstDayOfWeek.setDate(-firstDayOfWeek.getDay());
+        return !!_dailyLoaded[format] || !!_weeklyLoaded[firstDayOfWeek] || !!_monthlyLoaded[firstDayOfMonth];
     },
 
     isWeekLoaded(date) {
@@ -203,8 +221,9 @@ let CalendarStore = assign({}, BaseStore, {
         return events;
     },
 
-    getEventsByDates(dateArray) {
+    getEventsByDays(dateArray) {
         let res = [];
+        console.log(_allEvents);
         dateArray.forEach(day => {
             let format = Moment(day).format("YYYY-MM-DD");
             if (_allEvents[format]) {
@@ -215,13 +234,24 @@ let CalendarStore = assign({}, BaseStore, {
         return res;
     },
 
+    getEventsByDay(date) {
+        let day = new Date(date);
+        return this.getEventsByDays([day]);
+    },
+
     getEventsByWeek(date) {
         let days = new Date(date).weekDays();
-        return this.getEventsByDates(days)
+        return this.getEventsByDays(days)
     },
 
     getEventsByMonth(date) {
         let days = new Date(date).monthDays();
+        console.log(days);
+        return this.getEventsByDays(days)
+    },
+
+    getEventsByCalendarMonth(date) {
+        let days = new Date(date).calendarMonthDays();
         return this.getEventsByDates(days)
     },
 
@@ -323,9 +353,13 @@ let CalendarStore = assign({}, BaseStore, {
                 break;
             case ActionTypes.RECEIVE_EVENTS_BY_MONTH:
                 addEvents(data);
+                console.log("RECEIVE by month")
                 let month = payload.date;
                 let monthStart = new Date(month).firstDayOfMonth();
                 _monthlyLoaded[Moment(monthStart).format("YYYY-MM-DD")] = true;
+                break;
+            case ActionTypes.RECEIVE_EVENTS_BY_DAY:
+                addEvents(data);
                 break;
             default:
                 changed = false;

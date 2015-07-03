@@ -33,6 +33,7 @@ let CalendarView = React.createClass({
         onDateChange: React.PropTypes.func,
         onRangeCreate: React.PropTypes.func,
         onTypeChange: React.PropTypes.string,
+        onViewTypeChange: React.PropTypes.func,
         allDayRangeContent: React.PropTypes.func,
         initialViewType: React.PropTypes.oneOf(VIEW_TYPES),
         views: React.PropTypes.arrayOf(React.PropTypes.oneOf(VIEW_TYPES))
@@ -201,7 +202,13 @@ let CalendarView = React.createClass({
         let viewTypes = views.map((type, index) => <span key={`switcher${index}`} name={type}>{type}</span>);
         return (
             <Flex.Layout  horizontal center centerJustified style={{minHeight: 48, borderTop: "1px solid " + muiTheme.palette.borderColor}}>
-                <Selector value={this.state.viewType} onSelectChange={v => this.setState({viewType: v})}>
+                <Selector value={this.state.viewType}
+                          onSelectChange={v => {
+                            this.setState({viewType: v});
+                            if (this.props.onViewTypeChange) {
+                                this.props.onViewTypeChange(this.state.date, v);
+                            }
+                          }}>
                     {viewTypes}
                 </Selector>
             </Flex.Layout>
