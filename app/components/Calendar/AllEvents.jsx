@@ -44,13 +44,14 @@ let AllEvents = React.createClass({
                     date={new Date()}
                     exclusive={false}
                     data={this.state.normalEvents}
-                    allDayData={this.state.allDayEvents}
                     rangeContent={this._rangeContent}
-                    allDayRangeContent={this._allDayRangeContent}
+                    allDayData={this.state.allDayEvents}
                     onDateChange={this._handleDateChange}
+                    monthRangeContent={this._monthRangeContent}
                     onRangeCreate={this._showCreateEventPopup}
-                    onRangeCancel={this._dismissCreateEventPopup}
                     onRangeClicked={this._showEventDetailPopup}
+                    onRangeCancel={this._dismissCreateEventPopup}
+                    allDayRangeContent={this._allDayRangeContent}
                     awayExceptions={() => this.refs.createEventPopup.getDOMNode()} />
                 {this._getCreateEventPopup()}
                 <Link to="create-event">
@@ -111,6 +112,10 @@ let AllEvents = React.createClass({
         return (
             <Flex.Layout center style={style}>{range.title}</Flex.Layout>
         );
+    },
+
+    _monthRangeContent(range) {
+        return <div>{range.title}</div>;
     },
 
     _rangeContent(range) {
