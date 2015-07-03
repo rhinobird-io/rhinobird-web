@@ -65,14 +65,14 @@ let AllEvents = React.createClass({
     },
 
     _fetchEvents(date, viewType) {
-        console.log(viewType);
-
         if (viewType === "week") {
             CalendarActions.receiveByWeek(date);
         } else if (viewType === "month") {
             CalendarActions.receiveByMonth(date);
         } else if (viewType === "day") {
             CalendarActions.receiveByDay(date);
+        } else if (viewType === "fourDays") {
+
         }
     },
 
@@ -95,10 +95,9 @@ let AllEvents = React.createClass({
         } else if (viewType === "day") {
             events = CalendarStore.getEventsByDay(date);
         } else if (viewType === "fourDays") {
-
+            events = CalendarStore.getEventsByFourDays(date);
         }
 
-        console.log(events);
         let normalEvents = [];
         let allDayEvents = [];
         events.forEach(event => {

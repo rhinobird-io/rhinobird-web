@@ -308,12 +308,15 @@ let DayContent = React.createClass({
     },
 
     _handleMouseDown(e) {
-        let node = this.getDOMNode();
-        let rect = node.getBoundingClientRect();
-        this.startPosY = e.clientY - rect.top;
-        this.mouseDown = true;
-        document.addEventListener("mousemove", this._handleMouseMove);
-        document.addEventListener("mouseup", this._handleMouseUp)
+        console.log(e.button);
+        if (e.button === 0) {
+            let node = this.getDOMNode();
+            let rect = node.getBoundingClientRect();
+            this.startPosY = e.clientY - rect.top;
+            this.mouseDown = true;
+            document.addEventListener("mousemove", this._handleMouseMove);
+            document.addEventListener("mouseup", this._handleMouseUp)
+        }
     },
 
     _handleMouseMove(e) {
