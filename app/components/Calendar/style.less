@@ -48,3 +48,50 @@
     transform: rotate(-90deg);
   }
 }
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,.7);
+  z-index: 1000;
+}
+.detail-popup {
+  background-color: #efefef;
+  cursor: pointer;
+  display: block;
+  margin-bottom: 1px;
+  padding: 8px 12px;
+  width: 100px;
+  &:hover {
+    background-color: #ddd;
+  }
+  .example-enter & {
+    opacity: 0;
+    transform:   translate(-250px,0);
+    transform: translate3d(-250px,0,0);
+  }
+  .example-enter.example-enter-active & {
+    opacity: 1;
+    transform:   translate(0,0);
+    transform: translate3d(0,0,0);
+    transition-property: transform, opacity;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.175, 0.665, 0.320, 1), linear;
+  }
+  .example-leave & {
+    opacity: 1;
+    transform:   translate(0,0,0);
+    transform: translate3d(0,0,0);
+    transition-property: transform, opacity;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.175, 0.665, 0.320, 1), linear;
+  }
+  .example-leave.example-leave-active & {
+    opacity: 0;
+    transform:   translate(250px,0);
+    transform: translate3d(250px,0,0);
+  }
+}
