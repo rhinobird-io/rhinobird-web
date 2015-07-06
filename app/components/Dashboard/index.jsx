@@ -56,7 +56,7 @@ module.exports = React.createClass({
     render: function () {
         let records = this.state.dashboardRecords;
         return <PerfectScroll className="dashboard">
-            <FileUploader></FileUploader>
+            <FileUploader maxSize="1024000" minSize="1024" acceptTypes={["js", "jpg"]}></FileUploader>
             <InfiniteScroll lowerThreshold={this.state.noMore? undefined : 300} onLowerTrigger={()=>{
                 let userId = LoginStore.getUser().id;
                 let lastId = this.state.dashboardRecords.last().get('id');

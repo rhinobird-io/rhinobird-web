@@ -4,26 +4,29 @@ const React = require("react");
 
 const FileName = React.createClass({
 
-    setName(name) {
-        this.setState({
-            name: name
-        });
+    setFile(file) {
+        if(file)
+            this.setState({
+                name: file.name,
+                id: file.id
+            });
+        else
+            this.setState({
+                name: '',
+                id: ''
+            });
     },
 
     getInitialState() {
         return {
-            name: ''
+            name: '',
+            id: ''
         }
     },
 
-    componentDidMount() {
-    },
-
-
-
     render() {
         return (
-            <span>{this.state.name}</span>
+            <a href={`/file/files/${this.state.id}/download`}>{this.state.name}</a>
         );
     }
 });
