@@ -179,14 +179,11 @@ let DayContent = React.createClass({
                         for (let i2 = 0; i2 < columns[i1].length; i2++) {
                             let row = columns[i1][i2];
                             if (from >= row.from && from <= row.to) {
-                                console.log(sorted[j]);
                                 hasPlace = false;
                                 break loop3;
                             }
                         }
                         if (hasPlace) {
-                            console.log(`${i1}`);
-                            console.log(sorted[j]);
                             columns[i1].push(sorted[j]);
                             placed = true;
                             break loop2;
@@ -308,7 +305,6 @@ let DayContent = React.createClass({
     },
 
     _handleMouseDown(e) {
-        console.log(e.button);
         if (e.button === 0) {
             let node = this.getDOMNode();
             let rect = node.getBoundingClientRect();
