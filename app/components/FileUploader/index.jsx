@@ -7,11 +7,20 @@ const UploadResult = require('./UploadResult');
 const Item = require("../Flex").Item;
 import Constants from './constants';
 
+/*
+  Usage: <FileUploader maxSize="1024000" minSize="1024" acceptTypes={["js", "jpg"]} afterUpload={this.afterUpload}></FileUploader>
+ afterUpload(result){
+    console.log(result.result);
+    console.log(result.error);
+    console.log(result.file);
+ },
+ */
 const FileUploader = React.createClass({
     propTypes: {
         acceptTypes: React.PropTypes.array,
         maxSize: React.PropTypes.number.isRequired,
-        minSize: React.PropTypes.number
+        minSize: React.PropTypes.number,
+        afterUpload: React.PropTypes.func
     },
 
     getDefaultProps() {
@@ -31,6 +40,7 @@ const FileUploader = React.createClass({
             this.refs.fileName.setFile(undefined);
             this.refs.uploadResult.setResult(result.error);
         }
+        this.props.afterUpload(result);
     },
     render() {
         return (

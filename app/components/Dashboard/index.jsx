@@ -7,7 +7,6 @@ const Immutable = require('immutable');
 const MUI = require('material-ui');
 const Flex = require('../Flex');
 const Common = require('../Common');
-const FileUploader = require('../FileUploader');
 
 if ($.mockjax) {
     $.mockjax({
@@ -56,7 +55,6 @@ module.exports = React.createClass({
     render: function () {
         let records = this.state.dashboardRecords;
         return <PerfectScroll className="dashboard">
-            <FileUploader maxSize="1024000" minSize="1024" acceptTypes={["js", "jpg"]}></FileUploader>
             <InfiniteScroll lowerThreshold={this.state.noMore? undefined : 300} onLowerTrigger={()=>{
                 let userId = LoginStore.getUser().id;
                 let lastId = this.state.dashboardRecords.last().get('id');
