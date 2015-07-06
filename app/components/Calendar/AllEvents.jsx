@@ -12,6 +12,7 @@ const CalendarStore = require('../../stores/CalendarStore');
 const CalendarActions = require('../../actions/CalendarActions');
 const CalendarView = require('../Calendar/CommonComponents').CalendarView;
 const ReactTransitionGroup = React.addons.TransitionGroup;
+const EventDetailContent = require('./EventDetailContent');
 require('./style.less');
 
 var Drawer = React.createClass({
@@ -58,7 +59,7 @@ var DrawerInner = React.createClass({
     componentWillEnter: function(cb) {
         var $el = $(this.getDOMNode());
         let startPos = this.props.start;
-        $el.stop(true).css(startPos).animate({height:400,width:600,position:"fixed",top:"50%", marginTop:-200,left:"50%",marginLeft:-300}, 200, cb);
+        $el.stop(true).css(startPos).animate({height:600,width:500,position:"fixed",top:"50%", marginTop:-300,left:"50%",marginLeft:-250}, 200, cb);
     },
     componentWillLeave: function(cb) {
         var $el = $(this.getDOMNode());
@@ -68,7 +69,7 @@ var DrawerInner = React.createClass({
         startPos.marginLeft=0;
         console.log(startPos);
 
-        $el.stop(true).css({height:400,width:600,position:"fixed",top:"50%", marginTop:-200,left:"50%",marginLeft:-300}).animate(startPos, 200, cb);
+        $el.stop(true).css({height:600,width:500,position:"fixed",top:"50%", marginTop:-300,left:"50%",marginLeft:-250}).animate(startPos, 200, cb);
     },
     render: function() {
         return <div className="drawer" ref="drawer" style={this.props.style}>{this.props.children}</div>;
@@ -101,7 +102,7 @@ let AllEvents = React.createClass({
     render() {
         let detailPopup = null;
         if (this.state.showDetailPopup) {
-            detailPopup = this._getEventDetailPopup();
+            detailPopup = this._getEventDetailPopup(this.state.currentShownEvent);
         }
         return (
             <Flex.Layout vertical style={{height: "100%", WebkitUserSelect: "none", userSelect: "none"}}>
@@ -123,7 +124,7 @@ let AllEvents = React.createClass({
                     awayExceptions={() => this.refs.createEventPopup.getDOMNode()} />
                 {this._getCreateEventPopup()}
                 {this.state.showDetailPopup && <div className="backdrop" onClick={this._dismissEventDetailPopup}></div>}
-                    <Drawer ref="drawer" start={this.state.showDetailAnimationStart} open={this.state.showDetailPopup} style={{zIndex:1001,width:200,height:200,background:"red",position:"fixed", top:0, left:0}}>
+                    <Drawer ref="drawer" start={this.state.showDetailAnimationStart} open={this.state.showDetailPopup} style={{zIndex:1001,background:"white",position:"fixed", top:0, left:0}}>
                         {detailPopup}
                     </Drawer>
                 <Link to="create-event">
@@ -289,7 +290,7 @@ let AllEvents = React.createClass({
         );
     },
 
-    _getEventDetailPopup() {
+    _getEventDetailPopup(event) {
         let style = {
             position: "fixed",
             width: 600,
@@ -303,7 +304,7 @@ let AllEvents = React.createClass({
         };
         return (
             <div key="detailPopup" style={{zIndex:1001}}>
-                joiajsodjfasdfasfd
+                <EventDetailContent event={event} />
             </div>
         );
     },
@@ -362,7 +363,8 @@ let AllEvents = React.createClass({
                 top: rect.top,
                 width: rect.width,
                 height: rect.height
-            }
+            },
+            currentShownEvent: range
         });
     },
     _dismissEventDetailPopup() {
