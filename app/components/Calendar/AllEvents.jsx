@@ -183,18 +183,29 @@ let AllEvents = React.createClass({
 
     _getCreateEventPopup() {
         let className = "event-popup";
-        if (this.state.createEventPopupPos === 'r') {
+        let createEventPopupPos = this.state.createEventPopupPos;
+        let selfAlignOrigin = "lt",
+            relatedAlignOrigin = "rt";
+        if (createEventPopupPos === "r") {
             className += " right";
-        } else {
+        } else if (createEventPopupPos === "l") {
             className += " left";
+        } else if (createEventPopupPos === "t") {
+            className += " top";
+            selfAlignOrigin = "lb";
+            relatedAlignOrigin = "lt";
+        } else if (createEventPopupPos === "b") {
+            className += " bottom";
+            selfAlignOrigin = "lt";
+            relatedAlignOrigin = "lb";
         }
 
         return (
             <Popup
                 position="none"
                 ref="createEventPopup"
-                selfAlignOrigin="lt"
-                relatedAlignOrigin="rt"
+                selfAlignOrigin={selfAlignOrigin}
+                relatedAlignOrigin={relatedAlignOrigin}
                 className={className}
                 style={{overflow: "visible !important"}}>
                 <div style={{minWidth: 250}}>
@@ -213,16 +224,30 @@ let AllEvents = React.createClass({
         let newRect = {
             left: rect.left,
             width: rect.width + 10,
-            top: rect.top - (createEventPopup.getDOMNode().clientHeight - rect.height) / 2,
+            top: rect.top,
             height: rect.height
         };
 
-        if (createEventPopup.getDOMNode().clientWidth > window.innerWidth - rect.right) {
+        let popupNode = createEventPopup.getDOMNode();
+        if (popupNode.clientWidth < window.innerWidth - rect.right) {
+            position = 'r';
+            newRect.top = rect.top - (createEventPopup.getDOMNode().clientHeight - rect.height) / 2;
+        } else if (popupNode.clientWidth < rect.left) {
             position = 'l';
             newRect.width = rect.width;
             newRect.left = rect.left - 10;
+            newRect.top = rect.top - (createEventPopup.getDOMNode().clientHeight - rect.height) / 2;
+        } else if (popupNode.clientHeight < rect.top) {
+            position = 't';
+            newRect.top = rect.top - 10;
+            newRect.left = rect.left + (newRect.width - popupNode.clientWidth) / 2;
+        } else if (popupNode.clientHeight < window.innerHeight - rect.bottom) {
+            position = 'b';
+            newRect.height = rect.height + 10;
+            newRect.left = rect.left + (newRect.width - popupNode.clientWidth) / 2;
         }
 
+        console.log(position);
         this.setState({
             createEventPopupPos: position
         }, () => {
