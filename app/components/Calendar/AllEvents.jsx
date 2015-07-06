@@ -59,7 +59,7 @@ var DrawerInner = React.createClass({
     componentWillEnter: function(cb) {
         var $el = $(this.getDOMNode());
         let startPos = this.props.start;
-        $el.stop(true).css(startPos).animate({height:600,width:500,position:"fixed",top:"50%", marginTop:-300,left:"50%",marginLeft:-250}, 200, cb);
+        $el.stop(true).css(startPos).animate({height:600,width:500,position:"fixed",top:"50%", marginTop:-300,left:"50%",marginLeft:-250}, 250, cb);
     },
     componentWillLeave: function(cb) {
         var $el = $(this.getDOMNode());
@@ -69,7 +69,7 @@ var DrawerInner = React.createClass({
         startPos.marginLeft=0;
         console.log(startPos);
 
-        $el.stop(true).css({height:600,width:500,position:"fixed",top:"50%", marginTop:-300,left:"50%",marginLeft:-250}).animate(startPos, 200, cb);
+        $el.stop(true).css({height:600,width:500,position:"fixed",top:"50%", marginTop:-300,left:"50%",marginLeft:-250}).animate(startPos, 250, cb);
     },
     render: function() {
         return <div className="drawer" ref="drawer" style={this.props.style}>{this.props.children}</div>;
