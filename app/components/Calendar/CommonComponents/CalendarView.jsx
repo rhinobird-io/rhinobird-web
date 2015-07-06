@@ -204,10 +204,11 @@ let CalendarView = React.createClass({
             <Flex.Layout  horizontal center centerJustified style={{minHeight: 48, borderTop: "1px solid " + muiTheme.palette.borderColor}}>
                 <Selector value={this.state.viewType}
                           onSelectChange={v => {
-                            this.setState({viewType: v});
-                            if (this.props.onViewTypeChange) {
-                                this.props.onViewTypeChange(this.state.date, v);
-                            }
+                            this.setState({viewType: v}, () => {
+                                if (this.props.onViewTypeChange) {
+                                    this.props.onViewTypeChange(this.state.date, v);
+                                }
+                            });
                           }}>
                     {viewTypes}
                 </Selector>
