@@ -11,8 +11,64 @@ const Colors = require('material-ui/lib/styles/colors.js');
 const CalendarStore = require('../../stores/CalendarStore');
 const CalendarActions = require('../../actions/CalendarActions');
 const CalendarView = require('../Calendar/CommonComponents').CalendarView;
-
+const ReactTransitionGroup = React.addons.TransitionGroup;
 require('./style.less');
+
+var Drawer = React.createClass({
+    getInitialState: function() {
+        return {
+            open: false
+        };
+    },
+    componentWillMount: function() {
+        this.setState({
+            open: this.props.open
+        });
+    },
+    componentWillReceiveProps: function(props) {
+        this.setState({
+            open: props.open
+        });
+    },
+    open: function() {
+        this.setState({
+            open: true
+        });
+    },
+    close: function() {
+        this.setState({
+            open: false
+        });
+    },
+    toggle: function() {
+        this.setState({
+            open: !this.state.open
+        });
+    },
+    render: function() {
+        return (
+            <ReactTransitionGroup transitionName="test" component="div">
+                {this.state.open && <DrawerInner key="content" start={this.props.start} style={this.props.style}>{this.props.children}</DrawerInner>}
+            </ReactTransitionGroup>
+        );
+    }
+});
+
+var DrawerInner = React.createClass({
+    componentWillEnter: function(cb) {
+        var $el = $(this.getDOMNode());
+        var height = $el[0].scrollHeight;
+        let startPos = this.props.start;
+        $el.stop(true).css(startPos).animate({height:400,width:600,position:"fixed",top:"50%", marginTop:-200,left:"50%",marginLeft:-300}, 200, cb);
+    },
+    componentWillLeave: function(cb) {
+        var $el = $(this.getDOMNode());
+        $el.stop(true).animate({height:0}, 200, cb);
+    },
+    render: function() {
+        return <div className="drawer" ref="drawer" style={this.props.style}>{this.props.children}</div>;
+    }
+});
 
 let AllEvents = React.createClass({
     contextTypes: {
@@ -31,11 +87,17 @@ let AllEvents = React.createClass({
     getInitialState() {
         return {
             events: [],
-            createEventPopupPos: 'r'
+            showDetailPopup: false,
+            createEventPopupPos: 'r',
+            showDetailAnimationStart: null
         }
     },
 
     render() {
+        let detailPopup = null;
+        if (this.state.showDetailPopup) {
+            detailPopup = this._getEventDetailPopup();
+        }
         return (
             <Flex.Layout vertical style={{height: "100%", WebkitUserSelect: "none", userSelect: "none"}}>
                 <CalendarView
@@ -55,6 +117,11 @@ let AllEvents = React.createClass({
                     allDayRangeContent={this._allDayRangeContent}
                     awayExceptions={() => this.refs.createEventPopup.getDOMNode()} />
                 {this._getCreateEventPopup()}
+                {this.state.showDetailPopup && <div className="backdrop"></div>}
+                    <Drawer ref="drawer" start={this.state.showDetailAnimationStart} open={this.state.showDetailPopup} style={{zIndex:1001,width:200,height:200,background:"red",position:"fixed", top:0, left:0}}>
+
+                        {detailPopup}
+                    </Drawer>
                 <Link to="create-event">
                     <MUI.FloatingActionButton
                         style={{position: "fixed", bottom: 24, right: 24}}
@@ -218,6 +285,25 @@ let AllEvents = React.createClass({
         );
     },
 
+    _getEventDetailPopup() {
+        let style = {
+            position: "fixed",
+            width: 600,
+            height: 200,
+            left: "50%",
+            top: "30%",
+            marginLeft: -300,
+            color: "white",
+            zIndex: 10,
+            backgroundColor: "cyan"
+        };
+        return (
+            <div key="detailPopup" style={{zIndex:1001}}>
+                joiajsodjfasdfasfd
+            </div>
+        );
+    },
+
     _showCreateEventPopup(rect, range) {
         let createEventPopup = this.refs.createEventPopup;
         let position = 'r';
@@ -263,8 +349,12 @@ let AllEvents = React.createClass({
 
     _showEventDetailPopup(rect, range) {
         if (range.userId !== LoginStore.getUser().id) {
-            return;
+            //return;
         }
+        this.setState({
+            showDetailPopup: true,
+            showDetailAnimationStart: rect
+        });
     }
 });
 
