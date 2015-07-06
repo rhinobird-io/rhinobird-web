@@ -57,13 +57,18 @@ var Drawer = React.createClass({
 var DrawerInner = React.createClass({
     componentWillEnter: function(cb) {
         var $el = $(this.getDOMNode());
-        var height = $el[0].scrollHeight;
         let startPos = this.props.start;
         $el.stop(true).css(startPos).animate({height:400,width:600,position:"fixed",top:"50%", marginTop:-200,left:"50%",marginLeft:-300}, 200, cb);
     },
     componentWillLeave: function(cb) {
         var $el = $(this.getDOMNode());
-        $el.stop(true).animate({height:0}, 200, cb);
+        let startPos = this.props.start;
+        startPos.position="fixed";
+        startPos.marginTop=0;
+        startPos.marginLeft=0;
+        console.log(startPos);
+
+        $el.stop(true).css({height:400,width:600,position:"fixed",top:"50%", marginTop:-200,left:"50%",marginLeft:-300}).animate(startPos, 200, cb);
     },
     render: function() {
         return <div className="drawer" ref="drawer" style={this.props.style}>{this.props.children}</div>;
@@ -117,9 +122,8 @@ let AllEvents = React.createClass({
                     allDayRangeContent={this._allDayRangeContent}
                     awayExceptions={() => this.refs.createEventPopup.getDOMNode()} />
                 {this._getCreateEventPopup()}
-                {this.state.showDetailPopup && <div className="backdrop"></div>}
+                {this.state.showDetailPopup && <div className="backdrop" onClick={this._dismissEventDetailPopup}></div>}
                     <Drawer ref="drawer" start={this.state.showDetailAnimationStart} open={this.state.showDetailPopup} style={{zIndex:1001,width:200,height:200,background:"red",position:"fixed", top:0, left:0}}>
-
                         {detailPopup}
                     </Drawer>
                 <Link to="create-event">
@@ -353,7 +357,17 @@ let AllEvents = React.createClass({
         }
         this.setState({
             showDetailPopup: true,
-            showDetailAnimationStart: rect
+            showDetailAnimationStart: {
+                left: rect.left,
+                top: rect.top,
+                width: rect.width,
+                height: rect.height
+            }
+        });
+    },
+    _dismissEventDetailPopup() {
+        this.setState({
+            showDetailPopup: false
         });
     }
 });
