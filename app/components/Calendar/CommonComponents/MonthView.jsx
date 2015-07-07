@@ -1,12 +1,15 @@
+import uuid from 'node-uuid';
 const React = require('react');
 const Moment = require('moment');
 const Flex = require('../../Flex');
+const assign = require("object-assign");
 const PerfectScroll = require('../../PerfectScroll');
 
 let MonthView = React.createClass({
     propTypes: {
         data: React.PropTypes.array,
         date: React.PropTypes.object,
+        onRangeClicked: React.PropTypes.func,
         monthRangeContent: React.PropTypes.func
     },
 
@@ -42,7 +45,7 @@ let MonthView = React.createClass({
 
         let styles = {
             wrapper: {
-                padding: "0.5em 1em",
+                padding: "0 1em",
                 position: "relative",
                 borderTop: "1px solid " + this.context.muiTheme.palette.borderColor
             }
@@ -72,7 +75,7 @@ let MonthView = React.createClass({
         let weekdays = Moment.weekdaysShort();
         let styles = {
             outer: {
-                paddingBottom: 10
+                borderBottom: `1px solid ${this.context.muiTheme.palette.borderColor}`
             },
             inner: {
                 width: 0,
@@ -126,7 +129,7 @@ let MonthView = React.createClass({
                 minHeight: 0,
                 overflow: "hidden",
                 padding: "0.2em 0.5em",
-                borderTop: `1px solid ${this.context.muiTheme.palette.borderColor}`,
+                borderBottom: `1px solid ${this.context.muiTheme.palette.borderColor}`,
                 borderRight: `1px solid ${this.context.muiTheme.palette.borderColor}`
             },
             dayHeader: {
@@ -137,7 +140,8 @@ let MonthView = React.createClass({
             rangeOuter: {
                 minHeight: 24,
                 padding: 2,
-                overflow: "hidden"
+                overflow: "hidden",
+                cursor: "pointer"
             },
             rangeInner: {
                 padding: "0 4px",
@@ -145,7 +149,7 @@ let MonthView = React.createClass({
             }
         };
         let weekdays = date.weekDays();
-        let weekContent = weekdays.map(d => {
+        let weekContent = weekdays.map((d, index) => {
             let dayRanges = this.state.allRanges[Moment(d).format("YYYY-MM-DD")] || [];
 
             let dayContents = dayRanges.map(dayRange => {
@@ -153,8 +157,10 @@ let MonthView = React.createClass({
                 if (this.props.monthRangeContent) {
                     dayContent = this.props.monthRangeContent(dayRange);
                 }
+                let ref = uuid();
                 return (
-                    <div style={styles.rangeOuter}>
+                    <div ref={ref} style={styles.rangeOuter}
+                         onClick={() => this._handleRangeClick(ref, dayRange)}>
                         <div style={styles.rangeInner}>
                             {dayContent}
                         </div>
@@ -162,8 +168,13 @@ let MonthView = React.createClass({
                 );
             });
 
+            let outStyle = {};
+            assign(outStyle, styles.outer);
+            if (index === 0) {
+                outStyle.borderLeft = `1px solid ${this.context.muiTheme.palette.borderColor}`;
+            }
             return (
-                <Flex.Layout vertical flex={1} style={styles.outer}>
+                <Flex.Layout vertical flex={1} style={outStyle}>
                     <div style={styles.dayHeader}>{d.getDate()}</div>
                     <Flex.Layout flex={1} style={{height: 0}}>
                         <PerfectScroll style={{position: "relative", width: "100%"}}>
@@ -179,6 +190,13 @@ let MonthView = React.createClass({
                 {weekContent}
             </Flex.Layout>
         );
+    },
+
+    _handleRangeClick(rangeRef, rangeData) {
+        if (this.props.onRangeClicked && typeof this.props.onRangeClicked === "function") {
+            let rect = this.refs[rangeRef].getDOMNode().getBoundingClientRect();
+            this.props.onRangeClicked(rect, rangeData);
+        }
     }
 });
 
