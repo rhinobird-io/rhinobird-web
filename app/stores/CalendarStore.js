@@ -329,6 +329,7 @@ let CalendarStore = assign({}, BaseStore, {
         switch (type) {
             case ActionTypes.CREATE_EVENT:
                 _addEvent(data, ActionTypes.CREATE_EVENT);
+                addEvents(data);
                 break;
             case ActionTypes.RESTORE_DELETED_EVENT:
                 _addEvent(data, ActionTypes.CREATE_EVENT);
