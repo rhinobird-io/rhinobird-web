@@ -84,8 +84,11 @@ let Select = React.createClass({
     _delete(value) {
         let selected = this.state.selected;
         delete selected[value];
-        this._updateLayout(false, selected);
-        this.setState({selected: selected, toDelete: false, children: this._getFilteredChildren(this.props.children,this.refs.text.getValue())});
+        this.setState({
+            selected: selected,
+            toDelete: false,
+            children: this._getFilteredChildren(this.props.children,this.refs.text.getValue())
+        }, () => this._updateLayout(false, selected));
         if (this.props.valueLink || this.props.onChange) {
             this.getValueLink(this.props).requestChange(Object.keys(selected));
             if (this.props.onChange) {
@@ -100,7 +103,6 @@ let Select = React.createClass({
     },
 
     _updateLayout: function() {
-        return;
         let marginTop = 0;
         let paddingLeft = 0;
         let tokenWrapper = this.refs.tokenWrapper;
@@ -225,7 +227,7 @@ let Select = React.createClass({
                 border: "1px solid transparent"
             },
             tokenWrapper: {
-                position: "relative",
+                position: "absolute",
                 cursor: "text",
                 zIndex: 2,
                 top: floatingLabelText ? 34 : 10,
@@ -256,13 +258,14 @@ let Select = React.createClass({
                 type="text"
                 hintText={selectedValues.length === 0 ? hintText : undefined}
                 floatingLabelText={floatingText}
-                style={this.mergeStyles(style, styles.padding)}
+                style={style}
+                inputStyle={styles.padding}
                 errorText={this.props.errorText}
                 onChange={this._filter}
                 onKeyDown={this._keyDownListener}
                 onFocus={() => {
                     this.refs.popupSelect.show();
-                    //this._updateLayout();
+                    this._updateLayout();
                 }}
                 onBlur={() => this.setState({toDelete: false})} />;
 

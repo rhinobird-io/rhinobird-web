@@ -140,6 +140,7 @@ let AllEvents = React.createClass({
     },
 
     _fetchEvents(date, viewType) {
+        console.log("viewType " + viewType);
         if (viewType === "week") {
             CalendarActions.receiveByWeek(date);
         } else if (viewType === "month") {
@@ -283,10 +284,26 @@ let AllEvents = React.createClass({
                 relatedAlignOrigin={relatedAlignOrigin}
                 className={className}
                 style={{overflow: "visible !important"}}>
-                <div style={{minWidth: 250}}>
-                    <h3 style={{padding: "24px 24px 20px 24px"}}>
-                        <Display type="headline">Create </Display>
-                    </h3>
+                <div style={{padding: "12px 16px"}}>
+                    <Flex.Layout horizontal justified>
+                        <MUI.TimePicker
+                            style={{width: 100}}
+                            format="ampm"
+                            ref="fromTime"
+                            hintText="From Time"
+                            floatingLabelText="From Time" />
+                        <MUI.TimePicker
+                            style={{width: 100}}
+                            format="ampm"
+                            ref="toTime"
+                            hintText="To Time"
+                            floatingLabelText="To Time" />
+                    </Flex.Layout>
+                    <MUI.TextField hintText="title"/>
+                    <Flex.Layout style={{padding: "8px 8px 0px 24px"}} horizontal endJustified>
+                        <MUI.FlatButton secondary onClick={() => this.refs.calendar.dismissCreateNewRange()}>Close</MUI.FlatButton>
+                        <MUI.FlatButton secondary>Create Event</MUI.FlatButton>
+                    </Flex.Layout>
                 </div>
             </Popup>
         );
@@ -312,14 +329,14 @@ let AllEvents = React.createClass({
         };
 
         let popupNode = createEventPopup.getDOMNode();
-        if (popupNode.clientWidth < window.innerWidth - rect.right) {
+        if (popupNode.clientWidth < window.innerWidth - rect.right - 10) {
             position = 'r';
-            newRect.top = rect.top - (createEventPopup.getDOMNode().clientHeight - rect.height) / 2;
+            newRect.top = rect.top - (188 - rect.height) / 2;
         } else if (popupNode.clientWidth < rect.left) {
             position = 'l';
             newRect.width = rect.width;
             newRect.left = rect.left - 10;
-            newRect.top = rect.top - (createEventPopup.getDOMNode().clientHeight - rect.height) / 2;
+            newRect.top = rect.top - (188 - rect.height) / 2;
         } else if (popupNode.clientHeight < rect.top) {
             position = 't';
             newRect.top = rect.top - 10;
@@ -334,6 +351,8 @@ let AllEvents = React.createClass({
         this.setState({
             createEventPopupPos: position
         }, () => {
+            this.refs.toTime.setTime(range.toTime);
+            this.refs.fromTime.setTime(range.fromTime);
             createEventPopup.setRelatedTo(newRect);
             createEventPopup.show();
         });

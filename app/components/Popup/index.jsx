@@ -68,7 +68,7 @@ let Popup = React.createClass({
         return (
             <Layout vertical style={styles.popupWrapper}>
                 {topPadding}
-                <PerfectScroll style={this.mergeStyles(style || {}, styles.scroll)} {...other} alwaysVisible>
+                <PerfectScroll style={this.mergeStyles(style || {}, styles.scroll)} alwaysVisible {...other} >
                     {children}
                 </PerfectScroll>
                 {bottomPadding}

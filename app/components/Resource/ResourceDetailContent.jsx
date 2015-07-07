@@ -150,7 +150,7 @@ let ResourceDetailContent = React.createClass({
                     </div>
                     <Flex.Layout style={{padding: "8px 8px 8px 24px"}} horizontal endJustified>
                         <MUI.FlatButton secondary onClick={() => this.refs.calendar.
-                            dismissCreateNewRange()}>Cancel</MUI.FlatButton>
+                            dismissCreateNewRange()}>Close</MUI.FlatButton>
                         <MUI.FlatButton secondary onClick={() => this._bookResource()}>Book</MUI.FlatButton>
                     </Flex.Layout>
                 </div>
@@ -217,7 +217,7 @@ let ResourceDetailContent = React.createClass({
                             floatingLabelText="To Time" />
                     </div>
                     <Flex.Layout style={{padding: "8px 8px 8px 24px"}} horizontal endJustified>
-                        <MUI.FlatButton secondary onClick={() => this.refs.updateResourceBooking.dismiss()}>Cancel</MUI.FlatButton>
+                        <MUI.FlatButton secondary onClick={() => this.refs.updateResourceBooking.dismiss()}>Close</MUI.FlatButton>
                         <MUI.FlatButton secondary onClick={() => this._updateResourceBook()}>Update</MUI.FlatButton>
                         <MUI.FlatButton primary onClick={this._deleteResourceBook}>Delete</MUI.FlatButton>
                     </Flex.Layout>
@@ -266,11 +266,11 @@ let ResourceDetailContent = React.createClass({
         let newRect = {
             left: rect.left,
             width: rect.width + 10,
-            top: rect.top - (resourceBooking.getDOMNode().clientHeight - rect.height) / 2,
+            top: rect.top - (224 - rect.height) / 2,
             height: rect.height
         };
 
-        if (resourceBooking.getDOMNode().clientWidth > window.innerWidth - rect.right) {
+        if (resourceBooking.getDOMNode().clientWidth >= (window.innerWidth - rect.right)) {
             position = 'l';
             newRect.width = rect.width;
             newRect.left = rect.left - 10;
@@ -301,11 +301,11 @@ let ResourceDetailContent = React.createClass({
         let newRect = {
             left: rect.left,
             width: rect.width + 10,
-            top: rect.top - (updateResourceBooking.getDOMNode().clientHeight - rect.height) / 2,
+            top: rect.top - (224 - rect.height) / 2,
             height: rect.height
         };
 
-        if (updateResourceBooking.getDOMNode().clientWidth > window.innerWidth - rect.right) {
+        if (updateResourceBooking.getDOMNode().clientWidth > window.innerWidth - rect.right - 20) {
             position = 'l';
             newRect.width = rect.width;
             newRect.left = rect.left - 10;
