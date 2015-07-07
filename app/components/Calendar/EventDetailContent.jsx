@@ -4,12 +4,12 @@ const Moment = require('moment');
 const Popup = require('../Popup');
 const MUI = require('material-ui');
 const Member = require('../Member');
+const Thread = require('../Thread');
 const Display = require('../Common').Display;
 const UserStore = require('../../stores/UserStore');
 const LoginStore = require('../../stores/LoginStore');
-const
-    StylePropable = require('material-ui/lib/mixins/style-propable');
-const SmartDisplay    = require('../SmartEditor').SmartDisplay;
+const SmartDisplay = require('../SmartEditor').SmartDisplay;
+const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 let EventDetailContent = React.createClass({
     mixins: [StylePropable],
