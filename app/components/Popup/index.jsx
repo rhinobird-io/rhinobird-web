@@ -56,7 +56,7 @@ let Popup = React.createClass({
         };
 
         if (!this.state.shown) {
-            //styles.popupWrapper.height = 0;
+            styles.popupWrapper.height = 0;
         } else {
             //styles.popupWrapper.height = style && style.height ? style.height : 250;
         }
