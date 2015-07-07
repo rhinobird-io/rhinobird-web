@@ -95,7 +95,6 @@ let EventDetailContent = React.createClass({
         let eventContent = null;
         let eventComment = null;
         let event = this.state.event;
-
         if (this.state.notFound || event === null || event === undefined) {
             eventContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Event not found</h3>
         } else {
@@ -157,7 +156,7 @@ let EventDetailContent = React.createClass({
                             disabled
                             multiLine
                             floatingLabelText="Description"
-                            value={this.state.event.description} />
+                            value={this.state.event.description || "Empty"} />
                     </Flex.Layout>
                 </Flex.Layout>
             );
@@ -200,7 +199,7 @@ let EventDetailContent = React.createClass({
                 </Flex.Layout>
             );
 
-            eventComment = []
+            eventComment = [];
             let threadKey =  `/platform/calendar/events/${event.id}/${event.repeatedNumber}`;
             eventComment.push(
                 <Flex.Layout horizontal key="comments" style={styles.eventDetailItem}>
@@ -214,6 +213,7 @@ let EventDetailContent = React.createClass({
                 </Flex.Layout>
             );
 
+            console.log(event);
         }
         return (
             <Flex.Layout vertical style={{width: "100%", height:"100%"}}>
@@ -223,6 +223,7 @@ let EventDetailContent = React.createClass({
                     {eventContent}
                     {eventComment}
                 </PerfectScroll>
+                <MUI.Snackbar ref="createEventSuccess" message={`Create event success`} />
             </Flex.Layout>
         );
     }

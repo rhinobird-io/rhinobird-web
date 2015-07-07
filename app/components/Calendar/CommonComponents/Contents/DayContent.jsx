@@ -44,7 +44,7 @@ let DayContent = React.createClass({
     getDefaultProps() {
         return {
             data: [],
-            accuracy: 15,
+            accuracy: 30,
             exclusive: true
         }
     },
@@ -67,7 +67,6 @@ let DayContent = React.createClass({
         }
 
         style.WebkitUserSelect = "none";
-        style.MozUserSelect = "none";
         style.userSelect = "none";
         style.width = "100%";
         style.position = "relative";
@@ -87,7 +86,7 @@ let DayContent = React.createClass({
             nowBar: {
                 position: "absolute",
                 height: 2,
-                zIndex: 8,
+                zIndex: 10,
                 overflow: "hidden",
                 width: "100%",
                 backgroundColor: this.context.muiTheme.palette.accent1Color
@@ -136,8 +135,8 @@ let DayContent = React.createClass({
         };
 
         let sorted = data.map(d => {
-            d.from = d.fromTime || d.from_time;
-            d.to = d.toTime || d.to_time;
+            d.from = new Date(d.fromTime || d.from_time);
+            d.to = new Date(d.toTime || d.to_time);
             return d;
         });
 
@@ -163,29 +162,46 @@ let DayContent = React.createClass({
         while (i < sorted.length) {
             let range = sorted[i];
             let columns = [];
-
+            let columnMaxToTimes = [];
             columns[0] = [range];
+            columnMaxToTimes[0] = range.to;
 
             let j = i + 1;
             loop1:
             for (; j < sorted.length; j++) {
-                let from = sorted[j].from;
+                let from = new Date(sorted[j].from);
                 // let to = sorted[j].to;
-                if (sorted[j].from >= sorted[j - 1].from && sorted[j].from <= sorted[j - 1].to) {
+                let lastFrom = new Date(sorted[j - 1].from);
+                let lastTo = new Date(sorted[j - 1].to);
+                console.log(lastTo);
+                console.log(lastFrom);
+                if (lastTo - lastFrom <= 1800000) {
+                    lastTo = new Date(lastFrom.getTime() + 1800000);
+                    console.log(lastTo);
+                }
+                if (from >= lastFrom && from <= lastTo) {
                     let placed = false;
                     loop2:
                     for (let i1 = 0; i1 < columns.length; i1++) {
-                        let hasPlace = true;
-                        loop3:
-                        for (let i2 = 0; i2 < columns[i1].length; i2++) {
-                            let row = columns[i1][i2];
-                            if (from >= row.from && from <= row.to) {
-                                hasPlace = false;
-                                break loop3;
-                            }
-                        }
-                        if (hasPlace) {
+                        //let hasPlace = from > columnMaxToTimes[i1];
+                        //loop3:
+                        //for (let i2 = 0; i2 < columns[i1].length; i2++) {
+                        //    let row = columns[i1][i2];
+                        //    if (from >= row.from && from <= row.to) {
+                        //        console.log(sorted[j]);
+                        //        hasPlace = false;
+                        //        break loop3;
+                        //    }
+                        //}
+                        if (from > columnMaxToTimes[i1]) {
                             columns[i1].push(sorted[j]);
+                            let to = sorted[j].to;
+                            if (to - sorted[j].from <= 1800000) {
+                                to = sorted[j].from + 1800000;
+                            }
+                            if (!columnMaxToTimes[i1] || columnMaxToTimes[i1] <= to) {
+                                columnMaxToTimes[i1] = to;
+                            }
                             placed = true;
                             break loop2;
                         }
@@ -193,6 +209,11 @@ let DayContent = React.createClass({
 
                     if (!placed) {
                         columns.push([sorted[j]]);
+                        let to = sorted[j].to;
+                        if (to - sorted[j].from <= 1800000) {
+                            to = sorted[j].from + 1800000;
+                        }
+                        columnMaxToTimes.push(to);
                     }
                 } else {
                     break loop1;
@@ -227,16 +248,17 @@ let DayContent = React.createClass({
             let time = fromTime.getHours() * 3600 + fromTime.getMinutes() * 60 + fromTime.getSeconds();
             let range = (toTime - fromTime) / 1000;
 
+            if (range <= 1800) {
+                range = 1800;
+            }
             let top = `${time / 864}%`;
             let height = `${range / 864}%`;
-            let minHeight = "30px";
 
             let contentStyle = {};
             contentStyle.left = d.horizontalPositions ? d.horizontalPositions.left || 0 : 0;
             contentStyle.top = top;
             contentStyle.height = height;
             contentStyle.width = d.horizontalPositions ? d.horizontalPositions.width || "100%" : "100%";
-            //contentStyle.minHeight = minHeight;
             return contentStyle;
         });
 
@@ -306,14 +328,12 @@ let DayContent = React.createClass({
     },
 
     _handleMouseDown(e) {
-        if (e.button === 0) {
-            let node = this.getDOMNode();
-            let rect = node.getBoundingClientRect();
-            this.startPosY = e.clientY - rect.top;
-            this.mouseDown = true;
-            document.addEventListener("mousemove", this._handleMouseMove);
-            document.addEventListener("mouseup", this._handleMouseUp)
-        }
+        let node = this.getDOMNode();
+        let rect = node.getBoundingClientRect();
+        this.startPosY = e.clientY - rect.top;
+        this.mouseDown = true;
+        document.addEventListener("mousemove", this._handleMouseMove);
+        document.addEventListener("mouseup", this._handleMouseUp)
     },
 
     _handleMouseMove(e) {

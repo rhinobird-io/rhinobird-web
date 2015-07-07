@@ -226,7 +226,8 @@ let CalendarAction =  {
         parsedEvent.from_time = _from.toISOString();
         parsedEvent.to_time = _to.toISOString();
 
-        parsedEvent.participants = event.participants;
+        parsedEvent.participants = event.participants || { teams: [], users: [] };
+
         if (event.repeated) {
             parsedEvent.repeated = true;
             parsedEvent.repeated_type = event.repeatedType;
