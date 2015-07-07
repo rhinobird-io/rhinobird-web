@@ -61,6 +61,7 @@ let CalendarAction =  {
 
     receiveByMonth(date, success) {
         if (CalendarStore.isMonthLoaded(date)) {
+            console.log("month loaded");
             AppDispatcher.dispatch({
                 type: CalendarActionTypes.UPDATE_VIEW
             });

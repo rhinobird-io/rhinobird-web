@@ -204,8 +204,10 @@ let CalendarView = React.createClass({
             <Flex.Layout  horizontal center centerJustified style={{minHeight: 48, borderTop: "1px solid " + muiTheme.palette.borderColor}}>
                 <Selector value={this.state.viewType}
                           onSelectChange={v => {
+                            console.log(new Date().getTime())
                             this.setState({viewType: v}, () => {
                                 if (this.props.onViewTypeChange) {
+                                    console.log(new Date().getTime());
                                     this.props.onViewTypeChange(this.state.date, v);
                                 }
                             });

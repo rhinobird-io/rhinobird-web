@@ -196,7 +196,7 @@ let CalendarStore = assign({}, BaseStore, {
 
     isMonthLoaded(date) {
         let format = Moment(new Date(date).firstDayOfMonth()).format("YYYY-MM-DD")
-        return !!_weeklyLoaded[format];
+        return !!_monthlyLoaded[format];
     },
 
     getEvent(eventId, repeatedNumber) {
@@ -376,7 +376,6 @@ let CalendarStore = assign({}, BaseStore, {
                 break;
             case ActionTypes.RECEIVE_EVENTS_BY_MONTH:
                 addEvents(data);
-                console.log("RECEIVE by month")
                 let month = payload.date;
                 let monthStart = new Date(month).firstDayOfMonth();
                 _monthlyLoaded[Moment(monthStart).format("YYYY-MM-DD")] = true;

@@ -13,6 +13,7 @@ let DaysView = React.createClass({
         withAllDay: React.PropTypes.bool,
         allDayData: React.PropTypes.array,
         onRangeCreate: React.PropTypes.func,
+        onRangeClicked: React.PropTypes.func,
         allDayRangeContent: React.PropTypes.func
     },
 
@@ -88,7 +89,8 @@ let DaysView = React.createClass({
             let rangeStyles = {
                 outer: {
                     padding: 2,
-                    height: 28
+                    height: 28,
+                    cursor: "pointer"
                 },
                 inner: {
                     fontSize: "0.9em",
@@ -102,13 +104,14 @@ let DaysView = React.createClass({
                 if (ranges.length > maxRange) {
                     maxRange = ranges.length;
                 }
-                let allDayContents = ranges.map(range => {
+                let allDayContents = ranges.map((range, index) => {
                     let allDayContent = null;
                     if (allDayRangeContent) {
                         allDayContent = allDayRangeContent(range);
                     }
+                    let ref = `range_${index}`;
                     return (
-                        <div style={rangeStyles.outer}>
+                        <div key={ref} ref={ref} style={rangeStyles.outer} onClick={() => this._handleRangeClick(ref, range)}>
                             <Flex.Layout center style={rangeStyles.inner}>
                                 {allDayContent}
                             </Flex.Layout>
@@ -153,13 +156,20 @@ let DaysView = React.createClass({
                     </Flex.Layout>
                     {allDays}
                 </Flex.Layout>
-                <Flex.Layout flex={1}>
+                <Flex.Layout flex={1} style={{minHeight: 100}}>
                     <PerfectScroll ref="content" style={{position: "relative", width: "100%", borderTop: "1px solid " + this.context.muiTheme.palette.borderColor}} alwaysVisible>
                         {table}
                     </PerfectScroll>
                 </Flex.Layout>
             </Flex.Layout>
         );
+    },
+
+    _handleRangeClick(rangeRef, rangeData) {
+        if (this.props.onRangeClicked && typeof this.props.onRangeClicked === "function") {
+            let rect = this.refs[rangeRef].getDOMNode().getBoundingClientRect();
+            this.props.onRangeClicked(rect, rangeData);
+        }
     },
 
     _parseAllDayData(allDayData) {

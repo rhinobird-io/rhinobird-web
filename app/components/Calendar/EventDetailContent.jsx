@@ -40,9 +40,10 @@ let EventDetailContent = React.createClass({
                 position: "relative",
                 overflow: "hidden",
                 fontSize: "2em",
-                lineHeight: "3em",
                 wordBreak: "break-all",
                 padding: "0 0.8em",
+                marginTop: -1,
+                lineHeight: "3em",
                 color: this.context.muiTheme.palette.canvasColor,
                 backgroundColor: this.context.muiTheme.palette.primary1Color
             },
@@ -106,7 +107,6 @@ let EventDetailContent = React.createClass({
 
             eventActions = <Flex.Layout horizontal endJustified style={styles.eventAction}>
                 {deleteEvent}
-
             </Flex.Layout>;
 
             eventTitle = (
