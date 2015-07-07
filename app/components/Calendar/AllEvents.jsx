@@ -100,16 +100,13 @@ let AllEvents = React.createClass({
         return {
             events: [],
             showDetailPopup: false,
+            showCreatePopup: false,
             createEventPopupPos: 'r',
             showDetailAnimationStart: null
         }
     },
 
     render() {
-        let detailPopup = null;
-        if (this.state.showDetailPopup) {
-            detailPopup = this._getEventDetailPopup(this.state.currentShownEvent);
-        }
         return (
             <Flex.Layout vertical style={{height: "100%", WebkitUserSelect: "none", userSelect: "none"}}>
                 <CalendarView
@@ -130,9 +127,9 @@ let AllEvents = React.createClass({
                     awayExceptions={() => this.refs.createEventPopup.getDOMNode()} />
                 {this._getCreateEventPopup()}
                 {this.state.showDetailPopup && <div className="backdrop" onClick={this._dismissEventDetailPopup}></div>}
-                    <Drawer ref="drawer" start={this.state.showDetailAnimationStart} open={this.state.showDetailPopup} style={{zIndex:1001,background:"white",position:"fixed", top:0, left:0}}>
-                        {detailPopup}
-                    </Drawer>
+                <Drawer ref="drawer" start={this.state.showDetailAnimationStart} open={this.state.showDetailPopup} style={{zIndex:1001,background:"white",position:"fixed", top:0, left:0}}>
+                    {this.state.showDetailPopup && this._getEventDetailPopup(this.state.currentShownEvent)}
+                </Drawer>
                 <Link to="create-event">
                     <MUI.FloatingActionButton
                         style={{position: "fixed", bottom: 24, right: 24}}
@@ -248,8 +245,7 @@ let AllEvents = React.createClass({
                     background = this.context.muiTheme.palette.primary1Color;
                 }
                 styles.wrapper.backgroundColor = background;
-                //styles.wrapper.border = "1px solid " + this.context.muiTheme.palette.primary2Color;
-
+                styles.wrapper.border = "1px solid " + this.context.muiTheme.palette.primary2Color;
             }
         }
 

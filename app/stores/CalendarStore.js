@@ -155,7 +155,7 @@ Date.prototype.calendarMonthDays = function() {
     }
     for (let i = lastDay.getDay() + 1; i <= 6; i++) {
         let nextDay = new Date(lastDay);
-        nextDay.setDate(i - lastDay.getDay());
+        nextDay.setDate(nextDay.getDate() + i - lastDay.getDay());
         nexts.push(nextDay);
     }
 
@@ -176,6 +176,7 @@ let addEvents = function(events) {
         }
         _allEvents[format][e.id] = e;
     });
+    console.log(_allEvents);
 };
 
 let CalendarStore = assign({}, BaseStore, {
@@ -245,6 +246,9 @@ let CalendarStore = assign({}, BaseStore, {
                 res = res.concat(events);
             }
         });
+        console.log(dateArray);
+        console.log(_allEvents);
+        console.log(res);
         return res;
     },
 
