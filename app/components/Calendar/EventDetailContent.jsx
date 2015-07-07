@@ -103,10 +103,17 @@ let EventDetailContent = React.createClass({
                     iconStyle={styles.deleteButton}
                     iconClassName="icon-delete"
                     onClick={this._onEventDelete} /> : null;
-
-            eventActions = <Flex.Layout horizontal endJustified style={styles.eventAction}>
-                {deleteEvent}
-            </Flex.Layout>;
+            let editEvent = <MUI.IconButton
+                    iconStyle={styles.deleteButton}
+                    iconClassName="icon-edit"
+                    onClick={this._onEventDelete} />;
+            
+            eventActions = (
+                <Flex.Layout horizontal endJustified style={styles.eventAction}>
+                    {deleteEvent}
+                    {LoginStore.getUser().id === event.creator_id && editEvent}
+                </Flex.Layout>
+            );
 
             eventTitle = (
                 <Flex.Layout vertical  key="title" style={styles.eventTitle}>
