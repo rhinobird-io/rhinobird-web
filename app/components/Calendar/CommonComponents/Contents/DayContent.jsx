@@ -86,7 +86,7 @@ let DayContent = React.createClass({
             nowBar: {
                 position: "absolute",
                 height: 2,
-                zIndex: 10,
+                zIndex: 8,
                 overflow: "hidden",
                 width: "100%",
                 backgroundColor: this.context.muiTheme.palette.accent1Color

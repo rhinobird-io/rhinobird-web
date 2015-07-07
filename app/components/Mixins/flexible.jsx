@@ -190,11 +190,11 @@ module.exports = {
             self.style.position = "fixed";
             self.style.top = selfTop + "px";
 
-            //console.log(innerHeight - baseBottom - selfHeight);
-            //console.log("selfWidth: " + selfWidth);
-            //console.log("innerHeight: " + innerHeight);
-            //console.log("baseBottom: " + baseBottom);
-            //console.log("selfLeft: " + selfLeft);
+            console.log(innerHeight - baseBottom - selfHeight);
+            console.log("selfWidth: " + selfWidth);
+            console.log("innerHeight: " + innerHeight);
+            console.log("baseBottom: " + baseBottom);
+            console.log("selfLeft: " + selfLeft);
 
             if (isNaN(selfLeft)) {
                 self.style.left = "auto";
