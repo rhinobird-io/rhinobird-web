@@ -212,10 +212,10 @@ let AllEvents = React.createClass({
         let styles = {
             wrapper: {
                 height: "100%",
-                padding: "0 4px"
+                padding: "0 4px",
+                fontSize: "0.8em"
             },
             timeRange: {
-                fontSize: "0.8em",
                 fontWeight: 500
             }
         };
@@ -299,14 +299,45 @@ let AllEvents = React.createClass({
                             hintText="To Time"
                             floatingLabelText="To Time" />
                     </Flex.Layout>
-                    <MUI.TextField hintText="title"/>
+                    <MUI.TextField hintText="title" ref="title" />
                     <Flex.Layout style={{padding: "8px 8px 0px 24px"}} horizontal endJustified>
                         <MUI.FlatButton secondary onClick={() => this.refs.calendar.dismissCreateNewRange()}>Close</MUI.FlatButton>
-                        <MUI.FlatButton secondary>Create Event</MUI.FlatButton>
+                        <MUI.FlatButton primary>Edit</MUI.FlatButton>
+                        <MUI.FlatButton secondary onClick={this._createEvent}>Create</MUI.FlatButton>
                     </Flex.Layout>
                 </div>
             </Popup>
         );
+    },
+
+    _createEvent(e) {
+        e.preventDefault();
+        let errorMsg = "wrong";
+
+        let refs = this.refs;
+
+        let title = refs.title.getValue();
+        //
+        //if (title.length === 0) {
+        //    this.setState({titleError: errorMsg.titleRequired});
+        //    return;
+        //} else {
+        //    this.setState({titleError: ""});
+        //}
+
+
+        let event = {};
+        event.title = title;
+        event.fromTime = this.refs.fromTime.getTime();
+        event.toTime = this.refs.toTime.getTime();
+        event.fromDate = event.fromTime;
+        event.toDate = event.toTime;
+        event.isPeriod = true;
+        console.log(event);
+        CalendarActions.create(event, () => {
+            this.refs.createEventPopup.dismiss();
+            this.refs.calendar.dismissCreateNewRange();
+        });
     },
 
     _getEventDetailPopup(event) {
