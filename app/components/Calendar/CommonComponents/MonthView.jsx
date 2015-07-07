@@ -174,12 +174,10 @@ let MonthView = React.createClass({
                 outStyle.borderLeft = `1px solid ${this.context.muiTheme.palette.borderColor}`;
             }
             return (
-                <Flex.Layout vertical flex={1} style={outStyle}>
+                <Flex.Layout ref={`day_${index}`} vertical flex={1} style={outStyle}>
                     <div style={styles.dayHeader}>{d.getDate()}</div>
-                    <Flex.Layout flex={1} style={{height: 0}}>
-                        <PerfectScroll style={{position: "relative", width: "100%"}}>
-                            {dayContents}
-                        </PerfectScroll>
+                    <Flex.Layout vertical flex={1} style={{height: 0, width: "100%"}}>
+                        {dayContents}
                     </Flex.Layout>
                 </Flex.Layout>
             )
