@@ -6,6 +6,7 @@ const MUI = require('material-ui');
 const Member = require('../Member');
 const Thread = require('../Thread');
 const Display = require('../Common').Display;
+const PerfectScroll = require('../PerfectScroll');
 const UserStore = require('../../stores/UserStore');
 const LoginStore = require('../../stores/LoginStore');
 const SmartDisplay = require('../SmartEditor').SmartDisplay;
@@ -39,7 +40,7 @@ let EventDetailContent = React.createClass({
                 position: "relative",
                 overflow: "hidden",
                 fontSize: "2em",
-                lineHeight: "2em",
+                lineHeight: "3em",
                 wordBreak: "break-all",
                 padding: "0 0.8em",
                 color: this.context.muiTheme.palette.canvasColor,
@@ -109,7 +110,7 @@ let EventDetailContent = React.createClass({
             </Flex.Layout>;
 
             eventTitle = (
-                <Flex.Layout vertical selfEnd key="title" style={styles.eventTitle}>
+                <Flex.Layout vertical  key="title" style={styles.eventTitle}>
                     <span>{event.title}</span>
                     {
                         event && event.repeated ?
@@ -198,30 +199,31 @@ let EventDetailContent = React.createClass({
                     </Flex.Layout>
                 </Flex.Layout>
             );
-            //
-            //eventComment = [];
-            //eventComment.push(
-            //    <Flex.Layout horizontal key="comments" style={styles.eventDetailItem}>
-            //        <Flex.Layout startJustified style={styles.eventDetailIcon}>
-            //            <MUI.FontIcon className="icon-comment"/>
-            //        </Flex.Layout>
-            //        <Flex.Layout vertical startJustified flex={1}>
-            //            <Thread style={{width: "100%"}} threadKey={this.state.threadKey} threadTitle={`Event ${this.state.event.title}`}
-            //                    participants={{users: this.state.event.participants, teams: this.state.event.team_participants}} />
-            //        </Flex.Layout>
-            //    </Flex.Layout>
-            //);
+
+            eventComment = []
+            let threadKey =  `/platform/calendar/events/${event.id}/${event.repeatedNumber}`;
+            eventComment.push(
+                <Flex.Layout horizontal key="comments" style={styles.eventDetailItem}>
+                    <Flex.Layout startJustified style={styles.eventDetailIcon}>
+                        <MUI.FontIcon className="icon-comment"/>
+                    </Flex.Layout>
+                    <Flex.Layout vertical startJustified flex={1}>
+                        <Thread style={{width: "100%"}} threadKey={threadKey} threadTitle={`Event ${this.state.event.title}`}
+                                participants={{users: this.state.event.participants, teams: this.state.event.team_participants}} />
+                    </Flex.Layout>
+                </Flex.Layout>
+            );
 
         }
         return (
-            <div style={{width: "100%", height:"100%"}}>
+            <Flex.Layout vertical style={{width: "100%", height:"100%"}}>
                 {eventActions}
                 {eventTitle}
-                <div style={{padding: "0.6em 1.6em"}}>
+                <PerfectScroll style={{position: "relative", padding: "0.6em 1.6em"}}>
                     {eventContent}
                     {eventComment}
-                </div>
-            </div>
+                </PerfectScroll>
+            </Flex.Layout>
         );
     }
 });

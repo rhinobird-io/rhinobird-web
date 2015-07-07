@@ -297,19 +297,8 @@ let AllEvents = React.createClass({
     },
 
     _getEventDetailPopup(event) {
-        let style = {
-            position: "fixed",
-            width: 600,
-            height: 200,
-            left: "50%",
-            top: "30%",
-            marginLeft: -300,
-            color: "white",
-            zIndex: 10,
-            backgroundColor: "cyan"
-        };
         return (
-            <div key="detailPopup" style={{zIndex:1001}}>
+            <div key="detailPopup" style={{zIndex:1001, height: "100%"}}>
                 <EventDetailContent event={event} />
             </div>
         );
