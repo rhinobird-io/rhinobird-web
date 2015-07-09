@@ -20,6 +20,7 @@ export default {
   CalendarActionTypes: keyMirror({
     UPDATE_VIEW: null,
     CREATE_EVENT: null,
+    UPDATE_EVENT: null,
     RECEIVE_EVENT: null,
     RECEIVE_EVENTS: null,
     DELETE_EVENT: null,

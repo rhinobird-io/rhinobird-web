@@ -251,6 +251,25 @@ let CalendarAction =  {
         }).fail(e => {
             console.error(e);
         });
+    },
+
+    update(event, success, fail) {
+        $.ajax({
+            url: `/platform/api/events/${event.id}`,
+            type: "put",
+            data: event
+        }).done(data => {
+            AppDispatcher.dispatch({
+                type: CalendarActionTypes.UPDATE_EVENT,
+                data: data
+            });
+            if (success && typeof success === "function") {
+                success();
+            }
+        }).fail((e) => {
+            console.log(e);
+        }).always(() => {
+        });
     }
 
 };
