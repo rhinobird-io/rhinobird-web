@@ -3,13 +3,13 @@ const Flex = require('../Flex');
 const Moment = require('moment');
 const Popup = require('../Popup');
 const MUI = require('material-ui');
-const Member = require('../Member');
 const Thread = require('../Thread');
 const Display = require('../Common').Display;
 const PerfectScroll = require('../PerfectScroll');
 const UserStore = require('../../stores/UserStore');
 const LoginStore = require('../../stores/LoginStore');
-const SmartDisplay = require('../SmartEditor').SmartDisplay;
+const {Avatar, Name, Member, MemberSelect} = require('../Member');
+const {SmartEditor, SmartDisplay} = require('../SmartEditor');
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 let EventManagement = React.createClass({
@@ -56,7 +56,7 @@ let EventManagement = React.createClass({
                 color: this.context.muiTheme.palette.canvasColor
             },
             eventAction: {
-                height: 140,
+                height: 120,
                 padding: 6,
                 backgroundColor: this.context.muiTheme.palette.primary1Color
             },
@@ -118,16 +118,19 @@ let EventManagement = React.createClass({
                     iconClassName="icon-edit"
                     onClick={this._handleEditClick} />;
 
+            eventActions = null;
             eventContent = [];
 
-            eventActions = (
-                <Flex.Layout horizontal endJustified style={styles.eventAction}>
-                    {deleteEvent}
-                    {LoginStore.getUser().id === event.creator_id && editEvent}
-                </Flex.Layout>
-            );
 
             if (type === "view") {
+
+                eventActions = (
+                    <Flex.Layout horizontal endJustified style={styles.eventAction}>
+                        {deleteEvent}
+                        {LoginStore.getUser().id === event.creator_id && editEvent}
+                    </Flex.Layout>
+                );
+
                 styles.eventTitle.backgroundColor = this.context.muiTheme.palette.primary1Color;
                 eventTitle = (
                     <Flex.Layout vertical  key="title" endJustified style={styles.eventTitle}>
@@ -142,6 +145,14 @@ let EventManagement = React.createClass({
                     </Flex.Layout>
                 );
             } else if (type === "update" || type === "edit") {
+                eventActions = (
+                    <Flex.Layout horizontal endJustified style={styles.eventAction}>
+                        <MUI.IconButton
+                            iconStyle={styles.deleteButton}
+                            iconClassName="icon-save" />
+                    </Flex.Layout>
+                );
+
                 eventContent.push(
                     <Flex.Layout vertical  key="title">
                         <MUI.TextField defaultValue={event.title} fullWidth floatingLabelText="title" />
@@ -195,8 +206,8 @@ let EventManagement = React.createClass({
                     let u = UserStore.getUser(p.id);
                     participants.push(
                         <Flex.Layout horizontal center key={"user_" + u.id} style={{marginBottom: 16, marginRight: 16}}>
-                            <Member.Avatar scale={1.0} member={u} style={{borderRadius: "0%"}} />
-                            <Member.Name style={{marginLeft: 6, width: 100, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}} member={u}></Member.Name>
+                            <Avatar scale={1.0} member={u} style={{borderRadius: "0%"}} />
+                            <Name style={{marginLeft: 6, width: 100, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}} member={u}></Name>
                         </Flex.Layout>
                     );
                 });
@@ -241,7 +252,42 @@ let EventManagement = React.createClass({
                 );
             } else if (type === "update" || type === "create") {
                 eventContent.push(
-                    <MUI.TextField defaultValue={event.title} fullWidth floatingLabelText="description" />
+                    <SmartEditor key="description" defaultValue={event.title} fullWidth multiLine floatingLabelText="description" />
+                );
+
+                eventContent.push(
+                    <Flex.Layout key="switcher" horizontal stretch style={{marginTop: 10}}>
+                        <Flex.Layout flex={1}>
+                            <MUI.Checkbox name="Period" label="Period" />
+                        </Flex.Layout>
+                        <Flex.Layout flex={1}>
+                            <MUI.Checkbox name="All Day" label="All Day" />
+                        </Flex.Layout>
+                        <Flex.Layout flex={1}>
+                            <MUI.Checkbox name="Repeat" label="Repeat" />
+                        </Flex.Layout>
+                    </Flex.Layout>
+                );
+
+                eventContent.push(
+                    <Flex.Layout key="fromTime" horizontal justified>
+                        <MUI.DatePicker style={{width: "auto"}} floatingLabelText="From" date={new Date()} />
+                        <MUI.TimePicker style={{width: "auto"}} floatingLabelText=" "/>
+                    </Flex.Layout>
+                );
+
+                eventContent.push(
+                    <Flex.Layout key="toTime" horizontal justified>
+                        <MUI.DatePicker style={{width: "auto"}} floatingLabelText="To" />
+                        <MUI.TimePicker style={{width: "auto"}} floatingLabelText=" "/>
+                    </Flex.Layout>
+                );
+
+                eventContent.push(
+                    <MemberSelect
+                        hintText="Participants"
+                        floatingLabelText="Participants"
+                        style={{width: "100%"}} />
                 );
             }
         }
