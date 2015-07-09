@@ -8,6 +8,7 @@ const Display = require('../Common').Display;
 const PerfectScroll = require('../PerfectScroll');
 const UserStore = require('../../stores/UserStore');
 const LoginStore = require('../../stores/LoginStore');
+const CalendarActions = require('../../actions/CalendarActions');
 const {Avatar, Name, Member, MemberSelect} = require('../Member');
 const {SmartEditor, SmartDisplay} = require('../SmartEditor');
 const StylePropable = require('material-ui/lib/mixins/style-propable');
@@ -30,7 +31,6 @@ let EventManagement = React.createClass({
             type: "view"
         }
     },
-
 
     getInitialState() {
         return {
@@ -149,7 +149,8 @@ let EventManagement = React.createClass({
                     <Flex.Layout horizontal endJustified style={styles.eventAction}>
                         <MUI.IconButton
                             iconStyle={styles.deleteButton}
-                            iconClassName="icon-save" />
+                            iconClassName="icon-save"
+                            onClick={this._handleEventSave}/>
                     </Flex.Layout>
                 );
 
@@ -308,6 +309,12 @@ let EventManagement = React.createClass({
         if (this.props.onEditClick) {
             this.props.onEditClick();
         }
+    },
+
+    _handleEventSave() {
+        CalendarActions.update(
+            {id: this.props.event.id, title: "heefasdf"}
+        );
     }
 });
 
