@@ -12,11 +12,12 @@ const LoginStore = require('../../stores/LoginStore');
 const SmartDisplay = require('../SmartEditor').SmartDisplay;
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 
-let EventDetailContent = React.createClass({
+let EventManagement = React.createClass({
     mixins: [StylePropable],
     propTypes: {
         event: React.PropTypes.object,
-        onEditClick: React.PropTypes.object
+        onEditClick: React.PropTypes.func,
+        type: React.PropTypes.oneOf(["view", "update", "create"])
     },
 
     contextTypes: {
@@ -25,9 +26,11 @@ let EventDetailContent = React.createClass({
 
     getDefaultProps() {
         return {
-            event: {}
+            event: {},
+            type: "view"
         }
     },
+
 
     getInitialState() {
         return {
@@ -36,20 +39,24 @@ let EventDetailContent = React.createClass({
     },
 
     render() {
+        let {
+            type
+        } = this.props;
+
+        console.log(type);
         let styles = {
             eventTitle: {
                 position: "relative",
                 overflow: "hidden",
                 fontSize: "2em",
                 wordBreak: "break-all",
-                padding: "0 0.8em",
+                padding: "0.4em 0.8em",
                 marginTop: -1,
-                lineHeight: "3em",
-                color: this.context.muiTheme.palette.canvasColor,
-                backgroundColor: this.context.muiTheme.palette.primary1Color
+                height: "3em",
+                color: this.context.muiTheme.palette.canvasColor
             },
             eventAction: {
-                height: 120,
+                height: 140,
                 padding: 6,
                 backgroundColor: this.context.muiTheme.palette.primary1Color
             },
@@ -111,6 +118,8 @@ let EventDetailContent = React.createClass({
                     iconClassName="icon-edit"
                     onClick={this._handleEditClick} />;
 
+            eventContent = [];
+
             eventActions = (
                 <Flex.Layout horizontal endJustified style={styles.eventAction}>
                     {deleteEvent}
@@ -118,115 +127,126 @@ let EventDetailContent = React.createClass({
                 </Flex.Layout>
             );
 
-            eventTitle = (
-                <Flex.Layout vertical  key="title" style={styles.eventTitle}>
-                    <span>{event.title}</span>
-                    {
-                        event && event.repeated ?
-                            <div style={styles.repeatSymbol}>
-                                <div style={styles.repeatSymbolInner}>{event.repeated_number}</div>
-                            </div> :
-                            null
-                    }
-                </Flex.Layout>
-            );
-
-            eventContent = [];
-
-            let format;
-            if (event.full_day) {
-                format = "YYYY-MM-DD";
-            } else {
-                format = "YYYY-MM-DD HH:mm";
-            }
-
-            let formattedFrom = Moment(event.from_time).format(format);
-            let formattedTo = Moment(event.to_time).format(format);
-
-            let formatTime = formattedFrom;
-            if (event.period && formattedFrom !== formattedTo) {
-                formatTime += " ~ " + Moment(event.to_time).format(format)
-            }
-
-            // Event Schedule
-            eventContent.push(
-                <Flex.Layout horizontal key="schedule" style={this.mergeStyles(styles.eventDetailItem, styles.eventSchedule)}>
-                    <Flex.Layout center style={styles.eventDetailIcon}><MUI.FontIcon className="icon-schedule"/></Flex.Layout>
-                    <Flex.Layout center>{formatTime}</Flex.Layout>
-                </Flex.Layout>
-            );
-
-            // Event Description
-            eventContent.push(
-                <Flex.Layout horizontal key="description" style={styles.eventDetailItem}>
-                    <Flex.Layout center style={styles.eventDetailIcon}><MUI.FontIcon className="icon-details"/></Flex.Layout>
-                    <Flex.Layout center>
-                        <SmartDisplay
-                            key="description"
-                            disabled
-                            multiLine
-                            floatingLabelText="Description"
-                            value={this.state.event.description || "Empty"} />
-                    </Flex.Layout>
-                </Flex.Layout>
-            );
-
-            // Event participants
-            let participants = [];
-            let teamParticipants = [];
-            event.participants.forEach(p => {
-                let u = UserStore.getUser(p.id);
-                participants.push(
-                    <Flex.Layout horizontal center key={"user_" + u.id} style={{marginBottom: 16, marginRight: 16}}>
-                        <Member.Avatar scale={1.0} member={u} style={{borderRadius: "0%"}} />
-                        <Member.Name style={{marginLeft: 6, width: 100, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}} member={u}></Member.Name>
+            if (type === "view") {
+                styles.eventTitle.backgroundColor = this.context.muiTheme.palette.primary1Color;
+                eventTitle = (
+                    <Flex.Layout vertical  key="title" endJustified style={styles.eventTitle}>
+                        <span>{event.title}</span>
+                        {
+                            event && event.repeated ?
+                                <div style={styles.repeatSymbol}>
+                                    <div style={styles.repeatSymbolInner}>{event.repeated_number}</div>
+                                </div> :
+                                null
+                        }
                     </Flex.Layout>
                 );
-            });
+            } else if (type === "update" || type === "edit") {
+                eventContent.push(
+                    <Flex.Layout vertical  key="title">
+                        <MUI.TextField defaultValue={event.title} fullWidth floatingLabelText="title" />
+                    </Flex.Layout>
+                );
+            }
 
-            event.team_participants.forEach(p => {
-                let t = UserStore.getTeam(p.id);
-                teamParticipants.push(
-                    <Flex.Layout horizontal center key={"team_" + t.id} style={{marginBottom: 16, marginRight: 16}}>
-                        <Flex.Layout>
-                            <MUI.FontIcon className="icon-group" style={{borderRadius: "0%"}} />
+            if (type === "view") {
+                let format;
+                if (event.full_day) {
+                    format = "YYYY-MM-DD";
+                } else {
+                    format = "YYYY-MM-DD HH:mm";
+                }
+
+                let formattedFrom = Moment(event.from_time).format(format);
+                let formattedTo = Moment(event.to_time).format(format);
+
+                let formatTime = formattedFrom;
+                if (event.period && formattedFrom !== formattedTo) {
+                    formatTime += " ~ " + Moment(event.to_time).format(format)
+                }
+
+                // Event Schedule
+                eventContent.push(
+                    <Flex.Layout horizontal key="schedule" style={this.mergeStyles(styles.eventDetailItem, styles.eventSchedule)}>
+                        <Flex.Layout center style={styles.eventDetailIcon}><MUI.FontIcon className="icon-schedule"/></Flex.Layout>
+                        <Flex.Layout center>{formatTime}</Flex.Layout>
+                    </Flex.Layout>
+                );
+
+                // Event Description
+                eventContent.push(
+                    <Flex.Layout horizontal key="description" style={styles.eventDetailItem}>
+                        <Flex.Layout center style={styles.eventDetailIcon}><MUI.FontIcon className="icon-details"/></Flex.Layout>
+                        <Flex.Layout center>
+                            <SmartDisplay
+                                key="description"
+                                disabled
+                                multiLine
+                                floatingLabelText="Description"
+                                value={this.state.event.description || "Empty"} />
                         </Flex.Layout>
-                        <span style={{marginLeft: 6, width: 100, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}}>{t.name}</span>
                     </Flex.Layout>
                 );
-            });
 
-            // Event Participants
-            eventContent.push(
-                <Flex.Layout horizontal key="participants" style={styles.eventDetailItem}>
-                    <Flex.Layout startJustified style={styles.eventDetailIcon}>
-                        <MUI.FontIcon className="icon-person"/>
-                    </Flex.Layout>
-                    <Flex.Layout horizontal center wrap>
-                        {participants}
-                        {teamParticipants}
-                    </Flex.Layout>
-                </Flex.Layout>
-            );
+                // Event participants
+                let participants = [];
+                let teamParticipants = [];
+                event.participants.forEach(p => {
+                    let u = UserStore.getUser(p.id);
+                    participants.push(
+                        <Flex.Layout horizontal center key={"user_" + u.id} style={{marginBottom: 16, marginRight: 16}}>
+                            <Member.Avatar scale={1.0} member={u} style={{borderRadius: "0%"}} />
+                            <Member.Name style={{marginLeft: 6, width: 100, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}} member={u}></Member.Name>
+                        </Flex.Layout>
+                    );
+                });
 
-            eventComment = [];
-            let threadKey =  `/platform/calendar/events/${event.id}/${event.repeatedNumber}`;
-            eventComment.push(
-                <Flex.Layout horizontal key="comments" style={styles.eventDetailItem}>
-                    <Flex.Layout startJustified style={styles.eventDetailIcon}>
-                        <MUI.FontIcon className="icon-comment"/>
-                    </Flex.Layout>
-                    <Flex.Layout vertical startJustified flex={1}>
-                        <Thread style={{width: "100%"}} threadKey={threadKey} threadTitle={`Event ${this.state.event.title}`}
-                                participants={{users: this.state.event.participants, teams: this.state.event.team_participants}} />
-                    </Flex.Layout>
-                </Flex.Layout>
-            );
+                event.team_participants.forEach(p => {
+                    let t = UserStore.getTeam(p.id);
+                    teamParticipants.push(
+                        <Flex.Layout horizontal center key={"team_" + t.id} style={{marginBottom: 16, marginRight: 16}}>
+                            <Flex.Layout>
+                                <MUI.FontIcon className="icon-group" style={{borderRadius: "0%"}} />
+                            </Flex.Layout>
+                            <span style={{marginLeft: 6, width: 100, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}}>{t.name}</span>
+                        </Flex.Layout>
+                    );
+                });
 
-            console.log(event);
+                // Event Participants
+                eventContent.push(
+                    <Flex.Layout horizontal key="participants" style={styles.eventDetailItem}>
+                        <Flex.Layout startJustified style={styles.eventDetailIcon}>
+                            <MUI.FontIcon className="icon-person"/>
+                        </Flex.Layout>
+                        <Flex.Layout horizontal center wrap>
+                            {participants}
+                            {teamParticipants}
+                        </Flex.Layout>
+                    </Flex.Layout>
+                );
+
+                eventComment = [];
+                let threadKey =  `/platform/calendar/events/${event.id}/${event.repeatedNumber}`;
+                eventComment.push(
+                    <Flex.Layout horizontal key="comments" style={styles.eventDetailItem}>
+                        <Flex.Layout startJustified style={styles.eventDetailIcon}>
+                            <MUI.FontIcon className="icon-comment"/>
+                        </Flex.Layout>
+                        <Flex.Layout vertical startJustified flex={1}>
+                            <Thread style={{width: "100%"}} threadKey={threadKey} threadTitle={`Event ${this.state.event.title}`}
+                                    participants={{users: this.state.event.participants, teams: this.state.event.team_participants}} />
+                        </Flex.Layout>
+                    </Flex.Layout>
+                );
+            } else if (type === "update" || type === "create") {
+                eventContent.push(
+                    <MUI.TextField defaultValue={event.title} fullWidth floatingLabelText="description" />
+                );
+            }
         }
         return (
-            <Flex.Layout vertical style={{width: "100%", height:"100%"}}>
+            <Flex.Layout vertical style={{width: "100%", height:"100%", background: "white"}}>
                 {eventActions}
                 {eventTitle}
                 <PerfectScroll style={{position: "relative", padding: "0.6em 1.6em"}}>
@@ -245,4 +265,4 @@ let EventDetailContent = React.createClass({
     }
 });
 
-module.exports = EventDetailContent;
+module.exports = EventManagement;

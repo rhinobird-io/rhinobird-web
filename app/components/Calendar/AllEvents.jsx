@@ -6,13 +6,14 @@ const MUI = require('material-ui');
 const Link = require('react-router').Link;
 const Display = require('../Common').Display;
 const UserStore = require('../../stores/UserStore');
+const EventManagement = require('./EventManagement');
 const LoginStore = require('../../stores/LoginStore');
 const Colors = require('material-ui/lib/styles/colors.js');
 const CalendarStore = require('../../stores/CalendarStore');
 const CalendarActions = require('../../actions/CalendarActions');
 const CalendarView = require('../Calendar/CommonComponents').CalendarView;
 const ReactTransitionGroup = React.addons.TransitionGroup;
-const EventDetailContent = require('./EventDetailContent');
+require('jquery.transit');
 require('./style.less');
 
 var Drawer = React.createClass({
@@ -49,7 +50,7 @@ var Drawer = React.createClass({
     render: function() {
         return (
             <ReactTransitionGroup transitionName="test" component="div">
-                {this.state.open && <DrawerInner key="content" start={this.props.start} style={this.props.style}>{this.props.children}</DrawerInner>}
+                {this.state.open && <DrawerInner key="content" className={this.props.className} start={this.props.start} style={this.props.style}>{this.props.children}</DrawerInner>}
             </ReactTransitionGroup>
         );
     }
@@ -68,19 +69,23 @@ var DrawerInner = React.createClass({
         startPos.position="fixed";
         startPos.marginTop=0;
         startPos.marginLeft=0;
-        console.log(startPos);
 
         $el.stop(true).css({height:600,width:500,position:"fixed",top:"50%", marginTop:-300,left:"50%",marginLeft:-250}).animate(startPos, 250, cb);
     },
 
     render: function() {
         return (
-            <div className="drawer" ref="drawer" style={this.props.style}>
+            <div className={this.props.className} style={this.props.style}>
                 {this.props.children}
             </div>
         );
     }
 });
+
+let STATUS_NORMAL = 0;
+let STATUS_EVENT_VIEW = 1;
+let STATUS_EVENT_UPDATE = 2;
+let STATUS_EVENT_CREATE = 3;
 
 let AllEvents = React.createClass({
     contextTypes: {
@@ -99,6 +104,8 @@ let AllEvents = React.createClass({
     getInitialState() {
         return {
             events: [],
+            status: STATUS_NORMAL,
+            showUpdatePopup: false,
             showDetailPopup: false,
             showCreatePopup: false,
             createEventPopupPos: 'r',
@@ -107,6 +114,10 @@ let AllEvents = React.createClass({
     },
 
     render() {
+        let drawerClass = "drawer";
+        if (this.state.status === STATUS_EVENT_UPDATE) {
+            //drawerClass += " rotateZ";
+        }
         return (
             <Flex.Layout vertical style={{height: "100%", WebkitUserSelect: "none", userSelect: "none"}}>
                 <CalendarView
@@ -126,9 +137,14 @@ let AllEvents = React.createClass({
                     allDayRangeContent={this._allDayRangeContent}
                     awayExceptions={() => this.refs.createEventPopup.getDOMNode()} />
                 {this._getCreateEventPopup()}
-                {this.state.showDetailPopup && <div className="backdrop" onClick={this._dismissEventDetailPopup}></div>}
-                <Drawer ref="drawer" start={this.state.showDetailAnimationStart} open={this.state.showDetailPopup} style={{zIndex:1001,background:"white",position:"fixed", top:0, left:0}}>
-                    {this.state.showDetailPopup && this._getEventDetailPopup(this.state.currentShownEvent)}
+                {this.state.status !== STATUS_NORMAL && <div className="backdrop" onClick={this._dismissEventDetailPopup}></div>}
+                <Drawer
+                    ref="drawer"
+                    className={drawerClass}
+                    start={this.state.showDetailAnimationStart}
+                    open={(this.state.status !== STATUS_NORMAL)}
+                    style={{zIndex: 1001, position: "fixed", top: 0, left: 0}}>
+                    {this.state.status !== STATUS_NORMAL && this._getEventManagementPopup(this.state.currentShownEvent)}
                 </Drawer>
                 <Link to="create-event">
                     <MUI.FloatingActionButton
@@ -299,7 +315,7 @@ let AllEvents = React.createClass({
                             hintText="To Time"
                             floatingLabelText="To Time" />
                     </Flex.Layout>
-                    <MUI.TextField hintText="title" ref="title" />
+                    <MUI.TextField hintText="title" ref="title" floatingLabelText="title" fullWidth />
                     <Flex.Layout style={{padding: "8px 8px 0px 24px"}} horizontal endJustified>
                         <MUI.FlatButton secondary onClick={() => this.refs.calendar.dismissCreateNewRange()}>Close</MUI.FlatButton>
                         <MUI.FlatButton primary>Edit</MUI.FlatButton>
@@ -312,20 +328,9 @@ let AllEvents = React.createClass({
 
     _createEvent(e) {
         e.preventDefault();
-        let errorMsg = "wrong";
-
         let refs = this.refs;
 
         let title = refs.title.getValue();
-        //
-        //if (title.length === 0) {
-        //    this.setState({titleError: errorMsg.titleRequired});
-        //    return;
-        //} else {
-        //    this.setState({titleError: ""});
-        //}
-
-
         let event = {};
         event.title = title;
         event.fromTime = this.refs.fromTime.getTime();
@@ -333,19 +338,42 @@ let AllEvents = React.createClass({
         event.fromDate = event.fromTime;
         event.toDate = event.toTime;
         event.isPeriod = true;
-        console.log(event);
+
         CalendarActions.create(event, () => {
             this.refs.createEventPopup.dismiss();
             this.refs.calendar.dismissCreateNewRange();
         });
     },
 
-    _getEventDetailPopup(event) {
+    _getEventManagementPopup(event) {
+        let status = this.state.status;
+        let type = "";
+        if (status === STATUS_EVENT_CREATE) {
+            type = "create";
+        } else if (status === STATUS_EVENT_VIEW) {
+            type = "view";
+        } else if (status === STATUS_EVENT_UPDATE) {
+            type = "update";
+        }
         return (
-            <div key="detailPopup" style={{zIndex:1001, height: "100%"}}>
-                <EventDetailContent event={event} />
+            <div key="detailPopup" ref="eventManagement" style={{zIndex:1001, height: "100%"}}>
+                <EventManagement type={type} event={event} onEditClick={this._handleEventDetailEditClick} />
             </div>
         );
+    },
+
+    _handleEventDetailEditClick() {
+
+        this.setState({
+            status: STATUS_EVENT_UPDATE
+        }, () => {
+            $(this.refs.eventManagement.getDOMNode()).transition({
+                rotateY: 360
+            }, 1500, () => {
+
+            });
+        });
+
     },
 
     _showCreateEventPopup(rect, range) {
@@ -398,19 +426,19 @@ let AllEvents = React.createClass({
             //return;
         }
         this.setState({
-            showDetailPopup: true,
             showDetailAnimationStart: {
                 left: rect.left,
                 top: rect.top,
                 width: rect.width,
                 height: rect.height
             },
-            currentShownEvent: range
+            currentShownEvent: range,
+            status: STATUS_EVENT_VIEW
         });
     },
     _dismissEventDetailPopup() {
         this.setState({
-            showDetailPopup: false
+            status: STATUS_NORMAL
         });
     }
 });
