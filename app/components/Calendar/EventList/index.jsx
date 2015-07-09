@@ -227,7 +227,7 @@ const EventList = React.createClass({
                                     </div>
                                 </div>
                                 <div className="cal-event-description">
-                                    <SmartDisplay value={event.description}/>
+                                    <SmartDisplay value={event.description || ""}/>
                                 </div>
                             </div>
                         </div>
