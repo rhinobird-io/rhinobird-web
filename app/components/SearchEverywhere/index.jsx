@@ -89,11 +89,12 @@ let SearchEverywhere = React.createClass({
         return (
             <MUI.Paper ref="search" className="search-everywhere" style={style} zDepth={3}>
                 <MUI.TextField
+                    fullWidth
                     ref="keyword"
                     className="mui-text-search"
                     onFocus={() => this.refs.popup.show()}
                     onChange={() => SearchAction.search(this.refs.keyword.getValue())}
-                    style={{color: "white", fontSize: "1.2em"}}/>
+                    inputStyle={{padding: "0 0.4em", color: "white", fontSize: "1.2em"}}/>
                 <PopupSelect
                     hRestrict
                     ref="popup"

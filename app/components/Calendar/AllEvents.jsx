@@ -363,15 +363,15 @@ let AllEvents = React.createClass({
     },
 
     _handleEventDetailEditClick() {
-
+        $(this.refs.eventManagement.getDOMNode()).transition({
+            transform: "rotateY(180deg)"
+        }, 600, () => {
+            $(this.refs.eventManagement.getDOMNode()).transition({
+                transform: "initial"
+            }, 750);
+        });
         this.setState({
             status: STATUS_EVENT_UPDATE
-        }, () => {
-            $(this.refs.eventManagement.getDOMNode()).transition({
-                rotateY: 360
-            }, 1500, () => {
-
-            });
         });
 
     },
