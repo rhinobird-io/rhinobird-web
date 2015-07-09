@@ -170,8 +170,30 @@ let MonthView = React.createClass({
 
             let outStyle = {};
             assign(outStyle, styles.outer);
+
+            let today = Moment(new Date()).format("YYYY-MM-DD");
+            let dayFormat = Moment(d).format("YYYY-MM-DD");
             if (index === 0) {
                 outStyle.borderLeft = `1px solid ${this.context.muiTheme.palette.borderColor}`;
+                if (today === dayFormat) {
+                    outStyle.borderLeft = `1px solid ${this.context.muiTheme.palette.accent1Color}`;
+                }
+            } else {
+                let yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+                console.log(`Yesterday ${yesterday}`)
+                if (Moment(yesterday).format("YYYY-MM-DD") === dayFormat) {
+                    outStyle.borderRight = `1px solid ${this.context.muiTheme.palette.accent1Color}`;
+                }
+                let sevenDaysAgo = new Date(today);
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                if (Moment(sevenDaysAgo).format("YYYY-MM-DD") === dayFormat) {
+                    outStyle.borderBottom = `1px solid ${this.context.muiTheme.palette.accent1Color}`;
+                }
+            }
+            if (Moment(d).format("YYYY-MM-DD") === today) {
+                outStyle.borderRight = `1px solid ${this.context.muiTheme.palette.accent1Color}`;
+                outStyle.borderBottom = `1px solid ${this.context.muiTheme.palette.accent1Color}`;
             }
             return (
                 <Flex.Layout ref={`day_${index}`} vertical flex={1} style={outStyle}>

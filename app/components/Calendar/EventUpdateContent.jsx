@@ -12,7 +12,7 @@ const LoginStore = require('../../stores/LoginStore');
 const SmartDisplay = require('../SmartEditor').SmartDisplay;
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 
-let EventCreateContent = React.createClass({
+let EventUpdateContent = React.createClass({
     mixins: [StylePropable],
     propTypes: {
         event: React.PropTypes.object
@@ -227,4 +227,4 @@ let EventCreateContent = React.createClass({
     }
 });
 
-module.exports = EventCreateContent;
+module.exports = EventUpdateContent;
