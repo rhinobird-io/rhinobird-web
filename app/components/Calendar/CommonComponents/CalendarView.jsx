@@ -10,6 +10,13 @@ const Display = require('../../Common').Display;
 const Selector = require('../../Select').Selector;
 
 let VIEW_TYPES = ['week', 'month', 'day', 'fourDays', 'timeLine'];
+let VIEW_TYPE_TITLES = {
+    'week': 'Week',
+    'month': 'Month',
+    'fourDays': 'Four Days',
+    'day': 'Day',
+    'timeLine': 'Time Line'
+};
 let BEFORE_TOOLTIPS = {
     'week': 'Last Week',
     'month': 'Last Month',
@@ -199,12 +206,11 @@ let CalendarView = React.createClass({
 
     _getViewTypeSwitcher() {
         let views = this.props.views;
-        let viewTypes = views.map((type, index) => <span key={`switcher${index}`} name={type}>{type}</span>);
+        let viewTypes = views.map((type, index) => <span key={`switcher${index}`} name={type}>{VIEW_TYPE_TITLES[type]}</span>);
         return (
             <Flex.Layout  horizontal center centerJustified style={{minHeight: 48, borderTop: "1px solid " + muiTheme.palette.borderColor}}>
                 <Selector value={this.state.viewType}
                           onSelectChange={v => {
-                            console.log(new Date().getTime())
                             this.setState({viewType: v}, () => {
                                 if (this.props.onViewTypeChange) {
                                     console.log(new Date().getTime());
