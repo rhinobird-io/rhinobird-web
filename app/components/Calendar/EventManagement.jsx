@@ -15,7 +15,8 @@ const StylePropable = require('material-ui/lib/mixins/style-propable');
 let EventDetailContent = React.createClass({
     mixins: [StylePropable],
     propTypes: {
-        event: React.PropTypes.object
+        event: React.PropTypes.object,
+        onEditClick: React.PropTypes.object
     },
 
     contextTypes: {
@@ -95,6 +96,8 @@ let EventDetailContent = React.createClass({
         let eventContent = null;
         let eventComment = null;
         let event = this.state.event;
+        let status = this.state.status;
+
         if (this.state.notFound || event === null || event === undefined) {
             eventContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Event not found</h3>
         } else {
@@ -106,8 +109,8 @@ let EventDetailContent = React.createClass({
             let editEvent = <MUI.IconButton
                     iconStyle={styles.deleteButton}
                     iconClassName="icon-edit"
-                    onClick={this._onEventDelete} />;
-            
+                    onClick={this._handleEditClick} />;
+
             eventActions = (
                 <Flex.Layout horizontal endJustified style={styles.eventAction}>
                     {deleteEvent}
@@ -233,6 +236,12 @@ let EventDetailContent = React.createClass({
                 <MUI.Snackbar ref="createEventSuccess" message={`Create event success`} />
             </Flex.Layout>
         );
+    },
+
+    _handleEditClick() {
+        if (this.props.onEditClick) {
+            this.props.onEditClick();
+        }
     }
 });
 
