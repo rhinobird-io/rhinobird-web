@@ -13,10 +13,6 @@ require('./style.less');
 let Select = React.createClass({
     mixins: [ClickAwayable, PureRenderMixin, StylePropable],
 
-    contextTypes: {
-        muiTheme: React.PropTypes.object
-    },
-
     propTypes: {
         valueLink: React.PropTypes.shape({
             value: React.PropTypes.oneOfType([
@@ -36,7 +32,7 @@ let Select = React.createClass({
     layoutUpdated: false,
 
     componentClickAway() {
-        this.refs.popupSelect.dismiss();
+        this.refs.popup.dismiss();
     },
 
     componentDidMount() {
@@ -87,8 +83,8 @@ let Select = React.createClass({
         this.setState({
             selected: selected,
             toDelete: false,
-            children: this._getFilteredChildren(this.props.children,this.refs.text.getValue())
-        }, () => this._updateLayout(false, selected));
+            children: this._getFilteredChildren(this.props.children, this.refs.text.getValue())
+        }, () => this._updateLayout());
         if (this.props.valueLink || this.props.onChange) {
             this.getValueLink(this.props).requestChange(Object.keys(selected));
             if (this.props.onChange) {
@@ -139,8 +135,7 @@ let Select = React.createClass({
             return;
         }
 
-        this.setState({selected: selected, children: this._getFilteredChildren(this.props.children, "", selected)});
-        this._updateLayout(true, selected);
+        this.setState({selected: selected, children: this._getFilteredChildren(this.props.children, "", selected)}, () =>         this._updateLayout());
         if (this.props.valueLink || this.props.onChange) {
             this.getValueLink(this.props).requestChange(Object.keys(selected));
             if (this.props.onChange) {
@@ -148,6 +143,7 @@ let Select = React.createClass({
             }
         }
     },
+
     _contain(item, keyword) {
         if (typeof item === 'object' && item !== null) {
             item.visited = true;
@@ -181,8 +177,8 @@ let Select = React.createClass({
             if (keyword.length === 0 || !child.props.index || child.props.value === undefined) return true;
             return this._contain(child.props.index, keyword.toLowerCase());
         });
-        if (children.length >= 0 && !this.refs.popupSelect.isShown()) {
-            this.refs.popupSelect.show();
+        if (children.length >= 0 && !this.refs.popup.isShown()) {
+            this.refs.popup.show();
         }
         this.setState({children: children});
     },
@@ -192,9 +188,9 @@ let Select = React.createClass({
     },
 
     _getFilteredChildren(children, keyword, selected) {
-        let selected = selected || this.state.selected;
+        let s = selected || this.state.selected;
         return children.filter((child) => {
-            if (child.props.value !== undefined && selected[child.props.value]) return false;
+            if (child.props.value !== undefined && s[child.props.value]) return false;
             if (!keyword || !child.props.index || child.props.value === undefined) return true;
             return child.props.index.indexOf(keyword) >= 0; // this is error and dead code
         });
@@ -204,11 +200,10 @@ let Select = React.createClass({
         let {
             style,
             hintText,
-            floatingLabelText,
-            ...other
+            floatingLabelText
         } = this.props;
 
-        let multiple = this.props.multiple || false;
+        let multiple = !!this.props.multiple;
         let styles = {
             select: {
                 position: "relative",
@@ -244,8 +239,10 @@ let Select = React.createClass({
 
         let selectedValues = Object.keys(this.state.selected);
         let floatingText = floatingLabelText;
+        let floatingLabel = null;
         if (selectedValues.length !== 0 && floatingLabelText) {
             floatingText = " ";
+            floatingLabel = <label style={{display: "block", position: "absolute", paddingTop: 10, fontSize: "12px", color: "rgba(0,0,0,.5)", lineHeight: "30px"}}>{floatingLabelText}</label>;
         }
 
         if (!style) {
@@ -264,28 +261,27 @@ let Select = React.createClass({
                 onChange={this._filter}
                 onKeyDown={this._keyDownListener}
                 onFocus={() => {
-                    this.refs.popupSelect.show();
+                    this.refs.popup.show();
                     this._updateLayout();
                 }}
                 onBlur={() => this.setState({toDelete: false})} />;
 
-        let popupSelect =
+        let popup =
             <PopupSelect
                 hRestrict={this.props.hRestrict}
-                ref="popupSelect"
+                ref="popup"
                 relatedTo={() => this.getDOMNode().getBoundingClientRect()}
                 onItemSelect={(value, e) => {
                         this._addSelectedOption(value);
                         this.refs.text.setValue("");
                         if (!(e.type === "keydown" && e.keyCode === 13)) {
-                            this.refs.popupSelect.dismiss();
+                            this.refs.popup.dismiss();
                         }
                     }
                 }
                 onDismiss={() => {
                     this.refs.text.blur()
-                }}
-            >
+                }}>
                 {this.state.children}
             </PopupSelect>;
 
@@ -325,9 +321,10 @@ let Select = React.createClass({
 
         return (
             <div style={styles.select}>
+                {floatingLabel}
                 {tokenWrapperDOM}
                 {text}
-                {popupSelect}
+                {popup}
             </div>
         );
     },
