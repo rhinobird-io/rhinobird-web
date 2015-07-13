@@ -18,6 +18,7 @@ let EventManagement = React.createClass({
     propTypes: {
         event: React.PropTypes.object,
         onEditClick: React.PropTypes.func,
+        onUpdateSuccess: React.PropTypes.func,
         type: React.PropTypes.oneOf(["view", "update", "create"])
     },
 
@@ -116,7 +117,6 @@ let EventManagement = React.createClass({
 
             eventActions = null;
             eventContent = [];
-
 
             if (type === "view") {
                 eventActions = (
@@ -261,7 +261,7 @@ let EventManagement = React.createClass({
                             <MUI.Checkbox ref="period" defaultChecked={event.period} onCheck={this._handlePeriodChange} name="Period" label="Period" />
                         </Flex.Layout>
                         <Flex.Layout flex={1}>
-                            <MUI.Checkbox ref="full_day" onCheck={this._handleAllDayChange}  name="All Day" label="All Day" />
+                            <MUI.Checkbox ref="full_day" defaultChecked={event.full_day} onCheck={this._handleAllDayChange}  name="All Day" label="All Day" />
                         </Flex.Layout>
                         <Flex.Layout flex={1}>
                             <MUI.Checkbox ref="repeated" name="Repeated" label="Repeated" />
@@ -307,7 +307,7 @@ let EventManagement = React.createClass({
             <Flex.Layout vertical style={{width: "100%", height:"100%", background: "white"}}>
                 {eventActions}
                 {eventTitle}
-                <PerfectScroll style={{position: "relative", padding: "0.6em 1.6em"}}>
+                <PerfectScroll style={{position: "relative", padding: "0.6em 1.6em", height: "100%"}}>
                     {eventContent}
                     {eventComment}
                 </PerfectScroll>
@@ -355,7 +355,7 @@ let EventManagement = React.createClass({
             full_day: full_day,
             from_time: from_time,
             to_time: to_time
-        });
+        }, this.props.onUpdateSuccess);
     }
 });
 
