@@ -100,11 +100,15 @@ module.exports = React.createClass({
         };
 
         let textColor = this.context.muiTheme.palette.textColor;
+        let onlineStateColor = this.context.muiTheme.palette.primary1Color;
         if(this.state._imCurrentChannel){
             textColor = this.context.muiTheme.palette.canvasColor;
+            onlineStateColor = this.context.muiTheme.palette.canvasColor;
         } else if(this.props.Channel.isDirect && !self.state._onlineStatus) {
             textColor = this.context.muiTheme.palette.disabledColor;
+            onlineStateColor = this.context.muiTheme.palette.disabledColor;
         }
+
         return (
             <div className="instant-message-channel-container" style={style} onTouchTap={this.props.onTouchTap}>
                 <FlatButton style={{
@@ -113,7 +117,7 @@ module.exports = React.createClass({
                 padding:6
                 }} className={this.state._imCurrentChannel?'instant-message-channel-item-selected instant-message-channel-item ':'instant-message-channel-item '}  onTouchTap={self._onItemTap.bind(self, this.props.Channel)}>
                     <div style={{overflowX: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        <span className={ this.props.Channel.isGroup ? 'icon-group' : ''}></span>
+                        <span className={ this.props.Channel.isGroup ? 'icon-group' : 'icon-account-circle'} style={{color: onlineStateColor}}></span>
                         <span style={{
                         textTransform: 'none',
                         color: textColor}}>{ this.props.Channel.isGroup? this.props.Channel.channel.name : this.props.Channel.channel.realname}</span>
