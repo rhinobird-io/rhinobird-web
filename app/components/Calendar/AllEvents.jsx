@@ -251,20 +251,20 @@ let AllEvents = React.createClass({
                 if (toTime < now) {
                     background = Colors.pink100;
                 } else {
-                    background = this.context.muiTheme.palette.accent3Color;
+                    background = muiTheme.palette.accent3Color;
                 }
                 styles.wrapper.backgroundColor = background;
-                //styles.wrapper.border = "1px solid " + this.context.muiTheme.palette.accent2Color;
+                //styles.wrapper.border = "1px solid " + muiTheme.palette.accent2Color;
                 innerContent.push(<div>{range.title}</div>)
             } else {
                 let background = null;
                 if (toTime < now) {
                     background = Colors.cyan100;
                 } else {
-                    background = this.context.muiTheme.palette.primary1Color;
+                    background = muiTheme.palette.primary1Color;
                 }
                 styles.wrapper.backgroundColor = background;
-                styles.wrapper.border = "1px solid " + this.context.muiTheme.palette.primary2Color;
+                styles.wrapper.border = "1px solid " + muiTheme.palette.primary2Color;
             }
         }
 

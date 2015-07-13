@@ -74,7 +74,7 @@ let DaysView = React.createClass({
             },
             dayContent: {
                 width: "100%",
-                borderLeft: "1px solid " + this.context.muiTheme.palette.borderColor
+                borderLeft: "1px solid " + muiTheme.palette.borderColor
             }
         };
 
@@ -95,7 +95,7 @@ let DaysView = React.createClass({
                 inner: {
                     fontSize: "0.9em",
                     height: "100%",
-                    backgroundColor: this.context.muiTheme.palette.accent3Color
+                    backgroundColor: muiTheme.palette.accent3Color
                 }
             };
             let maxRange = 1;
@@ -119,7 +119,7 @@ let DaysView = React.createClass({
                     );
                 });
                 return (
-                    <Flex.Layout vertical stretch flex={1} style={{width: 0, borderLeft: "1px solid " + this.context.muiTheme.palette.borderColor}}>
+                    <Flex.Layout vertical stretch flex={1} style={{width: 0, borderLeft: "1px solid " + muiTheme.palette.borderColor}}>
                         {allDayContents}
                     </Flex.Layout>
                 );
@@ -148,16 +148,16 @@ let DaysView = React.createClass({
         );
 
         return (
-            <Flex.Layout vertical stretch style={{position: "relative", minHeight: 0, overflow: "hidden", borderTop: "1px solid " + this.context.muiTheme.palette.borderColor}}>
+            <Flex.Layout vertical stretch style={{position: "relative", minHeight: 0, overflow: "hidden", borderTop: "1px solid " + muiTheme.palette.borderColor}}>
                 <Flex.Layout ref="header" vertical style={{minHeight: headerHeight}}>
                     <Flex.Layout horizontal style={{minHeight: 100}}>
-                        <div style={{width: 60, borderBottom: "1px solid " + this.context.muiTheme.palette.borderColor}}></div>
+                        <div style={{width: 60, borderBottom: "1px solid " + muiTheme.palette.borderColor}}></div>
                         {dateBars}
                     </Flex.Layout>
                     {allDays}
                 </Flex.Layout>
                 <Flex.Layout flex={1} style={{minHeight: 100}}>
-                    <PerfectScroll ref="content" style={{position: "relative", width: "100%", borderTop: "1px solid " + this.context.muiTheme.palette.borderColor}} alwaysVisible>
+                    <PerfectScroll ref="content" style={{position: "relative", width: "100%", borderTop: "1px solid " + muiTheme.palette.borderColor}} alwaysVisible>
                         {table}
                     </PerfectScroll>
                 </Flex.Layout>

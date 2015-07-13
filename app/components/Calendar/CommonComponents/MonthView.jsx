@@ -47,7 +47,7 @@ let MonthView = React.createClass({
             wrapper: {
                 padding: "0 1em",
                 position: "relative",
-                borderTop: "1px solid " + this.context.muiTheme.palette.borderColor
+                borderTop: "1px solid " + muiTheme.palette.borderColor
             }
         };
 
@@ -75,14 +75,14 @@ let MonthView = React.createClass({
         let weekdays = Moment.weekdaysShort();
         let styles = {
             outer: {
-                borderBottom: `1px solid ${this.context.muiTheme.palette.borderColor}`
+                borderBottom: `1px solid ${muiTheme.palette.borderColor}`
             },
             inner: {
                 width: 0,
                 fontWeight: 600,
                 fontSize: "1.1em",
                 padding: "0.2em 0.4em",
-                color: this.context.muiTheme.palette.disabledColor
+                color: muiTheme.palette.disabledColor
             }
         };
         let weekdaysBar = weekdays.map(d => {
@@ -129,8 +129,8 @@ let MonthView = React.createClass({
                 minHeight: 0,
                 overflow: "hidden",
                 padding: "0.2em 0.5em",
-                borderBottom: `1px solid ${this.context.muiTheme.palette.borderColor}`,
-                borderRight: `1px solid ${this.context.muiTheme.palette.borderColor}`
+                borderBottom: `1px solid ${muiTheme.palette.borderColor}`,
+                borderRight: `1px solid ${muiTheme.palette.borderColor}`
             },
             dayHeader: {
                 padding: 2,
@@ -145,7 +145,7 @@ let MonthView = React.createClass({
             },
             rangeInner: {
                 padding: "0 4px",
-                backgroundColor: this.context.muiTheme.palette.primary3Color
+                backgroundColor: muiTheme.palette.primary3Color
             }
         };
         let weekdays = date.weekDays();
@@ -174,26 +174,26 @@ let MonthView = React.createClass({
             let today = Moment(new Date()).format("YYYY-MM-DD");
             let dayFormat = Moment(d).format("YYYY-MM-DD");
             if (index === 0) {
-                outStyle.borderLeft = `1px solid ${this.context.muiTheme.palette.borderColor}`;
+                outStyle.borderLeft = `1px solid ${muiTheme.palette.borderColor}`;
                 if (today === dayFormat) {
-                    outStyle.borderLeft = `1px solid ${this.context.muiTheme.palette.accent1Color}`;
+                    outStyle.borderLeft = `1px solid ${muiTheme.palette.accent1Color}`;
                 }
             } else {
                 let yesterday = new Date(today);
                 yesterday.setDate(yesterday.getDate() - 1);
                 console.log(`Yesterday ${yesterday}`)
                 if (Moment(yesterday).format("YYYY-MM-DD") === dayFormat) {
-                    outStyle.borderRight = `1px solid ${this.context.muiTheme.palette.accent1Color}`;
+                    outStyle.borderRight = `1px solid ${muiTheme.palette.accent1Color}`;
                 }
                 let sevenDaysAgo = new Date(today);
                 sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
                 if (Moment(sevenDaysAgo).format("YYYY-MM-DD") === dayFormat) {
-                    outStyle.borderBottom = `1px solid ${this.context.muiTheme.palette.accent1Color}`;
+                    outStyle.borderBottom = `1px solid ${muiTheme.palette.accent1Color}`;
                 }
             }
             if (Moment(d).format("YYYY-MM-DD") === today) {
-                outStyle.borderRight = `1px solid ${this.context.muiTheme.palette.accent1Color}`;
-                outStyle.borderBottom = `1px solid ${this.context.muiTheme.palette.accent1Color}`;
+                outStyle.borderRight = `1px solid ${muiTheme.palette.accent1Color}`;
+                outStyle.borderBottom = `1px solid ${muiTheme.palette.accent1Color}`;
             }
             return (
                 <Flex.Layout ref={`day_${index}`} vertical flex={1} style={outStyle}>

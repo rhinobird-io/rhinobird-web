@@ -16,8 +16,8 @@ let DaysHeader = React.createClass({
         let styles = {
             dayHeader: {
                 padding: "0.2em 0.5em",
-                borderLeft: "1px solid " + this.context.muiTheme.palette.borderColor,
-                borderBottom: "1px solid " + this.context.muiTheme.palette.borderColor
+                borderLeft: "1px solid " + muiTheme.palette.borderColor,
+                borderBottom: "1px solid " + muiTheme.palette.borderColor
             }
         };
 

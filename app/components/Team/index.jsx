@@ -236,14 +236,14 @@ let TeamGraph = React.createClass({
             teams.forEach(t=>{
                 let fill, color;
                 if (t.users.find(u => u.id === LoginStore.getUser().id)) {
-                    color = this.context.muiTheme.palette.canvasColor;
-                    fill = this.context.muiTheme.palette.accent1Color;
+                    color = muiTheme.palette.canvasColor;
+                    fill = muiTheme.palette.accent1Color;
                 } else if(UserStore.getUsersByTeamId(t.id, true).find(u => u.id === LoginStore.getUser().id)){
-                    color = this.context.muiTheme.palette.canvasColor;
-                    fill = this.context.muiTheme.palette.primary1Color;
+                    color = muiTheme.palette.canvasColor;
+                    fill = muiTheme.palette.primary1Color;
                 } else {
-                    color = this.context.muiTheme.palette.textColor;
-                    fill = this.context.muiTheme.textColor;
+                    color = muiTheme.palette.textColor;
+                    fill = muiTheme.textColor;
                 }
                 g.setNode(t.id,  { label: t.name, labelStyle: `fill: ${color}`, style: `fill: ${fill}; stroke: ${fill};` });
             });
@@ -302,11 +302,11 @@ let TeamGraph = React.createClass({
             let link = svg.selectAll('.link').data(connections).enter().append('path').attr('class', 'link');
             let getColor = (t) => {
                 if (t.users.find(u => u.id === LoginStore.getUser().id)) {
-                    return this.context.muiTheme.palette.accent1Color;
+                    return muiTheme.palette.accent1Color;
                 } else if(UserStore.getUsersByTeamId(t.id, true).find(u => u.id === LoginStore.getUser().id)){
-                    return this.context.muiTheme.palette.primary1Color;
+                    return muiTheme.palette.primary1Color;
                 } else {
-                    return this.context.muiTheme.textColor;
+                    return muiTheme.textColor;
                 }
             };
             let node = svg.selectAll('.node').data(teams).enter().append('g').style('fill', function (t) {

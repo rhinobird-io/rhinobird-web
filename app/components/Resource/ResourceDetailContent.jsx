@@ -47,7 +47,7 @@ let ResourceDetailContent = React.createClass({
                 padding: 12,
                 minHeight: 60,
                 maxHeight: 60,
-                backgroundColor: this.context.muiTheme.palette.primary1Color
+                backgroundColor: muiTheme.palette.primary1Color
             }
         };
 
@@ -95,12 +95,12 @@ let ResourceDetailContent = React.createClass({
 
         if (user) {
             if (LoginStore.getUser().id === userId) {
-                styles.wrapper.backgroundColor = this.context.muiTheme.palette.accent3Color;
-                styles.wrapper.border = "1px solid " + this.context.muiTheme.palette.accent1Color;
+                styles.wrapper.backgroundColor = muiTheme.palette.accent3Color;
+                styles.wrapper.border = "1px solid " + muiTheme.palette.accent1Color;
                 innerContent.push(<div>Booked By You</div>)
             } else {
-                styles.wrapper.backgroundColor = this.context.muiTheme.palette.primary3Color;
-                styles.wrapper.border = "1px solid " + this.context.muiTheme.palette.primary1Color;
+                styles.wrapper.backgroundColor = muiTheme.palette.primary3Color;
+                styles.wrapper.border = "1px solid " + muiTheme.palette.primary1Color;
                 innerContent.push(<Flex.Layout key="member" flex={1} horizontal end>
                     <Member.Avatar member={user} style={{minWidth: 24, marginRight: 6}}/>
                     <div>{user.realname}</div>

@@ -71,7 +71,7 @@ export default React.createClass({
                 display: "inline",
                 cursor: "pointer",
                 position: "relative",
-                color: this.context.muiTheme.palette.disabledColor
+                color: muiTheme.palette.disabledColor
             },
             triangleDown: {
                 position: "absolute",

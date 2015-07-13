@@ -76,12 +76,12 @@ let DayContent = React.createClass({
             top: {
                 width: "100%",
                 height: 30,
-                borderBottom: "1px dashed " + this.context.muiTheme.palette.borderColor
+                borderBottom: "1px dashed " + muiTheme.palette.borderColor
             },
             bottom: {
                 width: "100%",
                 height: 30,
-                borderBottom: "1px solid " + this.context.muiTheme.palette.borderColor
+                borderBottom: "1px solid " + muiTheme.palette.borderColor
             },
             nowBar: {
                 position: "absolute",
@@ -89,7 +89,7 @@ let DayContent = React.createClass({
                 zIndex: 10,
                 overflow: "hidden",
                 width: "100%",
-                backgroundColor: this.context.muiTheme.palette.accent1Color
+                backgroundColor: muiTheme.palette.accent1Color
             }
         };
 
@@ -266,8 +266,8 @@ let DayContent = React.createClass({
             let innerStyle = {
                 height: "100%",
                 overflow: "hidden",
-                //border: "1px solid " + this.context.muiTheme.palette.primary2Color,
-                backgroundColor: this.context.muiTheme.palette.primary3Color
+                //border: "1px solid " + muiTheme.palette.primary2Color,
+                backgroundColor: muiTheme.palette.primary3Color
             };
 
             if (d.backgroundColor) {
@@ -358,7 +358,7 @@ let DayContent = React.createClass({
             toTime.setSeconds(toSecond);
 
             let newRange = {fromTime: fromTime, toTime: toTime};
-            newRange.backgroundColor = this.context.muiTheme.palette.primary1Color;
+            newRange.backgroundColor = muiTheme.palette.primary1Color;
             this.setState({newRange: newRange})
         }
     },

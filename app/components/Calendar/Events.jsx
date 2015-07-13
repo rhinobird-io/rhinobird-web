@@ -22,9 +22,9 @@ let AllDayEvents = React.createClass({
             allDayEvent: {
                 padding: 2,
                 margin: 2,
-                color: this.context.muiTheme.palette.textColor,
-                backgroundColor: this.context.muiTheme.palette.primary1Color,
-                border: "1px solid " + this.context.muiTheme.palette.primary2Color
+                color: muiTheme.palette.textColor,
+                backgroundColor: muiTheme.palette.primary1Color,
+                border: "1px solid " + muiTheme.palette.primary2Color
             }
         };
 
@@ -83,7 +83,7 @@ let Events = React.createClass({
             },
             dayContent: {
                 width: "100%",
-                borderLeft: "1px solid " + this.context.muiTheme.palette.borderColor
+                borderLeft: "1px solid " + muiTheme.palette.borderColor
             }
         };
 
@@ -138,7 +138,7 @@ let Events = React.createClass({
             <div style={{height: "100%", overflow: "auto"}}>
                 <Flex.Layout ref="header" vertical>
                     <Flex.Layout horizontal>
-                        <div style={{width: 60, borderBottom: "1px solid " + this.context.muiTheme.palette.borderColor}}></div>
+                        <div style={{width: 60, borderBottom: "1px solid " + muiTheme.palette.borderColor}}></div>
                         {dateBars}
                     </Flex.Layout>
                     <Flex.Layout horizontal>
@@ -146,7 +146,7 @@ let Events = React.createClass({
                         <Flex.Layout flex={1} stretch>{fullDayEvents}</Flex.Layout>
                     </Flex.Layout>
                 </Flex.Layout>
-                <PerfectScroll ref="content" style={{bottom: 0, left: 0, right: 0, position: "absolute", borderTop: "1px solid " + this.context.muiTheme.palette.borderColor}} alwaysVisible>
+                <PerfectScroll ref="content" style={{bottom: 0, left: 0, right: 0, position: "absolute", borderTop: "1px solid " + muiTheme.palette.borderColor}} alwaysVisible>
                     {eventTable}
                 </PerfectScroll>
             </div>

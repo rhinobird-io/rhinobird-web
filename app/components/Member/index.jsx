@@ -120,7 +120,8 @@ Member.MemberSelect = React.createClass({
     getInitialState() {
         return {
             users: this.props.user ? this._getUsersArray() : null,
-            teams: this.props.team ? this._getTeamsArray() : null
+            teams: this.props.team ? this._getTeamsArray() : null,
+            selected: []
         }
     },
 
@@ -215,8 +216,6 @@ Member.MemberSelect = React.createClass({
                                     <span style={{fontWeight: 500}}>{u.name}</span>
                             </Flex.Layout>;
                         }
-
-                        return null;
                     }}
                     onChange={(selected) => {
                         let results = {};

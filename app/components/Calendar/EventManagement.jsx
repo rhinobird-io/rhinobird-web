@@ -22,10 +22,6 @@ let EventManagement = React.createClass({
         type: React.PropTypes.oneOf(["view", "update", "create"])
     },
 
-    contextTypes: {
-        muiTheme: React.PropTypes.object
-    },
-
     getDefaultProps() {
         return {
             event: {},
@@ -51,12 +47,12 @@ let EventManagement = React.createClass({
                 padding: "0.4em 0.8em",
                 marginTop: -1,
                 height: "3em",
-                color: this.context.muiTheme.palette.canvasColor
+                color: muiTheme.palette.canvasColor
             },
             eventAction: {
                 height: 120,
                 padding: 6,
-                backgroundColor: this.context.muiTheme.palette.primary1Color
+                backgroundColor: muiTheme.palette.primary1Color
             },
             eventInfo: {
                 fontSize: "1em"
@@ -80,7 +76,7 @@ let EventManagement = React.createClass({
                 position: "absolute",
                 borderRadius: "50%",
                 textAlign: "left",
-                backgroundColor: this.context.muiTheme.palette.accent1Color
+                backgroundColor: muiTheme.palette.accent1Color
             },
             repeatSymbolInner: {
                 width: "50%",
@@ -92,7 +88,7 @@ let EventManagement = React.createClass({
                 textAlign: "center"
             },
             deleteButton: {
-                color: this.context.muiTheme.palette.canvasColor
+                color: muiTheme.palette.canvasColor
             }
         };
 
@@ -126,7 +122,7 @@ let EventManagement = React.createClass({
                     </Flex.Layout>
                 );
 
-                styles.eventTitle.backgroundColor = this.context.muiTheme.palette.primary1Color;
+                styles.eventTitle.backgroundColor = muiTheme.palette.primary1Color;
                 eventTitle = (
                     <Flex.Layout vertical  key="title" endJustified style={styles.eventTitle}>
                         <span>{event.title}</span>

@@ -50,12 +50,12 @@ let DayView = React.createClass({
             top: {
                 width: "100%",
                 height: 30,
-                borderBottom: "1px dashed " + this.context.muiTheme.palette.borderColor
+                borderBottom: "1px dashed " + muiTheme.palette.borderColor
             },
             bottom: {
                 width: "100%",
                 height: 30,
-                borderBottom: "1px solid " + this.context.muiTheme.palette.borderColor
+                borderBottom: "1px solid " + muiTheme.palette.borderColor
             },
             nowBar: {
                 position: "absolute",
@@ -63,7 +63,7 @@ let DayView = React.createClass({
                 zIndex: 10,
                 overflow: "hidden",
                 width: "100%",
-                backgroundColor: this.context.muiTheme.palette.accent1Color
+                backgroundColor: muiTheme.palette.accent1Color
             }
         };
 
