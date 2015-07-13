@@ -14,6 +14,7 @@ var Main = require("react-proxy!./components/InstantMessage/ImMain/Main");
 // export routes
 module.exports = (
     <Route name="app" path="/platform" handler={require("./components/Application")}>
+        <Route name="test" path="test" handler={require("react-proxy!./components/Test")} />
         <Route name="profile" path="profile" handler={require("react-proxy!./components/Profile")} />
         <Route name="signin" path="signin" handler={require("react-proxy!./components/Signin")}></Route>
         <Route name="team" path="team" handler={require("react-proxy!./components/Team")}></Route>
