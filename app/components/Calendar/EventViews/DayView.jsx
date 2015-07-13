@@ -35,8 +35,8 @@ let EventRect = React.createClass({
         style.userSelect = "none";
         style.padding = 5;
         style.position = "absolute";
-        style.border = "1px solid " + this.context.muiTheme.palette.primary2Color;
-        style.background = this.context.muiTheme.palette.primary3Color;
+        style.border = "1px solid " + muiTheme.palette.primary2Color;
+        style.background = muiTheme.palette.primary3Color;
         style.cursor = "default";
         //style.borderRadius = 2;
 
@@ -116,12 +116,12 @@ let DayView = React.createClass({
             top: {
                 width: "100%",
                 height: 30,
-                borderBottom: "1px dashed " + this.context.muiTheme.palette.borderColor
+                borderBottom: "1px dashed " + muiTheme.palette.borderColor
             },
             bottom: {
                 width: "100%",
                 height: 30,
-                borderBottom: "1px solid " + this.context.muiTheme.palette.borderColor
+                borderBottom: "1px solid " + muiTheme.palette.borderColor
             },
             nowBar: {
                 position: "absolute",
@@ -129,7 +129,7 @@ let DayView = React.createClass({
                 zIndex: 10,
                 overflow: "hidden",
                 width: "100%",
-                backgroundColor: this.context.muiTheme.palette.accent1Color
+                backgroundColor: muiTheme.palette.accent1Color
             }
         };
 

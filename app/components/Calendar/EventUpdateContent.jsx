@@ -44,13 +44,13 @@ let EventUpdateContent = React.createClass({
                 padding: "0 0.8em",
                 marginTop: -1,
                 lineHeight: "3em",
-                color: this.context.muiTheme.palette.canvasColor,
-                backgroundColor: this.context.muiTheme.palette.primary1Color
+                color: muiTheme.palette.canvasColor,
+                backgroundColor: muiTheme.palette.primary1Color
             },
             eventAction: {
                 height: 120,
                 padding: 6,
-                backgroundColor: this.context.muiTheme.palette.primary1Color
+                backgroundColor: muiTheme.palette.primary1Color
             },
             eventInfo: {
                 fontSize: "1em"
@@ -74,7 +74,7 @@ let EventUpdateContent = React.createClass({
                 position: "absolute",
                 borderRadius: "50%",
                 textAlign: "left",
-                backgroundColor: this.context.muiTheme.palette.accent1Color
+                backgroundColor: muiTheme.palette.accent1Color
             },
             repeatSymbolInner: {
                 width: "50%",
@@ -86,7 +86,7 @@ let EventUpdateContent = React.createClass({
                 textAlign: "center"
             },
             deleteButton: {
-                color: this.context.muiTheme.palette.canvasColor
+                color: muiTheme.palette.canvasColor
             }
         };
 

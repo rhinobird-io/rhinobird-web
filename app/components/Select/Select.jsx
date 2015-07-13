@@ -235,7 +235,7 @@ let Select = React.createClass({
                 right: 0
             },
             tokenToDelete: {
-                border: "1px solid " + this.context.muiTheme.palette.accent1Color
+                border: "1px solid " + muiTheme.palette.accent1Color
             },
             padding: {
                 paddingLeft: this.state.paddingLeft || 0
@@ -291,8 +291,6 @@ let Select = React.createClass({
 
         let tokens = [];
         for (let i = 0; i < selectedValues.length; i++) {
-
-
             let selected = selectedValues[i];
             let token = this.props.token ? this.props.token(selected) : selected;
             let tokenStyle = styles.token;
@@ -302,7 +300,7 @@ let Select = React.createClass({
             }
 
             tokens.push(
-                <Paper key={"token_" + i} ref={"token-" + i} zDepth={1} style={tokenStyle}>
+                <Paper key={"token_" + i} ref={"token-" + i} zDepth={1} style={tokenStyle} className="token">
                     <Flex.Layout horizontal onClick={(e) => e.stopPropagation()}>
                         {token}
                         <Flex.Layout vertical selfCenter>

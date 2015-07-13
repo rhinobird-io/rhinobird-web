@@ -20,7 +20,7 @@ let DayHeader = React.createClass({
                 fontWeight: 600,
                 fontSize: "1.1em",
                 padding: "0.2em 0.4em",
-                color: this.context.muiTheme.palette.disabledColor
+                color: muiTheme.palette.disabledColor
             },
             date: {
                 width: 0,
@@ -36,7 +36,7 @@ let DayHeader = React.createClass({
         let dateDOM = <div style={styles.date}>{Moment(date).format("D")}</div>;
 
         if (today.toDateString() === new Date(date).toDateString()) {
-            styles.date.color = this.context.muiTheme.palette.accent1Color;
+            styles.date.color = muiTheme.palette.accent1Color;
         }
         return (
             <div style={this.props.style}>

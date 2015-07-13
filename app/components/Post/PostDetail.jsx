@@ -431,7 +431,7 @@ const Editor = React.createClass({
             <Flex.Layout center style={{fontSize: 16, marginTop: 12, color: 'rgba(0,0,0,0.54)'}}>
                 <span>Tags</span>
                 <mui.IconButton onClick={()=>{this.refs.dialog.show()}}
-                    iconStyle={{color: this.context.muiTheme.palette.accent3Color}} iconClassName='icon-add-circle-outline'/>
+                    iconStyle={{color: muiTheme.palette.accent3Color}} iconClassName='icon-add-circle-outline'/>
                 <CreateTagDialog ref='dialog' onCreate={this._addTag}/>
             </Flex.Layout>
             <Select.Select ref='select'
@@ -504,15 +504,15 @@ const PostDetail = React.createClass({
             case 'view':
                 return <PerfectScroll noScrollX style={{position:'relative', height:'100%', maxWidth: 1024, padding:24, margin:'0 auto'}}>
                         <mui.Paper zDepth={1} style={{margin:4}}>
-                            <div style={{backgroundColor:this.context.muiTheme.palette.primary1Color, width:'100%', padding:24}}>
-                                {LoginStore.getUser().id === this.state.creator_id? <Flex.Layout endJustified style={{backgroundColor:this.context.muiTheme.palette.primary1Color}}>
-                                    <mui.IconButton onClick={this._editPost} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit" tooltip="Edit this post"/>
-                                    <mui.IconButton onClick={this._deletePost} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-delete" tooltip="Delete this post"/>
+                            <div style={{backgroundColor:muiTheme.palette.primary1Color, width:'100%', padding:24}}>
+                                {LoginStore.getUser().id === this.state.creator_id? <Flex.Layout endJustified style={{backgroundColor:muiTheme.palette.primary1Color}}>
+                                    <mui.IconButton onClick={this._editPost} iconStyle={{color: muiTheme.palette.canvasColor}} iconClassName="icon-edit" tooltip="Edit this post"/>
+                                    <mui.IconButton onClick={this._deletePost} iconStyle={{color: muiTheme.palette.canvasColor}} iconClassName="icon-delete" tooltip="Delete this post"/>
                                     <mui.Dialog actions={dialogActions} title="Deleting post" ref='dialog'>
                                         Are you sure to delete this post?
                                     </mui.Dialog>
                                 </Flex.Layout> : undefined}
-                                <Common.Display style={{color: this.context.muiTheme.palette.canvasColor}} type='headline'>{this.state.title}</Common.Display>
+                                <Common.Display style={{color: muiTheme.palette.canvasColor}} type='headline'>{this.state.title}</Common.Display>
                             </div>
                             <div style={{padding:24, width:'100%'}}>
                                 <SmartDisplay value={this.state.body}/>

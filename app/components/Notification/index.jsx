@@ -40,7 +40,7 @@ let NotifiItem = React.createClass({
         let messageStyle = {
             wordWrap: "break-word",
             maxWidth: "100%",
-            color: this.props.read ? this.context.muiTheme.palette.disabledColor : this.context.muiTheme.palette.textColor,
+            color: this.props.read ? muiTheme.palette.disabledColor : muiTheme.palette.textColor,
             textDecoration:"none"
         };
         let nameStyle = {
@@ -55,11 +55,11 @@ let NotifiItem = React.createClass({
             fontSize: "0.9em"
         };
         let achorReadStyle = {
-            color: this.context.muiTheme.palette.disabledColor,
+            color: muiTheme.palette.disabledColor,
             cursor: "pointer"
         };
         let achorUnReadStyle = {
-            color: this.context.muiTheme.palette.textColor,
+            color: muiTheme.palette.textColor,
             cursor: "pointer"
         };
         return (
@@ -136,8 +136,8 @@ let Notification = React.createClass({
 
         if (this.state.unCheckedCount !== 0){
             iconStyle = {
-                fill: this.context.muiTheme.palette.accent3Color,
-                color: this.context.muiTheme.palette.accent3Color
+                fill: muiTheme.palette.accent3Color,
+                color: muiTheme.palette.accent3Color
             };
             iconClassName = 'icon-notifications-on';
         }

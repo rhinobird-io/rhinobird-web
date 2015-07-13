@@ -101,17 +101,17 @@ module.exports = React.createClass({
            display : this.props.hide?'none':''
         };
 
-        let textColor = this.context.muiTheme.palette.textColor;
+        let textColor = muiTheme.palette.textColor;
         if(this.state._imCurrentChannel){
-            textColor = this.context.muiTheme.palette.canvasColor;
+            textColor = muiTheme.palette.canvasColor;
         } else if(this.props.Channel.isDirect && !self.state._onlineStatus) {
-            textColor = this.context.muiTheme.palette.disabledColor;
+            textColor = muiTheme.palette.disabledColor;
         }
         return (
             <div className="instant-message-channel-container" style={style} onTouchTap={this.props.onTouchTap}>
                 <FlatButton style={{
-                backgroundColor: this.state._imCurrentChannel?   this.context.muiTheme.palette.accent1Color : this.context.muiTheme.palette.canvasColor,
-                color: this.state._imCurrentChannel? this.context.muiTheme.palette.canvasColor : this.context.muiTheme.palette.textColor,
+                backgroundColor: this.state._imCurrentChannel?   muiTheme.palette.accent1Color : muiTheme.palette.canvasColor,
+                color: this.state._imCurrentChannel? muiTheme.palette.canvasColor : muiTheme.palette.textColor,
                 padding:6
                 }} className={this.state._imCurrentChannel?'instant-message-channel-item-selected instant-message-channel-item ':'instant-message-channel-item '}  onTouchTap={self._onItemTap.bind(self, this.props.Channel)}>
                     <div style={{overflowX: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

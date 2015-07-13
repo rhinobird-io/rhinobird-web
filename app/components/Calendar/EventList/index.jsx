@@ -102,10 +102,10 @@ const EventList = React.createClass({
     render: function() {
         let styles = {
             dayLabel: {
-                backgroundColor: this.context.muiTheme.palette.accent1Color
+                backgroundColor: muiTheme.palette.accent1Color
             },
             eventIcon: {
-                backgroundColor: this.context.muiTheme.palette.primary1Color
+                backgroundColor: muiTheme.palette.primary1Color
             },
             eventParticipant: {
                 padding: "6px 8px",
@@ -116,11 +116,11 @@ const EventList = React.createClass({
             eventContentInner: {
                 position: "relative",
                 boxShadow: "0px 0px 6px 0 rgba(0, 0, 0, .4)",
-                backgroundColor: this.context.muiTheme.palette.canvasColor,
+                backgroundColor: muiTheme.palette.canvasColor,
                 transition: "box-shadow 2000ms"
             },
             eventContentInnerHighlight: {
-                boxShadow: "0px 0px 6px 0 " + this.context.muiTheme.palette.accent1Color,
+                boxShadow: "0px 0px 6px 0 " + muiTheme.palette.accent1Color,
                 transition: "box-shadow 2000ms"
             }
         };
@@ -220,7 +220,7 @@ const EventList = React.createClass({
                                     <div className="cal-event-time">
                                         <SmartTimeDisplay
                                             format={format}
-                                            style={{color: this.context.muiTheme.palette.accent3Color}}
+                                            style={{color: muiTheme.palette.accent3Color}}
                                             relative={relative}
                                             end={event.to_time}
                                             start={event.from_time} />
