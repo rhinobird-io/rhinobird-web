@@ -176,7 +176,14 @@ let addEvents = function(events) {
         }
         _allEvents[format][e.id] = e;
     });
-    console.log(_allEvents);
+};
+
+let updateEvents = function(events) {
+    let res = Array.isArray(events) ? events : [events];
+    res.forEach(e => {
+        let format = Moment(e.from_time).format("YYYY-MM-DD");
+        _allEvents[format][e.id] = e;
+    });
 };
 
 let CalendarStore = assign({}, BaseStore, {
@@ -349,7 +356,7 @@ let CalendarStore = assign({}, BaseStore, {
                 let keys = Object.keys(_events);
                 if (keys.length === 0) {
                     _hasMoreNewerEvents = false;
-                    _hasMoreOlderEvents = false;
+                    _hasMoreOlderEvents= false;
                 } else {
 
                 }
@@ -368,6 +375,9 @@ let CalendarStore = assign({}, BaseStore, {
                 }
                 break;
             case ActionTypes.UPDATE_VIEW:
+                break;
+            case ActionTypes.UPDATE_EVENT:
+                updateEvents(data);
                 break;
             case ActionTypes.RECEIVE_EVENTS_BY_WEEK:
                 addEvents(data);

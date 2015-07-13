@@ -113,7 +113,6 @@ let CalendarAction =  {
             url: url,
             type: "delete"
         }).done(() => {
-            //console.log("haha");
             AppDispatcher.dispatch({
                 type: CalendarActionTypes.DELETE_EVENT,
                 data: data
@@ -253,6 +252,7 @@ let CalendarAction =  {
                 type: CalendarActionTypes.UPDATE_EVENT,
                 data: data
             });
+            console.log(data);
             if (success && typeof success === "function") {
                 success();
             }

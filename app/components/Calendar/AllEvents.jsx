@@ -151,6 +151,8 @@ let AllEvents = React.createClass({
                         style={{position: "fixed", bottom: 24, right: 24}}
                         iconClassName="icon-add" />
                 </Link>
+
+                <MUI.Snackbar ref="updateEventSuccess" message={`The event has been updated.`} />
             </Flex.Layout>
         )
     },
@@ -357,9 +359,19 @@ let AllEvents = React.createClass({
         }
         return (
             <div key="detailPopup" ref="eventManagement" style={{zIndex:1001, height: "100%"}}>
-                <EventManagement type={type} event={event} onEditClick={this._handleEventDetailEditClick} />
+                <EventManagement
+                    type={type}
+                    event={event}
+                    onEditClick={this._handleEventDetailEditClick}
+                    onUpdateSuccess={this._handleEventUpdateSuccess} />
             </div>
         );
+    },
+
+    _handleEventUpdateSuccess() {
+        console.log("jiasdf");
+        this.refs.updateEventSuccess.show();
+        this._dismissEventDetailPopup();
     },
 
     _handleEventDetailEditClick() {
@@ -436,6 +448,7 @@ let AllEvents = React.createClass({
             status: STATUS_EVENT_VIEW
         });
     },
+
     _dismissEventDetailPopup() {
         this.setState({
             status: STATUS_NORMAL
