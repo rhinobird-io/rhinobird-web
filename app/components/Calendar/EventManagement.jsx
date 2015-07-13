@@ -33,9 +33,7 @@ let EventManagement = React.createClass({
     },
 
     getInitialState() {
-        return {
-            event: this.props.event
-        }
+        return this.props.event || {};
     },
 
     render() {
@@ -43,7 +41,6 @@ let EventManagement = React.createClass({
             type
         } = this.props;
 
-        console.log(type);
         let styles = {
             eventTitle: {
                 position: "relative",
@@ -102,8 +99,7 @@ let EventManagement = React.createClass({
         let eventActions = null;
         let eventContent = null;
         let eventComment = null;
-        let event = this.state.event;
-        let status = this.state.status;
+        let event = this.state;
 
         if (this.state.notFound || event === null || event === undefined) {
             eventContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Event not found</h3>
@@ -123,7 +119,6 @@ let EventManagement = React.createClass({
 
 
             if (type === "view") {
-
                 eventActions = (
                     <Flex.Layout horizontal endJustified style={styles.eventAction}>
                         {deleteEvent}
@@ -156,7 +151,7 @@ let EventManagement = React.createClass({
 
                 eventContent.push(
                     <Flex.Layout vertical  key="title">
-                        <MUI.TextField defaultValue={event.title} fullWidth floatingLabelText="title" />
+                        <MUI.TextField ref="title" defaultValue={event.title} fullWidth floatingLabelText="title" />
                     </Flex.Layout>
                 );
             }
@@ -195,7 +190,7 @@ let EventManagement = React.createClass({
                                 disabled
                                 multiLine
                                 floatingLabelText="Description"
-                                value={this.state.event.description || "Empty"} />
+                                value={event.description || "Empty"} />
                         </Flex.Layout>
                     </Flex.Layout>
                 );
@@ -246,43 +241,59 @@ let EventManagement = React.createClass({
                             <MUI.FontIcon className="icon-comment"/>
                         </Flex.Layout>
                         <Flex.Layout vertical startJustified flex={1}>
-                            <Thread style={{width: "100%"}} threadKey={threadKey} threadTitle={`Event ${this.state.event.title}`}
-                                    participants={{users: this.state.event.participants, teams: this.state.event.team_participants}} />
+                            <Thread style={{width: "100%"}} threadKey={threadKey} threadTitle={`Event ${event.title}`}
+                                    participants={{users: event.participants, teams: event.team_participants}} />
                         </Flex.Layout>
                     </Flex.Layout>
                 );
             } else if (type === "update" || type === "create") {
                 eventContent.push(
-                    <SmartEditor key="description" defaultValue={event.title} fullWidth multiLine floatingLabelText="description" />
+                    <SmartEditor
+                        key="description"
+                        ref="description"
+                        defaultValue={event.description || ""}
+                        fullWidth multiLine floatingLabelText="description" />
                 );
 
                 eventContent.push(
                     <Flex.Layout key="switcher" horizontal stretch style={{marginTop: 10}}>
                         <Flex.Layout flex={1}>
-                            <MUI.Checkbox name="Period" label="Period" />
+                            <MUI.Checkbox ref="period" defaultChecked={event.period} onCheck={this._handlePeriodChange} name="Period" label="Period" />
                         </Flex.Layout>
                         <Flex.Layout flex={1}>
-                            <MUI.Checkbox name="All Day" label="All Day" />
+                            <MUI.Checkbox ref="full_day" onCheck={this._handleAllDayChange}  name="All Day" label="All Day" />
                         </Flex.Layout>
                         <Flex.Layout flex={1}>
-                            <MUI.Checkbox name="Repeat" label="Repeat" />
+                            <MUI.Checkbox ref="repeated" name="Repeated" label="Repeated" />
                         </Flex.Layout>
                     </Flex.Layout>
                 );
 
                 eventContent.push(
                     <Flex.Layout key="fromTime" horizontal justified>
-                        <MUI.DatePicker style={{width: "auto"}} floatingLabelText="From" date={new Date()} />
-                        <MUI.TimePicker style={{width: "auto"}} floatingLabelText=" "/>
+                        <MUI.DatePicker
+                            ref="from_date"
+                            style={{width: "100%"}}
+                            floatingLabelText="From"
+                            defaultDate={new Date(event.from_time)} />
+                        {!event.full_day &&
+                            <MUI.TimePicker ref="from_time" style={{width: "auto"}} floatingLabelText=" " defaultTime={new Date(event.from_time)}/>}
                     </Flex.Layout>
                 );
 
-                eventContent.push(
-                    <Flex.Layout key="toTime" horizontal justified>
-                        <MUI.DatePicker style={{width: "auto"}} floatingLabelText="To" />
-                        <MUI.TimePicker style={{width: "auto"}} floatingLabelText=" "/>
-                    </Flex.Layout>
-                );
+                if (event.period) {
+                    eventContent.push(
+                        <Flex.Layout key="toTime" horizontal justified style={{marginTop: -10}}>
+                            <MUI.DatePicker
+                                ref="to_date"
+                                style={{width: "100%"}}
+                                floatingLabelText="To"
+                                defaultDate={new Date(event.to_time)} />
+                            {!event.full_day &&
+                                <MUI.TimePicker ref="to_time" style={{width: "auto"}} floatingLabelText=" " defaultTime={new Date(event.to_time)}/>}
+                        </Flex.Layout>
+                    );
+                }
 
                 eventContent.push(
                     <MemberSelect
@@ -311,10 +322,40 @@ let EventManagement = React.createClass({
         }
     },
 
+    _handleAllDayChange(e, checked) {
+        this.setState({
+            full_day: checked
+        });
+    },
+
+    _handlePeriodChange(e, checked) {
+        this.setState({
+            period: checked
+        });
+    },
+
     _handleEventSave() {
-        CalendarActions.update(
-            {id: this.props.event.id, title: "heefasdf"}
-        );
+        let refs = this.refs;
+        let title = refs.title.getValue();
+        let description = refs.description.getValue();
+        let period = refs.period.isChecked();
+        let full_day = refs.full_day.isChecked();
+        let from_time = !full_day ?
+            global.toolkits.mergeDateWithTime(refs.from_date.getDate(), refs.from_time.getTime()) :
+            global.toolkits.startOfDate(refs.from_date.getDate());
+        let to_time = !period ? from_time :
+            (!full_day ?
+                global.toolkits.mergeDateWithTime(refs.to_date.getDate(), refs.to_time.getTime()) :
+                global.toolkits.endOfDate(refs.to_date.getDate()))
+        CalendarActions.update({
+            id: this.props.event.id,
+            title: title,
+            description: description,
+            period: period,
+            full_day: full_day,
+            from_time: from_time,
+            to_time: to_time
+        });
     }
 });
 
