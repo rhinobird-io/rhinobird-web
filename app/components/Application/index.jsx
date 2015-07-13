@@ -52,6 +52,35 @@ let FloatingContent = React.createClass({
 });
 
 global.muiTheme = null;
+global.toolkits = {
+    mergeDateWithTime(date, time) {
+        let result = new Date(date);
+        result.setHours(time.getHours());
+        result.setMinutes(time.getMinutes());
+        result.setSeconds(time.getSeconds());
+        result.setMilliseconds(time.getMilliseconds());
+        return result;
+    },
+
+    startOfDate(date) {
+        let result = new Date(date);
+        result.setHours(0);
+        result.setMinutes(0);
+        result.setSeconds(0);
+        result.setMilliseconds(0);
+        return result;
+    },
+
+    endOfDate(date) {
+        let result = new Date(date);
+        result.setHours(23);
+        result.setMinutes(59);
+        result.setSeconds(59);
+        result.setMilliseconds(999);
+        return result;
+    }
+};
+
 let Application = React.createClass({
 
     childContextTypes: {
