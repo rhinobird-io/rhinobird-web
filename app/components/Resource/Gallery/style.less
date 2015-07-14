@@ -1,0 +1,29 @@
+.left {
+  float: left;
+}
+.right {
+  float: right;
+}
+.previous, .next, .empty {
+  width: 20px;
+  height: 50px;
+  position: relative;
+  top: 75px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-image: none;
+}
+.previous:hover, .next:hover{
+  background-color: white;
+}
+.empty {
+  cursor: default;
+}
+.previous{
+  background-image: url('../images/left.png');
+}
+.next{
+  background-image: url('../images/right.png');
+}
