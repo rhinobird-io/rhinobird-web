@@ -66,7 +66,7 @@ let CreateResource = React.createClass({
                                     floatingLabelText="Description"
                                     errorText={this.state.descriptionError}
                                     style={{width: "100%"}} />
-                                <FileUploader ref="fileUploader" text={"Upload Attachments"} showReview showResult maxSize={10 * 1024 * 1024} acceptTypes={["png", "jepg", "jpg"]} />
+                                <FileUploader ref="fileUploader" text={"Upload Attachments"} showReview showResult maxSize={10 * 1024 * 1024} acceptTypes={["png", "jpeg", "jpg", "bmp"]} />
                                 <br/>
                                 <Flex.Layout horizontal justified>
                                     <Link to="resources">
