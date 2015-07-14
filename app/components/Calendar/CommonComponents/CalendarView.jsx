@@ -8,6 +8,7 @@ const MonthView = require('./MonthView');
 const FourDaysView = require('./FourDaysView');
 const Display = require('../../Common').Display;
 const Selector = require('../../Select').Selector;
+const DatePickerDialog = require('material-ui/lib/date-picker/date-picker-dialog');
 
 let VIEW_TYPES = ['week', 'month', 'day', 'fourDays', 'timeLine'];
 let VIEW_TYPE_TITLES = {
@@ -124,6 +125,14 @@ let CalendarView = React.createClass({
                 {calendarHeader}
                 {calendarView}
                 {switcher}
+                <DatePickerDialog
+                    ref="datePicker"
+                    onAccept={(d) => {
+                        this.setState({date: d});
+                        if (this.props.onDateChange && typeof this.props.onDateChange === "function") {
+                            this.props.onDateChange(d, this.state.viewType);
+                        }
+                    }} />
             </Flex.Layout>
         );
     },
@@ -197,6 +206,9 @@ let CalendarView = React.createClass({
                         title={tooltipNavigateNext}
                         onClick={this._navigateNext}
                         iconClassName="icon-navigate-next" />
+                    <MUI.IconButton
+                        iconClassName="icon-event"
+                        onClick={() => this.refs.datePicker.show()} />
                 </Flex.Layout>
                 <Flex.Layout flex={1} style={{width: 0}}>
                 </Flex.Layout>
