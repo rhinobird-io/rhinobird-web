@@ -356,7 +356,8 @@ let EventManagement = React.createClass({
             period: period,
             full_day: full_day,
             from_time: from_time,
-            to_time: to_time
+            to_time: to_time,
+            participants: this.state.members
         }, this.props.onUpdateSuccess);
     }
 });
