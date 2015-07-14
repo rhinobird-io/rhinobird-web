@@ -13,10 +13,6 @@ let MonthView = React.createClass({
         monthRangeContent: React.PropTypes.func
     },
 
-    contextTypes: {
-        muiTheme: React.PropTypes.object
-    },
-
     getDefaultProps() {
         return {
             date: new Date(),
@@ -128,6 +124,7 @@ let MonthView = React.createClass({
                 width: 0,
                 minHeight: 0,
                 overflow: "hidden",
+                marginTop: -1,
                 padding: "0.2em 0.5em",
                 borderBottom: `1px solid ${muiTheme.palette.borderColor}`,
                 borderRight: `1px solid ${muiTheme.palette.borderColor}`
@@ -178,18 +175,16 @@ let MonthView = React.createClass({
                 if (today === dayFormat) {
                     outStyle.borderLeft = `1px solid ${muiTheme.palette.accent1Color}`;
                 }
-            } else {
-                let yesterday = new Date(today);
-                yesterday.setDate(yesterday.getDate() - 1);
-                console.log(`Yesterday ${yesterday}`)
-                if (Moment(yesterday).format("YYYY-MM-DD") === dayFormat) {
-                    outStyle.borderRight = `1px solid ${muiTheme.palette.accent1Color}`;
-                }
-                let sevenDaysAgo = new Date(today);
-                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-                if (Moment(sevenDaysAgo).format("YYYY-MM-DD") === dayFormat) {
-                    outStyle.borderBottom = `1px solid ${muiTheme.palette.accent1Color}`;
-                }
+            }
+            let yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (Moment(yesterday).format("YYYY-MM-DD") === dayFormat) {
+                outStyle.borderRight = `1px solid ${muiTheme.palette.accent1Color}`;
+            }
+            let sevenDaysAgo = new Date(today);
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            if (Moment(sevenDaysAgo).format("YYYY-MM-DD") === dayFormat) {
+                outStyle.borderBottom = `1px solid ${muiTheme.palette.accent1Color}`;
             }
             if (Moment(d).format("YYYY-MM-DD") === today) {
                 outStyle.borderRight = `1px solid ${muiTheme.palette.accent1Color}`;
