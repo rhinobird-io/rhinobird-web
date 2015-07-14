@@ -47,7 +47,10 @@ let ResourceDetailContent = React.createClass({
                 padding: 12,
                 minHeight: 60,
                 maxHeight: 60,
-                backgroundColor: muiTheme.palette.primary1Color
+                backgroundColor: this.context.muiTheme.palette.primary1Color,
+                whiteSpace:'nowrap',
+                textOverflow:'ellipsis',
+                overflow:'hidden'
             }
         };
 

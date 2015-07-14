@@ -38,7 +38,7 @@ let ResourceList = React.createClass({
                 <Flex.Layout wrap>
                     {
                         resources.map((resource, index) => (
-                            <MUI.Paper style={{flex: "1 1 320px", margin: 20, maxWidth: "50%"}}>
+                            <MUI.Paper style={{flex: "1 1 320px", margin: 20, maxWidth: "50%", whiteSpace:'nowrap', textOverflow:'ellipsis', overflow:'hidden'}}>
                                 <Flex.Layout vertical>
                                     <Gallery images={resource.images} />
                                     <div style={{padding: "10px 12px"}}>
