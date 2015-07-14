@@ -29,10 +29,66 @@ let CalendarAction =  {
                 data: event
             });
         } else {
-            $.get("/platform/api/events/" + id + "/" + repeatedNumber).done(data => {
+            $.get(`/platform/api/events/${id}/${repeatedNumber}`).done(data => {
                 AppDispatcher.dispatch({
                     type: CalendarActionTypes.RECEIVE_EVENT,
                     data: data
+                });
+            }).fail(e => {
+                console.error(e);
+            });
+        }
+    },
+
+    receiveByDay(date, success) {
+        console.log("jioasdf");
+        if (CalendarStore.isDayLoaded(date)) {
+            AppDispatcher.dispatch({
+                type: CalendarActionTypes.UPDATE_VIEW
+            });
+        } else {
+            $.get(`/platform/api/events/day/${date}`).done(data => {
+                AppDispatcher.dispatch({
+                    type: CalendarActionTypes.RECEIVE_EVENTS_BY_DAY,
+                    data: data,
+                    date: date
+                });
+            }).fail(e => {
+                console.error(e);
+            });
+        }
+    },
+
+    receiveByMonth(date, success) {
+        if (CalendarStore.isMonthLoaded(date)) {
+            console.log("month loaded");
+            AppDispatcher.dispatch({
+                type: CalendarActionTypes.UPDATE_VIEW
+            });
+        } else {
+            $.get(`/platform/api/events/month/${date}`).done(data => {
+                AppDispatcher.dispatch({
+                    type: CalendarActionTypes.RECEIVE_EVENTS_BY_MONTH,
+                    data: data,
+                    date: date
+                });
+            }).fail(e => {
+                console.error(e);
+            });
+        }
+    },
+
+    receiveByWeek(date, success) {
+        if (CalendarStore.isWeekLoaded(date)) {
+            AppDispatcher.dispatch({
+                type: CalendarActionTypes.UPDATE_VIEW
+            });
+        } else {
+            $.get(`/platform/api/events/week/${date}`).done(data => {
+                AppDispatcher.dispatch({
+                    type: CalendarActionTypes.RECEIVE_EVENTS_BY_WEEK,
+                    data: data,
+                    date: date
                 });
             }).fail(e => {
                 console.error(e);
@@ -170,7 +226,8 @@ let CalendarAction =  {
         parsedEvent.from_time = _from.toISOString();
         parsedEvent.to_time = _to.toISOString();
 
-        parsedEvent.participants = event.participants;
+        parsedEvent.participants = event.participants || { teams: [], users: [] };
+
         if (event.repeated) {
             parsedEvent.repeated = true;
             parsedEvent.repeated_type = event.repeatedType;
@@ -193,6 +250,25 @@ let CalendarAction =  {
             }
         }).fail(e => {
             console.error(e);
+        });
+    },
+
+    update(event, success, fail) {
+        $.ajax({
+            url: `/platform/api/events/${event.id}`,
+            type: "put",
+            data: event
+        }).done(data => {
+            AppDispatcher.dispatch({
+                type: CalendarActionTypes.UPDATE_EVENT,
+                data: data
+            });
+            if (success && typeof success === "function") {
+                success();
+            }
+        }).fail((e) => {
+            console.log(e);
+        }).always(() => {
         });
     }
 

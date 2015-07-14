@@ -51,6 +51,7 @@ let FloatingContent = React.createClass({
     }
 });
 
+global.muiTheme = null;
 let Application = React.createClass({
 
     childContextTypes: {
@@ -76,15 +77,16 @@ let Application = React.createClass({
     componentDidMount() {
         FloatingContentStore.addChangeListener(this._floatingContentChanged);
         this.getDOMNode().addEventListener("click", this._clickListener);
-        //window.addEventListener("keydown", this._keyDownListener);
+        window.addEventListener("keydown", this._keyDownListener);
         Redirect.addRedirectListener(this._onRequestRedirect);
         MessageStore.on(ImConstants.EVENTS.REQUEST_REDIRECT, this._onRequestRedirect);
+        global.muiTheme = ThemeManager.getCurrentTheme();
     },
 
     componentWillUnmount() {
         FloatingContentStore.removeChangeListener(this._floatingContentChanged);;
         this.getDOMNode().removeEventListener("click", this._clickListener);
-        //window.removeEventListener("keydown", this._keyDownListener);
+        window.removeEventListener("keydown", this._keyDownListener);
 
         Redirect.removeRedirectListener(this._onRequestRedirect);
         MessageStore.removeListener(ImConstants.EVENTS.REQUEST_REDIRECT, this._onRequestRedirect);
@@ -158,4 +160,35 @@ let Application = React.createClass({
         this.context.router.transitionTo(path);
     }
 });
+
+// Get weekdays of the week of this date
+Date.prototype.weekDays = function() {
+    let result = [];
+    let weekStartDay = new Date(this);
+    weekStartDay.setDate(this.getDate() - this.getDay());
+    for (let i = 0; i <= 6; i++) {
+        let day = new Date(weekStartDay);
+        day.setDate(weekStartDay.getDate() + i);
+        result.push(day);
+    }
+    return result;
+};
+
+// Four days from this date
+Date.prototype.fourDays = function() {
+    let days = [];
+    for (let i = 0; i <= 3; i++) {
+        let day = new Date(this);
+        day.setDate(this.getDate() + i);
+        days.push(day);
+    }
+    return days;
+};
+
+// Return the time elapse of a day in seconds
+Date.prototype.elapsedPercentageOfDay = function() {
+    let seconds = 3600 * this.getHours() + 60 * this.getMinutes() + this.getSeconds();
+    return seconds / 86400;
+};
+
 module.exports = Application;

@@ -89,7 +89,6 @@ const EventList = React.createClass({
     _loadMoreOlderEvents() {
         let eventRange = this.state.eventRange;
         if (eventRange.min && this.state.hasMoreOlderEvents) {
-
             let container = this.getDOMNode();
             let oldScrollHeight = container.scrollHeight;
             CalendarActions.loadMoreOlderEvents(eventRange.min, () => container.scrollTop = container.scrollHeight - oldScrollHeight);
@@ -228,7 +227,7 @@ const EventList = React.createClass({
                                     </div>
                                 </div>
                                 <div className="cal-event-description">
-                                    <SmartDisplay value={event.description}/>
+                                    <SmartDisplay value={event.description || ""}/>
                                 </div>
                             </div>
                         </div>

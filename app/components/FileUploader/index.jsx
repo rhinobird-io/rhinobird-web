@@ -4,6 +4,7 @@ const React = require("react");
 const UploadButton = require('./UploadButton');
 const FileName = require('./FileName');
 const UploadResult = require('./UploadResult');
+const UploadReview = require('./UploadReview');
 const Item = require("../Flex").Item;
 import Constants from './constants';
 
@@ -20,36 +21,48 @@ const FileUploader = React.createClass({
         acceptTypes: React.PropTypes.array,
         maxSize: React.PropTypes.number.isRequired,
         minSize: React.PropTypes.number,
-        afterUpload: React.PropTypes.func
+        afterUpload: React.PropTypes.func,
+        showReview: React.PropTypes.bool,
+        showFileName: React.PropTypes.bool,
+        showResult: React.PropTypes.bool,
+        text: React.PropTypes.string
     },
 
     getDefaultProps() {
         return {
             minSize: 0,
             maxSize: 100 * 1024 * 1024, //max size is 100M by default
-            acceptTypes: [] //all file types are supported
+            acceptTypes: [], //all file types are supported
+            showReview: false,
+            showFileName: false,
+            showResult: false
         };
     },
 
     onUpload: function(result) {
         if (result.result === Constants.UploadResult.SUCCESS) {
             this.refs.fileName.setFile(result.file);
+            this.refs.uploadReview.setFile(result.file);
             this.refs.uploadResult.setResult(result.result);
         }
         else if (result.result === Constants.UploadResult.FAILED) {
             this.refs.fileName.setFile(undefined);
+            this.refs.uploadReview.setFile(undefined);
             this.refs.uploadResult.setResult(result.error);
         }
-        this.props.afterUpload(result);
     },
     render() {
         return (
-            <Item>
-                <FileName ref="fileName"/>
+            <Item style={{padding: '10px 0px'}}>
+                <UploadReview style={{display: !this.props.showReview ? 'none' : ''}} ref="uploadReview"/>
+                <FileName style={{display: !this.props.showFileName ? 'none' : ''}} ref="fileName"/>
                 <UploadButton {...this.props} onUpload={this.onUpload}/>
-                <UploadResult ref="uploadResult"/>
+                <UploadResult style={{display: !this.props.showResult ? 'none' : ''}}  ref="uploadResult"/>
             </Item>
         );
+    },
+    getValue(){
+        return this.refs.uploadReview.getValue();
     }
 });
 

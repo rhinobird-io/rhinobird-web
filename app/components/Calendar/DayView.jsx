@@ -1,101 +1,35 @@
 const React = require('react');
-const CalendarStore = require("../../../stores/CalendarStore");
-const CalendarActions = require("../../../actions/CalendarActions");
-const Moment = require('moment');
-const StylePropable = require('material-ui/lib/mixins/style-propable');
 const Flex = require('../../Flex');
-const Resizable = require('../../Mixins').Resizable;
 const MUI = require('material-ui');
-const ClickAwayable = MUI.Mixins.ClickAwayable;
-
-let EventRect = React.createClass({
-    mixins: [],
-
-    contextTypes: {
-        muiTheme: React.PropTypes.object
-    },
-
-    getInitialState() {
-        return {
-        };
-    },
-
-    render() {
-        let {
-            style,
-            event,
-            ...other
-        } = this.props;
-
-        if (!style) {
-            style = {};
-        }
-
-        style.WebkitUserSelect = "none";
-        style.userSelect = "none";
-        style.padding = 5;
-        style.position = "absolute";
-        style.border = "1px solid " + this.context.muiTheme.palette.primary2Color;
-        style.background = this.context.muiTheme.palette.primary3Color;
-        style.cursor = "default";
-        //style.borderRadius = 2;
-
-        if (event) {
-            let fromTime = new Date(event.from_time);
-            let toTime = new Date(event.to_time);
-
-            let time = fromTime.getHours() * 3600 + fromTime.getMinutes() * 60 + fromTime.getSeconds();
-            let range = (toTime - fromTime) / 1000;
-
-            let top = `${time / 864}%`;
-            let height = `${range / 864}%`;
-            let minHeight = "20px";
-
-            style.top = top;
-            style.height = height;
-            style.minHeight = minHeight;
-        }
-        return (
-            <div style={style} {...other}>
-                <div>{`${Moment(event.from_time).format("hh:mm")}~${Moment(event.to_time).format("hh:mm")}`}</div>
-                <div>{event.title}</div>
-            </div>
-        );
-    }
-});
+const StylePropable = require('material-ui/lib/mixins/style-propable');
+const Resizable = require('../../Mixins').Resizable;
 
 let DayView = React.createClass({
-    mixins: [StylePropable, ClickAwayable],
+    mixins: [StylePropable],
 
     contextTypes: {
         muiTheme: React.PropTypes.object
     },
 
     propTypes: {
-        onRangeCreate: React.PropTypes.func,
         date: React.PropTypes.oneOfType([
             React.PropTypes.object,
             React.PropTypes.string
-        ])
+        ]),
+        objects: React.PropTypes.array,
+        allowCover: React.PropTypes.bool,
+        rectContent: React.PropTypes.func
     },
 
-    componentClickAway() {
+    getDefaultProps() {
+        return {
+            allowCover: true
+        }
     },
 
     getInitialState() {
         return {
-            events: [],
-            newEvent: null
         }
-    },
-
-    componentDidMount() {
-        CalendarActions.receive();
-        CalendarStore.addChangeListener(this._onChange);
-    },
-
-    componentWillUnmount() {
-        CalendarStore.removeChangeListener(this._onChange);
     },
 
     render() {

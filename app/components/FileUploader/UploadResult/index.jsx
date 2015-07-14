@@ -20,6 +20,11 @@ const UploadResult = React.createClass({
     },
 
     render() {
+        if (this.props.style && this.props.style.display === 'none') {
+            return (
+                <div></div>
+            );
+        }
         return (
             <span style={this.state.style}>{this.state.result}</span>
         );

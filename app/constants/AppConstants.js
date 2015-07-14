@@ -18,13 +18,29 @@ export default {
   }),
 
   CalendarActionTypes: keyMirror({
+    UPDATE_VIEW: null,
     CREATE_EVENT: null,
+    UPDATE_EVENT: null,
     RECEIVE_EVENT: null,
     RECEIVE_EVENTS: null,
     DELETE_EVENT: null,
     RESTORE_DELETED_EVENT: null,
+    RECEIVE_EVENTS_BY_DAY: null,
     LOAD_MORE_NEWER_EVENTS: null,
-    LOAD_MORE_OLDER_EVENTS: null
+    LOAD_MORE_OLDER_EVENTS: null,
+    RECEIVE_EVENTS_BY_WEEK: null,
+    RECEIVE_EVENTS_BY_MONTH: null
+  }),
+
+  ResourceActionTypes: keyMirror({
+    BOOK_RESOURCE: null,
+    DELETE_RESOURCE: null,
+    RECEIVE_RESOURCE: null,
+    RECEIVE_RESOURCES: null,
+    LOAD_MORE_RESOURCES: null,
+    DELETE_RESOURCE_BOOK: null,
+    UPDATE_RESOURCE_BOOK: null,
+    CREATE_RESOURCE: null
   }),
 
   ChannelActionTypes : keyMirror({

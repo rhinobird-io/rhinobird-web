@@ -114,9 +114,11 @@ module.exports = React.createClass({
                                   this.refs.filter.focus();
                                 }
                             }}/>
-                            <Popup ref="popup"
+                            <Popup
+
+                                position="none" ref="popup"
                             selfAlignOrigin="rt"
-                            relatedAlignOrigin="rt" relatedTo={()=>this.refs.control} >
+                            relatedAlignOrigin="rb" relatedTo={()=>this.refs.control} >
                                 <div style={{padding:12}}>
                                     <mui.TextField valueLink={this.linkState('filterText')} ref='filter' hintText='Find by name' style={{width:'100%'}}/>
                                 </div>

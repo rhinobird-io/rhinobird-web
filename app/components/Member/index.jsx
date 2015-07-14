@@ -105,6 +105,7 @@ Member.MemberSelect = React.createClass({
         hintText: React.PropTypes.string,
         label: React.PropTypes.string
     },
+
     focus() {
         this.refs.select.focus();
     },
@@ -185,7 +186,7 @@ Member.MemberSelect = React.createClass({
         }
 
         return (
-            <div style={{paddingTop:16}}>
+            <div>
                 <label style={{color:'rgba(0,0,0,0.5)'}}>{this.props.label}</label>
                 <Select.Select ref='select'
                     multiple

@@ -25,6 +25,7 @@ module.exports = (
             <Route name="create-event" path="create-event" handler={require("react-proxy!./components/Calendar/CreateEvent")} />
             <Route name="event-list" path="events" handler={require("react-proxy!./components/Calendar/EventList")} />
             <Route name="events" path="events_" handler={require("react-proxy!./components/Calendar/Events")} />
+            <Route name="all-events" path="all_events" handler={require("react-proxy!./components/Calendar/AllEvents")} />
             <Route name="event-detail" path="events/:id/:repeatedNumber" handler={require("react-proxy!./components/Calendar/EventDetail")} />
             <DefaultRoute handler={require("react-proxy!./components/Calendar/EventList")} />
         </Route>
@@ -32,6 +33,12 @@ module.exports = (
         <Route name="im" path="im" handler={require("react-proxy!./components/InstantMessage")}>
           <Route name="talk" key="imTalk" path="talk/:backEndChannelId" handler={ require("react-router-proxy!./components/InstantMessage/ImMain/Main") }/>
           <Route name="setting" path="setting" handler={require("react-proxy!./components/InstantMessage/ImSetting")} />
+        </Route>
+        <Route name="resource" path="resource" handler={require("react-proxy!./components/Resource")}>
+            <Route name="create-resource" path="create-resource" handler={require("react-proxy!./components/Resource/CreateResource")} />
+            <Route name="resources" path="resources" handler={require("react-proxy!./components/Resource/ResourceList")} />
+            <Route name="resource-detail" path="resources/:id" handler={require("react-proxy!./components/Resource/ResourceDetail")} />
+            <DefaultRoute handler={require("react-proxy!./components/Resource/ResourceList")} />
         </Route>
         <Route name="post" path="post" handler={require("react-proxy!./components/Post")}>
         </Route>
