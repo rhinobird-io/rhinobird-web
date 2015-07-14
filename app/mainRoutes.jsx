@@ -35,6 +35,7 @@ module.exports = (
           <Route name="setting" path="setting" handler={require("react-proxy!./components/InstantMessage/ImSetting")} />
         </Route>
         <Route name="resource" path="resource" handler={require("react-proxy!./components/Resource")}>
+            <Route name="create-resource" path="create-resource" handler={require("react-proxy!./components/Resource/CreateResource")} />
             <Route name="resources" path="resources" handler={require("react-proxy!./components/Resource/ResourceList")} />
             <Route name="resource-detail" path="resources/:id" handler={require("react-proxy!./components/Resource/ResourceDetail")} />
             <DefaultRoute handler={require("react-proxy!./components/Resource/ResourceList")} />

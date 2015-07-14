@@ -5,6 +5,20 @@ const ResourceStore = require('../stores/ResourceStore');
 const ResourceActionTypes = require('../constants/AppConstants').ResourceActionTypes;
 
 let ResourceActions = {
+    create(resource, success) {
+        $.post(`/resource/resources`, {resource: resource}).done(data => {
+            AppDispatcher.dispatch({
+                type: ResourceActionTypes.CREATE_RESOURCE,
+                data: data
+            });
+            if (success && typeof success === "function") {
+                success(data);
+            }
+        }).fail(e => {
+            console.error(e);
+        });
+    },
+
     receive(success) {
         $.get(`/resource/resources`).done(data => {
             AppDispatcher.dispatch({
