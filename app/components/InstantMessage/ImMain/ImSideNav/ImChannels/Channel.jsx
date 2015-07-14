@@ -104,6 +104,8 @@ module.exports = React.createClass({
         if(this.state._imCurrentChannel){
             textColor = this.context.muiTheme.palette.canvasColor;
             onlineStateColor = this.context.muiTheme.palette.canvasColor;
+        } else if (this.props.Channel.isGroup){
+            onlineStateColor = this.context.muiTheme.palette.textColor;
         } else if(this.props.Channel.isDirect && !self.state._onlineStatus) {
             textColor = this.context.muiTheme.palette.disabledColor;
             onlineStateColor = this.context.muiTheme.palette.disabledColor;
