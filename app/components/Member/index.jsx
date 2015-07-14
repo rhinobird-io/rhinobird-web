@@ -118,10 +118,15 @@ Member.MemberSelect = React.createClass({
     },
 
     getInitialState() {
+        let valueLink = this.getValueLink(this.props);
+        let members = [];
+        if (valueLink && valueLink.value) {
+            members = valueLink.value.users.map(u => `user_${u.id}`).concat(valueLink.value.teams.map(t => `team_${t.id}`));
+        }
         return {
             users: this.props.user ? this._getUsersArray() : null,
             teams: this.props.team ? this._getTeamsArray() : null,
-            selected: []
+            members: members
         }
     },
 
@@ -144,7 +149,7 @@ Member.MemberSelect = React.createClass({
         let {
             team,
             user,
-            className,
+            valueLink,
             onChange,
             style,
             ...other
@@ -217,6 +222,7 @@ Member.MemberSelect = React.createClass({
                             </Flex.Layout>;
                         }
                     }}
+                    value={this.state.members}
                     onChange={(selected) => {
                         let results = {};
                         if (team && user) {

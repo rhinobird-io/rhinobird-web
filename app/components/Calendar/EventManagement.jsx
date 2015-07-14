@@ -14,7 +14,7 @@ const {SmartEditor, SmartDisplay} = require('../SmartEditor');
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 let EventManagement = React.createClass({
-    mixins: [StylePropable],
+    mixins: [StylePropable, React.addons.LinkedStateMixin],
     propTypes: {
         event: React.PropTypes.object,
         onEditClick: React.PropTypes.func,
@@ -30,7 +30,12 @@ let EventManagement = React.createClass({
     },
 
     getInitialState() {
-        return this.props.event || {};
+        let event = this.props.event || {};
+        event.members = {
+            teams: event.team_participants || [],
+            users: event.participants ||[]
+        };
+        return event;
     },
 
     render() {
@@ -295,6 +300,7 @@ let EventManagement = React.createClass({
                     <MemberSelect
                         hintText="Participants"
                         floatingLabelText="Participants"
+                        valueLink={this.linkState('members')}
                         style={{width: "100%"}} />
                 );
             }
@@ -307,7 +313,7 @@ let EventManagement = React.createClass({
                     {eventContent}
                     {eventComment}
                 </PerfectScroll>
-                <MUI.Snackbar ref="createEventSuccess" message={`Create event success`} />
+                <MUI.Snackbar ref="createEventSuccess" message={`Create event successfully.`} />
             </Flex.Layout>
         );
     },

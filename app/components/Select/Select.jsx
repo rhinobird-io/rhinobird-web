@@ -40,7 +40,10 @@ let Select = React.createClass({
     },
 
     componentWillReceiveProps(nextProps) {
-        this.setState({children: this._getFilteredChildren(nextProps.children)});
+        this.setState({
+            children: this._getFilteredChildren(nextProps.children)
+            //selected: this._getInitialSelected(nextProps)
+        });
     },
 
     componentDidUpdate() {
@@ -61,7 +64,7 @@ let Select = React.createClass({
     getInitialState() {
         return {
             toDelete: false,
-            selected: {},
+            selected: this._getInitialSelected(this.props),
             children: this.props.children
         };
     },
@@ -125,7 +128,6 @@ let Select = React.createClass({
 
     _addSelectedOption(value) {
         let selected = this.state.selected;
-
         if (!this.props.multiple) {
             selected = {};
             selected[value] = true;
@@ -185,6 +187,18 @@ let Select = React.createClass({
 
     getSelected(){
         return this.state.selected;
+    },
+
+    getValue() {
+        return this.state.selected;
+    },
+
+    _getInitialSelected(props) {
+        let selected = {};
+        let valueLink = this.getValueLink(props);
+        let values = valueLink ? valueLink.value || [] : [];
+        values.forEach(v => selected[v] = true);
+        return selected;
     },
 
     _getFilteredChildren(children, keyword, selected) {
