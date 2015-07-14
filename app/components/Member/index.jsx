@@ -76,7 +76,7 @@ Member.Name = React.createClass({
     },
     render: function () {
         if (this.props.member) {
-            let display = <span className={this.props.className}>{this.props.member.realname}</span>;
+            let display = <span title={this.props.member.realname} className={this.props.className}>{this.props.member.realname}</span>;
             if (this.props.link) {
                 return <Common.Link onClick={_showMemberProfile.bind(this)} style={this.props.style}>
                     {display}

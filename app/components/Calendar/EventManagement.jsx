@@ -204,7 +204,7 @@ let EventManagement = React.createClass({
                     participants.push(
                         <Flex.Layout horizontal center key={"user_" + u.id} style={{marginBottom: 16, marginRight: 16}}>
                             <Avatar scale={1.0} member={u} style={{borderRadius: "0%"}} />
-                            <Name style={{marginLeft: 6, width: 100, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}} member={u}></Name>
+                            <Name style={{marginLeft: 6, width: 80, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}} member={u}></Name>
                         </Flex.Layout>
                     );
                 });
@@ -216,7 +216,7 @@ let EventManagement = React.createClass({
                             <Flex.Layout>
                                 <MUI.FontIcon className="icon-group" style={{borderRadius: "0%"}} />
                             </Flex.Layout>
-                            <span style={{marginLeft: 6, width: 100, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}}>{t.name}</span>
+                            <span title={t.name} style={{marginLeft: 6, width: 80, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}}>{t.name}</span>
                         </Flex.Layout>
                     );
                 });
