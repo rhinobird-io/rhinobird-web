@@ -19,7 +19,8 @@ let ResourceDetailContent = React.createClass({
     },
 
     contextTypes: {
-        muiTheme: React.PropTypes.object
+        muiTheme: React.PropTypes.object,
+        router: React.PropTypes.func.isRequired
     },
 
     getDefaultProps() {
@@ -53,8 +54,25 @@ let ResourceDetailContent = React.createClass({
                 overflow:'hidden'
             }
         };
-
-        let actions = <Flex.Layout flex={1} center horizontal style={styles.action}>{resource.name}</Flex.Layout>;
+        let dialogActions = [
+            <MUI.FlatButton
+                label="Cancel"
+                secondary={true}
+                onTouchTap={this._handleDeleteDialogCancel}/>,
+            <MUI.FlatButton
+                label="Delete"
+                primary={true}
+                onTouchTap={this._handleDeleteDialogSubmit}/>
+        ];
+        let actions = (<Flex.Layout flex={1} center horizontal style={styles.action}>{resource.name}
+                        <Flex.Layout endJustified flex={1} center horizontal>
+                            <MUI.IconButton iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/>
+                            <MUI.IconButton onClick={this._deleteResource} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-delete"/>
+                            <MUI.Dialog actions={dialogActions} title="Deleting Resource" ref='deleteDialog'>
+                                Are you sure to delete this resource?
+                            </MUI.Dialog>
+                        </Flex.Layout>
+                </Flex.Layout>);
         return (
             <Flex.Layout vertical style={{height: "100%", WebkitUserSelect: "none", userSelect: "none"}}>
                 {actions}
@@ -324,6 +342,20 @@ let ResourceDetailContent = React.createClass({
 
             this.refs.bookToTime.setTime(new Date(range.toTime));
             this.refs.bookFromTime.setTime(new Date(range.fromTime));
+        });
+    },
+
+    _deleteResource() {
+        this.refs.deleteDialog.show();
+    },
+
+    _handleDeleteDialogCancel() {
+        this.refs.deleteDialog.dismiss();
+    },
+
+    _handleDeleteDialogSubmit() {
+        ResourceActions.deleteResource(this.props.resource._id, () => {
+            this.context.router.transitionTo("resources");
         });
     }
 });

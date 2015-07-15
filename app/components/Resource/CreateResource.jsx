@@ -21,11 +21,14 @@ let CreateResource = React.createClass({
     },
 
     getInitialState() {
+
         return {
+            mode: 'create',
             images: [],
             nameError: '',
             locationError: '',
-            descriptionError: ''
+            descriptionError: '',
+            resource: {}
         };
     },
 
@@ -35,9 +38,6 @@ let CreateResource = React.createClass({
                 width: 600,
                 padding: 0,
                 margin: 20
-            },
-            picker: {
-                width: "auto !important"
             }
         };
         return (
@@ -52,12 +52,14 @@ let CreateResource = React.createClass({
                                     hintText="Resource Name"
                                     floatingLabelText="Resource Name"
                                     errorText={this.state.nameError}
+                                    value={this.state.resource.name}
                                     style={{width: "100%"}} />
                                 <MUI.TextField
                                     ref="location"
                                     hintText="Location"
                                     floatingLabelText="Location"
                                     errorText={this.state.locationError}
+                                    value={this.state.resource.location}
                                     style={{width: "100%"}} />
                                 <SmartEditor
                                     multiLine={true}
@@ -65,8 +67,9 @@ let CreateResource = React.createClass({
                                     hintText="Description"
                                     floatingLabelText="Description"
                                     errorText={this.state.descriptionError}
+                                    value={this.state.resource.description}
                                     style={{width: "100%"}} />
-                                <FileUploader ref="fileUploader" text={"Upload Attachments"} showReview showResult maxSize={10 * 1024 * 1024} acceptTypes={["png", "jpeg", "jpg", "bmp"]} />
+                                <FileUploader ref="fileUploader" text={"Upload Attachments"} value={this.state.resource.images} showReview showResult maxSize={10 * 1024 * 1024} acceptTypes={["png", "jpeg", "jpg", "bmp"]} />
                                 <br/>
                                 <Flex.Layout horizontal justified>
                                     <Link to="resources">
