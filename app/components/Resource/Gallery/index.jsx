@@ -1,5 +1,4 @@
 const React = require("react");
-const Link = require("react-router").Link;
 require('./style.less');
 let Gallery = React.createClass({
     contextTypes: {
