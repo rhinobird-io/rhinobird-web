@@ -1,4 +1,5 @@
 const React = require("react");
+const Link = require("react-router").Link;
 require('./style.less');
 let Gallery = React.createClass({
     contextTypes: {
@@ -26,9 +27,9 @@ let Gallery = React.createClass({
 
         return (
             <div style={{height: 200, width: '100%', backgroundColor: this.context.muiTheme.palette.primary3Color, display: 'table'}}>
-                {showPrevious ? <a className='previous left' href="#" onClick={this.previous}></a> : <a className="empty left" href="#"></a>}
+                {showPrevious ? <a className='previous left icon-chevron-left' href="#" onClick={this.previous}></a> : <a className="empty left" href="#"></a>}
                 {content}
-                {showNext ? <a className='next right' href="#" onClick={this.next}></a> : <a className="empty right" href="#"></a>}
+                {showNext ? <a className='next right icon-chevron-right' href="#" onClick={this.next}></a> : <a className="empty right" href="#"></a>}
             </div>
         );
     },
