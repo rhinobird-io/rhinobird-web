@@ -13,6 +13,7 @@ const CalendarStore = require('../../stores/CalendarStore');
 const CalendarActions = require('../../actions/CalendarActions');
 const CalendarView = require('../Calendar/CommonComponents').CalendarView;
 const ReactTransitionGroup = React.addons.TransitionGroup;
+
 require('jquery.transit');
 require('./style.less');
 
@@ -129,6 +130,7 @@ let AllEvents = React.createClass({
                     rangeContent={this._rangeContent}
                     allDayData={this.state.allDayEvents}
                     onDateChange={this._handleDateChange}
+                    crossDayData={this.state.crossDayEvents}
                     onViewTypeChange={this._handleViewTypeChange}
                     monthRangeContent={this._monthRangeContent}
                     onRangeCreate={this._showCreateEventPopup}
@@ -195,17 +197,26 @@ let AllEvents = React.createClass({
 
         let normalEvents = [];
         let allDayEvents = [];
+        let crossDayEvents = [];
         events.forEach(event => {
-            if (event.full_day) {
-                allDayEvents.push(event);
+            let to = new Date(event.to_time);
+            let from = new Date(event.from_time);
+            if (to.toDateString() === from.toDateString()) {
+                if (event.full_day) {
+                    allDayEvents.push(event);
+                } else {
+                    normalEvents.push(event);
+                }
             } else {
-                normalEvents.push(event);
+                crossDayEvents.push(event);
             }
         });
+
         this.setState({
             allDayEvents: allDayEvents,
-            normalEvents: normalEvents
-        })
+            normalEvents: normalEvents,
+            crossDayEvents: crossDayEvents
+        });
     },
 
     _allDayRangeContent(range) {
