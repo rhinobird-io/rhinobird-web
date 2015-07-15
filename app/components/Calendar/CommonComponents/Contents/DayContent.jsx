@@ -22,7 +22,8 @@ let DayContent = React.createClass({
         rangeContent: React.PropTypes.func,
         onRangeCreate: React.PropTypes.func,
         onRangeCancel: React.PropTypes.func,
-        onRangeClicked: React.PropTypes.func
+        onRangeClicked: React.PropTypes.func,
+        scrollableContainer: React.PropTypes.func
     },
 
     dismissCreateNewRange() {
@@ -320,7 +321,11 @@ let DayContent = React.createClass({
         this.startPosY = e.clientY - rect.top;
         this.mouseDown = true;
         document.addEventListener("mousemove", this._handleMouseMove);
-        document.addEventListener("mouseup", this._handleMouseUp)
+        document.addEventListener("mouseup", this._handleMouseUp);
+        if (this.props.scrollableContainer) {
+            let container = this.props.scrollableContainer();
+            //container.getDOMNode().addEventListener("mouseleave", this._handleMouseLeave);
+        }
     },
 
     _handleMouseMove(e) {
@@ -329,6 +334,24 @@ let DayContent = React.createClass({
         let endPosY = e.clientY - rect.top;
 
         if (this.mouseDown) {
+            if (this.props.scrollableContainer) {
+                let container = this.props.scrollableContainer();
+                console.log(e.clientY);
+                if (e.clientY > rect.top + container.getDOMNode().scrollTop + container.getDOMNode().clientHeight) {
+                    let gap = e.clientY - (rect.top + container.getDOMNode().scrollTop + container.getDOMNode().clientHeight);
+                    container.getDOMNode().scrollTop = container.getDOMNode().scrollTop + gap;
+                } else if (e.clientY < rect.top + container.getDOMNode().scrollTop) {
+                    let gap = e.clientY - (rect.top + container.getDOMNode().scrollTop);
+                    if (container.getDOMNode().scrollTop + gap >= 0) {
+                        container.getDOMNode().scrollTop = container.getDOMNode().scrollTop + gap;
+                    } else {
+                        container.getDOMNode().scrollTop = 0;
+                    }
+                }
+            }
+            if (endPosY < 0) {
+                endPosY = 0;
+            }
             let date = new Date(this.props.date);
             let startSeconds = (this.startPosY / rect.height) * 86400;
             let endSeconds = (endPosY / rect.height) * 86400;
@@ -357,6 +380,8 @@ let DayContent = React.createClass({
             toTime.setMinutes(toMinute);
             toTime.setSeconds(toSecond);
 
+            console.log(fromTime.toLocaleString());
+            console.log(toTime.toLocaleString());
             let newRange = {fromTime: fromTime, toTime: toTime};
             newRange.backgroundColor = muiTheme.palette.primary1Color;
             this.setState({newRange: newRange})
@@ -373,6 +398,23 @@ let DayContent = React.createClass({
             let rect = newRange ? newRange.getDOMNode().getBoundingClientRect() : null;
             this.props.onRangeCreate(rect, this.state.newRange);
         }
+    },
+
+    _handleMouseLeave(e) {
+        this._handleMouseMove(e);
+        //this.mouseDown = false;
+        //document.removeEventListener("mousemove", this._handleMouseMove);
+        //document.removeEventListener("mouseup", this._handleMouseUp);
+        //console.log("leave");
+        //if (this.props.onRangeCreate) {
+        //    let newRange = this.refs.newRange;
+        //    let rect = newRange ? newRange.getDOMNode().getBoundingClientRect() : null;
+        //    this.props.onRangeCreate(rect, this.state.newRange);
+        //}
+    },
+
+    _unbindListeners() {
+
     }
 });
 

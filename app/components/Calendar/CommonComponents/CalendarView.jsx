@@ -127,6 +127,7 @@ let CalendarView = React.createClass({
                 {switcher}
                 <DatePickerDialog
                     ref="datePicker"
+                    showYearSelector={true}
                     onAccept={(d) => {
                         this.setState({date: d});
                         if (this.props.onDateChange && typeof this.props.onDateChange === "function") {
