@@ -12,6 +12,7 @@ let DaysView = React.createClass({
         date: React.PropTypes.object,
         withAllDay: React.PropTypes.bool,
         allDayData: React.PropTypes.array,
+        crossDayData: React.PropTypes.array,
         onRangeCreate: React.PropTypes.func,
         onRangeClicked: React.PropTypes.func,
         allDayRangeContent: React.PropTypes.func
@@ -125,14 +126,15 @@ let DaysView = React.createClass({
                 );
             });
 
-            headerHeight += 28 * maxRange;
+            headerHeight += 28 * (maxRange + 1);
             allDays = (
                 <Flex.Layout flex={1} horizontal style={{minHeight: 0}}>
                     <Flex.Layout center style={{width: 60}}>
                         <div style={{width: "100%", fontSize: "0.9em", padding: 4, textAlign: "right"}}>All Day</div>
                     </Flex.Layout>
-                    <Flex.Layout flex={1} stretch>
-                        {allDaysContent}
+                    <Flex.Layout vertical flex={1}>
+                        <div style={{height: 28}}>123123</div>
+                        <Flex.Layout flex={1} stretch horizontal>{allDaysContent}</Flex.Layout>
                     </Flex.Layout>
                 </Flex.Layout>
             );
