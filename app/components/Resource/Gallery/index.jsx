@@ -1,4 +1,5 @@
 const React = require("react");
+const MUI = require('material-ui');
 require('./style.less');
 let Gallery = React.createClass({
     contextTypes: {
@@ -24,11 +25,23 @@ let Gallery = React.createClass({
         if (!this.state.images || this.state.images.length === 0 || this.state.current === this.state.images.length - 1)
             showNext = false;
 
+        let styles = {
+            height: 200,
+            width: '100%',
+            backgroundColor: (images && images.length > 0) ? 'transparent' : this.context.muiTheme.palette.primary3Color,
+            display: 'table',
+            border: (images && images.length > 0) ? '5px solid' : 'none',
+            borderColor: this.context.muiTheme.palette.primary3Color
+        };
         return (
-            <div style={{height: 200, width: '100%', backgroundColor: this.context.muiTheme.palette.primary3Color, display: 'table'}}>
-                {showPrevious ? <a className='previous left icon-chevron-left' href="#" onClick={this.previous}></a> : <a className="empty left" href="#"></a>}
+            <div style={styles}>
+                {showPrevious ?
+                    <MUI.IconButton className='previous left' onClick={this.previous} iconStyle={{fontSize: 40}} iconClassName="icon-chevron-left"/>
+                    : <MUI.IconButton className="empty left" disabled />}
                 {content}
-                {showNext ? <a className='next right icon-chevron-right' href="#" onClick={this.next}></a> : <a className="empty right" href="#"></a>}
+                {showNext ?
+                    <MUI.IconButton className='next right' onClick={this.next} iconStyle={{fontSize: 40}} iconClassName="icon-chevron-right"/>
+                    : <MUI.IconButton className="empty right" disabled />}
             </div>
         );
     },
