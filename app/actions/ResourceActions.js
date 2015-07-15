@@ -19,6 +19,23 @@ let ResourceActions = {
         });
     },
 
+    deleteResource(id, success) {
+        $.ajax({
+            url: `/resource/resources/${id}`,
+            type: "delete"
+        }).done((data) => {
+            AppDispatcher.dispatch({
+                type: ResourceActionTypes.DELETE_RESOURCE,
+                data: data
+            });
+            if (success && typeof success === "function") {
+                success();
+            }
+        }).fail(e => {
+            console.error(e);
+        });
+    },
+
     receive(success) {
         $.get(`/resource/resources`).done(data => {
             AppDispatcher.dispatch({
