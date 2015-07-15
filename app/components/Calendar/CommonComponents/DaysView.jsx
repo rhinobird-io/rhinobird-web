@@ -80,7 +80,7 @@ let DaysView = React.createClass({
 
         let dateBars = <DaysHeader dates={dates} />;
         let dateContents = (
-            <DaysContent {...other} ref="days" dates={dates} />
+            <DaysContent {...other} ref="days" dates={dates} scrollableContainer={() => this.refs.content} />
         );
 
         let allDays = null;
