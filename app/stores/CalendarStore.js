@@ -253,9 +253,6 @@ let CalendarStore = assign({}, BaseStore, {
                 res = res.concat(events);
             }
         });
-        console.log(dateArray);
-        console.log(_allEvents);
-        console.log(res);
         return res;
     },
 
@@ -269,16 +266,25 @@ let CalendarStore = assign({}, BaseStore, {
         return this.getEventsByDays(days)
     },
 
+    getCrossEventsByWeek(date) {
+
+    },
+
     getEventsByMonth(date) {
         let days = new Date(date).monthDays();
         console.log(days);
         return this.getEventsByDays(days)
     },
 
+    getCrossEventsByMonth(date) {
+
+    },
+
     getEventsByCalendarMonth(date) {
         let days = new Date(date).calendarMonthDays();
         return this.getEventsByDays(days)
     },
+
 
     getEventsByFourDays(date) {
         let days = new Date(date).fourDays();

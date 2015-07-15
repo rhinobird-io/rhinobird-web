@@ -2,6 +2,7 @@ const React = require('react');
 const Moment = require('moment');
 const Flex = require('../../Flex');
 const TimeBar = require('./TimeBar');
+const assign = require("object-assign");
 const DaysHeader = require('./Headers/DaysHeader');
 const DaysContent = require('./Contents/DaysContent');
 const PerfectScroll = require('../../PerfectScroll');
@@ -31,14 +32,16 @@ let DaysView = React.createClass({
     componentWillReceiveProps(nextProps) {
         if (nextProps.allDayData !== this.props.allDayData) {
             this.setState({
-               allDayRanges: this._parseAllDayData(nextProps.allDayData || [])
+                allDayRanges: this._parseAllDayData(nextProps.allDayData || []),
+                crossDayRanges: nextProps.crossDayData
             });
         }
     },
 
     getInitialState() {
         return {
-            allDayRanges: this._parseAllDayData(this.props.allDayData || [])
+            allDayRanges: this._parseAllDayData(this.props.allDayData || []),
+            crossDayRanges: this.props.crossDayData
         }
     },
 
@@ -126,14 +129,51 @@ let DaysView = React.createClass({
                 );
             });
 
-            headerHeight += 28 * (maxRange + 1);
+            let maxCrossRange = 0;
+            let crossDayContent = [];
+            let line = [];
+            console.log(this.state.crossDayRanges);
+            (this.state.crossDayRanges || []).forEach((cr, index) => {
+                let from = new Date(cr.from_time);
+                let to = new Date(cr.to_time);
+                let ref = `range_${index}`;
+                let outerStyle = assign({}, rangeStyles.outer);
+                let dayDiff = Moment(to).diff(Moment(from), 'days') + 1;
+                let totalRange = Moment(this.props.dates[this.props.dates.length - 1]).diff(Moment(this.props.dates[0]), 'days') + 1;
+                let dayDiffStart = Moment(from).diff(Moment(this.props.dates[0]), 'days');
+                outerStyle.width = `${dayDiff * 100 / totalRange}%`;
+                outerStyle.left = `${dayDiffStart * 100 / totalRange}%`;
+                outerStyle.position = "absolute";
+                let content = (
+                    <div key={ref} ref={ref} style={outerStyle} onClick={() => this._handleRangeClick(ref, cr)}>
+                        <Flex.Layout center style={rangeStyles.inner}>
+                            {cr.title}
+                        </Flex.Layout>
+                    </div>
+                );
+                if (index === 0 ||  Moment(from).diff(Moment(this.state.crossDayRanges[index - 1].to_time), 'days') > 0) {
+                    line.push(content);
+                } else {
+                    maxCrossRange++;
+                    crossDayContent.push(<div style={{height: 28, position: "relative"}}>{line}</div>);
+                    line = [];
+                    line.push(content);
+                }
+                if (line.length > 0 && index === this.state.crossDayRanges.length - 1) {
+                    maxCrossRange++;
+                    crossDayContent.push(<div style={{minHeight: 28, position: "relative", borderBottom: `1px solid ${muiTheme.palette.borderColor}`, borderLeft: `1px solid ${muiTheme.palette.borderColor}`}}>{line}</div>);
+                }
+            });
+
+            console.log(`MaxCrossRange${maxCrossRange}`);
+            headerHeight += 28 * (maxRange + maxCrossRange);
             allDays = (
                 <Flex.Layout flex={1} horizontal style={{minHeight: 0}}>
                     <Flex.Layout center style={{width: 60}}>
                         <div style={{width: "100%", fontSize: "0.9em", padding: 4, textAlign: "right"}}>All Day</div>
                     </Flex.Layout>
                     <Flex.Layout vertical flex={1}>
-                        <div style={{height: 28}}>123123</div>
+                        {crossDayContent}
                         <Flex.Layout flex={1} stretch horizontal>{allDaysContent}</Flex.Layout>
                     </Flex.Layout>
                 </Flex.Layout>
