@@ -1,4 +1,4 @@
-const React           = require("react"),
+const React         = require("react"),
     PureRenderMixin = require('react/addons').addons.PureRenderMixin,
     Router          = require("react-router"),
     MUI             = require('material-ui'),
@@ -244,9 +244,7 @@ let CreateEvent = React.createClass({
                                     valueLink={this.linkState("participants")} />
 
                                 <Flex.Layout horizontal justified>
-                                    <Link to="event-list">
-                                        <MUI.RaisedButton label="Cancel" />
-                                    </Link>
+                                    <MUI.RaisedButton label="Cancel" onClick={() => history.back()} />
                                     <MUI.RaisedButton type="submit" label="Create Event" primary={true} onClick={this._handleSubmit} />
                                 </Flex.Layout>
 
@@ -335,7 +333,7 @@ let CreateEvent = React.createClass({
         event.fromTime = this.refs.fromTime ? this.refs.fromTime.getTime() : event.fromDate;
         event.toTime = this.refs.toTime ? this.refs.toTime.getTime() : event.toDate;
 
-        CalendarActions.create(event, () => this.context.router.transitionTo("event-list"));
+        CalendarActions.create(event, history.back());
     },
 
     _getRepeatedInfoContent() {
