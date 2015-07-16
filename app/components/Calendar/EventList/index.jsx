@@ -283,11 +283,6 @@ const EventList = React.createClass({
                         emptyMessageDOM
                 }
                 {noMoreNewerEvents}
-                <Link to="create-event">
-                    <MUI.FloatingActionButton
-                        style={{position: "fixed", bottom: 24, right: 24}}
-                        iconClassName="icon-add" />
-                </Link>
                 {snackBar}
             </PerfectScroll>
         );
