@@ -123,7 +123,6 @@ let CreateResource = React.createClass({
         let name = refs.name.getValue();
         if (!name || name.length === 0) {
             this.setState({nameError: this.errorMsg.nameRequired});
-            this.forceUpdate();
             return;
         } else {
             this.setState({nameError: ''});
@@ -132,7 +131,6 @@ let CreateResource = React.createClass({
         let location = refs.location.getValue();
         if (!location || location.length === 0) {
             this.setState({locationError: this.errorMsg.locationRequired});
-            this.forceUpdate();
             return;
         } else {
             this.setState({locationError: ''});
@@ -141,7 +139,6 @@ let CreateResource = React.createClass({
         let description = refs.description.getValue();
         if (!description || description.length === 0){
             this.setState({descriptionError: this.errorMsg.descriptionRequired});
-            this.forceUpdate();
             return;
         } else {
             this.setState({descriptionError: ''});
