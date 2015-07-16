@@ -61,6 +61,12 @@ let CreateResource = React.createClass({
                 width: 600,
                 padding: 0,
                 margin: 20
+            },
+            label: {
+                fontSize: 16,
+                color: 'rgba(0,0,0,0.54)',
+                display: 'flex',
+                paddingTop: '12px'
             }
         };
         return (
@@ -70,19 +76,19 @@ let CreateResource = React.createClass({
                         <MUI.Paper zDepth={3} style={styles.inner}>
                             <div style={{padding: 20}}>
                                 <h3 style={{marginBottom: 20}}>{this.state.mode === 'create' ? 'Create' : 'Edit'} Resource</h3>
-                                <label style={{fontSize: 16, color: 'rgba(0,0,0,0.54)'}}>Resource name</label>
+                                <label style={styles.label}>Resource name</label>
                                 <MUI.TextField
                                     ref="name"
                                     errorText={this.state.nameError}
                                     valueLink={this.linkState('name')}
                                     style={{width: "100%"}} />
-                                <label style={{fontSize: 16, color: 'rgba(0,0,0,0.54)'}}>Location</label>
+                                <label style={styles.label}>Location</label>
                                 <MUI.TextField
                                     ref="location"
                                     errorText={this.state.locationError}
                                     valueLink={this.linkState('location')}
                                     style={{width: "100%"}} />
-                                <label style={{fontSize: 16, color: 'rgba(0,0,0,0.54)'}}>Description</label>
+                                <label style={styles.label}>Description</label>
                                 <SmartEditor
                                     multiLine={true}
                                     ref="description"
@@ -149,9 +155,9 @@ let CreateResource = React.createClass({
         var ids = images.map((file) => (file.url));
         resource.images = ids;
         if (this.state.mode === 'create')
-            ResourceAction.create(resource, (_id) => this.context.router.transitionTo("resource-detail", {id: _id}));
+            ResourceAction.create(resource, (r) => this.context.router.transitionTo("resource-detail", {id: r._id}));
         else if (this.state.mode === 'edit')
-            ResourceAction.update(resource, (_id) => this.context.router.transitionTo("resource-detail", {id: _id}));
+            ResourceAction.update(resource, (r) => this.context.router.transitionTo("resource-detail", {id: r._id}));
     }
 
 });

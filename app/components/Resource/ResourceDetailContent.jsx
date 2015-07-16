@@ -11,7 +11,8 @@ const WeekView = require('../Calendar/CommonComponents').WeekView;
 const CalendarView = require('../Calendar/CommonComponents').CalendarView;
 const ResourceActions = require('../../actions/ResourceActions');
 const ResourceInfo = require('./ResourceInfo');
-const     PerfectScroll = require('../PerfectScroll');
+const PerfectScroll = require('../PerfectScroll');
+const ResourceStore = require('../../stores/ResourceStore');
 
 require("./style.less");
 
@@ -50,6 +51,7 @@ let ResourceDetailContent = React.createClass({
                 padding: 12,
                 minHeight: 60,
                 maxHeight: 60,
+                color: this.context.muiTheme.palette.canvasColor,
                 backgroundColor: this.context.muiTheme.palette.primary1Color,
                 whiteSpace:'nowrap',
                 textOverflow:'ellipsis',
