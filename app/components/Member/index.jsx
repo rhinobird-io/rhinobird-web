@@ -121,8 +121,9 @@ Member.MemberSelect = React.createClass({
         let valueLink = this.getValueLink(this.props);
         let members = [];
         if (valueLink && valueLink.value) {
-            members = valueLink.value.users.map(u => `user_${u.id}`).concat(valueLink.value.teams.map(t => `team_${t.id}`));
+            members = valueLink.value.users.map(u => `user_${u}`).concat(valueLink.value.teams.map(t => `team_${t}`));
         }
+
         return {
             users: this.props.user ? this._getUsersArray() : null,
             teams: this.props.team ? this._getTeamsArray() : null,

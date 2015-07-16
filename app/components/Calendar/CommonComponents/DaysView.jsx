@@ -132,7 +132,7 @@ let DaysView = React.createClass({
             let maxCrossRange = 0;
             let crossDayContent = [];
             let line = [];
-            console.log(this.state.crossDayRanges);
+
             (this.state.crossDayRanges || []).forEach((cr, index) => {
                 let from = new Date(cr.from_time);
                 let to = new Date(cr.to_time);
@@ -141,9 +141,9 @@ let DaysView = React.createClass({
                 let dayDiff = Moment(to).diff(Moment(from), 'days') + 1;
                 let totalRange = Moment(this.props.dates[this.props.dates.length - 1]).diff(Moment(this.props.dates[0]), 'days') + 1;
                 let dayDiffStart = Moment(from).diff(Moment(this.props.dates[0]), 'days');
+                outerStyle.position = "absolute";
                 outerStyle.width = `${dayDiff * 100 / totalRange}%`;
                 outerStyle.left = `${dayDiffStart * 100 / totalRange}%`;
-                outerStyle.position = "absolute";
                 let content = (
                     <div key={ref} ref={ref} style={outerStyle} onClick={() => this._handleRangeClick(ref, cr)}>
                         <Flex.Layout center style={rangeStyles.inner}>
@@ -155,7 +155,7 @@ let DaysView = React.createClass({
                     line.push(content);
                 } else {
                     maxCrossRange++;
-                    crossDayContent.push(<div style={{height: 28, position: "relative"}}>{line}</div>);
+                    crossDayContent.push(<div style={{height: 28, position: "relative", borderLeft: `1px solid ${muiTheme.palette.borderColor}`}}>{line}</div>);
                     line = [];
                     line.push(content);
                 }
