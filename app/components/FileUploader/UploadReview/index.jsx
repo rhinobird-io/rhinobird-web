@@ -81,7 +81,7 @@ const UploadReview = React.createClass({
             files: files
         });
     },
-    getValue(){
+    getValue() {
         var i = 0,
             files = this.state.files,
             max = files.length;
@@ -89,6 +89,23 @@ const UploadReview = React.createClass({
             files[i].url = `/file/files/${files[i].id}/fetch`;
         }
         return files;
+    },
+    setValue(value) {
+        if (value && value.length > 0) {
+            if (value[0].url) {
+                this.setState({
+                    files: value
+                });
+            } else if (typeof value[0] === 'string') {
+                var files = value.map((v) => {
+                    var arr = v.split('/');
+                    return {id: arr[arr.length - 2]};
+                });
+                this.setState({
+                    files: files
+                });
+            }
+        }
     }
 });
 
