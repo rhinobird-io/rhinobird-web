@@ -18,6 +18,23 @@ let ResourceActions = {
             console.error(e);
         });
     },
+    update(resource, success) {
+        $.ajax({
+            url: '/resource/resources',
+            type: 'put',
+            data: {resource: resource}
+        }).done(data => {
+            AppDispatcher.dispatch({
+                type: ResourceActionTypes.UPDATE_RESOURCE,
+                data: data
+            });
+            if (success && typeof success === "function") {
+                success(data);
+            }
+        }).fail(e => {
+            console.error(e);
+        });
+    },
 
     deleteResource(id, success) {
         $.ajax({

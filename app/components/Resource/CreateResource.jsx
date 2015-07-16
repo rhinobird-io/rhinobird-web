@@ -7,31 +7,54 @@ const React = require("react"),
     PerfectScroll   = require('../PerfectScroll'),
     SmartEditor     = require('../SmartEditor').SmartEditor,
     FileUploader    = require('../FileUploader'),
-    ResourceAction = require('../../actions/ResourceActions');
+    ResourceAction = require('../../actions/ResourceActions'),
+    ResourceStore = require('../../stores/ResourceStore');
 
 let CreateResource = React.createClass({
+    mixins: [React.addons.LinkedStateMixin, React.addons.PureRenderMixin],
     contextTypes: {
+        muiTheme: React.PropTypes.object,
         router: React.PropTypes.func.isRequired
     },
 
     errorMsg: {
-        nameRequired: "Resource name is required.",
+        nameRequired: "Resoure name is required.",
         descriptionRequired: "Description is required.",
         locationRequired: "Location is required."
     },
 
     getInitialState() {
-
         return {
             mode: 'create',
             images: [],
             nameError: '',
             locationError: '',
             descriptionError: '',
-            resource: {}
+            resource: {},
+            name: '',
+            location: '',
+            description: ''
         };
     },
 
+    componentDidMount() {
+        ResourceStore.addChangeListener(this._onChange);
+        if (this.props.params.id)
+            ResourceAction.receiveById(this.props.params.id);
+    },
+    _onChange() {
+        var resource = ResourceStore.getResourceById(this.props.params.id) || {};
+        if (resource) {
+            this.setState({
+                mode: 'edit',
+                resource: resource,
+                name: resource.name,
+                location: resource.location,
+                description: resource.description,
+                images: resource.images
+            });
+        }
+    },
     render() {
         let styles = {
             inner: {
@@ -46,38 +69,32 @@ let CreateResource = React.createClass({
                     <form onSubmit={(e) => e.preventDefault()}>
                         <MUI.Paper zDepth={3} style={styles.inner}>
                             <div style={{padding: 20}}>
-                                <h3 style={{marginBottom: 0}}>Create Resource</h3>
+                                <h3 style={{marginBottom: 20}}>{this.state.mode === 'create' ? 'Create' : 'Edit'} Resource</h3>
+                                <label style={{fontSize: 16, color: 'rgba(0,0,0,0.54)'}}>Resource name</label>
                                 <MUI.TextField
                                     ref="name"
-                                    hintText="Resource Name"
-                                    floatingLabelText="Resource Name"
                                     errorText={this.state.nameError}
-                                    value={this.state.resource.name}
+                                    valueLink={this.linkState('name')}
                                     style={{width: "100%"}} />
+                                <label style={{fontSize: 16, color: 'rgba(0,0,0,0.54)'}}>Location</label>
                                 <MUI.TextField
                                     ref="location"
-                                    hintText="Location"
-                                    floatingLabelText="Location"
                                     errorText={this.state.locationError}
-                                    value={this.state.resource.location}
+                                    valueLink={this.linkState('location')}
                                     style={{width: "100%"}} />
+                                <label style={{fontSize: 16, color: 'rgba(0,0,0,0.54)'}}>Description</label>
                                 <SmartEditor
                                     multiLine={true}
                                     ref="description"
-                                    hintText="Description"
-                                    floatingLabelText="Description"
                                     errorText={this.state.descriptionError}
-                                    value={this.state.resource.description}
+                                    valueLink={this.linkState('description')}
                                     style={{width: "100%"}} />
-                                <FileUploader ref="fileUploader" text={"Upload Attachments"} value={this.state.resource.images} showReview showResult maxSize={10 * 1024 * 1024} acceptTypes={["png", "jpeg", "jpg", "bmp"]} />
+                                <FileUploader ref="fileUploader" text={"Upload Attachments"} valueLink={this.linkState('images')} showReview showResult maxSize={10 * 1024 * 1024} acceptTypes={["png", "jpeg", "jpg", "bmp"]} />
                                 <br/>
                                 <Flex.Layout horizontal justified>
-                                    <Link to="resources">
-                                        <MUI.RaisedButton label="Cancel" />
-                                    </Link>
-                                    <MUI.RaisedButton type="submit" label="Create Resource" primary={true} onClick={this._handleSubmit}/>
+                                    <MUI.RaisedButton label="Cancel" onClick={this._cancel}/>
+                                    <MUI.RaisedButton type="submit" label={`${this.state.mode === 'create' ? 'Create' : 'Update'} Resource`} primary={true} onClick={this._handleSubmit}/>
                                 </Flex.Layout>
-
                             </div>
                         </MUI.Paper>
                     </form>
@@ -86,7 +103,13 @@ let CreateResource = React.createClass({
             </PerfectScroll>
         );
     },
-
+    _cancel() {
+        if (this.state.mode === 'create'){
+            this.context.router.transitionTo("resources");
+        } else if (this.state.mode === 'edit') {
+            this.context.router.transitionTo("resource-detail", {id: this.state.resource._id});
+        }
+    },
     _handleSubmit: function(e) {
         e.preventDefault();
         let refs = this.refs;
@@ -94,6 +117,7 @@ let CreateResource = React.createClass({
         let name = refs.name.getValue();
         if (!name || name.length === 0) {
             this.setState({nameError: this.errorMsg.nameRequired});
+            this.forceUpdate();
             return;
         } else {
             this.setState({nameError: ''});
@@ -102,6 +126,7 @@ let CreateResource = React.createClass({
         let location = refs.location.getValue();
         if (!location || location.length === 0) {
             this.setState({locationError: this.errorMsg.locationRequired});
+            this.forceUpdate();
             return;
         } else {
             this.setState({locationError: ''});
@@ -110,19 +135,23 @@ let CreateResource = React.createClass({
         let description = refs.description.getValue();
         if (!description || description.length === 0){
             this.setState({descriptionError: this.errorMsg.descriptionRequired});
+            this.forceUpdate();
             return;
         } else {
             this.setState({descriptionError: ''});
         }
 
-        let resource = {};
+        let resource = this.state.resource;
         resource.name = name;
         resource.description = description;
         resource.location = location;
         var images = this.refs.fileUploader.getValue();
         var ids = images.map((file) => (file.url));
         resource.images = ids;
-        ResourceAction.create(resource, (_id) => this.context.router.transitionTo("resource-detail", {id: _id}));
+        if (this.state.mode === 'create')
+            ResourceAction.create(resource, (_id) => this.context.router.transitionTo("resource-detail", {id: _id}));
+        else if (this.state.mode === 'edit')
+            ResourceAction.update(resource, (_id) => this.context.router.transitionTo("resource-detail", {id: _id}));
     }
 
 });

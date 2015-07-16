@@ -40,7 +40,8 @@ export default {
     LOAD_MORE_RESOURCES: null,
     DELETE_RESOURCE_BOOK: null,
     UPDATE_RESOURCE_BOOK: null,
-    CREATE_RESOURCE: null
+    CREATE_RESOURCE: null,
+    UPDATE_RESOURCE: null
   }),
 
   ChannelActionTypes : keyMirror({

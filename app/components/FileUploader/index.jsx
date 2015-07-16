@@ -25,7 +25,11 @@ const FileUploader = React.createClass({
         showReview: React.PropTypes.bool,
         showFileName: React.PropTypes.bool,
         showResult: React.PropTypes.bool,
-        text: React.PropTypes.string
+        text: React.PropTypes.string,
+        valueLink: React.PropTypes.shape({
+            value: React.PropTypes.string.isRequired,
+            requestChange: React.PropTypes.func.isRequired
+        }),
     },
 
     getDefaultProps() {
@@ -38,12 +42,30 @@ const FileUploader = React.createClass({
             showResult: false
         };
     },
+    componentDidMount() {
+        if (this.props.valueLink) {
+            this.refs.uploadReview.setValue(this.props.valueLink.value);
+        }
+    },
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.valueLink) {
+            this.refs.uploadReview.setValue(nextProps.valueLink.value);
+        }
+    },
+    _updateValueLink() {
+        let valueLink = this.props.valueLink;
+        if (valueLink) {
+            valueLink.value = this.getValue();
+            valueLink.requestChange(valueLink.value);
+        }
+    },
     onUpload: function(result) {
         if (result.result === Constants.UploadResult.SUCCESS) {
             this.refs.fileName.setFile(result.file);
             this.refs.uploadReview.setFile(result.file);
             this.refs.uploadResult.setResult(result.result);
+            this._updateValueLink();
         }
         else if (result.result === Constants.UploadResult.FAILED) {
             this.refs.fileName.setFile(undefined);
