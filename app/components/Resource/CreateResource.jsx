@@ -18,7 +18,7 @@ let CreateResource = React.createClass({
     },
 
     errorMsg: {
-        nameRequired: "Resoure name is required.",
+        nameRequired: "Resource name is required.",
         descriptionRequired: "Description is required.",
         locationRequired: "Location is required."
     },
