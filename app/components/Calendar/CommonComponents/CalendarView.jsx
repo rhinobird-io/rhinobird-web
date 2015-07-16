@@ -8,6 +8,7 @@ const MonthView = require('./MonthView');
 const FourDaysView = require('./FourDaysView');
 const Display = require('../../Common').Display;
 const Selector = require('../../Select').Selector;
+const EventList = require('../EventList');
 const DatePickerDialog = require('material-ui/lib/date-picker/date-picker-dialog');
 
 let VIEW_TYPES = ['week', 'month', 'day', 'fourDays', 'timeLine'];
@@ -98,7 +99,7 @@ let CalendarView = React.createClass({
 
         let viewType = this.state.viewType;
         let switcher = this._getViewTypeSwitcher();
-        let calendarHeader = this._getCalendarHeader(viewType);
+        let calendarHeader = viewType !== "timeLine" ? this._getCalendarHeader(viewType) : null;
 
         let calendarView = null;
         if (viewType === "week") {
@@ -117,6 +118,10 @@ let CalendarView = React.createClass({
         } else if (viewType === "month") {
             calendarView = (
                 <MonthView ref="calendarView" {...other} date={this.state.date} />
+            );
+        } else if (viewType === "timeLine") {
+            calendarView = (
+                <EventList />
             );
         }
 

@@ -266,8 +266,8 @@ let EventManagement = React.createClass({
                         <Flex.Layout flex={1}>
                             <MUI.Checkbox ref="full_day" defaultChecked={event.full_day} onCheck={this._handleAllDayChange}  name="All Day" label="All Day" />
                         </Flex.Layout>
-                        <Flex.Layout flex={1}>
-                            <MUI.Checkbox ref="repeated" name="Repeated" label="Repeated" />
+                        <Flex.Layout flex={1} horizontal>
+                            <MUI.Checkbox ref="repeated" defaultChecked={event.repeated} onCheck={this._handleRepeatedChange} name="Repeated" label="Repeated" />
                         </Flex.Layout>
                     </Flex.Layout>
                 );
@@ -332,6 +332,12 @@ let EventManagement = React.createClass({
         });
     },
 
+    _handleRepeatedChange(e, checked) {
+        this.setState({
+            repeated: checked
+        });
+    },
+
     _handlePeriodChange(e, checked) {
         this.setState({
             period: checked
@@ -351,7 +357,7 @@ let EventManagement = React.createClass({
             (!full_day ?
                 global.toolkits.mergeDateWithTime(refs.to_date.getDate(), refs.to_time.getTime()) :
                 global.toolkits.endOfDate(refs.to_date.getDate()));
-        console.log(this.state.members);
+
         CalendarActions.update({
             id: this.props.event.id,
             title: title,

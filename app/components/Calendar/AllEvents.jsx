@@ -328,7 +328,7 @@ let AllEvents = React.createClass({
                             hintText="To Time"
                             floatingLabelText="To Time" />
                     </Flex.Layout>
-                    <MUI.TextField hintText="title" ref="title" floatingLabelText="title" fullWidth />
+                    <MUI.TextField errorText={this.state.titleError} hintText="title" ref="title" floatingLabelText="title" fullWidth />
                     <Flex.Layout style={{padding: "8px 8px 0px 24px"}} horizontal endJustified>
                         <MUI.FlatButton secondary onClick={() => this.refs.calendar.dismissCreateNewRange()}>Close</MUI.FlatButton>
                         <MUI.FlatButton primary>Edit</MUI.FlatButton>
@@ -346,6 +346,14 @@ let AllEvents = React.createClass({
         let title = refs.title.getValue();
         let event = {};
         event.title = title;
+
+        if (title.length === 0) {
+            this.setState({titleError: "Event title is required."});
+            return;
+        } else {
+            this.setState({titleError: ""});
+        }
+
         event.fromTime = this.refs.fromTime.getTime();
         event.toTime = this.refs.toTime.getTime();
         event.fromDate = event.fromTime;
@@ -380,7 +388,6 @@ let AllEvents = React.createClass({
     },
 
     _handleEventUpdateSuccess() {
-        console.log("jiasdf");
         this.refs.updateEventSuccess.show();
         this._dismissEventDetailPopup();
     },
@@ -429,7 +436,6 @@ let AllEvents = React.createClass({
             newRect.left = rect.left + (newRect.width - popupNode.clientWidth) / 2;
         }
 
-        console.log(position);
         this.setState({
             createEventPopupPos: position
         }, () => {
