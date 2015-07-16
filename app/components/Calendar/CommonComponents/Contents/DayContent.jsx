@@ -69,6 +69,7 @@ let DayContent = React.createClass({
 
         style.WebkitUserSelect = "none";
         style.userSelect = "none";
+        style.MozUserSelect = "none";
         style.width = "100%";
         style.position = "relative";
         style.cursor = "default";

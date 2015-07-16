@@ -147,7 +147,7 @@ let DaysView = React.createClass({
                 let content = (
                     <div key={ref} ref={ref} style={outerStyle} onClick={() => this._handleRangeClick(ref, cr)}>
                         <Flex.Layout center style={rangeStyles.inner}>
-                            {cr.title}
+                            <div style={{padding: "0 4px"}}>{cr.title}</div>
                         </Flex.Layout>
                     </div>
                 );
