@@ -75,7 +75,7 @@ const UploadButton = React.createClass({
 
     render() {
         return (
-            <MUI.RaisedButton type="button" label="Upload" primary={true} onClick={this._uploadFile}/>
+            <MUI.RaisedButton type="button" label={this.props.text ? this.props.text : 'Upload'} secondary={true} onClick={this._uploadFile}/>
         );
     }
 });
