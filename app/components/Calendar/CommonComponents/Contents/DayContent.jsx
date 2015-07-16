@@ -336,7 +336,6 @@ let DayContent = React.createClass({
         if (this.mouseDown) {
             if (this.props.scrollableContainer) {
                 let container = this.props.scrollableContainer();
-                console.log(e.clientY);
                 if (e.clientY > rect.top + container.getDOMNode().scrollTop + container.getDOMNode().clientHeight) {
                     let gap = e.clientY - (rect.top + container.getDOMNode().scrollTop + container.getDOMNode().clientHeight);
                     container.getDOMNode().scrollTop = container.getDOMNode().scrollTop + gap;
@@ -380,8 +379,6 @@ let DayContent = React.createClass({
             toTime.setMinutes(toMinute);
             toTime.setSeconds(toSecond);
 
-            console.log(fromTime.toLocaleString());
-            console.log(toTime.toLocaleString());
             let newRange = {fromTime: fromTime, toTime: toTime};
             newRange.backgroundColor = muiTheme.palette.primary1Color;
             this.setState({newRange: newRange})
@@ -398,23 +395,6 @@ let DayContent = React.createClass({
             let rect = newRange ? newRange.getDOMNode().getBoundingClientRect() : null;
             this.props.onRangeCreate(rect, this.state.newRange);
         }
-    },
-
-    _handleMouseLeave(e) {
-        this._handleMouseMove(e);
-        //this.mouseDown = false;
-        //document.removeEventListener("mousemove", this._handleMouseMove);
-        //document.removeEventListener("mouseup", this._handleMouseUp);
-        //console.log("leave");
-        //if (this.props.onRangeCreate) {
-        //    let newRange = this.refs.newRange;
-        //    let rect = newRange ? newRange.getDOMNode().getBoundingClientRect() : null;
-        //    this.props.onRangeCreate(rect, this.state.newRange);
-        //}
-    },
-
-    _unbindListeners() {
-
     }
 });
 

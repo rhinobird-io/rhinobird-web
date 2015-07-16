@@ -124,7 +124,6 @@ let MonthView = React.createClass({
                 width: 0,
                 minHeight: 0,
                 overflow: "hidden",
-                marginTop: -1,
                 padding: "0.2em 0.5em",
                 borderBottom: `1px solid ${muiTheme.palette.borderColor}`,
                 borderRight: `1px solid ${muiTheme.palette.borderColor}`
@@ -189,6 +188,7 @@ let MonthView = React.createClass({
             if (Moment(d).format("YYYY-MM-DD") === today) {
                 outStyle.borderRight = `1px solid ${muiTheme.palette.accent1Color}`;
                 outStyle.borderBottom = `1px solid ${muiTheme.palette.accent1Color}`;
+                //outStyle.backgroundColor = `${muiTheme.palette.accent3Color}`;
             }
             return (
                 <Flex.Layout ref={`day_${index}`} vertical flex={1} style={outStyle}>

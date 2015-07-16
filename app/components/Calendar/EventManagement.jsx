@@ -32,9 +32,11 @@ let EventManagement = React.createClass({
     getInitialState() {
         let event = this.props.event || {};
         event.members = {
-            teams: event.team_participants || [],
-            users: event.participants ||[]
+            teams: event.team_participants.map(t => t.id) || [],
+            users: event.participants.map(u => u.id) ||[]
         };
+        console.log(event.members);
+        console.log(event.participants);
         return event;
     },
 
@@ -348,7 +350,8 @@ let EventManagement = React.createClass({
         let to_time = !period ? from_time :
             (!full_day ?
                 global.toolkits.mergeDateWithTime(refs.to_date.getDate(), refs.to_time.getTime()) :
-                global.toolkits.endOfDate(refs.to_date.getDate()))
+                global.toolkits.endOfDate(refs.to_date.getDate()));
+        console.log(this.state.members);
         CalendarActions.update({
             id: this.props.event.id,
             title: title,

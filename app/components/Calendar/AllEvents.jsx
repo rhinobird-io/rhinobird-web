@@ -67,9 +67,9 @@ var DrawerInner = React.createClass({
     componentWillLeave: function(cb) {
         var $el = $(this.getDOMNode());
         let startPos = this.props.start;
-        startPos.position="fixed";
-        startPos.marginTop=0;
-        startPos.marginLeft=0;
+        startPos.position = "fixed";
+        startPos.marginTop = 0;
+        startPos.marginLeft = 0;
 
         $el.stop(true).css({height:600,width:500,position:"fixed",top:"50%", marginTop:-300,left:"50%",marginLeft:-250}).animate(startPos, 250, cb);
     },
