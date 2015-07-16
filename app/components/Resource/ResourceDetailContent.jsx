@@ -10,6 +10,8 @@ const LoginStore = require('../../stores/LoginStore');
 const WeekView = require('../Calendar/CommonComponents').WeekView;
 const CalendarView = require('../Calendar/CommonComponents').CalendarView;
 const ResourceActions = require('../../actions/ResourceActions');
+const ResourceInfo = require('./ResourceInfo');
+const     PerfectScroll = require('../PerfectScroll');
 
 require("./style.less");
 
@@ -66,6 +68,7 @@ let ResourceDetailContent = React.createClass({
         ];
         let actions = (<Flex.Layout flex={1} center horizontal style={styles.action}>{resource.name}
                         <Flex.Layout endJustified flex={1} center horizontal>
+                            <MUI.IconButton onClick={this._toggleResourceInfo} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-details" tooltip="Show resource details" tooltipPosition="top-center"/>
                             <MUI.IconButton iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/>
                             <MUI.IconButton onClick={this._deleteResource} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-delete"/>
                             <MUI.Dialog actions={dialogActions} title="Deleting Resource" ref='deleteDialog'>
@@ -76,6 +79,7 @@ let ResourceDetailContent = React.createClass({
         return (
             <Flex.Layout vertical style={{height: "100%", WebkitUserSelect: "none", userSelect: "none"}}>
                 {actions}
+                <ResourceInfo ref="resourceInfo" resource={resource}/>
                 <CalendarView
                     ref="calendar"
                     date={new Date()}
@@ -91,6 +95,7 @@ let ResourceDetailContent = React.createClass({
                 <MUI.Snackbar ref="bookingSuccess" message={`Booking ${resource.name} successfully`} />
                 <MUI.Snackbar ref="deleteBookingSuccess" message={`Delete booking of ${resource.name} successfully`} />
                 <MUI.Snackbar ref="updateBookingSuccess" message={`Update booking of ${resource.name} successfully`} />
+
             </Flex.Layout>
         );
     },
@@ -357,7 +362,13 @@ let ResourceDetailContent = React.createClass({
         ResourceActions.deleteResource(this.props.resource._id, () => {
             this.context.router.transitionTo("resources");
         });
+    },
+
+    _toggleResourceInfo() {
+        this.refs.resourceInfo.toggle();
+        $(this.refs.calendar.getDOMNode()).toggle();
     }
+
 });
 
 module.exports = ResourceDetailContent;
