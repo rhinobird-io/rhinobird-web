@@ -60,6 +60,17 @@ let ResourceInfo = React.createClass({
                                     floatingLabelText="Description"
                                     value={resource.description} />
                             </Flex.Layout>
+                            {resource.images && resource.images.length > 0 ?
+                                <Flex.Layout horizontal key="images" style={styles.resourceDetailItem}>
+                                    <Flex.Layout top style={styles.resourceDetailIcon}><MUI.FontIcon className="icon-image"/></Flex.Layout>
+                                    <Flex.Layout wrap>
+                                    {resource.images.map((image) => (
+                                        <div style={{display: 'flex', height: '200', width: '200', backgroundSize: 'contain', backgroundImage: 'url('+image+')', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}/>
+                                    ))}
+                                    </Flex.Layout>
+                                </Flex.Layout>
+                                : <div/>
+                            }
                         </div>
                     </MUI.Paper>
             </Flex.Layout>
