@@ -130,7 +130,7 @@ let DayContent = React.createClass({
     _constructContent(data) {
         let styles = {
             outer: {
-                padding: "0 4px",
+                padding: "2px 4px",
                 cursor: "pointer",
                 position: "absolute"
             }
@@ -178,7 +178,7 @@ let DayContent = React.createClass({
                 if (lastTo - lastFrom <= 1800000) {
                     lastTo = new Date(lastFrom.getTime() + 1800000);
                 }
-                if (from >= lastFrom && from <= lastTo) {
+                if (from >= lastFrom && from < lastTo) {
                     let placed = false;
                     loop2:
                     for (let i1 = 0; i1 < columns.length; i1++) {
@@ -254,6 +254,7 @@ let DayContent = React.createClass({
         if (this.props.exclusive) {
             dataPositions = dataPositions.map(p => {
                 p.width = "100%";
+                p.left = 0;
                 return p;
             });
         }
