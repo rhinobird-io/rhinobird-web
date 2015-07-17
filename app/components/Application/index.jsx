@@ -51,6 +51,36 @@ let FloatingContent = React.createClass({
     }
 });
 
+global.muiTheme = null;
+global.toolkits = {
+    mergeDateWithTime(date, time) {
+        let result = new Date(date);
+        result.setHours(time.getHours());
+        result.setMinutes(time.getMinutes());
+        result.setSeconds(time.getSeconds());
+        result.setMilliseconds(time.getMilliseconds());
+        return result;
+    },
+
+    startOfDate(date) {
+        let result = new Date(date);
+        result.setHours(0);
+        result.setMinutes(0);
+        result.setSeconds(0);
+        result.setMilliseconds(0);
+        return result;
+    },
+
+    endOfDate(date) {
+        let result = new Date(date);
+        result.setHours(23);
+        result.setMinutes(59);
+        result.setSeconds(59);
+        result.setMilliseconds(999);
+        return result;
+    }
+};
+
 let Application = React.createClass({
 
     childContextTypes: {
@@ -79,13 +109,13 @@ let Application = React.createClass({
         //window.addEventListener("keydown", this._keyDownListener);
         Redirect.addRedirectListener(this._onRequestRedirect);
         MessageStore.on(ImConstants.EVENTS.REQUEST_REDIRECT, this._onRequestRedirect);
+        global.muiTheme = ThemeManager.getCurrentTheme();
     },
 
     componentWillUnmount() {
         FloatingContentStore.removeChangeListener(this._floatingContentChanged);;
         this.getDOMNode().removeEventListener("click", this._clickListener);
         //window.removeEventListener("keydown", this._keyDownListener);
-
         Redirect.removeRedirectListener(this._onRequestRedirect);
         MessageStore.removeListener(ImConstants.EVENTS.REQUEST_REDIRECT, this._onRequestRedirect);
     },
@@ -95,7 +125,7 @@ let Application = React.createClass({
             <TopNav onLeftIconButtonTouchTap={this._onMenuIconButtonTouch} title={this.state.title}/>
             <SideNav ref='sideNav'/>
 
-            <div style={{color: ThemeManager.getCurrentTheme().palette.textColor}} className={this.state.showFloatingContent? 'mainContainer floating' : 'mainContainer'}>
+            <div style={{color: ThemeManager.getCurrentTheme().palette.textColor, WebkitUserSelect: "none"}} className={this.state.showFloatingContent? 'mainContainer floating' : 'mainContainer'}>
                 <FloatingContent
                     ref="floatingContent"
                     title={this.state.floatingContent.title}
@@ -158,4 +188,38 @@ let Application = React.createClass({
         this.context.router.transitionTo(path);
     }
 });
+
+// Get weekdays of the week of this date
+Date.prototype.weekDays = function() {
+    let result = [];
+    let weekStartDay = new Date(this);
+    weekStartDay.setDate(this.getDate() - this.getDay());
+    for (let i = 0; i <= 6; i++) {
+        let day = new Date(weekStartDay);
+        day.setDate(weekStartDay.getDate() + i);
+        result.push(day);
+    }
+    return result;
+};
+
+// Four days from this date
+Date.prototype.fourDays = function() {
+    let days = [];
+    for (let i = 0; i <= 3; i++) {
+        let day = new Date(this);
+        day.setDate(this.getDate() + i);
+        days.push(day);
+    }
+    return days;
+};
+
+Date.prototype.relativeDays = function(d) {
+
+};
+// Return the time elapse of a day in seconds
+Date.prototype.elapsedPercentageOfDay = function() {
+    let seconds = 3600 * this.getHours() + 60 * this.getMinutes() + this.getSeconds();
+    return seconds / 86400;
+};
+
 module.exports = Application;

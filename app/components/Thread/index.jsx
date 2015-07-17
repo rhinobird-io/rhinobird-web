@@ -68,7 +68,7 @@ const Comment = React.createClass({
             </Flex.Layout>
             <mui.IconButton style={{flexShrink:0}} onMouseOver={()=>{this.setState({mouseOver: true})}}
                             onMouseOut={()=>{this.setState({mouseOver: false})}}
-                            iconStyle={{color:this.state.mouseOver? this.context.muiTheme.palette.textColor:this.context.muiTheme.palette.borderColor}}
+                            iconStyle={{color:this.state.mouseOver? muiTheme.palette.textColor:muiTheme.palette.borderColor}}
                             iconClassName='icon-reply' onClick={this.props.onReply.bind(null, c)}/>
         </Flex.Layout><Common.Hr style={{marginTop: 6}}/></div>;
     }

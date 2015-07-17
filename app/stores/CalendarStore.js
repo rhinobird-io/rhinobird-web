@@ -4,6 +4,7 @@ const AppDispatcher = require("../dispatchers/AppDispatcher");
 const ActionTypes = require("../constants/AppConstants").CalendarActionTypes;
 const BaseStore = require("./BaseStore");
 const assign = require("object-assign");
+const Moment = require("moment");
 
 let _eventsIdMap = {};
 let _events = {};       /* Events arranged by date. */
@@ -13,6 +14,13 @@ let _hasMoreOlderEvents = true;
 let _hasReceived = false;
 let _newCreated = null;
 let _lastDeleted = null;
+
+let _allDayEvents = {};
+let _dailyLoaded = {};      // Map: "YYYY-MM-DD" => true, whether certain date's events are loaded.
+let _weeklyLoaded = {};     // Map: "YYYY-MM-DD" => true, key is first day of week, whether certain week's events are loaded.
+let _monthlyLoaded = {};    // Map: "YYYY-MM-DD" => true, key is frist day of month, whether certain month's events are loaded.
+let _allEvents = {};
+let _allEventsMap = {};
 
 function _addEvent(event, type) {
     let dateFormat = _formatDate(event.from_time);
@@ -109,12 +117,109 @@ function _sortByFromTime(e1, e2) {
     return 0;
 }
 
+Date.prototype.firstDayOfWeek = function() {
+    let date = new Date(this);
+    date.setDate(date.getDate() - date.getDay());
+    return date;
+};
+
+Date.prototype.firstDayOfMonth = function() {
+    let date = new Date(this);
+    date.setDate(1);
+    return date;
+};
+
+Date.prototype.monthDays = function() {
+    let month = this.getMonth();
+    let result = [];
+    for (let i = 0; i <= 30; i++) {
+        let date = new Date(this);
+        date.setDate(i - this.getDay());
+        if (date.getMonth() === month) {
+            result.push(date);
+        }
+    }
+    return result;
+};
+
+Date.prototype.calendarMonthDays = function() {
+    let result = this.monthDays();
+    let firstDay = result[0];
+    let lastDay = result[result.length - 1];
+    let pres = [];
+    let nexts = [];
+    for (let i = 0; i < firstDay.getDay(); i++) {
+        let preDay = new Date(firstDay);
+        preDay.setDate(i - firstDay.getDay());
+        pres.push(preDay);
+    }
+    for (let i = lastDay.getDay() + 1; i <= 6; i++) {
+        let nextDay = new Date(lastDay);
+        nextDay.setDate(nextDay.getDate() + i - lastDay.getDay());
+        nexts.push(nextDay);
+    }
+
+    return pres.concat(result).concat(nexts);
+};
+
+let addEvents = function(events) {
+    let res = [];
+    if (Array.isArray(events)) {
+        res = events;
+    } else {
+        res.push(events);
+    }
+    res.forEach(e => {
+        let format = Moment(e.from_time).format("YYYY-MM-DD");
+        if (!_allEvents[format]) {
+            _allEvents[format] = {};
+        }
+        _allEvents[format][e.id] = e;
+    });
+};
+
+let updateEvents = function(events) {
+    let res = Array.isArray(events) ? events : [events];
+    res.forEach(e => {
+        let format = Moment(e.from_time).format("YYYY-MM-DD");
+        _allEvents[format][e.id] = e;
+    });
+};
+
 let CalendarStore = assign({}, BaseStore, {
+    isDayLoaded(date) {
+        let format = Moment(new Date(date)).format("YYYY-MM-DD");
+        let firstDayOfMonth = new Date(date);
+        let firstDayOfWeek = new Date(date);
+        firstDayOfMonth.setDate(1);
+        firstDayOfWeek.setDate(-firstDayOfWeek.getDay());
+        return !!_dailyLoaded[format] || !!_weeklyLoaded[firstDayOfWeek] || !!_monthlyLoaded[firstDayOfMonth];
+    },
+
+    isWeekLoaded(date) {
+        let format = Moment(new Date(date).firstDayOfWeek()).format("YYYY-MM-DD")
+        return !!_weeklyLoaded[format];
+    },
+
+    isMonthLoaded(date) {
+        let format = Moment(new Date(date).firstDayOfMonth()).format("YYYY-MM-DD")
+        return !!_monthlyLoaded[format];
+    },
+
     getEvent(eventId, repeatedNumber) {
         if (_eventsIdMap[eventId]) {
             return _eventsIdMap[eventId][repeatedNumber];
         }
         return null;
+    },
+
+    getAll() {
+        let result = Object.keys(_eventsIdMap).map(k => {
+            return Object.keys(_eventsIdMap[k]).map(r => _eventsIdMap[k][r]);
+        });
+        let merged = [];
+        merged = merged.concat.apply(merged, result);
+        return merged;
     },
 
     getAllEvents() {
@@ -134,6 +239,66 @@ let CalendarStore = assign({}, BaseStore, {
         if (_events[date]) {
             Object.keys(_events[date]).forEach(key => {
                 events.push(_events[date][key]);
+            });
+        }
+        return events;
+    },
+
+    getEventsByDays(dateArray) {
+        let res = [];
+        dateArray.forEach(day => {
+            let format = Moment(day).format("YYYY-MM-DD");
+            if (_allEvents[format]) {
+                let events = Object.keys(_allEvents[format]).map(k => _allEvents[format][k]);
+                res = res.concat(events);
+            }
+        });
+        return res;
+    },
+
+    getEventsByDay(date) {
+        let day = new Date(date);
+        return this.getEventsByDays([day]);
+    },
+
+    getEventsByWeek(date) {
+        let days = new Date(date).weekDays();
+        return this.getEventsByDays(days)
+    },
+
+    getCrossEventsByWeek(date) {
+
+    },
+
+    getEventsByMonth(date) {
+        let days = new Date(date).monthDays();
+        console.log(days);
+        return this.getEventsByDays(days)
+    },
+
+    getCrossEventsByMonth(date) {
+
+    },
+
+    getEventsByCalendarMonth(date) {
+        let days = new Date(date).calendarMonthDays();
+        return this.getEventsByDays(days)
+    },
+
+
+    getEventsByFourDays(date) {
+        let days = new Date(date).fourDays();
+        return this.getEventsByDays(days);
+    },
+
+    getAllDayEventsByDate(date) {
+        let formattedDate = _formatDate(date);
+        let events = [];
+        if (_events[formattedDate]) {
+            Object.keys(_events[formattedDate]).forEach(key => {
+                if (_events[formattedDate][key].full_day) {
+                    events.push(_events[formattedDate][key]);
+                }
             });
         }
         return events;
@@ -177,6 +342,7 @@ let CalendarStore = assign({}, BaseStore, {
         switch (type) {
             case ActionTypes.CREATE_EVENT:
                 _addEvent(data, ActionTypes.CREATE_EVENT);
+                addEvents(data);
                 break;
             case ActionTypes.RESTORE_DELETED_EVENT:
                 _addEvent(data, ActionTypes.CREATE_EVENT);
@@ -196,7 +362,7 @@ let CalendarStore = assign({}, BaseStore, {
                 let keys = Object.keys(_events);
                 if (keys.length === 0) {
                     _hasMoreNewerEvents = false;
-                    _hasMoreOlderEvents = false;
+                    _hasMoreOlderEvents= false;
                 } else {
 
                 }
@@ -213,6 +379,26 @@ let CalendarStore = assign({}, BaseStore, {
                 if (data.length === 0) {
                     _hasMoreOlderEvents = false;
                 }
+                break;
+            case ActionTypes.UPDATE_VIEW:
+                break;
+            case ActionTypes.UPDATE_EVENT:
+                updateEvents(data);
+                break;
+            case ActionTypes.RECEIVE_EVENTS_BY_WEEK:
+                addEvents(data);
+                let week = payload.date;
+                let weekStart = new Date(week).firstDayOfWeek();
+                _weeklyLoaded[Moment(weekStart).format("YYYY-MM-DD")] = true;
+                break;
+            case ActionTypes.RECEIVE_EVENTS_BY_MONTH:
+                addEvents(data);
+                let month = payload.date;
+                let monthStart = new Date(month).firstDayOfMonth();
+                _monthlyLoaded[Moment(monthStart).format("YYYY-MM-DD")] = true;
+                break;
+            case ActionTypes.RECEIVE_EVENTS_BY_DAY:
+                addEvents(data);
                 break;
             default:
                 changed = false;

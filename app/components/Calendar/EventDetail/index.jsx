@@ -52,13 +52,13 @@ const EventDetail = React.createClass({
                 lineHeight: "2em",
                 wordBreak: "break-all",
                 padding: "0 0.8em",
-                color: this.context.muiTheme.palette.canvasColor,
-                backgroundColor: this.context.muiTheme.palette.primary1Color
+                color: muiTheme.palette.canvasColor,
+                backgroundColor: muiTheme.palette.primary1Color
             },
             eventAction: {
                 height: 120,
                 padding: 6,
-                backgroundColor: this.context.muiTheme.palette.primary1Color
+                backgroundColor: muiTheme.palette.primary1Color
             },
             eventInfo: {
                 fontSize: "1em"
@@ -82,7 +82,7 @@ const EventDetail = React.createClass({
                 position: "absolute",
                 borderRadius: "50%",
                 textAlign: "left",
-                backgroundColor: this.context.muiTheme.palette.accent1Color
+                backgroundColor: muiTheme.palette.accent1Color
             },
             repeatSymbolInner: {
                 width: "50%",
@@ -94,7 +94,7 @@ const EventDetail = React.createClass({
                 textAlign: "center"
             },
             deleteButton: {
-                color: this.context.muiTheme.palette.canvasColor
+                color: muiTheme.palette.canvasColor
             }
         };
 
@@ -104,8 +104,10 @@ const EventDetail = React.createClass({
         let eventComment = null;
         let event = this.state.event;
 
-        if (this.state.notFound || event === null || event === undefined) {
+        if (this.state.notFound) {
             eventContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Event not found</h3>
+        } else if (event === null || event === undefined) {
+            eventContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Loading</h3>
         } else {
             let backToList = (
                 <RouterLink to="event-list">

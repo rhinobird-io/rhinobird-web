@@ -115,14 +115,14 @@ let Selector = React.createClass({
                 padding: "6px 8px",
                 verticalAlign: "middle",
                 boxSizing: "border-box",
-                backgroundColor: this.context.muiTheme.palette.primary1Color
+                backgroundColor: muiTheme.palette.primary1Color
             },
             normal: {
                 cursor: "pointer",
                 padding: "6px 8px",
                 verticalAlign: "middle",
                 boxSizing: "border-box",
-                backgroundColor: this.context.muiTheme.palette.primary3Color
+                backgroundColor: muiTheme.palette.primary3Color
             }
         };
 

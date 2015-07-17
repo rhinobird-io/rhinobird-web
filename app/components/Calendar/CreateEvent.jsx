@@ -1,17 +1,17 @@
-const React           = require("react"),
-      PureRenderMixin = require('react/addons').addons.PureRenderMixin,
-      Router          = require("react-router"),
-      MUI             = require('material-ui'),
-      Moment          = require("moment"),
-      Flex            = require("../../Flex"),
-      Link            = Router.Link,
-      Navigation      = Router.Navigation,
-      Input           = require('../../Input'),
-      Selector        = require('../../Select').Selector,
-      MemberSelect    = require('../../Member').MemberSelect,
-      PerfectScroll   = require('../../PerfectScroll'),
-      SmartEditor     = require('../../SmartEditor').SmartEditor,
-      CalendarActions = require("../../../actions/CalendarActions");
+const React         = require("react"),
+    PureRenderMixin = require('react/addons').addons.PureRenderMixin,
+    Router          = require("react-router"),
+    MUI             = require('material-ui'),
+    Moment          = require("moment"),
+    Flex            = require("../Flex"),
+    Link            = Router.Link,
+    Navigation      = Router.Navigation,
+    Input           = require('../Input'),
+    Selector        = require('../Select').Selector,
+    MemberSelect    = require('../Member').MemberSelect,
+    PerfectScroll   = require('../PerfectScroll'),
+    SmartEditor     = require('../SmartEditor').SmartEditor,
+    CalendarActions = require("../../actions/CalendarActions");
 
 // Return the number of week days of a month
 // Eg: 2015/2/1 is the first sunday of February, it will return 1.
@@ -25,7 +25,7 @@ Date.prototype.weekOfMonth = function() {
     return result;
 };
 
-export default React.createClass({
+let CreateEvent = React.createClass({
     mixins: [React.addons.LinkedStateMixin],
 
     contextTypes: {
@@ -144,112 +144,112 @@ export default React.createClass({
             <PerfectScroll style={{height: "100%", position: "relative"}}>
                 <Flex.Layout horizontal centerJustified wrap>
                     <form onSubmit={(e) => e.preventDefault()}>
-                    <MUI.Paper zDepth={3} style={styles.inner}>
-                        <div style={{padding: 20}}>
-                            <h3 style={{marginBottom: 0}}>Create Event</h3>
+                        <MUI.Paper zDepth={3} style={styles.inner}>
+                            <div style={{padding: 20}}>
+                                <h3 style={{marginBottom: 0}}>Create Event</h3>
 
-                            <MUI.TextField
-                                ref="title"
-                                hintText="Event Title"
-                                errorText={this.state.titleError}
-                                floatingLabelText="Event Title"
-                                style={{width: "100%"}} />
+                                <MUI.TextField
+                                    ref="title"
+                                    hintText="Event Title"
+                                    errorText={this.state.titleError}
+                                    floatingLabelText="Event Title"
+                                    style={{width: "100%"}} />
 
-                            <SmartEditor
-                                multiLine={true}
-                                ref="description"
-                                hintText="Description"
-                                errorText={this.state.descriptionError}
-                                floatingLabelText="Description"
-                                style={{width: "100%"}} />
+                                <SmartEditor
+                                    multiLine={true}
+                                    ref="description"
+                                    hintText="Description"
+                                    errorText={this.state.descriptionError}
+                                    floatingLabelText="Description"
+                                    style={{width: "100%"}} />
 
-                            <Flex.Layout horizontal justified style={{marginTop: 24, marginBottom: 24}}>
-                                <MUI.Toggle
-                                    label="Full Day"
-                                    onToggle={this._onFullDayToggled}/>
-                            </Flex.Layout>
+                                <Flex.Layout horizontal justified style={{marginTop: 24, marginBottom: 24}}>
+                                    <MUI.Toggle
+                                        label="Full Day"
+                                        onToggle={this._onFullDayToggled}/>
+                                </Flex.Layout>
 
-                            <MUI.Tabs>
-                                <MUI.Tab label="Period" onActive={() => this.setState({isPeriod: true})}>
-                                    <div className="tab-template-container">
-                                        <Flex.Layout horizontal justified style={{marginTop: -10}}>
-                                            <Flex.Layout horizontal justified style={{minWidth: 0}}>
-                                                {this.state.isPeriod ? <MUI.DatePicker
+                                <MUI.Tabs>
+                                    <MUI.Tab label="Period" onActive={() => this.setState({isPeriod: true})}>
+                                        <div className="tab-template-container">
+                                            <Flex.Layout horizontal justified style={{marginTop: -10}}>
+                                                <Flex.Layout horizontal justified style={{minWidth: 0}}>
+                                                    <MUI.DatePicker
+                                                        ref="fromDate"
+                                                        hintText="From Date"
+                                                        style={styles.picker}
+                                                        floatingLabelText="From Date"
+                                                        onChange={this._onFromDateChange}
+                                                        defaultDate={this.state.fromDate} />
+                                                    {!this.state.fullDay ? fromTime : null}
+                                                </Flex.Layout>
+                                                <Flex.Layout horizontal justified style={{minWidth: 0}}>
+                                                    <MUI.DatePicker
+                                                        ref="toDate"
+                                                        hintText="To Date"
+                                                        style={styles.picker}
+                                                        floatingLabelText="To Date"
+                                                        onChange={this._onToDateChange}
+                                                        defaultDate={this.state.fromDate} />
+                                                    {!this.state.fullDay ? toTime : null}
+                                                </Flex.Layout>
+                                            </Flex.Layout>
+                                        </div>
+                                    </MUI.Tab>
+                                    <MUI.Tab label="Point" onActive={() => this.setState({isPeriod: false})}>
+                                        <div className="tab-template-container">
+                                            <Flex.Layout horizontal justified style={{marginTop: -10}}>
+                                                {!this.state.isPeriod ? <MUI.DatePicker
                                                     ref="fromDate"
                                                     hintText="From Date"
                                                     style={styles.picker}
                                                     floatingLabelText="From Date"
                                                     onChange={this._onFromDateChange}
-                                                    defaultDate={this.state.fromDate} /> : null}
-                                                {!this.state.fullDay ? fromTime : null}
-                                            </Flex.Layout>
-                                            <Flex.Layout horizontal justified style={{minWidth: 0}}>
-                                                <MUI.DatePicker
-                                                    ref="toDate"
-                                                    hintText="To Date"
-                                                    style={styles.picker}
-                                                    floatingLabelText="To Date"
-                                                    onChange={this._onToDateChange}
                                                     defaultDate={this.state.fromDate} />
-                                                {!this.state.fullDay ? toTime : null}
+                                                    : null}
+                                                {!this.state.fullDay && !this.state.isPeriod ? fromTime : null}
                                             </Flex.Layout>
-                                        </Flex.Layout>
-                                    </div>
-                                </MUI.Tab>
-                                <MUI.Tab label="Point" onActive={() => this.setState({isPeriod: false})}>
-                                    <div className="tab-template-container">
-                                        <Flex.Layout horizontal justified style={{marginTop: -10}}>
-                                            {!this.state.isPeriod ? <MUI.DatePicker
-                                                ref="fromDate"
-                                                hintText="From Date"
-                                                style={styles.picker}
-                                                floatingLabelText="From Date"
-                                                onChange={this._onFromDateChange}
-                                                defaultDate={this.state.fromDate} /> : null}
-                                        </Flex.Layout>
-                                    </div>
-                                </MUI.Tab>
-                            </MUI.Tabs>
+                                        </div>
+                                    </MUI.Tab>
+                                </MUI.Tabs>
 
-                            <Flex.Layout horizontal justified style={{marginTop: 24}}>
-                                <Flex.Layout vertical selfCenter>
-                                    <label>Repeated</label>
-                                </Flex.Layout>
-                                <Flex.Layout horizontal centerJustified>
+                                <Flex.Layout horizontal justified style={{marginTop: 24}}>
                                     <Flex.Layout vertical selfCenter>
-                                        <label title={this._getSummary()} style={{maxWidth: 240}}>
-                                            {this._getSummary()}
-                                        </label>
+                                        <label>Repeated</label>
                                     </Flex.Layout>
-                                    <MUI.FlatButton
-                                        label="Edit"
-                                        type="button"
-                                        primary={true}
-                                        onClick={() => this.setState({editRepeated: true})}
-                                        style={{display: this.state.repeated ? "inline-block" : "none"}} />
+                                    <Flex.Layout horizontal centerJustified>
+                                        <Flex.Layout vertical selfCenter>
+                                            <label title={this._getSummary()} style={{maxWidth: 240}}>
+                                                {this._getSummary()}
+                                            </label>
+                                        </Flex.Layout>
+                                        <MUI.FlatButton
+                                            label="Edit"
+                                            type="button"
+                                            primary={true}
+                                            onClick={() => this.setState({editRepeated: true})}
+                                            style={{display: this.state.repeated ? "inline-block" : "none"}} />
+                                    </Flex.Layout>
+                                    <Flex.Layout vertical selfCenter>
+                                        <MUI.Toggle
+                                            ref="repeated"
+                                            onToggle={this._onRepeatToggled} />
+                                    </Flex.Layout>
                                 </Flex.Layout>
-                                <Flex.Layout vertical selfCenter>
-                                    <MUI.Toggle
-                                        ref="repeated"
-                                        onToggle={this._onRepeatToggled} />
+
+                                <MemberSelect
+                                    hintText="Participants"
+                                    floatingLabelText="Participants"
+                                    style={{width: "100%"}}
+                                    valueLink={this.linkState("participants")} />
+
+                                <Flex.Layout horizontal justified>
+                                    <MUI.RaisedButton label="Cancel" onClick={() => history.back()} />
+                                    <MUI.RaisedButton type="submit" label="Create Event" primary={true} onClick={this._handleSubmit} />
                                 </Flex.Layout>
-                            </Flex.Layout>
 
-                            <MemberSelect
-                                hintText="Participants"
-                                floatingLabelText="Participants"
-                                style={{width: "100%"}}
-                                valueLink={this.linkState("participants")} />
-
-                            <Flex.Layout horizontal justified>
-                                <Link to="event-list">
-                                    <MUI.RaisedButton label="Cancel" />
-                                </Link>
-                                <MUI.RaisedButton type="submit" label="Create Event" primary={true} onClick={this._handleSubmit} />
-                            </Flex.Layout>
-
-                        </div>
-                    </MUI.Paper>
+                            </div>
+                        </MUI.Paper>
                     </form>
 
                     <MUI.Paper zDepth={2} style={styles.repeated} className="cal-create-event">
@@ -333,7 +333,7 @@ export default React.createClass({
         event.fromTime = this.refs.fromTime ? this.refs.fromTime.getTime() : event.fromDate;
         event.toTime = this.refs.toTime ? this.refs.toTime.getTime() : event.toDate;
 
-        CalendarActions.create(event, () => this.context.router.transitionTo("event-list"));
+        CalendarActions.create(event, history.back());
     },
 
     _getRepeatedInfoContent() {
@@ -600,3 +600,5 @@ export default React.createClass({
         }
     }
 });
+
+module.exports = CreateEvent;

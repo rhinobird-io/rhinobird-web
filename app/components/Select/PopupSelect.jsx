@@ -164,13 +164,13 @@ let PopupSelect = React.createClass({
                 paddingRight: 24,
                 cursor: "pointer",
                 lineHeight: "48px",
-                color: this.context.muiTheme.palette.textColor
+                color: muiTheme.palette.textColor
             },
             activeStyle: {
-                color: this.context.muiTheme.palette.accent1Color
+                color: muiTheme.palette.accent1Color
             },
             disabledStyle: {
-                color: this.context.muiTheme.palette.disabledColor
+                color: muiTheme.palette.disabledColor
             }
         }
     },

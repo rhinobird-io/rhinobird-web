@@ -5,9 +5,15 @@ const Moment = require('moment');
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 const Flex = require('../../Flex');
 const Resizable = require('../../Mixins').Resizable;
+const MUI = require('material-ui');
+const ClickAwayable = MUI.Mixins.ClickAwayable;
 
 let EventRect = React.createClass({
-    mixins: [Resizable],
+    mixins: [],
+
+    contextTypes: {
+        muiTheme: React.PropTypes.object
+    },
 
     getInitialState() {
         return {
@@ -27,11 +33,11 @@ let EventRect = React.createClass({
 
         style.WebkitUserSelect = "none";
         style.userSelect = "none";
-        style.paddingTop = 5;
-        style.paddingBottom = 5;
+        style.padding = 5;
         style.position = "absolute";
-        style.border = "1px solid rgb(33, 150, 243)";
-        style.background = "rgba(33, 150, 243, .6)";
+        style.border = "1px solid " + muiTheme.palette.primary2Color;
+        style.background = muiTheme.palette.primary3Color;
+        style.cursor = "default";
         //style.borderRadius = 2;
 
         if (event) {
@@ -59,17 +65,21 @@ let EventRect = React.createClass({
 });
 
 let DayView = React.createClass({
-    mixins: [StylePropable],
+    mixins: [StylePropable, ClickAwayable],
 
     contextTypes: {
         muiTheme: React.PropTypes.object
     },
 
     propTypes: {
+        onRangeCreate: React.PropTypes.func,
         date: React.PropTypes.oneOfType([
             React.PropTypes.object,
             React.PropTypes.string
         ])
+    },
+
+    componentClickAway() {
     },
 
     getInitialState() {
@@ -106,12 +116,12 @@ let DayView = React.createClass({
             top: {
                 width: "100%",
                 height: 30,
-                borderBottom: "1px dashed lightgray"
+                borderBottom: "1px dashed " + muiTheme.palette.borderColor
             },
             bottom: {
                 width: "100%",
                 height: 30,
-                borderBottom: "1px solid lightgray"
+                borderBottom: "1px solid " + muiTheme.palette.borderColor
             },
             nowBar: {
                 position: "absolute",
@@ -119,7 +129,7 @@ let DayView = React.createClass({
                 zIndex: 10,
                 overflow: "hidden",
                 width: "100%",
-                backgroundColor: this.context.muiTheme.palette.accent1Color
+                backgroundColor: muiTheme.palette.accent1Color
             }
         };
 
@@ -162,9 +172,9 @@ let DayView = React.createClass({
 
         return (
             <div vertical style={style}
+                 onMouseUp={this._handleMouseUp}
                  onMouseMove={this._handleMouseMove}
-                 onMouseDown={this._handleMouseDown}
-                 onMouseUp={this._handleMouseUp}>
+                 onMouseDown={this._handleMouseDown}>
                 {times}
                 {nowBar}
                 {eventsRect}
@@ -173,6 +183,7 @@ let DayView = React.createClass({
     },
 
     _handleMouseDown(e) {
+        console.log(e);
         let node = this.getDOMNode();
         let rect = node.getBoundingClientRect();
         this.startPosY = e.clientY - rect.top;
@@ -191,9 +202,7 @@ let DayView = React.createClass({
 
             let fromHour = Math.floor(fromSeconds / 3600);
             let fromMinute = Math.floor((fromSeconds - fromHour * 3600) / 60);
-            //if (fromMinute < 30) {
-            //    fromMinute = 0;
-            //}
+
             fromTime.setHours(fromHour);
             fromTime.setMinutes(fromMinute)
 
@@ -201,9 +210,7 @@ let DayView = React.createClass({
 
             let toHour = Math.floor(toSeconds / 3600);
             let toMinute = Math.floor((toSeconds - toHour * 3600) / 60);
-            //if (toMinute < 30) {
-            //    toMinute = 0;
-            //}
+
             toTime.setHours(toHour);
             toTime.setMinutes(toMinute);
 
@@ -224,9 +231,7 @@ let DayView = React.createClass({
 
             let fromHour = Math.floor(fromSeconds / 3600);
             let fromMinute = Math.floor((fromSeconds - fromHour * 3600) / 60);
-            //if (fromMinute < 30) {
-            //    fromMinute = 0;
-            //}
+
             fromTime.setHours(fromHour);
             fromTime.setMinutes(fromMinute)
 
@@ -234,9 +239,6 @@ let DayView = React.createClass({
 
             let toHour = Math.floor(toSeconds / 3600);
             let toMinute = Math.floor((toSeconds - toHour * 3600) / 60);
-            //if (toMinute < 30) {
-            //    toMinute = 0;
-            //}
             toTime.setHours(toHour);
             toTime.setMinutes(toMinute);
 
@@ -249,7 +251,7 @@ let DayView = React.createClass({
 
     _onChange() {
         this.setState({
-            events: CalendarStore.getByDate(this.props.date)
+            events: CalendarStore.getByDate(this.props.date).filter((e) => !e.full_day)
         });
     }
 });

@@ -76,7 +76,7 @@ Member.Name = React.createClass({
     },
     render: function () {
         if (this.props.member) {
-            let display = <span className={this.props.className}>{this.props.member.realname}</span>;
+            let display = <span title={this.props.member.realname} className={this.props.className}>{this.props.member.realname}</span>;
             if (this.props.link) {
                 return <Common.Link onClick={_showMemberProfile.bind(this)} style={this.props.style}>
                     {display}
@@ -105,6 +105,7 @@ Member.MemberSelect = React.createClass({
         hintText: React.PropTypes.string,
         label: React.PropTypes.string
     },
+
     focus() {
         this.refs.select.focus();
     },
@@ -117,9 +118,16 @@ Member.MemberSelect = React.createClass({
     },
 
     getInitialState() {
+        let valueLink = this.getValueLink(this.props);
+        let members = [];
+        if (valueLink && valueLink.value) {
+            members = valueLink.value.users.map(u => `user_${u}`).concat(valueLink.value.teams.map(t => `team_${t}`));
+        }
+
         return {
             users: this.props.user ? this._getUsersArray() : null,
-            teams: this.props.team ? this._getTeamsArray() : null
+            teams: this.props.team ? this._getTeamsArray() : null,
+            members: members
         }
     },
 
@@ -142,7 +150,7 @@ Member.MemberSelect = React.createClass({
         let {
             team,
             user,
-            className,
+            valueLink,
             onChange,
             style,
             ...other
@@ -185,7 +193,7 @@ Member.MemberSelect = React.createClass({
         }
 
         return (
-            <div style={{paddingTop:16}}>
+            <div>
                 <label style={{color:'rgba(0,0,0,0.5)'}}>{this.props.label}</label>
                 <Select.Select ref='select'
                     multiple
@@ -214,9 +222,8 @@ Member.MemberSelect = React.createClass({
                                     <span style={{fontWeight: 500}}>{u.name}</span>
                             </Flex.Layout>;
                         }
-
-                        return null;
                     }}
+                    value={this.state.members}
                     onChange={(selected) => {
                         let results = {};
                         if (team && user) {
