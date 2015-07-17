@@ -2,7 +2,8 @@ const React = require("react"),
     MUI = require('material-ui'),
     Flex            = require("../Flex"),
     SmartDisplay    = require('../SmartEditor').SmartDisplay,
-    PerfectScroll = require('../PerfectScroll');
+    PerfectScroll = require('../PerfectScroll'),
+    Picture = require('../Picture');
 
 let ResourceInfo = React.createClass({
     toggle() {
@@ -65,7 +66,7 @@ let ResourceInfo = React.createClass({
                                     <Flex.Layout top style={styles.resourceDetailIcon}><MUI.FontIcon className="icon-image"/></Flex.Layout>
                                     <Flex.Layout wrap>
                                     {resource.images.map((image) => (
-                                        <div style={{display: 'flex', height: '200', width: '200', backgroundSize: 'contain', backgroundImage: 'url('+image+')', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}/>
+                                        <Picture style={{display: 'flex', height: '200', width: '200'}} src={image}/>
                                     ))}
                                     </Flex.Layout>
                                 </Flex.Layout>
