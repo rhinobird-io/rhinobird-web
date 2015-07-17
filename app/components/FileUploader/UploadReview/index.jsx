@@ -1,7 +1,7 @@
 "use strict";
 
 const React = require("react");
-
+const PerfectScroll = require('../../PerfectScroll');
 require('../style.less');
 var Picture = React.createClass({
     propTypes: {
@@ -48,10 +48,14 @@ const UploadReview = React.createClass({
             list = [],
             _this = this,
             files = this.state.files,
-            className = '';
+            styles = {
+                height: files && files.length > 0 ? 230 : 0,
+                position: 'relative',
+                whiteSpace: 'nowrap',
+                overflowY: 'auto'
+            };
 
         if (files && files.length > 0) {
-            className = 'pictures';
             files.map(function (file) {
                 content.push(<Picture id={file.id} src={`/file/files/${file.id}/fetch`} title={file.name} onClick={_this._deleteImage} />);
                 list.push(<a href={`/file/files/${file.id}/download`}>{file.name}</a>)
@@ -59,9 +63,9 @@ const UploadReview = React.createClass({
         }
 
         return (
-            <div className={className}>
+            <PerfectScroll noScrollY style={styles}>
                 {content}
-            </div>
+            </PerfectScroll>
         );
     },
 
@@ -77,7 +81,7 @@ const UploadReview = React.createClass({
             files: files
         });
     },
-    getValue(){
+    getValue() {
         var i = 0,
             files = this.state.files,
             max = files.length;
@@ -85,6 +89,23 @@ const UploadReview = React.createClass({
             files[i].url = `/file/files/${files[i].id}/fetch`;
         }
         return files;
+    },
+    setValue(value) {
+        if (value && value.length > 0) {
+            if (value[0].url) {
+                this.setState({
+                    files: value
+                });
+            } else if (typeof value[0] === 'string') {
+                var files = value.map((v) => {
+                    var arr = v.split('/');
+                    return {id: arr[arr.length - 2]};
+                });
+                this.setState({
+                    files: files
+                });
+            }
+        }
     }
 });
 
