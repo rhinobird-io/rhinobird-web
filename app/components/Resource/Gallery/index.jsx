@@ -1,6 +1,6 @@
 const React = require("react");
 const MUI = require('material-ui');
-const Picture = require('./../../Picture/Picture');
+const Picture = require('./../../Picture/index');
 require('./style.less');
 
 let Gallery = React.createClass({
