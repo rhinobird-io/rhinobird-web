@@ -66,7 +66,7 @@ let ResourceInfo = React.createClass({
                                     <Flex.Layout top style={styles.resourceDetailIcon}><MUI.FontIcon className="icon-image"/></Flex.Layout>
                                     <Flex.Layout wrap>
                                     {resource.images.map((image) => (
-                                        <Picture style={{display: 'flex', height: '200', width: '200'}} src={image}/>
+                                        <Picture style={{display: 'flex', height: '200', width: '200', margin: 10, boxShadow: '0 0 4px -1px #000'}} src={image}/>
                                     ))}
                                     </Flex.Layout>
                                 </Flex.Layout>
