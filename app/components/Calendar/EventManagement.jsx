@@ -4,6 +4,7 @@ const Moment = require('moment');
 const Popup = require('../Popup');
 const MUI = require('material-ui');
 const Thread = require('../Thread');
+const Link = require("react-router").Link;
 const Display = require('../Common').Display;
 const PerfectScroll = require('../PerfectScroll');
 const UserStore = require('../../stores/UserStore');
@@ -108,11 +109,6 @@ let EventManagement = React.createClass({
         if (this.state.notFound || event === null || event === undefined) {
             eventContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Event not found</h3>
         } else {
-            let deleteEvent = LoginStore.getUser().id === event.creator_id ?
-                <MUI.IconButton
-                    iconStyle={styles.deleteButton}
-                    iconClassName="icon-delete"
-                    onClick={this._onEventDelete} /> : null;
             let editEvent = <MUI.IconButton
                     iconStyle={styles.deleteButton}
                     iconClassName="icon-edit"
@@ -124,7 +120,6 @@ let EventManagement = React.createClass({
             if (type === "view") {
                 eventActions = (
                     <Flex.Layout horizontal endJustified style={styles.eventAction}>
-                        {deleteEvent}
                         {LoginStore.getUser().id === event.creator_id && editEvent}
                     </Flex.Layout>
                 );
@@ -304,6 +299,14 @@ let EventManagement = React.createClass({
                         floatingLabelText="Participants"
                         valueLink={this.linkState('members')}
                         style={{width: "100%"}} />
+                );
+
+                eventContent.push(
+                    <Flex.Layout horizontal endJustified>
+                        <Link to="event-detail" params={{ id: event.id, repeatedNumber: event.repeated_number || 1 }}>
+                            <MUI.RaisedButton label="Show More Details" secondary={true} />
+                        </Link>
+                    </Flex.Layout>
                 );
             }
         }

@@ -104,8 +104,10 @@ const EventDetail = React.createClass({
         let eventComment = null;
         let event = this.state.event;
 
-        if (this.state.notFound || event === null || event === undefined) {
+        if (this.state.notFound) {
             eventContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Event not found</h3>
+        } else if (event === null || event === undefined) {
+            eventContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Loading</h3>
         } else {
             let backToList = (
                 <RouterLink to="event-list">
