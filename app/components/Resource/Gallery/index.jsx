@@ -16,11 +16,13 @@ let Gallery = React.createClass({
     render() {
         var images = this.state.images,
             content = null,
+            thumbnails = [],
             showPrevious = true,
             showNext = true;
 
         if (images && images.length > 0){
-            content = <Picture src={images[this.state.current]}/>
+            content = <Picture src={images[this.state.current]}/>;
+            thumbnails = images.map((image) => (<Picture style={{height: 40, width: 40, border: `1px solid ${image === images[this.state.current] ? '#E4393C' : this.context.muiTheme.palette.borderColor}`, margin: '0 2px'}} src={image}/>));
         }
         if (this.state.current === 0)
             showPrevious = false;
@@ -31,19 +33,29 @@ let Gallery = React.createClass({
             height: 200,
             width: '100%',
             display: 'flex',
-            backgroundColor: (images && images.length > 0) ? 'transparent' : this.context.muiTheme.palette.primary3Color,
-            border: (images && images.length > 0) ? '5px solid' : 'none',
-            borderColor: this.context.muiTheme.palette.primary3Color
+            paddingBottom: 5,
+            backgroundColor: (images && images.length > 0) ? 'transparent' : this.context.muiTheme.palette.primary3Color
+        };
+        let thumbsStyles = {
+            height: 50,
+            width: '100%',
+            display: 'flex',
+            overflow: 'hidden'
         };
         return (
-            <div style={styles}>
-                {showPrevious ?
-                    <MUI.IconButton className='previous left' onClick={this.previous} iconStyle={{fontSize: 40, left: -12}} iconClassName="icon-chevron-left"/>
-                    : <MUI.IconButton className="empty left" disabled />}
-                {content}
-                {showNext ?
-                    <MUI.IconButton className='next right' onClick={this.next} iconStyle={{fontSize: 40}} iconClassName="icon-chevron-right"/>
-                    : <MUI.IconButton className="empty right" disabled />}
+            <div>
+                <div style={styles}>
+                    {showPrevious ?
+                        <MUI.IconButton className='previous left' onClick={this.previous} iconStyle={{fontSize: 40, left: -12}} iconClassName="icon-chevron-left"/>
+                        : <MUI.IconButton className="empty left" disabled />}
+                    {content}
+                    {showNext ?
+                        <MUI.IconButton className='next right' onClick={this.next} iconStyle={{fontSize: 40}} iconClassName="icon-chevron-right"/>
+                        : <MUI.IconButton className="empty right" disabled />}
+                </div>
+                <div style={thumbsStyles}>
+                    {thumbnails}
+                </div>
             </div>
         );
     },
