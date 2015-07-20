@@ -10,21 +10,42 @@ var Picture = React.createClass({
     mixins: [React.addons.PureRenderMixin, StylePropable],
     propTypes: {
         src: React.PropTypes.string.isRequired,
-        style: React.PropTypes.object
+        style: React.PropTypes.object,
+        onClick: React.PropTypes.func,
+        onHover: React.PropTypes.func
     },
     clickHandler: function(){
-        $(this.refs.overlay.getDOMNode()).toggle();
+        let onClick = this.props.onClick;
+        if (!onClick)
+            $(this.refs.overlay.getDOMNode()).toggle();
+        else if (typeof onClick === 'function')
+            onClick(this.props.src);
+    },
+    hoverHandler: function() {
+        let onHover = this.props.onHover;
+        if (onHover && typeof onHover === 'function')
+            onHover(this.props.src);
     },
     render: function(){
         let style = {
-            display: "table-cell",
-            height: '100%',
-            width: '100%'
+            outer: {
+                display: "inline-block",
+                height: '100%',
+                width: '100%'
+            },
+            image: {
+                height: '100%',
+                width: '100%',
+                backgroundSize: 'contain',
+                backgroundImage: 'url('+this.props.src+')',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center'
+            }
         };
-        style = this.mergeAndPrefix(style, this.props.style);
+        style.outer = this.mergeAndPrefix(style.outer, this.props.style);
         return (
-            <div style={style}>
-                <div style={{height: '100%', width: '100%', backgroundSize: 'contain', backgroundImage: 'url('+this.props.src+')', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}} onClick={this.clickHandler}>
+            <div style={style.outer}>
+                <div style={style.image} onClick={this.clickHandler} onMouseEnter={this.hoverHandler}>
                 </div>
                 <Overlay ref="overlay" src={this.props.src}/>
             </div>
