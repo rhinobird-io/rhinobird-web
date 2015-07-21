@@ -253,6 +253,7 @@ let AllEvents = React.createClass({
         let timeRange = `${Moment(range.from_time || range.fromTime).format("h:mm a")} ~ ${Moment(range.to_time || range.toTime).format("h:mm a")}`;
 
         innerContent.push(<div key="range" style={styles.timeRange}>{timeRange}</div>);
+		innerContent.push(<div>{range.title}</div>)
 
         let now = new Date();
         let toTime = new Date(range.to_time);
@@ -266,7 +267,6 @@ let AllEvents = React.createClass({
                 }
                 styles.wrapper.backgroundColor = background;
                 //styles.wrapper.border = "1px solid " + muiTheme.palette.accent2Color;
-                innerContent.push(<div>{range.title}</div>)
             } else {
                 let background = null;
                 if (toTime < now) {
