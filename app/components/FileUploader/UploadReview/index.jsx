@@ -2,23 +2,9 @@
 
 const React = require("react");
 const PerfectScroll = require('../../PerfectScroll');
+const Picture = require('../../Picture');
 require('../style.less');
-var Picture = React.createClass({
-    propTypes: {
-        id: React.PropTypes.string.isRequired,
-    },
-    doubleClickHandler: function(){
-        this.props.onClick(this.props.id);
-    },
-    render: function(){
-        return (
-            <div className="picture" style={{backgroundImage: 'url('+this.props.src+')'}} onClick={this.doubleClickHandler}>
-            </div>
-        );
 
-    }
-
-});
 const UploadReview = React.createClass({
 
     setFile(file) {
@@ -45,7 +31,6 @@ const UploadReview = React.createClass({
         }
 
         var content = [],
-            list = [],
             _this = this,
             files = this.state.files,
             styles = {
@@ -57,8 +42,7 @@ const UploadReview = React.createClass({
 
         if (files && files.length > 0) {
             files.map(function (file) {
-                content.push(<Picture id={file.id} src={`/file/files/${file.id}/fetch`} title={file.name} onClick={_this._deleteImage} />);
-                list.push(<a href={`/file/files/${file.id}/download`}>{file.name}</a>)
+                content.push(<Picture class="picture" src={file.url} style={{width: 200, height: 200, margin: 5, cursor: 'pointer'}} onClick={_this._deleteImage} />);
             });
         }
 
@@ -69,12 +53,12 @@ const UploadReview = React.createClass({
         );
     },
 
-    _deleteImage: function (id) {
+    _deleteImage: function (url) {
         var files = this.state.files,
             i = 0,
             max = files.length;
         for(; i < max; i++){
-            if(files[i].id === id) break;
+            if(files[i].url === url) break;
         }
         files.splice(i, 1);
         this.setState({
@@ -99,7 +83,10 @@ const UploadReview = React.createClass({
             } else if (typeof value[0] === 'string') {
                 var files = value.map((v) => {
                     var arr = v.split('/');
-                    return {id: arr[arr.length - 2]};
+                    return {
+                        id: arr[arr.length - 2],
+                        url: v
+                    };
                 });
                 this.setState({
                     files: files
