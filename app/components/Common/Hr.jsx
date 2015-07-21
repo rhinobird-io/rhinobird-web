@@ -8,7 +8,7 @@ const Hr = React.createClass({
         muiTheme: React.PropTypes.object
     },
     render() {
-        let color = muiTheme.palette.borderColor;
+        let color = this.context.muiTheme.palette.borderColor;
         let hrStyle = {
             backgroundColor: color,
             height: 1
