@@ -43,7 +43,7 @@ let ResourceActions = {
         }).done((data) => {
             AppDispatcher.dispatch({
                 type: ResourceActionTypes.DELETE_RESOURCE,
-                data: data
+                data: id
             });
             if (success && typeof success === "function") {
                 success();

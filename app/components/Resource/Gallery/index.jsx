@@ -14,7 +14,6 @@ let Gallery = React.createClass({
     },
     getInitialState: function () {
         return {
-            images: this.props.images,
             current: 0,
             view: 0,
             ready: false,
@@ -28,7 +27,7 @@ let Gallery = React.createClass({
         });
     },
     render: function () {
-        var images = this.state.images,
+        var images = this.props.images,
             content = null,
             thumbnails = [],
             showPrevious = true,
@@ -112,15 +111,15 @@ let Gallery = React.createClass({
     next: function (){
         let current = this.state.current;
         current += 1;
-        if (current >= this.state.images.length)
-            current = this.state.images.length - 1;
+        if (current >= this.props.images.length)
+            current = this.props.images.length - 1;
         this.setState({
             current: current,
             width: this.refs.thumbsContainer.getDOMNode().offsetWidth
         });
     },
     hoverThumbnail: function (url) {
-        var images = this.state.images;
+        var images = this.props.images;
 
         if (images && images.length > 0){
             for (var index = 0, max = images.length; index < max; index += 1) {
@@ -153,8 +152,8 @@ let Gallery = React.createClass({
         let view = this.state.view;
         let count = Math.floor(width / (picWidth + 2 * border + margin));
         view += count;
-        if (view > parseInt(this.state.images.length - count))
-            view = parseInt(this.state.images.length - count);
+        if (view > parseInt(this.props.images.length - count))
+            view = parseInt(this.props.images.length - count);
         this.setState({
             view: view,
             width: this.refs.thumbsContainer.getDOMNode().offsetWidth
