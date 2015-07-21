@@ -10,6 +10,9 @@ const LoginStore = require('../../stores/LoginStore');
 const WeekView = require('../Calendar/CommonComponents').WeekView;
 const CalendarView = require('../Calendar/CommonComponents').CalendarView;
 const ResourceActions = require('../../actions/ResourceActions');
+const ResourceInfo = require('./ResourceInfo');
+const PerfectScroll = require('../PerfectScroll');
+const ResourceStore = require('../../stores/ResourceStore');
 
 require("./style.less");
 
@@ -19,7 +22,8 @@ let ResourceDetailContent = React.createClass({
     },
 
     contextTypes: {
-        muiTheme: React.PropTypes.object
+        muiTheme: React.PropTypes.object,
+        router: React.PropTypes.func.isRequired
     },
 
     getDefaultProps() {
@@ -47,17 +51,38 @@ let ResourceDetailContent = React.createClass({
                 padding: 12,
                 minHeight: 60,
                 maxHeight: 60,
+                color: this.context.muiTheme.palette.canvasColor,
                 backgroundColor: this.context.muiTheme.palette.primary1Color,
                 whiteSpace:'nowrap',
                 textOverflow:'ellipsis',
                 overflow:'hidden'
             }
         };
-
-        let actions = <Flex.Layout flex={1} center horizontal style={styles.action}>{resource.name}</Flex.Layout>;
+        let dialogActions = [
+            <MUI.FlatButton
+                label="Cancel"
+                secondary={true}
+                onTouchTap={this._handleDeleteDialogCancel}/>,
+            <MUI.FlatButton
+                label="Delete"
+                primary={true}
+                onTouchTap={this._handleDeleteDialogSubmit}/>
+        ];
+        let actions = (<Flex.Layout flex={1} center horizontal style={styles.action}>{resource.name}
+                        <Flex.Layout endJustified flex={1} center horizontal>
+                            <MUI.IconButton ref="showDetails" onClick={this._toggleResourceInfo} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-details" />
+                            <MUI.IconButton ref="showCalendar" onClick={this._toggleResourceInfo} style={{display: 'none'}} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-event-note"/>
+                            <MUI.IconButton onClick={this._editResource} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/>
+                            <MUI.IconButton onClick={this._deleteResource} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-delete"/>
+                            <MUI.Dialog actions={dialogActions} title="Deleting Resource" ref='deleteDialog'>
+                                Are you sure to delete this resource?
+                            </MUI.Dialog>
+                        </Flex.Layout>
+                </Flex.Layout>);
         return (
             <Flex.Layout vertical style={{height: "100%", WebkitUserSelect: "none", userSelect: "none"}}>
                 {actions}
+                <ResourceInfo ref="resourceInfo" resource={resource}/>
                 <CalendarView
                     ref="calendar"
                     date={new Date()}
@@ -73,6 +98,7 @@ let ResourceDetailContent = React.createClass({
                 <MUI.Snackbar ref="bookingSuccess" message={`Booking ${resource.name} successfully`} />
                 <MUI.Snackbar ref="deleteBookingSuccess" message={`Delete booking of ${resource.name} successfully`} />
                 <MUI.Snackbar ref="updateBookingSuccess" message={`Update booking of ${resource.name} successfully`} />
+
             </Flex.Layout>
         );
     },
@@ -325,7 +351,33 @@ let ResourceDetailContent = React.createClass({
             this.refs.bookToTime.setTime(new Date(range.toTime));
             this.refs.bookFromTime.setTime(new Date(range.fromTime));
         });
+    },
+
+    _deleteResource() {
+        this.refs.deleteDialog.show();
+    },
+
+    _editResource() {
+        this.context.router.transitionTo("edit-resource", {id: this.props.resource._id});
+    },
+
+    _handleDeleteDialogCancel() {
+        this.refs.deleteDialog.dismiss();
+    },
+
+    _handleDeleteDialogSubmit() {
+        ResourceActions.deleteResource(this.props.resource._id, () => {
+            this.context.router.transitionTo("resources");
+        });
+    },
+
+    _toggleResourceInfo() {
+        this.refs.resourceInfo.toggle();
+        $(this.refs.calendar.getDOMNode()).toggle();
+        $(this.refs.showCalendar.getDOMNode()).toggle();
+        $(this.refs.showDetails.getDOMNode()).toggle();
     }
+
 });
 
 module.exports = ResourceDetailContent;

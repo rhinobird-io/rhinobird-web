@@ -60,6 +60,12 @@ let ResourceStore = assign({}, BaseStore, {
                     }
                 });
                 break;
+            case ActionTypes.CREATE_RESOURCE:
+                _resourceMap[data._id] = data;
+                break;
+            case ActionTypes.UPDATE_RESOURCE:
+                _resourceMap[data._id] = data;
+                break;
         }
 
         if (changed) {
