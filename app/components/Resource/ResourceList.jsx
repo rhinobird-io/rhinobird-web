@@ -121,7 +121,7 @@ let ResourceList = React.createClass({
         this.refs.deleteDialog.show();
     },
     _editResource() {
-        this.context.router.transitionTo("edit-resource", {id: this.state.hoverResource.id});
+        this.context.router.transitionTo("edit-resource", {id: this.state.hoverResource.id}, {origin: 'list'});
     },
     _handleDeleteDialogCancel() {
         this.refs.deleteDialog.dismiss();

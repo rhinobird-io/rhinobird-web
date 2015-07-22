@@ -33,7 +33,8 @@ let CreateResource = React.createClass({
             resource: {},
             name: '',
             location: '',
-            description: ''
+            description: '',
+            origin: this.props.query && this.props.query.origin || ''
         };
     },
 
@@ -113,7 +114,10 @@ let CreateResource = React.createClass({
         if (this.state.mode === 'create'){
             this.context.router.transitionTo("resources");
         } else if (this.state.mode === 'edit') {
-            this.context.router.transitionTo("resource-detail", {id: this.state.resource.id});
+            if (this.state.origin === 'list')
+                this.context.router.transitionTo("resources");
+            else
+                this.context.router.transitionTo("resource-detail", {id: this.state.resource.id});
         }
     },
     _handleSubmit: function(e) {
@@ -152,9 +156,13 @@ let CreateResource = React.createClass({
         var ids = images.map((file) => (file.url));
         resource.images = ids;
         if (this.state.mode === 'create')
-            ResourceAction.create(resource, (r) => this.context.router.transitionTo("resource-detail", {id: r.id}));
-        else if (this.state.mode === 'edit')
-            ResourceAction.update(resource, (r) => this.context.router.transitionTo("resource-detail", {id: r.id}));
+            ResourceAction.create(resource, (r) => this.context.router.transitionTo("resource-detail", {id: r.id}, {view: 'detail'}));
+        else if (this.state.mode === 'edit'){
+            if (this.state.origin === 'list')
+                ResourceAction.update(resource, (r) => this.context.router.transitionTo("resources"));
+            else
+                ResourceAction.update(resource, (r) => this.context.router.transitionTo("resource-detail", {id: r.id}, {view: 'detail'}));
+        }
     }
 
 });

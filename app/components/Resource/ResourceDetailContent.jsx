@@ -36,8 +36,13 @@ let ResourceDetailContent = React.createClass({
         return {
             createResourceBookPopupPos: "r",
             updateResourceBookPopupPos: "r",
-            activeRange: null
+            activeRange: null,
+            view: this.props.view
         }
+    },
+    componentDidMount() {
+        if (this.state.view === 'detail')
+            this._toggleResourceInfo();
     },
 
     render() {
@@ -98,6 +103,7 @@ let ResourceDetailContent = React.createClass({
                 <MUI.Snackbar ref="bookingSuccess" message={`Booking ${resource.name} successfully`} />
                 <MUI.Snackbar ref="deleteBookingSuccess" message={`Delete booking of ${resource.name} successfully`} />
                 <MUI.Snackbar ref="updateBookingSuccess" message={`Update booking of ${resource.name} successfully`} />
+
             </Flex.Layout>
         );
     },
@@ -409,7 +415,7 @@ let ResourceDetailContent = React.createClass({
     },
 
     _editResource() {
-        this.context.router.transitionTo("edit-resource", {id: this.props.resource.id});
+        this.context.router.transitionTo("edit-resource", {id: this.props.resource.id}, {origin: 'detail'});
     },
 
     _handleDeleteDialogCancel() {
