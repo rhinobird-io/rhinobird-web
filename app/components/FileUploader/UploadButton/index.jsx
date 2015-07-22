@@ -2,7 +2,6 @@
 
 const React = require("react");
 const MUI = require("material-ui");
-const FileName = require('../FileName');
 
 import Constants from '../constants.jsx';
 
@@ -11,6 +10,7 @@ const UploadButton = React.createClass({
         acceptTypes: React.PropTypes.array,
         maxSize: React.PropTypes.number.isRequired,
         minSize: React.PropTypes.number,
+        beforeUpload: React.PropTypes.func.isRequired,
         onUpload: React.PropTypes.func.isRequired
     },
 
@@ -35,43 +35,62 @@ const UploadButton = React.createClass({
     },
 
     _uploadFile() {
+        this.props.beforeUpload();
         let _this = this;
         var input = $(document.createElement('input'));
         input.attr("type", "file");
+        input.attr("multiple", "true");
 
         input.change(function(e) {
-            let file = e.target.files[0];
-            if (!file){
-                return;
-            }
-            let regExp = _this.buildRegExp();
-            if (!(regExp.test(file.type) || regExp.test(file.name))){
-                _this.props.onUpload({result: Constants.UploadResult.FAILED, error: "File type is not supported!"});
-                return;
-            }
-            else if (file.size > _this.props.maxSize){
-                _this.props.onUpload({result: Constants.UploadResult.FAILED, error: `File is too large! Max size is ${_this.props.maxSize} bytes!`});
-                return;
-            }
-            else if (file.size < _this.props.minSize){
-                _this.props.onUpload({result: Constants.UploadResult.FAILED, error: `File is too small! Min size is ${_this.props.minSize} bytes!`});
-                return;
-            }
-            let formData = new FormData();
-            formData.append('file', file);
-            $.post('/file/files', {name: file.name}).done((newFile)=>{
-                $.ajax({
-                    url: `/file/files/${newFile.id}`,
-                    type: 'PUT',
-                    processData: false,
-                    contentType: false,
-                    data: formData
-                }).done((uploadedFile) => {
-                    uploadedFile.url = `/file/files/${uploadedFile.id}/fetch`;
-                    _this.props.onUpload({result: Constants.UploadResult.SUCCESS, file: uploadedFile});
-                });
+            if (e && e.target && e.target.files && e.target.files.length > 0) {
+                let regExp = _this.buildRegExp();
+                for (var index = 0, max = e.target.files.length; index < max; index += 1) {
+                    let file = e.target.files[index];
+                    if (!file) {
+                        _this.props.onUpload({
+                            result: Constants.UploadResult.FAILED,
+                            error: "can not find the file."
+                        });
+                        continue;
+                    }
+                    if (!(regExp.test(file.type) || regExp.test(file.name))) {
+                        _this.props.onUpload({
+                            result: Constants.UploadResult.FAILED,
+                            error: `${file.name} : File type is not supported!`
+                        });
+                        continue;
+                    }
+                    else if (file.size > _this.props.maxSize) {
+                        _this.props.onUpload({
+                            result: Constants.UploadResult.FAILED,
+                            error: `${file.name} : File is too large! Max size is ${_this.props.maxSize} bytes!`
+                        });
+                        continue;
+                    }
+                    else if (file.size < _this.props.minSize) {
+                        _this.props.onUpload({
+                            result: Constants.UploadResult.FAILED,
+                            error: `File is too small! Min size is ${_this.props.minSize} bytes!`
+                        });
+                        continue;
+                    }
+                    let formData = new FormData();
+                    formData.append('file', file);
+                    $.post('/file/files', {name: file.name}).done((newFile)=> {
+                        $.ajax({
+                            url: `/file/files/${newFile.id}`,
+                            type: 'PUT',
+                            processData: false,
+                            contentType: false,
+                            data: formData
+                        }).done((uploadedFile) => {
+                            uploadedFile.url = `/file/files/${uploadedFile.id}/fetch`;
+                            _this.props.onUpload({result: Constants.UploadResult.SUCCESS, file: uploadedFile});
+                        });
 
-            });
+                    });
+                }
+            }
         });
         input.trigger('click');
     },
