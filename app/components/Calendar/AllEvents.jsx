@@ -161,6 +161,7 @@ let AllEvents = React.createClass({
 
     _fetchEvents(date, viewType) {
         console.log("viewType " + viewType);
+        console.log("date " + date);
         if (viewType === "week") {
             CalendarActions.receiveByWeek(date);
         } else if (viewType === "month") {
@@ -184,7 +185,6 @@ let AllEvents = React.createClass({
         let viewType = this.refs.calendar.getViewType();
         let events = [];
         let date = this.refs.calendar.getDate();
-        console.log(viewType);
         if (viewType === "week") {
             events = CalendarStore.getEventsByWeek(date);
         } else if (viewType === "month") {

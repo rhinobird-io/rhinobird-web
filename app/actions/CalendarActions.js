@@ -79,6 +79,7 @@ let CalendarAction =  {
     },
 
     receiveByWeek(date, success) {
+        console.log(date);
         if (CalendarStore.isWeekLoaded(date)) {
             AppDispatcher.dispatch({
                 type: CalendarActionTypes.UPDATE_VIEW

@@ -197,12 +197,12 @@ let CalendarStore = assign({}, BaseStore, {
     },
 
     isWeekLoaded(date) {
-        let format = Moment(new Date(date).firstDayOfWeek()).format("YYYY-MM-DD")
+        let format = Moment(new Date(date).firstDayOfWeek()).format("YYYY-MM-DD");
         return !!_weeklyLoaded[format];
     },
 
     isMonthLoaded(date) {
-        let format = Moment(new Date(date).firstDayOfMonth()).format("YYYY-MM-DD")
+        let format = Moment(new Date(date).firstDayOfMonth()).format("YYYY-MM-DD");
         return !!_monthlyLoaded[format];
     },
 
