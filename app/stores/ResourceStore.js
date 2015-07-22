@@ -66,6 +66,9 @@ let ResourceStore = assign({}, BaseStore, {
             case ActionTypes.UPDATE_RESOURCE:
                 _resourceMap[data._id] = data;
                 break;
+            case ActionTypes.DELETE_RESOURCE:
+                delete _resourceMap[data];
+                break;
         }
 
         if (changed) {

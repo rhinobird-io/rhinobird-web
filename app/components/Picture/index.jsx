@@ -10,6 +10,7 @@ var Picture = React.createClass({
     mixins: [React.addons.PureRenderMixin, StylePropable],
     propTypes: {
         src: React.PropTypes.string.isRequired,
+        class: React.PropTypes.string,
         style: React.PropTypes.object,
         onClick: React.PropTypes.func,
         onHover: React.PropTypes.func
@@ -44,7 +45,7 @@ var Picture = React.createClass({
         };
         style.outer = this.mergeAndPrefix(style.outer, this.props.style);
         return (
-            <div style={style.outer}>
+            <div style={style.outer} className={this.props.class}>
                 <div style={style.image} onClick={this.clickHandler} onMouseEnter={this.hoverHandler}>
                 </div>
                 <Overlay ref="overlay" src={this.props.src}/>

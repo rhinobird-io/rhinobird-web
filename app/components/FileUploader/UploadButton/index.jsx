@@ -66,8 +66,11 @@ const UploadButton = React.createClass({
                     processData: false,
                     contentType: false,
                     data: formData
+                }).done((uploadedFile) => {
+                    uploadedFile.url = `/file/files/${uploadedFile.id}/fetch`;
+                    _this.props.onUpload({result: Constants.UploadResult.SUCCESS, file: uploadedFile});
                 });
-                _this.props.onUpload({result: Constants.UploadResult.SUCCESS, file: newFile});
+
             });
         });
         input.trigger('click');
