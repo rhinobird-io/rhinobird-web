@@ -36,8 +36,6 @@ let EventManagement = React.createClass({
             teams: event.team_participants.map(t => t.id) || [],
             users: event.participants.map(u => u.id) ||[]
         };
-        console.log(event.members);
-        console.log(event.participants);
         return event;
     },
 

@@ -173,7 +173,7 @@ const EventDetail = React.createClass({
                             disabled
                             multiLine
                             floatingLabelText="Description"
-                            value={this.state.event.description} />
+                            value={this.state.event.description || ""} />
                     </Flex.Layout>
                 </Flex.Layout>
             );

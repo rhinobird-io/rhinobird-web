@@ -125,7 +125,7 @@ let Application = React.createClass({
             <TopNav onLeftIconButtonTouchTap={this._onMenuIconButtonTouch} title={this.state.title}/>
             <SideNav ref='sideNav'/>
 
-            <div style={{color: ThemeManager.getCurrentTheme().palette.textColor, WebkitUserSelect: "none"}} className={this.state.showFloatingContent? 'mainContainer floating' : 'mainContainer'}>
+            <div style={{color: ThemeManager.getCurrentTheme().palette.textColor}} className={this.state.showFloatingContent? 'mainContainer floating' : 'mainContainer'}>
                 <FloatingContent
                     ref="floatingContent"
                     title={this.state.floatingContent.title}
