@@ -8,7 +8,8 @@ const React = require("react"),
     SmartEditor     = require('../SmartEditor').SmartEditor,
     FileUploader    = require('../FileUploader'),
     ResourceAction = require('../../actions/ResourceActions'),
-    ResourceStore = require('../../stores/ResourceStore');
+    ResourceStore = require('../../stores/ResourceStore'),
+    LoginStore = require('../../stores/LoginStore');
 
 let CreateResource = React.createClass({
     mixins: [React.addons.LinkedStateMixin, React.addons.PureRenderMixin],
@@ -45,7 +46,8 @@ let CreateResource = React.createClass({
     },
     _onChange() {
         var resource = ResourceStore.getResourceById(this.props.params.id) || {};
-        if (resource) {
+        var user = LoginStore.getUser();
+        if (resource && user && resource.userId === user.id) {
             this.setState({
                 mode: 'edit',
                 resource: resource,
@@ -150,6 +152,8 @@ let CreateResource = React.createClass({
 
         let resource = this.state.resource;
         resource.name = name;
+        if (!resource.userId)
+            resource.userId = LoginStore.getUser().id;
         resource.description = description;
         resource.location = location;
         var images = this.refs.fileUploader.getValue();

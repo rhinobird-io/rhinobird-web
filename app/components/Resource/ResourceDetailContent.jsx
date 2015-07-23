@@ -77,11 +77,18 @@ let ResourceDetailContent = React.createClass({
                         <Flex.Layout endJustified flex={1} center horizontal>
                             <MUI.IconButton ref="showDetails" onClick={this._toggleResourceInfo} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-details" />
                             <MUI.IconButton ref="showCalendar" onClick={this._toggleResourceInfo} style={{display: 'none'}} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-event-note"/>
-                            <MUI.IconButton onClick={this._editResource} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/>
-                            <MUI.IconButton onClick={this._deleteResource} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-delete"/>
-                            <MUI.Dialog actions={dialogActions} title="Deleting Resource" ref='deleteDialog'>
-                                Are you sure to delete this resource?
-                            </MUI.Dialog>
+
+                            {LoginStore.getUser() && LoginStore.getUser().id === resource.userId ?
+                                <div>
+                                    <MUI.IconButton onClick={this._editResource} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/>
+                                    <MUI.IconButton onClick={this._deleteResource} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-delete"/>
+                                    <MUI.Dialog actions={dialogActions} title="Deleting Resource" ref='deleteDialog'>
+                                    Are you sure to delete this resource?
+                                    </MUI.Dialog>
+                                </div>
+                                : ''
+                            }
+
                         </Flex.Layout>
                 </Flex.Layout>);
         return (
