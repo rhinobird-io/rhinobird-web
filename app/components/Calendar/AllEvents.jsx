@@ -366,14 +366,13 @@ let AllEvents = React.createClass({
         } else {
             this.setState({titleError: ""});
         }
-        console.log(this.state.members);
-        return;
         event.fromTime = this.refs.fromTime.getTime();
         event.toTime = this.refs.toTime.getTime();
         event.fromDate = event.fromTime;
         event.toDate = event.toTime;
         event.isPeriod = true;
-
+        event.participants = this.state.members;
+        
         CalendarActions.create(event, () => {
             this.refs.createEventPopup.dismiss();
             this.refs.calendar.dismissCreateNewRange();
