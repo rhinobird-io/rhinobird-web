@@ -372,7 +372,7 @@ let AllEvents = React.createClass({
         event.toDate = event.toTime;
         event.isPeriod = true;
         event.participants = this.state.members;
-        
+
         CalendarActions.create(event, () => {
             this.refs.createEventPopup.dismiss();
             this.refs.calendar.dismissCreateNewRange();
