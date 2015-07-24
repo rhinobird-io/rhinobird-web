@@ -257,7 +257,7 @@ let ResourceDetailContent = React.createClass({
     },
 
     _bookResource() {
-        let id = this.props.resource._id;
+        let id = this.props.resource.id;
         let fromTime = this.refs.fromTime.getTime();
         let toTime = this.refs.toTime.getTime();
         ResourceActions.bookResource(id, fromTime, toTime, () => {
@@ -268,15 +268,15 @@ let ResourceDetailContent = React.createClass({
     },
 
     _deleteResourceBook() {
-        ResourceActions.deleteResourceBook(this.props.resource._id, this.state.activeRange._id, () => {
+        ResourceActions.deleteResourceBook(this.props.resource.id, this.state.activeRange.id, () => {
             this.refs.updateResourceBooking.dismiss();
             this.refs.deleteBookingSuccess.show();
         });
     },
 
     _updateResourceBook() {
-        ResourceActions.updateResourceBook(this.props.resource._id,
-            this.state.activeRange._id,
+        ResourceActions.updateResourceBook(this.props.resource.id,
+            this.state.activeRange.id,
             this.refs.bookFromTime.getTime(),
             this.refs.bookToTime.getTime(),
             () => {
@@ -318,7 +318,7 @@ let ResourceDetailContent = React.createClass({
     },
 
     _showUpdateResourceBookingPopup(rect, range) {
-        if (range.userId !== LoginStore.getUser().id) {
+        if (range.userId != LoginStore.getUser().id) {
             return;
         }
         let updateResourceBooking = this.refs.updateResourceBooking;
@@ -358,7 +358,7 @@ let ResourceDetailContent = React.createClass({
     },
 
     _editResource() {
-        this.context.router.transitionTo("edit-resource", {id: this.props.resource._id});
+        this.context.router.transitionTo("edit-resource", {id: this.props.resource.id});
     },
 
     _handleDeleteDialogCancel() {
@@ -366,7 +366,7 @@ let ResourceDetailContent = React.createClass({
     },
 
     _handleDeleteDialogSubmit() {
-        ResourceActions.deleteResource(this.props.resource._id, () => {
+        ResourceActions.deleteResource(this.props.resource.id, () => {
             this.context.router.transitionTo("resources");
         });
     },

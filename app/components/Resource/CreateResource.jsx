@@ -113,7 +113,7 @@ let CreateResource = React.createClass({
         if (this.state.mode === 'create'){
             this.context.router.transitionTo("resources");
         } else if (this.state.mode === 'edit') {
-            this.context.router.transitionTo("resource-detail", {id: this.state.resource._id});
+            this.context.router.transitionTo("resource-detail", {id: this.state.resource.id});
         }
     },
     _handleSubmit: function(e) {
@@ -152,9 +152,9 @@ let CreateResource = React.createClass({
         var ids = images.map((file) => (file.url));
         resource.images = ids;
         if (this.state.mode === 'create')
-            ResourceAction.create(resource, (r) => this.context.router.transitionTo("resource-detail", {id: r._id}));
+            ResourceAction.create(resource, (r) => this.context.router.transitionTo("resource-detail", {id: r.id}));
         else if (this.state.mode === 'edit')
-            ResourceAction.update(resource, (r) => this.context.router.transitionTo("resource-detail", {id: r._id}));
+            ResourceAction.update(resource, (r) => this.context.router.transitionTo("resource-detail", {id: r.id}));
     }
 
 });

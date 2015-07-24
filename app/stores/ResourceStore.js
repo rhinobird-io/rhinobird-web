@@ -16,7 +16,7 @@ function _parseResources(resources) {
     }
 
     let result = {};
-    arr.forEach(item => result[item._id] = item);
+    arr.forEach(item => result[item.id] = item);
 
     return result;
 }
@@ -48,23 +48,23 @@ let ResourceStore = assign({}, BaseStore, {
                 _resourceMap = _parseResources(data);
                 break;
             case ActionTypes.BOOK_RESOURCE:
-                _resourceMap[data._id] = data;
+                _resourceMap[data.resourceId].resourceBookings.push(data);
                 break;
             case ActionTypes.DELETE_RESOURCE_BOOK:
-                _resourceMap[data._id] = data;
+                _resourceMap[data.id] = data;
                 break;
             case ActionTypes.UPDATE_RESOURCE_BOOK:
                 _resourceMap[data.resource].resourceBookings.forEach((book, index) => {
-                    if (book._id === data._id) {
+                    if (book.id === data.id) {
                         _resourceMap[data.resource].resourceBookings[index] = data;
                     }
                 });
                 break;
             case ActionTypes.CREATE_RESOURCE:
-                _resourceMap[data._id] = data;
+                _resourceMap[data.id] = data;
                 break;
             case ActionTypes.UPDATE_RESOURCE:
-                _resourceMap[data._id] = data;
+                _resourceMap[data.id] = data;
                 break;
             case ActionTypes.DELETE_RESOURCE:
                 delete _resourceMap[data];
