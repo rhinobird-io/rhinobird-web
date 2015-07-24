@@ -48,15 +48,20 @@ let ResourceStore = assign({}, BaseStore, {
                 _resourceMap = _parseResources(data);
                 break;
             case ActionTypes.BOOK_RESOURCE:
+                if (!_resourceMap[data.resourceId].resourceBookings) {
+                    _resourceMap[data.resourceId].resourceBookings = [];
+                }
                 _resourceMap[data.resourceId].resourceBookings.push(data);
                 break;
             case ActionTypes.DELETE_RESOURCE_BOOK:
-                _resourceMap[data.id] = data;
+                _resourceMap[data.resourceId].resourceBookings = _resourceMap[data.resourceId].resourceBookings.filter(function(booking) {
+                   return booking.id !== data.bookId;
+                });
                 break;
             case ActionTypes.UPDATE_RESOURCE_BOOK:
-                _resourceMap[data.resource].resourceBookings.forEach((book, index) => {
+                _resourceMap[data.resourceId].resourceBookings.forEach((book, index) => {
                     if (book.id === data.id) {
-                        _resourceMap[data.resource].resourceBookings[index] = data;
+                        _resourceMap[data.resourceId].resourceBookings[index] = data;
                     }
                 });
                 break;
