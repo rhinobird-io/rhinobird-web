@@ -123,7 +123,6 @@ let ResourceActions = {
     },
 
     updateResourceBook(id, bookId, newFromTime, newEndTime, success, fail) {
-        console.log("jioasdfasdf");
         $.ajax({
             url: `/resource/resources/${id}/book/${bookId}/${newFromTime}/${newEndTime}`,
             type: "put"
