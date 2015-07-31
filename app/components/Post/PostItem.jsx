@@ -20,7 +20,7 @@ const PostItem = React.createClass({
     render() {
         let post = this.props.post;
         let user = UserStore.getUser(post.get('creator_id'));
-        let bgColor = muiTheme.palette.primary3Color, tags = post.get('tags'), colorBlock;
+        let bgColor = this.context.muiTheme.palette.primary3Color, tags = post.get('tags'), colorBlock;
         if(tags.size > 0){
             colorBlock = tags.map(tag=><Flex.Item flex={1} key={tag.get('id')} style={{backgroundColor: tag.get('color')}}/>);
         } else{

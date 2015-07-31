@@ -5,6 +5,7 @@ const Popup = require('../Popup');
 const MUI = require('material-ui');
 const Link = require('react-router').Link;
 const Display = require('../Common').Display;
+const MemberSelect = require('../Member').MemberSelect;
 const UserStore = require('../../stores/UserStore');
 const EventManagement = require('./EventManagement');
 const LoginStore = require('../../stores/LoginStore');
@@ -89,6 +90,8 @@ let STATUS_EVENT_UPDATE = 2;
 let STATUS_EVENT_CREATE = 3;
 
 let AllEvents = React.createClass({
+    mixins: [React.addons.LinkedStateMixin],
+
     contextTypes: {
         muiTheme: React.PropTypes.object
     },
@@ -105,6 +108,10 @@ let AllEvents = React.createClass({
     getInitialState() {
         return {
             events: [],
+            members: {
+                users: [],
+                teams: []
+            },
             status: STATUS_NORMAL,
             showUpdatePopup: false,
             showDetailPopup: false,
@@ -120,7 +127,7 @@ let AllEvents = React.createClass({
             //drawerClass += " rotateZ";
         }
         return (
-            <Flex.Layout vertical style={{height: "100%", WebkitUserSelect: "none", userSelect: "none"}}>
+            <Flex.Layout vertical style={{height: "100%"}}>
                 <CalendarView
                     ref="calendar"
                     withAllDay={true}
@@ -161,6 +168,7 @@ let AllEvents = React.createClass({
 
     _fetchEvents(date, viewType) {
         console.log("viewType " + viewType);
+        console.log("date " + date);
         if (viewType === "week") {
             CalendarActions.receiveByWeek(date);
         } else if (viewType === "month") {
@@ -184,7 +192,6 @@ let AllEvents = React.createClass({
         let viewType = this.refs.calendar.getViewType();
         let events = [];
         let date = this.refs.calendar.getDate();
-        console.log(viewType);
         if (viewType === "week") {
             events = CalendarStore.getEventsByWeek(date);
         } else if (viewType === "month") {
@@ -312,7 +319,7 @@ let AllEvents = React.createClass({
                 selfAlignOrigin={selfAlignOrigin}
                 relatedAlignOrigin={relatedAlignOrigin}
                 className={className}
-                style={{overflow: "visible !important"}}>
+                style={{overflow: "visible !important", width: "320px"}}>
                 <div style={{padding: "12px 16px"}}>
                     <Flex.Layout horizontal justified>
                         <MUI.TimePicker
@@ -328,7 +335,13 @@ let AllEvents = React.createClass({
                             hintText="To Time"
                             floatingLabelText="To Time" />
                     </Flex.Layout>
-                    <MUI.TextField errorText={this.state.titleError} hintText="title" ref="title" floatingLabelText="title" fullWidth />
+                    <MUI.TextField errorText={this.state.titleError} hintText="Title" ref="title" floatingLabelText="Title" fullWidth />
+                    <MemberSelect
+                        ref="participants"
+                        hintText="Participants"
+                        floatingLabelText="Participants"
+                        valueLink={this.linkState('members')}
+                        style={{width: "100%"}} />
                     <Flex.Layout style={{padding: "8px 8px 0px 24px"}} horizontal endJustified>
                         <MUI.FlatButton secondary onClick={() => this.refs.calendar.dismissCreateNewRange()}>Close</MUI.FlatButton>
                         <MUI.FlatButton primary>Edit</MUI.FlatButton>
@@ -353,12 +366,12 @@ let AllEvents = React.createClass({
         } else {
             this.setState({titleError: ""});
         }
-
         event.fromTime = this.refs.fromTime.getTime();
         event.toTime = this.refs.toTime.getTime();
         event.fromDate = event.fromTime;
         event.toDate = event.toTime;
         event.isPeriod = true;
+        event.participants = this.state.members;
 
         CalendarActions.create(event, () => {
             this.refs.createEventPopup.dismiss();

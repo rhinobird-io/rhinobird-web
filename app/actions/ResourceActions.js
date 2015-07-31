@@ -107,7 +107,10 @@ let ResourceActions = {
         }).done((data) => {
             AppDispatcher.dispatch({
                 type: ResourceActionTypes.DELETE_RESOURCE_BOOK,
-                data: data
+                data: {
+                    resourceId: id,
+                    bookId: bookId
+                }
             });
             if (success && typeof success === "function") {
                 success();

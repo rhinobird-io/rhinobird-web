@@ -245,7 +245,12 @@ let CalendarView = React.createClass({
     _gotoToday() {
         this.setState({
             date: new Date()
-        })
+        }, () => {
+            if (this.props.onDateChange && typeof this.props.onDateChange === "function") {
+                this.props.onDateChange(new Date(), this.state.viewType);
+            }
+        });
+
     },
 
     _navigateBefore() {

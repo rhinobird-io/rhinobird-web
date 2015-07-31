@@ -36,8 +36,6 @@ let EventManagement = React.createClass({
             teams: event.team_participants.map(t => t.id) || [],
             users: event.participants.map(u => u.id) ||[]
         };
-        console.log(event.members);
-        console.log(event.participants);
         return event;
     },
 
@@ -232,7 +230,7 @@ let EventManagement = React.createClass({
                 );
 
                 eventComment = [];
-                let threadKey =  `/platform/calendar/events/${event.id}/${event.repeatedNumber}`;
+                let threadKey =  `/platform/calendar/events/${event.id}/${event.repeated_number}`;
                 eventComment.push(
                     <Flex.Layout horizontal key="comments" style={styles.eventDetailItem}>
                         <Flex.Layout startJustified style={styles.eventDetailIcon}>

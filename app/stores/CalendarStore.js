@@ -19,6 +19,7 @@ let _allDayEvents = {};
 let _dailyLoaded = {};      // Map: "YYYY-MM-DD" => true, whether certain date's events are loaded.
 let _weeklyLoaded = {};     // Map: "YYYY-MM-DD" => true, key is first day of week, whether certain week's events are loaded.
 let _monthlyLoaded = {};    // Map: "YYYY-MM-DD" => true, key is frist day of month, whether certain month's events are loaded.
+let _calendarMonthlyLoaded = {};
 let _allEvents = {};
 let _allEventsMap = {};
 
@@ -150,7 +151,7 @@ Date.prototype.calendarMonthDays = function() {
     let nexts = [];
     for (let i = 0; i < firstDay.getDay(); i++) {
         let preDay = new Date(firstDay);
-        preDay.setDate(i - firstDay.getDay());
+        preDay.setDate(firstDay.getDate() + i - firstDay.getDay());
         pres.push(preDay);
     }
     for (let i = lastDay.getDay() + 1; i <= 6; i++) {
@@ -197,12 +198,12 @@ let CalendarStore = assign({}, BaseStore, {
     },
 
     isWeekLoaded(date) {
-        let format = Moment(new Date(date).firstDayOfWeek()).format("YYYY-MM-DD")
+        let format = Moment(new Date(date).firstDayOfWeek()).format("YYYY-MM-DD");
         return !!_weeklyLoaded[format];
     },
 
     isMonthLoaded(date) {
-        let format = Moment(new Date(date).firstDayOfMonth()).format("YYYY-MM-DD")
+        let format = Moment(new Date(date).firstDayOfMonth()).format("YYYY-MM-DD");
         return !!_monthlyLoaded[format];
     },
 

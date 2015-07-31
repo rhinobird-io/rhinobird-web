@@ -64,7 +64,7 @@ let ResourceList = React.createClass({
                                 <Flex.Layout vertical>
                                     <Gallery images={resource.images} />
                                     <div style={{padding: "10px 12px"}}>
-                                        <Link to="resource-detail" params={{id: resource._id}}>
+                                        <Link to="resource-detail" params={{id: resource.id}}>
                                             <Common.Display type="body2">{resource.name}</Common.Display>
                                         </Link>
                                         {_this.state.hover && _this.state.hoverResource && resource._id === _this.state.hoverResource._id ?

@@ -41,7 +41,6 @@ let CalendarAction =  {
     },
 
     receiveByDay(date, success) {
-        console.log("jioasdf");
         if (CalendarStore.isDayLoaded(date)) {
             AppDispatcher.dispatch({
                 type: CalendarActionTypes.UPDATE_VIEW
@@ -61,7 +60,6 @@ let CalendarAction =  {
 
     receiveByMonth(date, success) {
         if (CalendarStore.isMonthLoaded(date)) {
-            console.log("month loaded");
             AppDispatcher.dispatch({
                 type: CalendarActionTypes.UPDATE_VIEW
             });

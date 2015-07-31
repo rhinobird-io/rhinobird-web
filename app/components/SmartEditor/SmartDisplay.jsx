@@ -16,9 +16,7 @@ let Ps = require('perfect-scrollbar');
 
 const Colors = require('material-ui/lib/styles/colors.js');
 
-
 const SmartDisplay = React.createClass({
-
     getInitialState(){
         return {
             urlPreviews: []
@@ -36,13 +34,16 @@ const SmartDisplay = React.createClass({
         return nextProps.value !== this.props.value || nextState.urlPreviews !== this.state.urlPreviews;
     },
     componentWillUpdate(nextProps, nextState){
-        if(nextState.urlPreviews.length !== 0 && nextProps.onLinkPreviewWillUpdate) {
+        if (nextState.urlPreviews.length !== 0 && nextProps.onLinkPreviewWillUpdate) {
             nextProps.onLinkPreviewWillUpdate();
         }
     },
     componentDidUpdate(prevProps, prevState){
-        if(this.state.urlPreviews.length !== 0 && this.props.onLinkPreviewDidUpdate) {
+        if (this.state.urlPreviews.length !== 0 && this.props.onLinkPreviewDidUpdate) {
             this.props.onLinkPreviewDidUpdate();
+        }
+        if (this.props.value !== prevProps.value) {
+            this.componentDidMount();
         }
     },
     componentDidMount() {
@@ -87,7 +88,6 @@ const SmartDisplay = React.createClass({
             codeBlocks[i].style.position = 'relative';
             Ps.initialize(codeBlocks[i], {useBothWheelAxes: true});
         }
-
 
         if (this.props.enableLinkPreview) {
             let linkifyLinks = this.getDOMNode().querySelectorAll('a[linkify]');
@@ -230,7 +230,7 @@ const SmartDisplay = React.createClass({
         let value = markdown.render(this.props.value);
         value = this.removeNewline(value);
         return (
-            <div className="smart-display" style={this.props.style}>
+            <div ref="display" className="smart-display" style={this.props.style}>
                 <span className='markdown-body' dangerouslySetInnerHTML={{__html: value}}></span>
                 {this.state.urlPreviews.map((p, idx) => {
                     return this._renderOg(p, idx);
