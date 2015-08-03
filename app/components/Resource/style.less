@@ -4,8 +4,6 @@
     position: absolute;
     width: 0;
     height: 0;
-    margin-top: -6px;
-    top: 50%;
     box-sizing: border-box;
 
     border: 6px solid black;
@@ -19,6 +17,8 @@
 
 .resource-booking-popup.right {
   &::before {
+    margin-top: -6px;
+    top: 50%;
     left: -6px;
     transform: rotate(135deg);
   }
@@ -26,7 +26,26 @@
 
 .resource-booking-popup.left {
   &::before {
+    margin-top: -6px;
+    top: 50%;
     right: -6px;
     transform: rotate(-45deg);
   }
 }
+
+.resource-booking-popup.top {
+  &::before {
+    left: 50%;
+    margin-left: -6px;
+    bottom: -6px;
+    transform: rotate(45deg);
+  }
+}
+
+.resource-booking-popup.bottom {
+  &::before {
+    top: -6px;
+    transform: rotate(-90deg);
+  }
+}
+

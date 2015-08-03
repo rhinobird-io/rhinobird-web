@@ -9,6 +9,20 @@ const StylePropable = require('material-ui/lib/mixins/style-propable');
 let Popup = React.createClass({
     mixins: [Flexible, StylePropable, mui.Mixins.ClickAwayable, React.addons.PureRenderMixin],
 
+    propTypes: {
+        resource: React.PropTypes.object,
+        noScrollX: React.PropTypes.bool,
+        noScrollY: React.PropTypes.bool
+    },
+
+    getDefaultProps() {
+        return {
+            resource: {},
+            noScrollX: false,
+            noScrollY: false
+        }
+    },
+
     getInitialState() {
         return {
             shown: false
@@ -68,7 +82,10 @@ let Popup = React.createClass({
         return (
             <Layout vertical style={styles.popupWrapper}>
                 {topPadding}
-                <PerfectScroll style={this.mergeStyles(style || {}, styles.scroll)} alwaysVisible {...other} >
+                <PerfectScroll
+                    noScrollX={this.props.noScrollX}
+                    noScrollY={this.props.noScrollY}
+                    style={this.mergeStyles(style || {}, styles.scroll)} alwaysVisible {...other} >
                     {children}
                 </PerfectScroll>
                 {bottomPadding}

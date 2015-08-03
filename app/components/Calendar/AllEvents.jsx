@@ -3,6 +3,7 @@ const Flex = require('../Flex');
 const Moment = require('moment');
 const Popup = require('../Popup');
 const MUI = require('material-ui');
+const Cookie = require('react-cookie');
 const Link = require('react-router').Link;
 const Display = require('../Common').Display;
 const MemberSelect = require('../Member').MemberSelect;
@@ -106,6 +107,7 @@ let AllEvents = React.createClass({
     },
 
     getInitialState() {
+        console.log(Cookie.load("calendarViewType"));
         return {
             events: [],
             members: {
@@ -117,7 +119,8 @@ let AllEvents = React.createClass({
             showDetailPopup: false,
             showCreatePopup: false,
             createEventPopupPos: 'r',
-            showDetailAnimationStart: null
+            showDetailAnimationStart: null,
+            initialViewType: Cookie.load("calendarViewType") || "week"
         }
     },
 
@@ -133,6 +136,7 @@ let AllEvents = React.createClass({
                     withAllDay={true}
                     date={new Date()}
                     exclusive={false}
+                    initialViewType={this.state.initialViewType}
                     data={this.state.normalEvents}
                     rangeContent={this._rangeContent}
                     allDayData={this.state.allDayEvents}
@@ -176,12 +180,15 @@ let AllEvents = React.createClass({
         } else if (viewType === "day") {
             CalendarActions.receiveByDay(date);
         } else if (viewType === "fourDays") {
-
+            CalendarActions.receiveByFourDays(date);
         }
     },
 
     _handleViewTypeChange(date, viewType) {
         this._fetchEvents(date, viewType);
+        if (Cookie.load("calendarViewType") !== viewType) {
+            Cookie.save('calendarViewType', viewType);
+        }
     },
 
     _handleDateChange(date, viewType) {
@@ -314,6 +321,7 @@ let AllEvents = React.createClass({
 
         return (
             <Popup
+                noScrollY
                 position="none"
                 ref="createEventPopup"
                 selfAlignOrigin={selfAlignOrigin}

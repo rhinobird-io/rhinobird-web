@@ -231,7 +231,6 @@ let CalendarView = React.createClass({
                           onSelectChange={v => {
                             this.setState({viewType: v}, () => {
                                 if (this.props.onViewTypeChange) {
-                                    console.log(new Date().getTime());
                                     this.props.onViewTypeChange(this.state.date, v);
                                 }
                             });

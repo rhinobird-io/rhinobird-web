@@ -197,6 +197,15 @@ let CalendarStore = assign({}, BaseStore, {
         return !!_dailyLoaded[format] || !!_weeklyLoaded[firstDayOfWeek] || !!_monthlyLoaded[firstDayOfMonth];
     },
 
+    isDaysLoaded(days) {
+        for (let i = 0; i < days.length; i++) {
+            if (!this.isDayLoaded(days[i])) {
+                return false;
+            }
+        }
+        return true;
+    },
+
     isWeekLoaded(date) {
         let format = Moment(new Date(date).firstDayOfWeek()).format("YYYY-MM-DD");
         return !!_weeklyLoaded[format];
@@ -400,6 +409,13 @@ let CalendarStore = assign({}, BaseStore, {
                 break;
             case ActionTypes.RECEIVE_EVENTS_BY_DAY:
                 addEvents(data);
+                let day = payload.date;
+                _dailyLoaded[Moment(day).format("YYYY-MM-DD")] = true;
+                break;
+            case ActionTypes.RECEIVE_EVENTS_BY_FOUR_DAYS:
+                addEvents(data);
+                let days = payload.date;
+                days.forEach(day => _dailyLoaded[Moment(day).format("YYYY-MM-DD")] = true);
                 break;
             default:
                 changed = false;

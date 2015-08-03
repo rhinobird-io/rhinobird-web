@@ -47,7 +47,8 @@ let DaysContent = React.createClass({
         let styles = {
             dayContent: {
                 width: "100%",
-                borderLeft: "1px solid " + muiTheme.palette.borderColor
+                borderLeft: "1px solid " + muiTheme.palette.borderColor,
+                WebkitUserSelect: "none"
             }
         };
 

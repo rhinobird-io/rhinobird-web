@@ -213,13 +213,16 @@ Date.prototype.fourDays = function() {
     return days;
 };
 
-Date.prototype.relativeDays = function(d) {
-
-};
-// Return the time elapse of a day in seconds
+// Return the time elapse percentage of a day
 Date.prototype.elapsedPercentageOfDay = function() {
     let seconds = 3600 * this.getHours() + 60 * this.getMinutes() + this.getSeconds();
     return seconds / 86400;
+};
+
+
+// Return the time elapsed seconds of a day
+Date.prototype.elapsedSecondsOfDay = function() {
+    return 3600 * this.getHours() + 60 * this.getMinutes() + this.getSeconds();
 };
 
 module.exports = Application;
