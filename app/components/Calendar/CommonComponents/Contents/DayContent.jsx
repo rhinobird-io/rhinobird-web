@@ -123,7 +123,12 @@ let DayContent = React.createClass({
 
     updateNewRange(newRange) {
         if (this.state.newRange && newRange.fromTime && newRange.toTime) {
-            this.setState({newRange: newRange});
+            let range = newRange;
+            let to = new Date(range.toTime);
+            if (to.getDate() > new Date(this.state.date).getDate()) {
+                range.toTime = toolkits.endOfDate(this.state.date);
+            }
+            this.setState({newRange: range});
         }
     },
 
@@ -325,7 +330,7 @@ let DayContent = React.createClass({
         document.addEventListener("mousemove", this._handleMouseMove);
         document.addEventListener("mouseup", this._handleMouseUp);
         if (this.props.scrollableContainer) {
-            let container = this.props.scrollableContainer();
+            //let container = this.props.scrollableContainer();
             //container.getDOMNode().addEventListener("mouseleave", this._handleMouseLeave);
         }
     },
@@ -359,6 +364,9 @@ let DayContent = React.createClass({
             let fromSeconds = Math.min(startSeconds, endSeconds);
             let toSeconds = Math.max(startSeconds, endSeconds);
 
+            if (toSeconds > 86400) {
+                toSeconds = 86400;
+            }
             let accuracy = this.props.accuracy;
 
             let fromTime = new Date(date);

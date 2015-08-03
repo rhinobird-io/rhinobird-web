@@ -80,7 +80,7 @@ let ResourceDetailContent = React.createClass({
                         </Flex.Layout>
                 </Flex.Layout>);
         return (
-            <Flex.Layout vertical style={{height: "100%", WebkitUserSelect: "none", userSelect: "none"}}>
+            <Flex.Layout vertical style={{height: "100%"}}>
                 {actions}
                 <ResourceInfo ref="resourceInfo" resource={resource}/>
                 <CalendarView
@@ -109,7 +109,7 @@ let ResourceDetailContent = React.createClass({
         let styles = {
             wrapper: {
                 height: "100%",
-                padding: 6
+                padding: "4px 6px"
             },
             timeRange: {
                 fontSize: "0.8em",
