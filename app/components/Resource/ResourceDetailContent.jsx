@@ -145,17 +145,30 @@ let ResourceDetailContent = React.createClass({
 
     _getCreateResourceBookingPopup() {
         let className = "resource-booking-popup";
-        if (this.state.createResourceBookPopupPos === 'r') {
+        let createResourceBookPopupPos = this.state.createResourceBookPopupPos;
+        let selfAlignOrigin = "lt",
+            relatedAlignOrigin = "rt";
+        if (createResourceBookPopupPos === "r") {
             className += " right";
-        } else {
+        } else if (createResourceBookPopupPos === "l") {
             className += " left";
+        } else if (createResourceBookPopupPos === "t") {
+            className += " top";
+            selfAlignOrigin = "lb";
+            relatedAlignOrigin = "lt";
+        } else if (createResourceBookPopupPos === "b") {
+            className += " bottom";
+            selfAlignOrigin = "lt";
+            relatedAlignOrigin = "lb";
         }
         return (
             <Popup
+                noScrollX
+                noScrollY
                 position="none"
                 ref="resourceBooking"
-                selfAlignOrigin="lt"
-                relatedAlignOrigin="rt"
+                selfAlignOrigin={selfAlignOrigin}
+                relatedAlignOrigin={relatedAlignOrigin}
                 className={className}
                 onMouseDown={(e) => console.log(e.target)}
                 style={{overflow: "visible !important"}}>
@@ -213,18 +226,31 @@ let ResourceDetailContent = React.createClass({
 
     _getUpdateResourceBookingPopup() {
         let className = "resource-booking-popup";
-        if (this.state.updateResourceBookPopupPos === 'r') {
-            className += " right";
-        } else {
-            className += " left";
-        }
 
+        let updateResourceBookPopupPos = this.state.updateResourceBookPopupPos;
+        let selfAlignOrigin = "lt",
+            relatedAlignOrigin = "rt";
+        if (updateResourceBookPopupPos === "r") {
+            className += " right";
+        } else if (updateResourceBookPopupPos === "l") {
+            className += " left";
+        } else if (updateResourceBookPopupPos === "t") {
+            className += " top";
+            selfAlignOrigin = "lb";
+            relatedAlignOrigin = "lt";
+        } else if (updateResourceBookPopupPos === "b") {
+            className += " bottom";
+            selfAlignOrigin = "lt";
+            relatedAlignOrigin = "lb";
+        }
         return (
             <Popup
+                noScrollX
+                noScrollY
                 position="none"
                 ref="updateResourceBooking"
-                selfAlignOrigin="lt"
-                relatedAlignOrigin="rt"
+                selfAlignOrigin={selfAlignOrigin}
+                relatedAlignOrigin={relatedAlignOrigin}
                 className={className}
                 style={{overflow: "visible !important"}}>
                 <div style={{minWidth: 250}}>
@@ -299,10 +325,23 @@ let ResourceDetailContent = React.createClass({
             height: rect.height
         };
 
-        if (resourceBooking.getDOMNode().clientWidth >= (window.innerWidth - rect.right)) {
+        let popupNode = resourceBooking.getDOMNode();
+        if (popupNode.clientWidth < window.innerWidth - rect.right - 10) {
+            position = 'r';
+            newRect.top = rect.top - (188 - rect.height) / 2;
+        } else if (popupNode.clientWidth < rect.left) {
             position = 'l';
             newRect.width = rect.width;
             newRect.left = rect.left - 10;
+            newRect.top = rect.top - (188 - rect.height) / 2;
+        } else if (popupNode.clientHeight < rect.top) {
+            position = 't';
+            newRect.top = rect.top - 10;
+            newRect.left = rect.left + (newRect.width - popupNode.clientWidth) / 2;
+        } else if (popupNode.clientHeight < window.innerHeight - rect.bottom) {
+            position = 'b';
+            newRect.height = rect.height + 10;
+            newRect.left = rect.left + (newRect.width - popupNode.clientWidth) / 2;
         }
 
         this.setState({
@@ -333,12 +372,26 @@ let ResourceDetailContent = React.createClass({
             top: rect.top - (224 - rect.height) / 2,
             height: rect.height
         };
-
-        if (updateResourceBooking.getDOMNode().clientWidth > window.innerWidth - rect.right - 20) {
+        
+        let popupNode = updateResourceBooking.getDOMNode();
+        if (popupNode.clientWidth < window.innerWidth - rect.right - 10) {
+            position = 'r';
+            newRect.top = rect.top - (188 - rect.height) / 2;
+        } else if (popupNode.clientWidth < rect.left) {
             position = 'l';
             newRect.width = rect.width;
             newRect.left = rect.left - 10;
+            newRect.top = rect.top - (188 - rect.height) / 2;
+        } else if (popupNode.clientHeight < rect.top) {
+            position = 't';
+            newRect.top = rect.top - 10;
+            newRect.left = rect.left + (newRect.width - popupNode.clientWidth) / 2;
+        } else if (popupNode.clientHeight < window.innerHeight - rect.bottom) {
+            position = 'b';
+            newRect.height = rect.height + 10;
+            newRect.left = rect.left + (newRect.width - popupNode.clientWidth) / 2;
         }
+
 
         this.setState({
             activeRange: range,
