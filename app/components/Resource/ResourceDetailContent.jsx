@@ -98,7 +98,6 @@ let ResourceDetailContent = React.createClass({
                 <MUI.Snackbar ref="bookingSuccess" message={`Booking ${resource.name} successfully`} />
                 <MUI.Snackbar ref="deleteBookingSuccess" message={`Delete booking of ${resource.name} successfully`} />
                 <MUI.Snackbar ref="updateBookingSuccess" message={`Update booking of ${resource.name} successfully`} />
-
             </Flex.Layout>
         );
     },
@@ -130,7 +129,7 @@ let ResourceDetailContent = React.createClass({
             } else {
                 styles.wrapper.backgroundColor = muiTheme.palette.primary3Color;
                 styles.wrapper.border = "1px solid " + muiTheme.palette.primary1Color;
-                innerContent.push(<Flex.Layout key="member" flex={1} horizontal end>
+                innerContent.push(<Flex.Layout key="member" flex={1} horizontal end selfEnd>
                     <Member.Avatar member={user} style={{minWidth: 24, marginRight: 6}}/>
                     <div>{user.realname}</div>
                 </Flex.Layout>);

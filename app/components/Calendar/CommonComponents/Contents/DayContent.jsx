@@ -327,8 +327,31 @@ let DayContent = React.createClass({
         let rect = node.getBoundingClientRect();
         this.startPosY = e.clientY - rect.top;
         this.mouseDown = true;
+
+        let startSeconds = (this.startPosY / rect.height) * 86400;
+        let data = this.props.data;
+        for (let i = 0; i < data.length; i++) {
+            let range = data[i];
+            let to = new Date(range.toTime);
+            let from = new Date(range.fromTime);
+            let toTimeSeconds = to.elapsedSecondsOfDay();
+            let fromTimeSeconds = from.elapsedSecondsOfDay();
+            if (startSeconds >= toTimeSeconds) {
+                this.min = toTimeSeconds;
+            }
+            if (startSeconds <= fromTimeSeconds && this.max === undefined) {
+                this.max = fromTimeSeconds;
+            }
+        }
+        if (this.max === undefined) {
+            this.max = 86400;
+        }
+        if (this.min === undefined) {
+            this.min = 0;
+        }
         document.addEventListener("mousemove", this._handleMouseMove);
         document.addEventListener("mouseup", this._handleMouseUp);
+
         if (this.props.scrollableContainer) {
             //let container = this.props.scrollableContainer();
             //container.getDOMNode().addEventListener("mouseleave", this._handleMouseLeave);
@@ -361,12 +384,9 @@ let DayContent = React.createClass({
             let date = new Date(this.props.date);
             let startSeconds = (this.startPosY / rect.height) * 86400;
             let endSeconds = (endPosY / rect.height) * 86400;
-            let fromSeconds = Math.min(startSeconds, endSeconds);
-            let toSeconds = Math.max(startSeconds, endSeconds);
+            let fromSeconds = Math.max(this.min, Math.min(startSeconds, endSeconds));
+            let toSeconds = Math.min(this.max, Math.max(startSeconds, endSeconds));
 
-            if (toSeconds > 86400) {
-                toSeconds = 86400;
-            }
             let accuracy = this.props.accuracy;
 
             let fromTime = new Date(date);
@@ -398,6 +418,8 @@ let DayContent = React.createClass({
     _handleMouseUp(e) {
         this._handleMouseMove(e);
         this.mouseDown = false;
+        this.min = undefined;
+        this.max = undefined;
         document.removeEventListener("mousemove", this._handleMouseMove);
         document.removeEventListener("mouseup", this._handleMouseUp);
         if (this.props.onRangeCreate) {
