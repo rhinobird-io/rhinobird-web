@@ -314,6 +314,7 @@ let AllEvents = React.createClass({
 
         return (
             <Popup
+                noScrollY
                 position="none"
                 ref="createEventPopup"
                 selfAlignOrigin={selfAlignOrigin}
