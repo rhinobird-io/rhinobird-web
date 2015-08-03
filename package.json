@@ -76,5 +76,8 @@
     "uuid": "^2.0.1",
     "webpack": "^1.7.3",
     "webpack-dev-server": "^1.4.7"
+  },
+  "devDependencies": {
+    "react-cookie": "^0.2.5"
   }
 }

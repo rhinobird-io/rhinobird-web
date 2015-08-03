@@ -392,7 +392,6 @@ let ResourceDetailContent = React.createClass({
             newRect.left = rect.left + (newRect.width - popupNode.clientWidth) / 2;
         }
 
-
         this.setState({
             activeRange: range,
             updateResourceBookPopupPos: position

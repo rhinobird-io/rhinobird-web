@@ -40,6 +40,25 @@ let CalendarAction =  {
         }
     },
 
+    receiveByFourDays(date, success) {
+        let days = new Date(date).fourDays();
+        if (CalendarStore.isDaysLoaded(days)) {
+            AppDispatcher.dispatch({
+                type: CalendarActionTypes.UPDATE_VIEW
+            });
+        } else {
+            $.get(`/platform/api/events/fourDays/${date}`).done(data => {
+                AppDispatcher.dispatch({
+                    type: CalendarActionTypes.RECEIVE_EVENTS_BY_FOUR_DAYS,
+                    data: data,
+                    date: days
+                });
+            }).fail(e => {
+                console.error(e);
+            });
+        }
+    },
+
     receiveByDay(date, success) {
         if (CalendarStore.isDayLoaded(date)) {
             AppDispatcher.dispatch({

@@ -29,7 +29,9 @@ export default {
     LOAD_MORE_NEWER_EVENTS: null,
     LOAD_MORE_OLDER_EVENTS: null,
     RECEIVE_EVENTS_BY_WEEK: null,
-    RECEIVE_EVENTS_BY_MONTH: null
+    RECEIVE_EVENTS_BY_MONTH: null,
+    RECEIVE_EVENTS_BY_FOUR_DAYS: null
+
   }),
 
   ResourceActionTypes: keyMirror({

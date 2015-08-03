@@ -67,7 +67,7 @@ let ResourceList = React.createClass({
                                         <Link to="resource-detail" params={{id: resource.id}}>
                                             <Common.Display type="body2">{resource.name}</Common.Display>
                                         </Link>
-                                        {_this.state.hover && _this.state.hoverResource && resource._id === _this.state.hoverResource._id ?
+                                        {_this.state.hover && _this.state.hoverResource && resource.id === _this.state.hoverResource.id ?
                                             <Flex.Layout flex={1} center horizontal style={{display: 'inline', float: 'right'}}>
                                                 <MUI.IconButton onClick={_this._editResource} style={iconStyle} iconClassName="icon-edit"/>
                                                 <MUI.IconButton onClick={_this._deleteResource} style={iconStyle} iconClassName="icon-delete"/>
@@ -121,14 +121,14 @@ let ResourceList = React.createClass({
         this.refs.deleteDialog.show();
     },
     _editResource() {
-        this.context.router.transitionTo("edit-resource", {id: this.state.hoverResource._id});
+        this.context.router.transitionTo("edit-resource", {id: this.state.hoverResource.id});
     },
     _handleDeleteDialogCancel() {
         this.refs.deleteDialog.dismiss();
     },
 
     _handleDeleteDialogSubmit() {
-        ResourceActions.deleteResource(this.state.hoverResource._id);
+        ResourceActions.deleteResource(this.state.hoverResource.id);
     }
 });
 
