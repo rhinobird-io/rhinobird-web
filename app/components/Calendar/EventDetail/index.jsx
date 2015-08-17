@@ -36,10 +36,11 @@ const EventDetail = React.createClass({
 
     getInitialState() {
         let params = this.props.params;
+        let repeatedNumber = params.repeatedNumber || 1;
         return {
             event: CalendarStore.getEvent(params.id, params.repeatedNumber),
             notFound: false,
-            threadKey: `/platform/calendar/events/${params.id}/${params.repeatedNumber}`
+            threadKey: `/platform/calendar/events/${params.id}/${repeatedNumber}`
         };
     },
 

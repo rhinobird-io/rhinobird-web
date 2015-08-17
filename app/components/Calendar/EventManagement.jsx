@@ -230,7 +230,8 @@ let EventManagement = React.createClass({
                 );
 
                 eventComment = [];
-                let threadKey =  `/platform/calendar/events/${event.id}/${event.repeated_number}`;
+                let repeatedNumber = event.repeated_number || 1;
+                let threadKey =  `/platform/calendar/events/${event.id}/${repeatedNumber}`;
                 eventComment.push(
                     <Flex.Layout horizontal key="comments" style={styles.eventDetailItem}>
                         <Flex.Layout startJustified style={styles.eventDetailIcon}>
