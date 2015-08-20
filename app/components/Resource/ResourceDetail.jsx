@@ -9,7 +9,8 @@ const ResourceDetailContent = require('./ResourceDetailContent');
 let ResourceDetail = React.createClass({
     getInitialState() {
         return {
-            resource: null
+            resource: null,
+            view: this.props.query && this.props.query.view || ''
         }
     },
 
@@ -18,13 +19,16 @@ let ResourceDetail = React.createClass({
         let params = this.props.params;
         ResourceAction.receiveById(params.id);
     },
+    componentWillUnmount() {
+        ResourceStore.removeChangeListener(this._onChange);
+    },
 
     render() {
         let resource = this.state.resource || {};
         return (
             <PerfectScroll style={{height: "100%", position: "relative", margin: "0 auto", padding: 20}}>
                 <MUI.Paper zDepth={1} style={{position: "relative", width: "80%", height: "100%", margin: "0 auto"}}>
-                    <ResourceDetailContent resource={resource}/>
+                    <ResourceDetailContent resource={resource} view={this.state.view}/>
                 </MUI.Paper>
             </PerfectScroll>
         );

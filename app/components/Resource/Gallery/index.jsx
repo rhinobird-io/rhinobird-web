@@ -60,6 +60,7 @@ let Gallery = React.createClass({
                 width: '100%',
                 display: 'flex',
                 paddingBottom: 5,
+                cursor: 'pointer',
                 backgroundColor: hasImage ? 'transparent' : this.context.muiTheme.palette.primary3Color
             },
             thumbsStyles: {
@@ -67,6 +68,7 @@ let Gallery = React.createClass({
                 width: '100%',
                 display: 'flex',
                 overflow: 'hidden',
+                cursor: hasImage ? '' : 'pointer',
                 backgroundColor: hasImage ? 'transparent' : this.context.muiTheme.palette.primary3Color
             },
             thumbsContainer: {
@@ -77,10 +79,10 @@ let Gallery = React.createClass({
         };
         return (
             <div>
-                <div style={styles.content}>
+                <div style={styles.content} onClick={_this.clickImage}>
                     {content}
                 </div>
-                <div style={styles.thumbsStyles}>
+                <div style={styles.thumbsStyles} onClick={hasImage ? undefined : _this.clickImage}>
                     {showPrevious ?
                         <MUI.IconButton className='icon' onClick={this.movePrevious} iconStyle={{fontSize: 40}}
                                         iconClassName="icon-chevron-left"/>
@@ -158,6 +160,9 @@ let Gallery = React.createClass({
             view: view,
             width: this.refs.thumbsContainer.getDOMNode().offsetWidth
         });
+    },
+    clickImage: function () {
+        this.props.onClick();
     }
 
 });

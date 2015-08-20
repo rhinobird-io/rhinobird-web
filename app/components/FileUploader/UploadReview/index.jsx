@@ -42,7 +42,9 @@ const UploadReview = React.createClass({
 
         if (files && files.length > 0) {
             files.map(function (file) {
-                content.push(<Picture class="picture" src={file.url} style={{width: 200, height: 200, margin: 5, cursor: 'pointer'}} onClick={_this._deleteImage} />);
+                content.push(<Picture class="picture" src={file.url}
+                                      style={{width: 200, height: 200, margin: 5, cursor: 'pointer', border: 'solid 3px transparent'}}
+                                      onClick={_this._deleteImage} />);
             });
         }
 

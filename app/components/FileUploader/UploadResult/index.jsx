@@ -2,31 +2,56 @@
 
 const React = require("react");
 import Constants from '../constants.jsx';
+const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 const UploadResult = React.createClass({
-
-    setResult(result) {
+    clearResults: function () {
         this.setState({
-            style: {color: (result === Constants.UploadResult.SUCCESS ? "green" : "red")},
-            result: result
+            results: []
         });
+    },
+    mixins: [React.addons.PureRenderMixin, StylePropable],
+    addResult(result) {
+        let results = this.state.results;
+        if (result.result === Constants.UploadResult.SUCCESS) {
+            results.push({
+                style: {color: 'green'},
+                msg: ": Upload success.",
+                url: `/file/files/${result.file.id}/download`,
+                name: result.file.name
+            });
+        }
+        else if (result.result === Constants.UploadResult.FAILED) {
+            results.push({
+                style: {color: 'red'},
+                msg: result.error
+            });
+        }
+        this.setState({
+            results: results
+        });
+        this.forceUpdate();
     },
 
     getInitialState() {
         return {
-            style: {color: "red"},
-            result: ''
-        }
+            results: []
+        };
     },
 
     render() {
-        if (this.props.style && this.props.style.display === 'none') {
-            return (
-                <div></div>
-            );
-        }
+        let content = [];
+        if (this.state.results && this.state.results.length > 0)
+            content = this.state.results.map((result) => (
+                <span style={this.mergeAndPrefix(result.style, this.props.style)}>
+                    {result.url ? <a href={result.url}>{result.name}</a> : ''}
+                    {result.msg}
+                </span>
+            ));
         return (
-            <span style={this.state.style}>{this.state.result}</span>
+            <div>
+            {content}
+            </div>
         );
     }
 });
