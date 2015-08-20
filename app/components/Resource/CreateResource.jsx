@@ -21,7 +21,8 @@ let CreateResource = React.createClass({
     errorMsg: {
         nameRequired: "Resource name is required.",
         descriptionRequired: "Description is required.",
-        locationRequired: "Location is required."
+        locationRequired: "Location is required.",
+        nameDuplicated: "Resource name already exists."
     },
 
     getInitialState() {
@@ -72,6 +73,12 @@ let CreateResource = React.createClass({
                 paddingTop: '12px'
             }
         };
+        let dialogActions = [
+            <MUI.FlatButton
+                label="OK"
+                primary={true}
+                onTouchTap={this._closeErrorDialog}/>
+        ];
         return (
             <PerfectScroll style={{height: "100%", position: "relative"}}>
                 <Flex.Layout horizontal centerJustified wrap>
@@ -104,6 +111,10 @@ let CreateResource = React.createClass({
                                     <MUI.RaisedButton label="Cancel" onClick={this._cancel}/>
                                     <MUI.RaisedButton type="submit" label={`${this.state.mode === 'create' ? 'Create' : 'Update'} Resource`} primary={true} onClick={this._handleSubmit}/>
                                 </Flex.Layout>
+
+                                <MUI.Dialog actions={dialogActions} title="Error" ref='errorDialog'>
+                                    Internal Server Error. Please wait for a moment and try again.
+                                </MUI.Dialog>
                             </div>
                         </MUI.Paper>
                     </form>
@@ -150,23 +161,48 @@ let CreateResource = React.createClass({
             this.setState({descriptionError: ''});
         }
 
-        let resource = this.state.resource;
+        let resource = {};
+        resource.id = this.state.resource.id;
         resource.name = name;
-        if (!resource.userId)
-            resource.userId = LoginStore.getUser().id;
+        resource.userId = LoginStore.getUser().id;
         resource.description = description;
         resource.location = location;
         var images = this.refs.fileUploader.getValue();
         var ids = images.map((file) => (file.url));
         resource.images = ids;
-        if (this.state.mode === 'create')
-            ResourceAction.create(resource, (r) => this.context.router.transitionTo("resource-detail", {id: r.id}, {view: 'detail'}));
+        if (this.state.mode === 'create') {
+            ResourceAction.create(resource,
+                (r) => this.context.router.transitionTo("resource-detail", {id: r.id}, {view: 'detail'}),
+                (e) => {
+                    if (e === 403)
+                        this.setState({nameError: this.errorMsg.nameDuplicated});
+                    else
+                        this.refs.errorDialog.show();
+                });
+        }
         else if (this.state.mode === 'edit'){
             if (this.state.origin === 'list')
-                ResourceAction.update(resource, (r) => this.context.router.transitionTo("resources"));
+                ResourceAction.update(resource,
+                    (r) => this.context.router.transitionTo("resources"),
+                    (e) => {
+                        if (e === 403)
+                            this.setState({nameError: this.errorMsg.nameDuplicated});
+                        else
+                            this.refs.errorDialog.show();
+                    });
             else
-                ResourceAction.update(resource, (r) => this.context.router.transitionTo("resource-detail", {id: r.id}, {view: 'detail'}));
+                ResourceAction.update(resource,
+                    (r) => this.context.router.transitionTo("resource-detail", {id: r.id}, {view: 'detail'}),
+                    (e) => {
+                        if (e === 403)
+                            this.setState({nameError: this.errorMsg.nameDuplicated});
+                        else
+                            this.refs.errorDialog.show();
+                    });
         }
+    },
+    _closeErrorDialog: function () {
+        this.refs.errorDialog.dismiss();
     }
 
 });

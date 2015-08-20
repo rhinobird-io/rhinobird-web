@@ -77,7 +77,7 @@ let Gallery = React.createClass({
         };
         return (
             <div>
-                <div style={styles.content}>
+                <div style={styles.content} onClick={_this.clickImage}>
                     {content}
                 </div>
                 <div style={styles.thumbsStyles}>
@@ -158,6 +158,9 @@ let Gallery = React.createClass({
             view: view,
             width: this.refs.thumbsContainer.getDOMNode().offsetWidth
         });
+    },
+    clickImage: function () {
+        this.props.onClick();
     }
 
 });

@@ -78,7 +78,7 @@ let ResourceDetailContent = React.createClass({
                             <MUI.IconButton ref="showDetails" onClick={this._toggleResourceInfo} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-details" />
                             <MUI.IconButton ref="showCalendar" onClick={this._toggleResourceInfo} style={{display: 'none'}} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-event-note"/>
 
-                            {LoginStore.getUser() && LoginStore.getUser().id === resource.userId ?
+                            {LoginStore.getUser() && (!resource.userId || LoginStore.getUser().id === resource.userId) ?
                                 <div>
                                     <MUI.IconButton onClick={this._editResource} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/>
                                     <MUI.IconButton onClick={this._deleteResource} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-delete"/>
@@ -440,6 +440,7 @@ let ResourceDetailContent = React.createClass({
         $(this.refs.calendar.getDOMNode()).toggle();
         $(this.refs.showCalendar.getDOMNode()).toggle();
         $(this.refs.showDetails.getDOMNode()).toggle();
+
     }
 
 });

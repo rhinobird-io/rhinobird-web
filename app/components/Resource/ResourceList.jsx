@@ -63,7 +63,7 @@ let ResourceList = React.createClass({
                         resources.map((resource, index) => (
                             <MUI.Paper onMouseEnter={_this._onHover.bind(null, resource)} onMouseLeave={_this._onLeave} style={{flex: "1 1 320px", margin: 20, maxWidth: "50%", whiteSpace:'nowrap', textOverflow:'ellipsis', overflow:'hidden'}}>
                                 <Flex.Layout vertical>
-                                    <Gallery images={resource.images} />
+                                    <Gallery images={resource.images} onClick={_this._redirect}/>
                                     <div style={{padding: "10px 12px"}}>
                                         <Link to="resource-detail" params={{id: resource.id}}>
                                             <Common.Display type="body2">{resource.name}</Common.Display>
@@ -71,7 +71,7 @@ let ResourceList = React.createClass({
                                         {_this.state.hover && hoverResource
                                             && resource.id === hoverResource.id
                                             && LoginStore.getUser()
-                                            && hoverResource.userId === LoginStore.getUser().id ?
+                                            && (!hoverResource.userId || hoverResource.userId === LoginStore.getUser().id) ?
                                             <Flex.Layout flex={1} center horizontal style={{display: 'inline', float: 'right'}}>
                                                 <MUI.IconButton onClick={_this._editResource} style={iconStyle} iconClassName="icon-edit"/>
                                                 <MUI.IconButton onClick={_this._deleteResource} style={iconStyle} iconClassName="icon-delete"/>
@@ -133,6 +133,10 @@ let ResourceList = React.createClass({
 
     _handleDeleteDialogSubmit() {
         ResourceActions.deleteResource(this.state.hoverResource.id);
+    },
+    _redirect: function () {
+        if (this.state.hoverResource)
+            this.context.router.transitionTo("resource-detail", {id: this.state.hoverResource.id});
     }
 });
 

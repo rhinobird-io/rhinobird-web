@@ -5,7 +5,7 @@ const ResourceStore = require('../stores/ResourceStore');
 const ResourceActionTypes = require('../constants/AppConstants').ResourceActionTypes;
 
 let ResourceActions = {
-    create(resource, success) {
+    create(resource, success, fail) {
         $.post(`/resource/resources`, {resource: resource}).done(data => {
             AppDispatcher.dispatch({
                 type: ResourceActionTypes.CREATE_RESOURCE,
@@ -16,9 +16,11 @@ let ResourceActions = {
             }
         }).fail(e => {
             console.error(e);
+            if (fail && typeof fail === 'function')
+                fail(e.status);
         });
     },
-    update(resource, success) {
+    update(resource, success, fail) {
         $.ajax({
             url: '/resource/resources',
             type: 'put',
@@ -33,6 +35,8 @@ let ResourceActions = {
             }
         }).fail(e => {
             console.error(e);
+            if (fail && typeof fail === 'function')
+                fail(e.status);
         });
     },
 
