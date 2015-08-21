@@ -259,7 +259,11 @@ let AllEvents = React.createClass({
                 fontSize: "0.8em"
             },
             timeRange: {
-                fontWeight: 500
+                fontWeight: 500,
+                lineHeight: "14px"
+            },
+            title: {
+                lineHeight: "14px"
             }
         };
 
@@ -267,7 +271,7 @@ let AllEvents = React.createClass({
         let timeRange = `${Moment(range.from_time || range.fromTime).format("h:mm a")} ~ ${Moment(range.to_time || range.toTime).format("h:mm a")}`;
 
         innerContent.push(<div key="range" style={styles.timeRange}>{timeRange}</div>);
-		innerContent.push(<div>{range.title}</div>)
+		innerContent.push(<div style={styles.title}>{range.title}</div>)
 
         let now = new Date();
         let toTime = new Date(range.to_time);
