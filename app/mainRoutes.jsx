@@ -45,6 +45,7 @@ module.exports = (
         <Route name="post-detail" path="post/:id" handler={require("react-router-proxy!./components/Post/PostDetail")}>
         </Route>
         <Route name="create-post" path="create-post" handler={require("react-router-proxy!./components/Post/PostDetail")}/>
+        <Route name="activity" path="activity" handler={require("react-router-proxy!./components/Activity")}/>
         <Redirect from="/platform" to="/platform/dashboard" />
         <Redirect from="/platform/" to="/platform/dashboard" />
         <Redirect from="/" to="/platform/dashboard" />
