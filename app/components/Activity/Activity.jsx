@@ -28,9 +28,9 @@ module.exports = React.createClass({
                                     <Common.Display type='display3' style={{color:this.context.muiTheme.palette.primary1Color}}>325</Common.Display>
                                     <Common.Display type='display3' style={{marginLeft:24}}>Points</Common.Display>
                                 </div>
-                                <mui.RaisedButton primary={true} label="My activities"/>
+                                <mui.RaisedButton secondary={true} label="My activities"/>
                             </Flex.Layout>
-                            <Common.Hr style={{margin: '24px 0'}}/>
+                            <Common.Hr style={{margin: '12px 0'}}/>
                             <Common.Display type='body3'>Next coming</Common.Display>
                             <ListItem style={{left:-16}} secondaryText="1000" key={u.id} leftAvatar={<Member.Avatar scale={1.6666667} link={false} member={u}/>}><Member.Name link={false} member={u}/></ListItem>
                         </mui.Paper>
