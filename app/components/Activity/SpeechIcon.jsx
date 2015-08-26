@@ -23,10 +23,12 @@ module.exports = React.createClass({
         }, leftStyle = {
             width: '40%',
             height: '100%',
+            textAlign: 'right',
             display: 'inline-block'
         }, rightStyle = {
             width: '40%',
             height: '100%',
+            textAlign: 'left',
             display: 'inline-block'
         }, slashStyle ={
             height: '100%',
