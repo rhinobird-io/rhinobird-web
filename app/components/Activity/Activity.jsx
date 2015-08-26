@@ -1,11 +1,11 @@
 const React = require("react");
-const RouteHandler = require("react-router").RouteHandler;
 const PerfectScroll = require("../PerfectScroll");
 const mui = require('material-ui'), ListItem = mui.ListItem;
 const Common = require('../Common');
 const Flex = require('../Flex');
 const Member = require('../Member');
 const UserStore = require('../../stores/UserStore');
+const SpeechIcon = require('./SpeechIcon');
 
 module.exports = React.createClass({
 
@@ -32,13 +32,13 @@ module.exports = React.createClass({
                             </Flex.Layout>
                             <Common.Hr style={{margin: '12px 0'}}/>
                             <Common.Display type='body3'>Next coming</Common.Display>
-                            <ListItem style={{left:-16}} secondaryText="1000" key={u.id} leftAvatar={<Member.Avatar scale={1.6666667} link={false} member={u}/>}><Member.Name link={false} member={u}/></ListItem>
+                            <ListItem style={{left:-16}} secondaryText="1000" key={u.id} leftAvatar={<div><SpeechIcon type='M' month='8' day='3'/></div>}><Member.Name link={false} member={u}/></ListItem>
                         </mui.Paper>
 
                         <mui.Paper style={{padding:8, width:'100%', marginTop:48}}>
                             <mui.List subheader="Speech">
                                 {UserStore.getUsersArray().slice(0,10).map(u=>{
-                                    return <ListItem secondaryText="1000" key={u.id} leftAvatar={<Member.Avatar scale={1.6666667} link={false} member={u}/>}><Member.Name link={false} member={u}/></ListItem>
+                                    return <ListItem secondaryText="1000" key={u.id} leftAvatar={<div><SpeechIcon type='L' month='7' day='21'/></div>}><Member.Name link={false} member={u}/></ListItem>
                                 })}
                             </mui.List>
                         </mui.Paper>
