@@ -23,6 +23,12 @@ const fonts = {
         lineHeight: 24,
         contrast: 87
     },
+    'body3': {
+        size: 14,
+        weight: Typography.fontWeightMedium,
+        lineHeight: 24,
+        contrast: 54
+    },
     'subhead': {
         size: 16,
         weight: Typography.fontWeightNormal,
