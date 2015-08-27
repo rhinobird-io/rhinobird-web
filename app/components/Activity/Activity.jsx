@@ -5,7 +5,7 @@ const Common = require('../Common');
 const Flex = require('../Flex');
 const Member = require('../Member');
 const UserStore = require('../../stores/UserStore');
-const SpeechIcon = require('./SpeechIcon');
+const ActivityIcon = require('./ActivityIcon');
 
 module.exports = React.createClass({
 
@@ -32,16 +32,16 @@ module.exports = React.createClass({
                             </Flex.Layout>
                             <Common.Hr style={{margin: '12px 0'}}/>
                             <Common.Display type='body3'>Next coming</Common.Display>
-                            <ListItem style={{left:-16}} secondaryText="1000" key={u.id} leftAvatar={<div><SpeechIcon type='M' month='8' day='3'/></div>}><Member.Name link={false} member={u}/></ListItem>
+                            <ListItem style={{left:-16}} secondaryText="1000" key={u.id} leftAvatar={<div><ActivityIcon type='M' month='8' day='3'/></div>}><Member.Name link={false} member={u}/></ListItem>
                         </mui.Paper>
 
                         <mui.Paper style={{padding:8, width:'100%', marginTop:48, position:'relative'}}>
-                            <mui.List subheader="Speech">
+                            <mui.List subheader="Activities">
                                 {UserStore.getUsersArray().slice(0,10).map(u=>{
-                                    return <ListItem secondaryText="1000" key={u.id} leftAvatar={<div><SpeechIcon type='L' month='7' day='21'/></div>}><Member.Name link={false} member={u}/></ListItem>
+                                    return <ListItem secondaryText="1000" key={u.id} leftAvatar={<div><ActivityIcon type='L' month='7' day='21'/></div>}><Member.Name link={false} member={u}/></ListItem>
                                 })}
                             </mui.List>
-                            <mui.FloatingActionButton iconClassName='icon-add' mini={true} style={{position:'absolute', top:12, right: 12}}/>
+                            <mui.FloatingActionButton iconClassName='icon-add' mini={true} style={{position:'absolute', top:12, right: 24}}/>
                         </mui.Paper>
                     </Flex.Item>
                     <div style={{marginLeft:48}}>
