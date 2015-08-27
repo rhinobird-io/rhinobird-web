@@ -136,14 +136,20 @@ let DaysView = React.createClass({
             (this.state.crossDayRanges || []).forEach((cr, index) => {
                 let from = new Date(cr.from_time);
                 let to = new Date(cr.to_time);
+                let fromMoment = Moment([from.getYear(), from.getMonth(), from.getDate()]);
+                let toMoment = Moment([to.getYear(), to.getMonth(), to.getDate()]);
+                let start = Moment([this.props.dates[0].getYear(), this.props.dates[0].getMonth(), this.props.dates[0].getDate()]);
+                let end = Moment([this.props.dates[this.props.dates.length - 1].getYear(), this.props.dates[this.props.dates.length - 1].getMonth(), this.props.dates[this.props.dates.length - 1].getDate()]);
                 let ref = `range_${index}`;
                 let outerStyle = assign({}, rangeStyles.outer);
-                let dayDiff = Moment(to).diff(Moment(from), 'days') + 1;
-                let totalRange = Moment(this.props.dates[this.props.dates.length - 1]).diff(Moment(this.props.dates[0]), 'days') + 1;
-                let dayDiffStart = Moment(from).diff(Moment(this.props.dates[0]), 'days');
+                let dayDiff = Moment(toMoment).diff(fromMoment, 'days') + 1;
+                let totalRange = this.props.dates.length;
+                let dayDiffStart = fromMoment.diff(start, 'days');
+
                 outerStyle.position = "absolute";
                 outerStyle.width = `${dayDiff * 100 / totalRange}%`;
                 outerStyle.left = `${dayDiffStart * 100 / totalRange}%`;
+                outerStyle.maxWidth = `${(totalRange - dayDiffStart) * 100 / totalRange}%`;
                 let content = (
                     <div key={ref} ref={ref} style={outerStyle} onClick={() => this._handleRangeClick(ref, cr)}>
                         <Flex.Layout center style={rangeStyles.inner}>

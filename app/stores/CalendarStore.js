@@ -133,9 +133,9 @@ Date.prototype.firstDayOfMonth = function() {
 Date.prototype.monthDays = function() {
     let month = this.getMonth();
     let result = [];
-    for (let i = 0; i <= 30; i++) {
+    for (let i = 0; i <= 31; i++) {
         let date = new Date(this);
-        date.setDate(i - this.getDay());
+        date.setDate(i);
         if (date.getMonth() === month) {
             result.push(date);
         }
@@ -146,9 +146,10 @@ Date.prototype.monthDays = function() {
 Date.prototype.calendarMonthDays = function() {
     let result = this.monthDays();
     let firstDay = result[0];
+    console.log(result);
     let lastDay = result[result.length - 1];
     let pres = [];
-    let nexts = [];
+    let followings = [];
     for (let i = 0; i < firstDay.getDay(); i++) {
         let preDay = new Date(firstDay);
         preDay.setDate(firstDay.getDate() + i - firstDay.getDay());
@@ -157,10 +158,10 @@ Date.prototype.calendarMonthDays = function() {
     for (let i = lastDay.getDay() + 1; i <= 6; i++) {
         let nextDay = new Date(lastDay);
         nextDay.setDate(nextDay.getDate() + i - lastDay.getDay());
-        nexts.push(nextDay);
+        followings.push(nextDay);
     }
 
-    return pres.concat(result).concat(nexts);
+    return pres.concat(result).concat(followings);
 };
 
 let addEvents = function(events) {
@@ -282,7 +283,6 @@ let CalendarStore = assign({}, BaseStore, {
 
     getEventsByMonth(date) {
         let days = new Date(date).monthDays();
-        console.log(days);
         return this.getEventsByDays(days)
     },
 
@@ -294,7 +294,6 @@ let CalendarStore = assign({}, BaseStore, {
         let days = new Date(date).calendarMonthDays();
         return this.getEventsByDays(days)
     },
-
 
     getEventsByFourDays(date) {
         let days = new Date(date).fourDays();

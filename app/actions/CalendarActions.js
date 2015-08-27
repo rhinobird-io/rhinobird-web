@@ -95,6 +95,24 @@ let CalendarAction =  {
         }
     },
 
+    receiveByCalendarMonth(date, success) {
+        if (CalendarStore.isMonthLoaded(date)) {
+            AppDispatcher.dispatch({
+                type: CalendarActionTypes.UPDATE_VIEW
+            });
+        } else {
+            $.get(`/platform/api/events/calendarMonth/${date}`).done(data => {
+                AppDispatcher.dispatch({
+                    type: CalendarActionTypes.RECEIVE_EVENTS_BY_MONTH,
+                    data: data,
+                    date: date
+                });
+            }).fail(e => {
+                console.error(e);
+            });
+        }
+    },
+
     receiveByWeek(date, success) {
         if (CalendarStore.isWeekLoaded(date)) {
             AppDispatcher.dispatch({
