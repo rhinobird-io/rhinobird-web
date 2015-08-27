@@ -103,7 +103,7 @@ let MonthView = React.createClass({
         let weeks = [];
         while (month === start.getMonth()) {
             weeks.push(new Date(start));
-            start.setDate(start.getDate() + 7);
+            start.setDate(start.getDate() + 7 - start.getDay());
         }
 
         let contents = weeks.map(w => this._getWeekContent(w));
