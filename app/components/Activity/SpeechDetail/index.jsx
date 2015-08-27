@@ -30,6 +30,8 @@ module.exports = React.createClass({
             }
         };
 
+        let speaker = UserStore.getUsersArray()[0];
+
         return (
             <PerfectScroll style={{height: '100%', position:'relative', padding:24}}>
                 <Flex.Layout horizontal centerJustified wrap>
@@ -38,7 +40,7 @@ module.exports = React.createClass({
                             <div style={{padding: 20}}>
                                 <Flex.Layout horizontal justified>
                                     <h3 style={{marginBottom: 0}}>Speech Detail</h3>
-                                    <MUI.FontIcon className="icon-get-app"/>
+                                    <Common.Display type="body2">1 people wants to attend</Common.Display>
                                 </Flex.Layout>
 
                                 <MUI.TextField
@@ -50,14 +52,12 @@ module.exports = React.createClass({
                                     floatingLabelText="Speech Title"
                                     style={{width: "100%"}} />
 
-                                <MUI.TextField
-                                    disabled={false}
-                                    ref="speaker"
-                                    hintText="Speaker"
-                                    defaultValue=""
-                                    errorText=""
-                                    floatingLabelText="Speaker"
-                                    style={{width: "100%"}} />
+                                <Flex.Layout horizontal center justified>
+                                    <Common.Display type="body3">Speaker</Common.Display>
+                                    <Flex.Layout horizontal center>
+                                        <Member.Avatar scale={1.6666667} link={true} member={speaker} />
+                                    </Flex.Layout>
+                                </Flex.Layout>
 
                                 <SmartEditor
                                     disabled={false}
@@ -70,65 +70,68 @@ module.exports = React.createClass({
                                     style={{width: "100%"}} />
 
                                 <Flex.Layout horizontal justified>
-                                    <Flex.Layout horizontal center justified style={{minWidth: 0}}>
-                                        <MUI.FontIcon className="icon-schedule"/>
+                                    <Flex.Layout center style={{minWidth: 80}}>
+                                        <Common.Display type="body3">Holding Time</Common.Display>
                                     </Flex.Layout>
-                                    <Flex.Layout vertical style={{minWidth: 0}}>
-                                        <Flex.Layout horizontal justified>
-                                            <Flex.Layout horizontal justified style={{minWidth: 0}}>
-                                                <MUI.DatePicker
-                                                    disabled={false}
-                                                    ref="date"
-                                                    hintText="Date"
-                                                    style={styles.picker}
-                                                    defaultDate={new Date()}
-                                                    floatingLabelText="Date" />
-                                            </Flex.Layout>
-                                            <Flex.Layout horizontal justified style={{minWidth: 0}}>
-                                                <MUI.TimePicker
-                                                    format="ampm"
-                                                    ref="time"
-                                                    hintText="Time"
-                                                    style={styles.picker}
-                                                    defaultTime={new Date()}
-                                                    floatingLabelText="Time" />
-                                            </Flex.Layout>
-                                        </Flex.Layout>
-                                        <Flex.Layout horizontal justified>
-                                            <Flex.Layout horizontal justified style={{minWidth: 0}}>
-                                                <MUI.TextField
-                                                    disabled={false}
-                                                    ref="hours"
-                                                    hintText="Hours"
-                                                    defaultValue="1"
-                                                    errorText=""
-                                                    floatingLabelText="Hours"
-                                                    style={{width: "100%"}} />
-                                            </Flex.Layout>
-                                            <Flex.Layout horizontal justified style={{minWidth: 0}}>
-                                                <MUI.TextField
-                                                    disabled={false}
-                                                    ref="minutes"
-                                                    hintText="Minutes"
-                                                    defaultValue="0"
-                                                    errorText=""
-                                                    floatingLabelText="Minutes"
-                                                    style={{width: "100%"}} />
-                                            </Flex.Layout>
-                                        </Flex.Layout>
+                                    <Flex.Layout horizontal justified style={{minWidth: 0}}>
+                                        <MUI.DatePicker
+                                            disabled={false}
+                                            ref="date"
+                                            hintText="Date"
+                                            style={styles.picker}
+                                            defaultDate={new Date()}
+                                            floatingLabelText="Date" />
+                                    </Flex.Layout>
+                                    <Flex.Layout horizontal justified style={{minWidth: 0}}>
+                                        <MUI.TimePicker
+                                            format="ampm"
+                                            ref="time"
+                                            hintText="Time"
+                                            style={styles.picker}
+                                            defaultTime={new Date()}
+                                            floatingLabelText="Time" />
+                                    </Flex.Layout>
+                                </Flex.Layout>
+
+                                <Flex.Layout horizontal justified>
+                                    <Flex.Layout center style={{minWidth: 80}}>
+                                        <Common.Display type="body3">Duration</Common.Display>
+                                    </Flex.Layout>
+                                    <Flex.Layout horizontal justified style={{minWidth: 0}}>
+                                        <MUI.TextField
+                                            disabled={false}
+                                            ref="hours"
+                                            hintText="Hours"
+                                            defaultValue="1"
+                                            errorText=""
+                                            floatingLabelText="Hours"
+                                            style={{width: "100%"}} />
+                                    </Flex.Layout>
+                                    <Flex.Layout horizontal justified style={{minWidth: 0}}>
+                                        <MUI.TextField
+                                            disabled={false}
+                                            ref="minutes"
+                                            hintText="Minutes"
+                                            defaultValue="0"
+                                            errorText=""
+                                            floatingLabelText="Minutes"
+                                            style={{width: "100%"}} />
                                     </Flex.Layout>
                                 </Flex.Layout>
 
                                 <Flex.Layout endJustified>
+                                    <Flex.Layout center style={{minWidth: 36}}>
+                                        <MUI.FontIcon className="icon-get-app"/>
+                                    </Flex.Layout>
                                     <FileUploader ref="fileUploader" text={"Upload Attachments"} showReview showResult maxSize={10 * 1024 * 1024} acceptTypes={["png", "jpeg", "jpg", "bmp"]} />
                                 </Flex.Layout>
 
                                 <Flex.Layout horizontal justified style={{marginTop: 20}}>
-                                    <MUI.RaisedButton label="Return" onClick={() => history.back()} />
-                                    <MUI.RaisedButton type="submit" label="Update" primary={true} />
-                                    <MUI.RaisedButton type="submit" label="Approve" primary={true} />
-                                    <MUI.RaisedButton type="submit" label="Confirm" primary={true} />
-                                    <MUI.RaisedButton type="submit" label="Join" primary={true} />
+                                    <MUI.FlatButton label="Return" onClick={() => history.back()} />
+                                    <MUI.FlatButton type="submit" label="Update" primary={true} />
+                                    <MUI.FlatButton type="submit" label="Approve" primary={true} />
+                                    <MUI.FlatButton type="submit" label="Confirm" primary={true} />
+                                    <MUI.FlatButton type="submit" label="Attend" primary={true} />
                                 </Flex.Layout>
 
                                 <Flex.Layout horizontal key="comments">
