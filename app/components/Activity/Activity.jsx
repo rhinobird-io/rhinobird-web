@@ -14,8 +14,18 @@ module.exports = React.createClass({
     },
     componentDidMount() {
         this.props.setTitle("Activity");
+        UserStore.addChangeListener(this._userChanged);
     },
-    render(){
+    componentWillUnmount(){
+        UserStore.removeChangeListener(this._userChanged);
+    },
+    _userChanged(){
+        this.forceUpdate();
+    },
+    render() {
+        if (!UserStore.hasInitialized()) {
+            return null;
+        }
         let u = UserStore.getUser(1);
         return (
             <PerfectScroll style={{height: '100%', position:'relative', padding:24}}>
