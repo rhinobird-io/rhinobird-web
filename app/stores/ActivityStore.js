@@ -13,7 +13,6 @@ let SpeechStore = assign({}, BaseStore, {
         return _activities;
     },
     nextSpeech(){
-        debugger;
         let firstAfterComing = _activities.findIndex(a => new Date(a.time) < new Date());
         if (firstAfterComing == 0) {
             return null;
