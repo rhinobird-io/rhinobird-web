@@ -5,6 +5,7 @@ const Common = require('../Common');
 const Flex = require('../Flex');
 const Member = require('../Member');
 const UserStore = require('../../stores/UserStore');
+const ActivityAction = require('../../actions/ActivityAction');
 const ActivityIcon = require('./ActivityIcon');
 const PersonalBoard = require('./PersonalBoard');
 const ActivityList = require('./ActivityList');
@@ -15,6 +16,9 @@ module.exports = React.createClass({
         muiTheme: React.PropTypes.object
     },
     componentDidMount() {
+        $.get('/activity/speeches').then(data=>{
+            ActivityAction.updateActivities(data);
+        });
         UserStore.addChangeListener(this._userChanged);
     },
     componentWillUnmount(){
