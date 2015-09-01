@@ -15,7 +15,8 @@ const typeMap = {
 }
 module.exports = React.createClass({
     contextTypes: {
-        muiTheme: React.PropTypes.object
+        muiTheme: React.PropTypes.object,
+        router: React.PropTypes.func.isRequired
     },
     mixins: [StylePropable],
     render() {
@@ -36,7 +37,8 @@ module.exports = React.createClass({
         let borderColor = 'rgba(0,0,0,0.03)';
         return <Flex.Layout style={this.mergeAndPrefix(style, this.props.style)}
                             onMouseOver={()=>this.getDOMNode().style.backgroundColor = borderColor}
-                            onMouseOut={()=>this.getDOMNode().style.backgroundColor = canvasColor}>
+                            onMouseOut={()=>this.getDOMNode().style.backgroundColor = canvasColor}
+                            onClick={()=>{this.context.router.transitionTo('speech-detail', {id: this.props.activity.id})}} >
             <ActivityIcon type={type} month={time.month() + 1} day={time.date()}/>
 
             <Flex.Layout vertical style={{marginLeft:12}} flex={1}>
@@ -44,7 +46,7 @@ module.exports = React.createClass({
                 <Common.Display type='caption'>
                     <Flex.Layout justified center>
                         <div><span className='icon-access-time'/> {time.format('h:mm')}</div>
-                        <Flex.Layout center><Member.Avatar scale={0.5} member={user}/> <Member.Name style={{marginLeft:4}} member={user}/></Flex.Layout>
+                        <Flex.Layout center onClick={(e)=>{e.stopPropagation()}}><Member.Avatar scale={0.5} member={user}/> <Member.Name style={{marginLeft:4}} member={user}/></Flex.Layout>
                     </Flex.Layout>
                 </Common.Display>
             </Flex.Layout>
