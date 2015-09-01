@@ -105,8 +105,8 @@ export default React.createClass({
             let line = {};
             Assign(line, styles.line);
             let width = 100 / (stepTitles.length - 1);
-            line.width = `${width * 0.8}%`;
-            line.left = `${width * 0.1 + i * (100 / (stepTitles.length - 1))}%`;
+            line.width = `${width}%`;
+            line.left = `${i * (100 / (stepTitles.length - 1))}%`;
             if (i >= this.props.activeStep) {
                 line.background = Colors.grey500;
             }
