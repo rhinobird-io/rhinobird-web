@@ -38,8 +38,8 @@ module.exports = React.createClass({
         if(!this.state.user){
             return null;
         }
-        return <mui.Paper style={{padding:24, width:'100%'}}>
-            <Flex.Layout start justified>
+        return <mui.Paper style={{padding:12, width:'100%'}}>
+            <Flex.Layout start justified style={{marginLeft:12}}>
                 <div>
                     <Common.Display type='display3' style={{color:this.context.muiTheme.palette.primary1Color}}>{this.state.user.point}</Common.Display>
                     <Common.Display type='display3' style={{marginLeft:24}}>Points</Common.Display>
@@ -47,8 +47,8 @@ module.exports = React.createClass({
                 <mui.RaisedButton secondary={true} label="My activities"/>
             </Flex.Layout>
             {this.state.next? <div>
-            <Common.Hr style={{margin: '12px 0'}}/>
-            <Common.Display type='body3'>Next coming</Common.Display>
+            <Common.Hr style={{margin: '12px 12px'}}/>
+            <Common.Display type='body3' style={{marginLeft:12}}>Next coming</Common.Display>
                 <ActivityItem activity={this.state.next}/>
             </div>: undefined}
         </mui.Paper>;
