@@ -22,7 +22,7 @@ export default React.createClass({
 
     getDefaultProps() {
         return {
-            activeStep: 3,
+            activeStep: 0,
             stepTitles: []
         }
     },
@@ -43,11 +43,12 @@ export default React.createClass({
         } = this.props;
 
         let styles = {
-            bin: {
+            line: {
                 position: "absolute",
                 top: "50%",
                 width: "100%",
                 height: 4,
+                borderRadius: 2,
                 marginTop: -2,
                 background: Colors.green500,
                 zIndex: 0
@@ -60,7 +61,6 @@ export default React.createClass({
                 lineHeight: "60px",
                 position: "relative",
                 background: Colors.green200,
-                //borderBottom: `6px solid ${Colors.green200}`,
                 textAlign: "center",
                 color: "white",
                 fontSize: "28px",
@@ -71,8 +71,8 @@ export default React.createClass({
                 top: "100%",
                 fontSize: "18px",
                 lineHeight: "2em",
-                width: "100px",
-                left: "-40px",
+                width: "200px",
+                left: "-90px",
                 textAlign: "center",
                 color: Colors.grey600
             }
@@ -82,27 +82,40 @@ export default React.createClass({
         for (let i = 0; i < stepTitles.length; i++) {
             let step = {};
             Assign(step, styles.step);
-            if (i === this.props.activeStep) {
-                //step.borderLeft = `4px solid ${Colors.green500}`;
-            } else if (i < this.props.activeStep) {
+            if (i <= this.props.activeStep) {
                 step.background = Colors.green500;
-                //step.borderBottom = `6px solid ${Colors.green500}`;
+            } else {
+                step.background = Colors.grey500;
             }
-            //if (i === this.props.activeStep) {
-            //    step.background = Colors.green400;
-            //} else if (i < this.props.activeStep) {
-            //    step.background = Colors.grey400;
-            //} else {
-            //    step.background = Colors.green200;
-            //}
+
+            let title = {};
+            Assign(title, styles.title);
+            if (i <= this.props.activeStep) {
+                title.color = Colors.green500;
+            } else {
+                title.color = Colors.grey500;
+            }
             steps.push(<div key={`step${i}`} style={step}>
-                <div style={styles.title}>{`${stepTitles[i] || ''}`}</div>
+                <div style={title}>{`${stepTitles[i] || ''}`}</div>
             </div>);
+        }
+
+        let lines = [];
+        for (let i = 0; i < stepTitles.length - 1; i++) {
+            let line = {};
+            Assign(line, styles.line);
+            let width = 100 / (stepTitles.length - 1);
+            line.width = `${width * 0.8}%`;
+            line.left = `${width * 0.1 + i * (100 / (stepTitles.length - 1))}%`;
+            if (i >= this.props.activeStep) {
+                line.background = Colors.grey500;
+            }
+            lines.push(<div style={line}></div>);
         }
         return (
             <Flex.Layout horizontal justified style={Assign({width: 600, position: "relative"}, style || {})} {...other}>
-                <div style={styles.bin}></div>
                 {steps}
+                {lines}
             </Flex.Layout>
         );
     }
