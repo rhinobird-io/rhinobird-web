@@ -48,7 +48,6 @@ module.exports = React.createClass({
     },
 
     componentDidMount() {
-        this.props.setTitle("Speech Detail");
     },
 
     getInitialState() {
