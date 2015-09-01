@@ -43,7 +43,7 @@ module.exports = React.createClass({
                 <Common.Display>{title}</Common.Display>
                 <Common.Display type='caption'>
                     <Flex.Layout justified center>
-                        <div>at {time.format('h:mm')}</div>
+                        <div><span className='icon-access-time'/> {time.format('h:mm')}</div>
                         <Flex.Layout center><Member.Avatar scale={0.5} member={user}/> <Member.Name style={{marginLeft:4}} member={user}/></Flex.Layout>
                     </Flex.Layout>
                 </Common.Display>
