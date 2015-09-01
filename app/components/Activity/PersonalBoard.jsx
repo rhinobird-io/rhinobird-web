@@ -4,9 +4,9 @@ const Flex = require("../Flex");
 const Common = require('../Common');
 const UserStore = require('../../stores/UserStore');
 const LoginStore = require('../../stores/LoginStore');
-const ActivityIcon = require('./ActivityIcon');
 const ActivityStore = require('../../stores/ActivityStore');
 const Member = require('../Member');
+const ActivityItem = require('./ActivityItem');
 
 module.exports = React.createClass({
     componentDidMount(){
@@ -49,7 +49,7 @@ module.exports = React.createClass({
             {this.state.next? <div>
             <Common.Hr style={{margin: '12px 0'}}/>
             <Common.Display type='body3'>Next coming</Common.Display>
-                <ListItem style={{left:-16}} secondaryText="1000" key={this.state.user.id} leftAvatar={<div><ActivityIcon type='M' month='8' day='3'/></div>}><Member.Name link={false} member={this.state.user}/></ListItem>
+                <ActivityItem activity={this.state.next}/>
             </div>: undefined}
         </mui.Paper>;
     }
