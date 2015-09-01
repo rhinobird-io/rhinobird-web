@@ -33,31 +33,36 @@ module.exports = React.createClass({
         UserStore.removeChangeListener(this._userChanged);
     },
     render() {
-        if(this.state.member){
-            let teamItems = this.state.member.teams.map((team, index)=>{
-                return {payload: index, text: team.name, iconClassName:'icon-group'};
+        if (this.state.member) {
+            let teamItems = this.state.member.teams.map((team, index)=> {
+                return {payload: index, text: team.name, iconClassName: 'icon-group'};
             });
 
             let info = [
-                { payload: '1', text: 'Email', data: this.state.member.email}
+                {payload: '1', text: 'Email', data: this.state.member.email}
             ];
 
             return <div className='member-profile'>
-                <Flex.Layout className='name'>
-                    <Member.Avatar link={false} member={this.state.member} scale={3.0}/>
+                <Flex.Layout>
+                    <Member.Avatar link={false} member={this.state.member} scale={2.167}/>
 
-                    <Flex.Layout vertical className='right'>
-                        <Member.Name className="display-name" link={false} member={this.state.member} scale={3.0}/>
+                    <Flex.Layout vertical style={{marginLeft:12}}>
+                        <Common.Display type='title'><Member.Name link={false}
+                                                                  member={this.state.member}/></Common.Display>
 
-                        <div className="unique-name">@{this.state.member.name}</div>
+                        <div>@{this.state.member.name}</div>
                     </Flex.Layout>
                 </Flex.Layout>
-                <Common.Hr style={{marginBottom:24}} />
-                <h3>Person</h3>
-                <mui.Menu autoWidth={false} zDepth={0} menuItems={info} />
-                <h3>Teams</h3>
-                <mui.Menu autoWidth={false} zDepth={0} menuItems={teamItems} />
-                {/*<div className="mui-font-style-title">Recent activities</div>*/}
+                <Common.Hr style={{margin:"24px 0"}}/>
+                <div style={{fontSize:14, fontWeight:500, lineHeight:'48px', color: 'rgba(0, 0, 0, 0.54)'}}>Email</div>
+                <Common.Display style={{marginLeft:56}} type='subhead'>{this.state.member.email}</Common.Display><br/>
+                <mui.List subheader="Teams" style={{marginLeft: -16}}>
+                    {
+                        this.state.member.teams.map(team=> {
+                            return <mui.ListItem leftIcon={<mui.FontIcon className='icon-group'/>} key={team.id}>{team.name}</mui.ListItem>
+                        })
+                    }
+                </mui.List>
             </div>;
         } else {
             return null;
