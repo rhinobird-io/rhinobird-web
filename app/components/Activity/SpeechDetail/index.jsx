@@ -218,7 +218,7 @@ module.exports = React.createClass({
             </Flex.Layout>;
 
             speechFiles = <Flex.Layout endJustified>
-                <Flex.Layout horizontal>
+                <Flex.Layout horizontal center style={{marginRight: 20}}>
                     <a href="#" target="_blank">slides.pdf</a>
                 </Flex.Layout>
                 {upload}
