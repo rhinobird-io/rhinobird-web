@@ -1,16 +1,34 @@
 'use strict';
 import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/ActivityConstants';
+import UserStore from '../stores/UserStore';
 import BaseStore from './BaseStore';
 import assign from 'object-assign';
 
 let _activities = [];
+let speechMap = {
+    '1': {
+        id: 1,
+        title: "Hello Speech",
+        speaker: UserStore.getUsersArray()[0],
+        state: Math.floor((Math.random() * 4) + 1),
+        description: "No description",
+        date: new Date(),
+        time: new Date(),
+        hours: '1',
+        minutes: '0',
+        audiences: Math.floor((Math.random() * 30) + 1)
+    }
+};
 
 const md5 = require('blueimp-md5');
 let SpeechStore = assign({}, BaseStore, {
 
     getSpeeches() {
         return _activities;
+    },
+    getSpeech(id) {
+        return speechMap[id];
     },
     nextSpeech(){
         let firstAfterComing = _activities.findIndex(a => new Date(a.time) < new Date());
