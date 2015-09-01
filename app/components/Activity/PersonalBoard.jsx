@@ -7,6 +7,7 @@ const LoginStore = require('../../stores/LoginStore');
 const ActivityStore = require('../../stores/ActivityStore');
 const Member = require('../Member');
 const ActivityItem = require('./ActivityItem');
+const Link = require('react-router').Link;
 
 module.exports = React.createClass({
     componentDidMount(){
@@ -44,7 +45,7 @@ module.exports = React.createClass({
                     <Common.Display type='display3' style={{color:this.context.muiTheme.palette.primary1Color}}>{this.state.user.point_available}/{this.state.user.point_total}</Common.Display>
                     <Common.Display type='display3' style={{marginLeft:24}}>Points</Common.Display>
                 </div>
-                <mui.RaisedButton secondary={true} label="My activities"/>
+                <Link to='personal-home'><mui.RaisedButton secondary={true} label="My activities"/></Link>
             </Flex.Layout>
             {this.state.next? <div>
             <Common.Hr style={{margin: '12px 12px'}}/>
