@@ -41,7 +41,7 @@ module.exports = React.createClass({
         return <mui.Paper style={{padding:12, width:'100%'}}>
             <Flex.Layout start justified style={{marginLeft:12}}>
                 <div>
-                    <Common.Display type='display3' style={{color:this.context.muiTheme.palette.primary1Color}}>{this.state.user.point}</Common.Display>
+                    <Common.Display type='display3' style={{color:this.context.muiTheme.palette.primary1Color}}>{this.state.user.point_available}/{this.state.user.point_total}</Common.Display>
                     <Common.Display type='display3' style={{marginLeft:24}}>Points</Common.Display>
                 </div>
                 <mui.RaisedButton secondary={true} label="My activities"/>

@@ -32,9 +32,9 @@ module.exports = React.createClass({
             <mui.Paper style={{padding:8}}>
                 <mui.List subheader="Rank">
                     {this.state.rankedUsers.map(u=> {
-                        return <ListItem secondaryText={u.point} key={u.id}
+                        return <Member.Link member={u}><ListItem secondaryText={u.point} key={u.id}
                                          leftAvatar={<Member.Avatar scale={1.6666667} link={false} member={u}/>}><Member.Name
-                            link={false} member={u}/></ListItem>
+                            link={false} member={u}/></ListItem></Member.Link>
                     })}
                 </mui.List>
             </mui.Paper>
