@@ -6,6 +6,7 @@ const UserStore = require('../../stores/UserStore');
 const ActivityIcon = require('./ActivityIcon');
 const Member = require('../Member');
 const moment = require('moment');
+const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 
 const typeMap = {
@@ -16,6 +17,7 @@ module.exports = React.createClass({
     contextTypes: {
         muiTheme: React.PropTypes.object
     },
+    mixins: [StylePropable],
     render() {
         if (!this.props.activity) {
             return null;
@@ -24,7 +26,17 @@ module.exports = React.createClass({
         let time = moment(this.props.activity.time);
         let title = this.props.activity.title;
         let user = UserStore.getUser(this.props.activity.user_id);
-        return <Flex.Layout style={this.props.style}>
+
+        let style = {
+            cursor: 'pointer',
+            padding: 12,
+            transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'
+        };
+        let canvasColor = this.context.muiTheme.palette.canvasColor;
+        let borderColor = 'rgba(0,0,0,0.03)';
+        return <Flex.Layout style={this.mergeAndPrefix(style, this.props.style)}
+                            onMouseOver={()=>this.getDOMNode().style.backgroundColor = borderColor}
+                            onMouseOut={()=>this.getDOMNode().style.backgroundColor = canvasColor}>
             <ActivityIcon type={type} month={time.month() + 1} day={time.date()}/>
 
             <Flex.Layout vertical style={{marginLeft:12}} flex={1}>
