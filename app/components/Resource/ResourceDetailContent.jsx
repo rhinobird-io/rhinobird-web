@@ -121,12 +121,12 @@ let ResourceDetailContent = React.createClass({
         let user = UserStore.getUser(userId);
         let styles = {
             wrapper: {
-                height: "100%",
-                padding: "4px 6px"
+                height: "100%"
             },
             timeRange: {
                 fontSize: "0.8em",
-                fontWeight: 500
+                fontWeight: 500,
+                lineHeight: "18px"
             }
         };
 
@@ -136,16 +136,18 @@ let ResourceDetailContent = React.createClass({
         innerContent.push(<div key="range" style={styles.timeRange}>{timeRange}</div>);
 
         if (user) {
-            if (LoginStore.getUser().id === userId) {
+            if (LoginStore.getUser().id == userId) {
                 styles.wrapper.backgroundColor = muiTheme.palette.accent3Color;
                 styles.wrapper.border = "1px solid " + muiTheme.palette.accent1Color;
-                innerContent.push(<div>Booked By You</div>)
+                innerContent.push(<div style={{position: "absolute", right: 6, bottom: 0}}>
+                    <div style={styles.timeRange}>Booked by you</div>
+                </div>);
             } else {
                 styles.wrapper.backgroundColor = muiTheme.palette.primary3Color;
                 styles.wrapper.border = "1px solid " + muiTheme.palette.primary1Color;
-                innerContent.push(<Flex.Layout key="member" flex={1} horizontal end selfEnd>
-                    <Member.Avatar member={user} style={{minWidth: 24, marginRight: 6}}/>
-                    <div>{user.realname}</div>
+                innerContent.push(<Flex.Layout style={{position: "absolute", right: 6, bottom: 4}} key="member" flex={1} horizontal end selfEnd>
+                    <Member.Avatar scale={0.8} member={user} style={{marginRight: 4}}/>
+                    <div style={styles.timeRange}>{user.realname}</div>
                 </Flex.Layout>);
             }
         }
