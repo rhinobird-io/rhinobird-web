@@ -34,7 +34,7 @@ module.exports = React.createClass({
         }
         return <mui.Paper style={{padding:12, width:'100%', marginTop:48, position:'relative'}}>
             <div>
-                <Common.Display type='body3' style={{marginLeft:12}}>Activities</Common.Display>
+                <Common.Display type='body3' style={{marginLeft:12, marginBottom:18}}>Activities</Common.Display>
                 {this.state.list.map(activity=>{
                     return <ActivityItem activity={activity}/>
                 })}
