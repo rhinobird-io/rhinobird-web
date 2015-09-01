@@ -95,22 +95,23 @@ let ResourceDetailContent = React.createClass({
             <Flex.Layout vertical style={{height: "100%"}}>
                 {actions}
                 <ResourceInfo ref="resourceInfo" resource={resource}/>
-                <CalendarView
-                    ref="calendar"
-                    date={new Date()}
-                    data={resource.resourceBookings}
-                    views={['day', 'week', 'fourDays']}
-                    rangeContent={this._rangeContent}
-                    awayExceptions={() => this.refs.resourceBooking.getDOMNode()}
-                    onRangeCreate={this._showResourceBookingPopup}
-                    onRangeCancel={this._dismissResourceBookingPopup}
-                    onRangeClicked={this._showUpdateResourceBookingPopup} />
+                <div style={{position: "absolute", left: 0, right: 0, bottom: 0, top: 60}}>
+                    <CalendarView
+                        ref="calendar"
+                        date={new Date()}
+                        data={resource.resourceBookings}
+                        views={['day', 'week', 'fourDays']}
+                        rangeContent={this._rangeContent}
+                        awayExceptions={() => this.refs.resourceBooking.getDOMNode()}
+                        onRangeCreate={this._showResourceBookingPopup}
+                        onRangeCancel={this._dismissResourceBookingPopup}
+                        onRangeClicked={this._showUpdateResourceBookingPopup} />
+                </div>
                 {this._getCreateResourceBookingPopup()}
                 {this._getUpdateResourceBookingPopup()}
                 <MUI.Snackbar ref="bookingSuccess" message={`Booking ${resource.name} successfully`} />
                 <MUI.Snackbar ref="deleteBookingSuccess" message={`Delete booking of ${resource.name} successfully`} />
                 <MUI.Snackbar ref="updateBookingSuccess" message={`Update booking of ${resource.name} successfully`} />
-
             </Flex.Layout>
         );
     },
