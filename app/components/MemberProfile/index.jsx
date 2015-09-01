@@ -34,14 +34,6 @@ module.exports = React.createClass({
     },
     render() {
         if (this.state.member) {
-            let teamItems = this.state.member.teams.map((team, index)=> {
-                return {payload: index, text: team.name, iconClassName: 'icon-group'};
-            });
-
-            let info = [
-                {payload: '1', text: 'Email', data: this.state.member.email}
-            ];
-
             return <div className='member-profile'>
                 <Flex.Layout>
                     <Member.Avatar link={false} member={this.state.member} scale={2.167}/>
@@ -53,7 +45,7 @@ module.exports = React.createClass({
                         <div>@{this.state.member.name}</div>
                     </Flex.Layout>
                 </Flex.Layout>
-                <Common.Hr style={{margin:"24px 0"}}/>
+                <Common.Hr style={{margin:"24px 0 0 0"}}/>
                 <div style={{fontSize:14, fontWeight:500, lineHeight:'48px', color: 'rgba(0, 0, 0, 0.54)'}}>Email</div>
                 <Common.Display style={{marginLeft:56}} type='subhead'>{this.state.member.email}</Common.Display><br/>
                 <mui.List subheader="Teams" style={{marginLeft: -16}}>
