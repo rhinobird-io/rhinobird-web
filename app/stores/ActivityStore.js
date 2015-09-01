@@ -16,7 +16,10 @@ let SpeechStore = assign({}, BaseStore, {
         let firstAfterComing = _activities.findIndex(a => new Date(a.time) < new Date());
         if (firstAfterComing == 0) {
             return null;
-        } else {
+        } else if (firstAfterComing == -1) {
+            return _activities[_activities.length - 1];
+        }
+        else {
             return _activities[firstAfterComing - 1];
         }
     },
