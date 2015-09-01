@@ -183,13 +183,16 @@ let DayContent = React.createClass({
                     let placed = false;
                     loop2:
                     for (let i1 = 0; i1 < columns.length; i1++) {
-                        if (from > columnMaxToTimes[i1]) {
+                        console.log(from);
+                        console.log(columnMaxToTimes[i1]);
+                        if (from >= columnMaxToTimes[i1]) {
                             columns[i1].push(sorted[j]);
                             let to = sorted[j].to;
-                            if (to - sorted[j].from <= 1800000) {
-                                to = sorted[j].from + 1800000;
+                            console.log(to - sorted[j].from);
+                            if (to - sorted[j].from < 1800000) {
+                                to = new Date(sorted[j].from.getTime() + 1800000);
                             }
-                            if (!columnMaxToTimes[i1] || columnMaxToTimes[i1] <= to) {
+                            if (!columnMaxToTimes[i1] || columnMaxToTimes[i1] < to) {
                                 columnMaxToTimes[i1] = to;
                             }
                             placed = true;
@@ -200,8 +203,8 @@ let DayContent = React.createClass({
                     if (!placed) {
                         columns.push([sorted[j]]);
                         let to = sorted[j].to;
-                        if (to - sorted[j].from <= 1800000) {
-                            to = sorted[j].from + 1800000;
+                        if (to - sorted[j].from < 1800000) {
+                            to = new Date(sorted[j].from.getTime() + 1800000);
                         }
                         columnMaxToTimes.push(to);
                     }

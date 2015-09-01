@@ -331,7 +331,7 @@ let AllEvents = React.createClass({
                 selfAlignOrigin={selfAlignOrigin}
                 relatedAlignOrigin={relatedAlignOrigin}
                 className={className}
-                style={{overflow: "visible !important", width: "320px"}}>
+                style={{overflow: "visible !important", width: "400px", marginTop: -20}}>
                 <div style={{padding: "12px 16px"}}>
                     <Flex.Layout horizontal justified>
                         <MUI.TimePicker
@@ -347,13 +347,13 @@ let AllEvents = React.createClass({
                             hintText="To Time"
                             floatingLabelText="To Time" />
                     </Flex.Layout>
-                    <MUI.TextField errorText={this.state.titleError} hintText="Title" ref="title" floatingLabelText="Title" fullWidth />
+                    <MUI.TextField style={{marginTop: -20}} errorText={this.state.titleError} hintText="Title" ref="title" floatingLabelText="Title" fullWidth />
                     <MemberSelect
+                        style={{width: "100%", marginTop: -20}}
                         ref="participants"
                         hintText="Participants"
                         floatingLabelText="Participants"
-                        valueLink={this.linkState('members')}
-                        style={{width: "100%"}} />
+                        valueLink={this.linkState('members')} />
                     <Flex.Layout style={{padding: "8px 8px 0px 24px"}} horizontal endJustified>
                         <MUI.FlatButton secondary onClick={() => this.refs.calendar.dismissCreateNewRange()}>Close</MUI.FlatButton>
                         <MUI.FlatButton primary>Edit</MUI.FlatButton>
