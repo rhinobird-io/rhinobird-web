@@ -1,25 +1,15 @@
 'use strict';
 import AppDispatcher from '../dispatchers/AppDispatcher';
 import Constants from '../constants/ActivityConstants';
-import UserStore from '../stores/UserStore';
 import BaseStore from './BaseStore';
 import assign from 'object-assign';
 
 let _activities = [];
-let speechMap = {
-    '1': {
-        id: 1,
-        title: "Hello Speech",
-        speaker: UserStore.getUsersArray()[0],
-        state: Math.floor((Math.random() * 4) + 1),
-        description: "No description",
-        date: new Date(),
-        time: new Date(),
-        hours: '1',
-        minutes: '0',
-        audiences: Math.floor((Math.random() * 30) + 1)
-    }
-};
+let _activitiesIdMap = {};
+
+function _addSpeech(speech) {
+    _activitiesIdMap[speech.id.toString()] = speech;
+}
 
 const md5 = require('blueimp-md5');
 let SpeechStore = assign({}, BaseStore, {
@@ -28,7 +18,10 @@ let SpeechStore = assign({}, BaseStore, {
         return _activities;
     },
     getSpeech(id) {
-        return speechMap[id];
+        if (_activitiesIdMap[id]) {
+            return _activitiesIdMap[id];
+        }
+        return null;
     },
     nextSpeech(){
         let firstAfterComing = _activities.findIndex(a => new Date(a.time) < new Date());
@@ -43,13 +36,22 @@ let SpeechStore = assign({}, BaseStore, {
     },
     dispatcherIndex: AppDispatcher.register(function (payload) {
         let data = payload.data;
+        let changed = true;
+
         switch (payload.type) {
             case Constants.ActionTypes.ACTIVITIES_UPDATE:
                 _activities = data;
-                SpeechStore.emitChange();
+                break;
+            case Constants.ActionTypes.RECEIVE_ACTIVITY:
+                _addSpeech(data);
                 break;
             default:
+                changed = false;
                 break;
+        }
+
+        if (changed) {
+            SpeechStore.emitChange();
         }
     })
 

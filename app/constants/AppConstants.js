@@ -71,5 +71,4 @@ export default {
   RecentChannelAction : keyMirror({
     INIT_RECENT: null
   })
-
 };

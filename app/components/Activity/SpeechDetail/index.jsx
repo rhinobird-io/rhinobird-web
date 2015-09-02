@@ -51,24 +51,24 @@ module.exports = React.createClass({
     },
 
     componentDidMount() {
+        ActivityStore.addChangeListener(this._onChange);
+        if (!this.state.id) {
+            let params = this.props.params;
+            ActivityAction.receiveSpeech(params.id);
+        }
+    },
+
+    componentWillUnmount() {
+        ActivityStore.removeChangeListener(this._onChange);
     },
 
     getInitialState() {
         let params = this.props.params;
-
-        let speech = ActivityStore.getSpeech(params.id);
-        if (speech !== undefined && speech !== null) {
-            speech.viewerRole = this._randomInt(3) + 1;
-            return {
-                speech: speech,
-                notFound: false,
-                threadKey: `/platform/activity/speeches/${params.id}`
-            };
-        } else {
-            return {
-                notFound: true
-            };
-        }
+        return {
+            speech: ActivityStore.getSpeech(params.id),
+            notFound: false,
+            threadKey: `/platform/activity/speeches/${params.id}`
+        };
     },
 
     render() {
@@ -113,8 +113,9 @@ module.exports = React.createClass({
 
             speechSpeaker = <Flex.Layout horizontal center justified>
                 <Common.Display type="body3">Speaker</Common.Display>
-                <Flex.Layout horizontal center>
-                    <Member.Avatar scale={1.6666667} link={true} member={speech.speaker} />
+                <Flex.Layout horizontal center onClick={(e)=>{e.stopPropagation()}}>
+                    <Member.Avatar scale={0.8} member={speech.speaker}/>
+                    <Member.Name style={{marginLeft: 4}} member={speech.speaker}/>
                 </Flex.Layout>
             </Flex.Layout>;
 
@@ -150,7 +151,7 @@ module.exports = React.createClass({
                         floatingLabelText="Description"
                         style={{width: "100%"}} />
                     updateBtn = <MUI.FlatButton type="submit" label="Update" primary={true} />;
-                    upload = <FileUploader ref="fileUploader" text={"Upload Slides"} showReview showResult maxSize={10 * 1024 * 1024} acceptTypes={["pdf", "odp", "ppt"]} />;
+                    upload = <div style={{marginLeft: 20}}><FileUploader ref="fileUploader" text={"Upload Slides"} showReview showResult maxSize={10 * 1024 * 1024} acceptTypes={["pdf", "odp", "ppt"]} /></div>;
                 }
             } else if (speech.viewerRole === ROLE_ADMIN) {
                 if (speech.state === STATE_PENDING) {
@@ -218,7 +219,7 @@ module.exports = React.createClass({
             </Flex.Layout>;
 
             speechFiles = <Flex.Layout endJustified>
-                <Flex.Layout horizontal center style={{marginRight: 20}}>
+                <Flex.Layout horizontal center>
                     <a href="#" target="_blank">slides.pdf</a>
                 </Flex.Layout>
                 {upload}
@@ -226,11 +227,17 @@ module.exports = React.createClass({
 
             speechComment = <Flex.Layout horizontal key="comments">
                 <Flex.Layout vertical startJustified flex={1}>
-                    <Thread style={{width: "100%"}} threadKey="" threadTitle={`Comment`} />
+                    <Thread style={{width: "100%"}} threadKey={this.state.threadKey} threadTitle={`Comment ${speech.title}`} />
                 </Flex.Layout>
             </Flex.Layout>;
 
-            speechActions = [approveBtn, cancelBtn, confirmBtn, updateBtn, attendBtn];
+            speechActions = <Flex.Layout>
+                {approveBtn}
+                {cancelBtn}
+                {confirmBtn}
+                {updateBtn}
+                {attendBtn}
+            </Flex.Layout>;
         }
 
         return (
@@ -264,6 +271,30 @@ module.exports = React.createClass({
                 </Flex.Layout>
             </PerfectScroll>
         );
+    },
+
+    _updateSpeech() {
+
+    },
+
+    _approveSpeech() {
+
+    },
+
+    _cancelSpeech() {
+
+    },
+
+    _confirmSpeech() {
+
+    },
+
+    _onChange(){
+        let params = this.props.params;
+
+        this.setState({
+            speech: ActivityStore.getSpeech(params.id)
+        });
     },
 
     _randomInt(n) {
