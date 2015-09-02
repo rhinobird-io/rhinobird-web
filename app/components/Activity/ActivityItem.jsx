@@ -27,7 +27,13 @@ module.exports = React.createClass({
         let time = moment(this.props.activity.time);
         let title = this.props.activity.title;
         let user = UserStore.getUser(this.props.activity.user_id);
+        let status = this.props.activity.status;
 
+        let rightContent = null;
+        if (this.props.showStatus)
+            rightContent = status;
+        else
+            rightContent = (<div><Member.Avatar scale={0.5} member={user}/> <Member.Name style={{marginLeft:4}} member={user}/></div>);
         let style = {
             cursor: 'pointer',
             padding: 12,
@@ -46,7 +52,9 @@ module.exports = React.createClass({
                 <Common.Display type='caption'>
                     <Flex.Layout justified center>
                         <div><span className='icon-access-time'/> {time.format('h:mm')}</div>
-                        <Flex.Layout center onClick={(e)=>{e.stopPropagation()}}><Member.Avatar scale={0.5} member={user}/> <Member.Name style={{marginLeft:4}} member={user}/></Flex.Layout>
+                        <Flex.Layout center onClick={(e)=>{e.stopPropagation()}}>
+                            {rightContent}
+                        </Flex.Layout>
                     </Flex.Layout>
                 </Common.Display>
             </Flex.Layout>
