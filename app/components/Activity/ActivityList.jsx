@@ -7,6 +7,7 @@ const ActivityIcon = require('./ActivityIcon');
 const Member = require('../Member');
 const ActivityStore = require('../../stores/ActivityStore');
 const ActivityItem = require('./ActivityItem');
+const Link = require('react-router').Link;
 
 module.exports = React.createClass({
     getInitialState(){
@@ -39,7 +40,7 @@ module.exports = React.createClass({
                     return <ActivityItem activity={activity}/>
                 })}
             </div>
-            <mui.FloatingActionButton iconClassName='icon-add' mini={true} style={{position:'absolute', top:12, right: 24}}/>
+            <Link to="create-speech"><mui.FloatingActionButton iconClassName='icon-add' mini={true} style={{position:'absolute', top:12, right: 24}}/></Link>
         </mui.Paper>;
     }
 });
