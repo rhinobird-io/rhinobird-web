@@ -5,3 +5,4 @@
 *.iml
 npm-debug.log
 start.sh
+dump.rdb
