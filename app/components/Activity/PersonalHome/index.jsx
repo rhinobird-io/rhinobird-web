@@ -42,7 +42,7 @@ module.exports = React.createClass({
                         {
                             this.state.myActivities.length > 0 ?
                                 (<Flex.Item flex={1} id='My'>
-                                    <ActivityList title={"My Activities"} list={this.state.myActivities} showStatus={true}/>
+                                    <ActivityList title={"My Activities"} list={this.state.myActivities} showStatus={true} showFilter={true}/>
                                 </Flex.Item>) : undefined
                         }
                         {
