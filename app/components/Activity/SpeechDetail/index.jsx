@@ -14,14 +14,18 @@ const ActivityAction = require('../../../actions/ActivityAction');
 const ActivityStore = require('../../../stores/ActivityStore');
 
 
-const STATE_PENDING = 0,
-    STATE_APPROVED = 1,
-    STATE_CONFIRMED = 2,
-    STATE_CANCELLED = 3;
+const STATUS_PENDING = 0,
+    STATUS_APPROVED = 1,
+    STATUS_CONFIRMED = 2,
+    STATUS_FINISHED = 3,
+    STATUS_CANCELLED = 4;
 
 const ROLE_ADMIN = 1,
     ROLE_SPEAKER = 2,
     ROLE_AUDIENCE = 3;
+
+const CATEGORY_WEEKLY = 1,
+    CATEGORY_MONTHLY = 2;
 
 module.exports = React.createClass({
 
@@ -29,17 +33,23 @@ module.exports = React.createClass({
         muiTheme: React.PropTypes.object
     },
 
-    stateMap: {
-        STATE_PENDING: 'Pending',
-        STATE_APPROVED: 'Approved',
-        STATE_CONFIRMED: 'Confirmed',
-        STATE_CANCELLED: 'Cancelled'
+    statusMap: {
+        0: 'Pending',
+        1: 'Approved',
+        2: 'Confirmed',
+        3: 'Finished',
+        4: 'Cancelled'
     },
 
     roleMap: {
-        ROLE_ADMIN: 'Administrator',
-        ROLE_SPEAKER: 'Speaker',
-        ROLE_AUDIENCE: 'Audience'
+        1: 'Administrator',
+        2: 'Speaker',
+        3: 'Audience'
+    },
+
+    categoryMap: {
+        1: 'Weekly',
+        2: 'Monthly'
     },
 
     errorMsg: {
@@ -86,8 +96,9 @@ module.exports = React.createClass({
         let speech = this.state.speech;
         let speechTitle = null;
         let speechAudiences = null;
-        let SpeechDescription = null;
+        let speechDescription = null;
         let speechSpeaker = null;
+        let speechCategory = null;
         let speechHoldTime = null;
         let speechDuration = null;
         let speechFiles = null;
@@ -119,12 +130,24 @@ module.exports = React.createClass({
                 </Flex.Layout>
             </Flex.Layout>;
 
-            SpeechDescription = <SmartDisplay
+            speechDescription = <SmartDisplay
                 key="description"
                 value={speech.description || ""}
                 multiLine
                 floatingLabelText="Description"
                 style={{width: "100%"}} />;
+
+            speechCategory = <Flex.Layout justified>
+                <Flex.Layout center style={{minWidth: 80}}>
+                    <Common.Display type="body3">Category</Common.Display>
+                </Flex.Layout>
+
+                <MUI.TextField
+                    ref="category"
+                    disabled={true}
+                    defaultValue={this.categoryMap[speech.category]}
+                    style={{width: "100%"}} />
+            </Flex.Layout>
 
             let holdTimeDisabled = true;
             let durationDisabled = true;
@@ -136,13 +159,13 @@ module.exports = React.createClass({
             let attendBtn = null;
 
             if (speech.viewerRole === ROLE_SPEAKER) {
-                if (speech.state === STATE_PENDING) {
+                if (speech.status === STATUS_PENDING) {
                     durationDisabled = false;
-                } else if (speech.state === STATE_APPROVED) {
+                } else if (speech.status === STATUS_APPROVED) {
                     confirmBtn = <MUI.FlatButton type="submit" label="Confirm" primary={true} />;
                 }
-                if (speech.state !== STATE_CANCELLED) {
-                    SpeechDescription = <SmartEditor
+                if (speech.status !== STATUS_CANCELLED) {
+                    speechDescription = <SmartEditor
                         multiLine={true}
                         ref="description"
                         hintText="Description"
@@ -154,15 +177,15 @@ module.exports = React.createClass({
                     upload = <div style={{marginLeft: 20}}><FileUploader ref="fileUploader" text={"Upload Slides"} showReview showResult maxSize={10 * 1024 * 1024} acceptTypes={["pdf", "odp", "ppt"]} /></div>;
                 }
             } else if (speech.viewerRole === ROLE_ADMIN) {
-                if (speech.state === STATE_PENDING) {
+                if (speech.status === STATUS_PENDING) {
                     holdTimeDisabled = false;
                     approveBtn = <MUI.FlatButton type="submit" label="Approve" primary={true} />;
                 }
-                if (speech.state !== STATE_CANCELLED) {
+                if (speech.status !== STATUS_CANCELLED) {
                     cancelBtn = <MUI.FlatButton type="submit" label="Cancel" primary={true} />;
                 }
             } else if (speech.viewerRole === ROLE_AUDIENCE) {
-                if (speech.state === STATE_CONFIRMED) {
+                if (speech.status === STATUS_CONFIRMED) {
                     attendBtn = <MUI.FlatButton type="submit" label="Attend" primary={true} />;
                 }
             }
@@ -253,9 +276,10 @@ module.exports = React.createClass({
 
                                 {speechTitle}
                                 {speechSpeaker}
+                                {speechCategory}
                                 {speechHoldTime}
                                 {speechDuration}
-                                {SpeechDescription}
+                                {speechDescription}
                                 {speechFiles}
                                 {speechContent}
 

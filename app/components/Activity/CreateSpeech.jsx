@@ -15,6 +15,8 @@ module.exports = React.createClass({
         durationRequired: "Speech duration is required."
     },
 
+    speechCategory: 1,
+
     componentDidMount() {
         this.refs.title.focus();
     },
@@ -41,10 +43,18 @@ module.exports = React.createClass({
                 padding: 0,
                 margin: 20
             },
+            category: {
+                width: 250,
+            },
             picker: {
                 width: "auto !important"
             }
         };
+
+        let categoryItems = [
+            { payload: 1, text: 'Weekly' },
+            { payload: 2, text: 'Monthly' }
+        ];
 
         return (
             <PerfectScroll style={{height: '100%', position:'relative', padding:24}}>
@@ -70,6 +80,17 @@ module.exports = React.createClass({
                                     errorText={this.state.descriptionError}
                                     floatingLabelText="Description"
                                     style={{width: "100%"}} />
+
+                                <Flex.Layout justified>
+                                    <Flex.Layout center style={{minWidth: 80}}>
+                                        <Common.Display type="body3">Category</Common.Display>
+                                    </Flex.Layout>
+                                    <MUI.DropDownMenu
+                                        ref="category"
+                                        style={styles.category}
+                                        onChange={this._onChangeCategory}
+                                        menuItems={categoryItems} />
+                                </Flex.Layout>
 
                                 <Flex.Layout horizontal justified>
                                     <Flex.Layout center style={{minWidth: 80}}>
@@ -130,6 +151,10 @@ module.exports = React.createClass({
         );
     },
 
+    _onChangeCategory: function(event, index, item) {
+        this.speechCategory = item.payload;
+    },
+
     _handleSubmit: function(e) {
         e.preventDefault();
 
@@ -172,6 +197,7 @@ module.exports = React.createClass({
         let speech = this.state;
         speech.title = title;
         speech.description = description;
+        speech.category = this.speechCategory;
         speech.date = this.refs.date.getDate();
         speech.time = this.refs.time.getTime();
         speech.hours = hours;
