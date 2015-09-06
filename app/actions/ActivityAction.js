@@ -93,5 +93,37 @@ export default {
             if (fail && typeof fail === 'function')
                 fail(e.status);
         });
-    }
+    },
+    submitActivity(id, success, fail) {
+        $.post(`/activity/speeches/${id}/submit`, {})
+            .done((data) => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.UPDATE_ACTIVITY,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
+    },
+    withdrawActivity(id, success, fail) {
+        $.post(`/activity/speeches/${id}/withdraw`, {})
+            .done((data) => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.UPDATE_ACTIVITY,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
+    },
 };

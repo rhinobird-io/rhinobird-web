@@ -200,9 +200,9 @@ module.exports = React.createClass({
             let secondaryBtn = null;
             if (speech.user_id === user.id) {
                 if (speech.status === ActivityConstants.SPEECH_STATUS.NEW)
-                    primaryBtn = <MUI.RaisedButton type="submit" label="Submit" primary={true} />;
+                    primaryBtn = <MUI.RaisedButton type="submit" label="Submit" primary={true} onClick={this._submitSpeech}/>;
                 else if (speech.status === ActivityConstants.SPEECH_STATUS.AUDITING)
-                    primaryBtn = <MUI.RaisedButton type="submit" label="Withdraw" primary={true} />;
+                    primaryBtn = <MUI.RaisedButton type="submit" label="Withdraw" primary={true} onClick={this._withdrawSpeech}/>;
                 else if (speech.status === ActivityConstants.SPEECH_STATUS.APPROVED) {
                     primaryBtn = <MUI.RaisedButton type="submit" label="Agree" primary={true}/>;
                     secondaryBtn = <MUI.RaisedButton type="submit" label="Disagree" style={{marginRight: 12}}/>;
@@ -263,8 +263,19 @@ module.exports = React.createClass({
     _editSpeech() {
         this.context.router.transitionTo("edit-speech", {id: this.state.speech.id});
     },
-    _updateSpeech() {
-
+    _submitSpeech() {
+        ActivityAction.submitActivity(this.state.speech.id, speech => {
+            this.setState({
+                speech: speech
+            })
+        });
+    },
+    _withdrawSpeech() {
+        ActivityAction.withdrawActivity(this.state.speech.id, speech => {
+            this.setState({
+                speech: speech
+            })
+        });
     },
 
     _approveSpeech() {

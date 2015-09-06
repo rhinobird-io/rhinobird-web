@@ -54,6 +54,9 @@ let SpeechStore = assign({}, BaseStore, {
             case Constants.ActionTypes.DELETE_ACTIVITY:
                 _deleteSpeech(data);
                 break;
+            case Constants.ActionTypes.UPDATE_ACTIVITY:
+                _addSpeech(data);
+                break;
             default:
                 changed = false;
                 break;
