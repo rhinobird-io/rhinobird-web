@@ -5,34 +5,32 @@ const Common = require('../Common');
 const Flex = require('../Flex');
 const SmartEditor = require('../SmartEditor').SmartEditor;
 const Range = require('lodash/utility/range');
+const ActivityAction = require('../../actions/ActivityAction');
 
 module.exports = React.createClass({
     mixins: [React.addons.LinkedStateMixin],
-
+    contextTypes: {
+        muiTheme: React.PropTypes.object,
+        router: React.PropTypes.func.isRequired
+    },
     errorMsg: {
         titleRequired: "Speech title is required.",
         descriptionRequired: "Speech description is required.",
         durationRequired: "Speech duration is required."
     },
 
-    speechCategory: 1,
-
     componentDidMount() {
         this.refs.title.focus();
     },
 
-    getInitialState() {
-        let holdingTime = new Date();
+    category: "weekly",
 
+    getInitialState() {
         return {
             titleError: "",
             descriptionError: "",
-            hoursError: "",
-            minutesError: "",
-            date: holdingTime,
-            time: holdingTime,
-            hours: "1",
-            minutes: "0"
+            durationError: "",
+            minutes: "10"
         }
     },
 
@@ -52,8 +50,8 @@ module.exports = React.createClass({
         };
 
         let categoryItems = [
-            { payload: 1, text: 'Weekly' },
-            { payload: 2, text: 'Monthly' }
+            { payload: "weekly", text: 'weekly' },
+            { payload: "monthly", text: 'monthly' }
         ];
 
         return (
@@ -95,54 +93,22 @@ module.exports = React.createClass({
 
                                 <Flex.Layout horizontal justified>
                                     <Flex.Layout center style={{minWidth: 80}}>
-                                        <Common.Display type="body3">Holding Time</Common.Display>
-                                    </Flex.Layout>
-                                    <Flex.Layout horizontal justified style={{minWidth: 0}}>
-                                        <MUI.DatePicker
-                                            ref="date"
-                                            hintText="Date"
-                                            style={styles.picker}
-                                            floatingLabelText="Date"
-                                            defaultDate={this.state.date} />
-                                    </Flex.Layout>
-                                    <Flex.Layout horizontal justified style={{minWidth: 0}}>
-                                        <MUI.TimePicker
-                                            ref="time"
-                                            format="ampm"
-                                            hintText="Time"
-                                            style={styles.picker}
-                                            floatingLabelText="Time"
-                                            defaultTime={this.state.time} />
-                                    </Flex.Layout>
-                                </Flex.Layout>
-
-                                <Flex.Layout horizontal justified>
-                                    <Flex.Layout center style={{minWidth: 80}}>
                                         <Common.Display type="body3">Duration</Common.Display>
                                     </Flex.Layout>
                                     <Flex.Layout horizontal justified style={{minWidth: 0}}>
                                         <MUI.TextField
-                                            ref="hours"
-                                            hintText="Hours"
-                                            defaultValue={this.state.hours}
-                                            errorText={this.state.hoursError}
-                                            floatingLabelText="Hours"
-                                            style={{width: "100%"}} />
-                                    </Flex.Layout>
-                                    <Flex.Layout horizontal justified style={{minWidth: 0}}>
-                                        <MUI.TextField
-                                            ref="minutes"
+                                            ref="expected_duration"
                                             hintText="Minutes"
-                                            defaultValue={this.state.minutes}
-                                            errorText={this.state.minutesError}
+                                            defaultValue={this.state.expected_duration}
+                                            errorText={this.state.durationError}
                                             floatingLabelText="Minutes"
                                             style={{width: "100%"}} />
                                     </Flex.Layout>
                                 </Flex.Layout>
 
                                 <Flex.Layout horizontal justified style={{marginTop: 20}}>
-                                    <MUI.FlatButton label="Cancel" onClick={() => history.back()} />
-                                    <MUI.FlatButton type="submit" label="Create Speech" primary={true} onClick={this._handleSubmit}/>
+                                    <MUI.RaisedButton label="Cancel" onClick={() => history.back()} />
+                                    <MUI.RaisedButton type="submit" label="Create Speech" primary={true} onClick={this._handleSubmit}/>
                                 </Flex.Layout>
                             </div>
                         </MUI.Paper>
@@ -153,7 +119,7 @@ module.exports = React.createClass({
     },
 
     _onChangeCategory: function(event, index, item) {
-        this.speechCategory = item.payload;
+        this.category = item.payload;
     },
 
     _handleSubmit: function(e) {
@@ -164,8 +130,7 @@ module.exports = React.createClass({
 
         let title = refs.title.getValue();
         let description = refs.description.getValue();
-        let hours = refs.hours.getValue();
-        let minutes = refs.minutes.getValue();
+        let duration = refs.expected_duration.getValue();
 
         if (title.length === 0) {
             this.setState({titleError: errorMsg.titleRequired});
@@ -181,27 +146,21 @@ module.exports = React.createClass({
             this.setState({descriptionError: ""});
         }
 
-        if (hours.length === 0) {
-            this.setState({hoursError: errorMsg.durationRequired});
+        if (duration.length === 0) {
+            this.setState({durationError: errorMsg.durationRequired});
             return;
         } else {
-            this.setState({hoursError: ""});
+            this.setState({durationError: ""});
         }
 
-        if (minutes.length === 0) {
-            this.setState({minutesError: errorMsg.durationRequired});
-            return;
-        } else {
-            this.setState({minutesError: ""});
-        }
-
-        let speech = this.state;
+        let speech = {};
         speech.title = title;
         speech.description = description;
-        speech.category = this.speechCategory;
-        speech.date = this.refs.date.getDate();
-        speech.time = this.refs.time.getTime();
-        speech.hours = hours;
-        speech.minutes = minutes;
+        speech.category = this.category;
+        speech.expected_duration = duration;
+
+        ActivityAction.createActivity(speech,
+            (r) => this.context.router.transitionTo("speech-detail", {id: r.id}),
+            (e) => {});
     }
 });

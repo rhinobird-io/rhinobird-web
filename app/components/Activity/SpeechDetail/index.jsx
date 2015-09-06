@@ -175,7 +175,7 @@ module.exports = React.createClass({
             </Flex.Layout>;
 
             let users = null;
-            let tips = null;
+            let tips = {};
             if (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) {
                 users = speech.participants;
                 tips = "Participants";

@@ -45,6 +45,9 @@ let SpeechStore = assign({}, BaseStore, {
             case Constants.ActionTypes.RECEIVE_ACTIVITY:
                 _addSpeech(data);
                 break;
+            case Constants.ActionTypes.CREATE_ACTIVITY:
+                _addSpeech(data);
+                break;
             default:
                 changed = false;
                 break;
