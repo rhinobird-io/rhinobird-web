@@ -4,7 +4,8 @@ export default {
     ActionTypes: keyMirror({
         ACTIVITIES_UPDATE: null,
         RECEIVE_ACTIVITY: null,
-        CREATE_ACTIVITY: null
+        CREATE_ACTIVITY: null,
+        DELETE_ACTIVITY: null
     }),
 
     SPEECH_STATUS: {

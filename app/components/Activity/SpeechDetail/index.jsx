@@ -21,7 +21,8 @@ var speechStatus = new Enum({"New": 0, "Auditing": 1, "Approved": 2, "Confirmed"
 module.exports = React.createClass({
 
     contextTypes: {
-        muiTheme: React.PropTypes.object
+        muiTheme: React.PropTypes.object,
+        router: React.PropTypes.func.isRequired
     },
 
     errorMsg: {
@@ -111,7 +112,8 @@ module.exports = React.createClass({
                     onTouchTap={this._handleDeleteDialogCancel}/>,
                 <MUI.FlatButton
                     label="Delete"
-                    primary={true}/>
+                    primary={true}
+                    onTouchTap={this._handleDeleteDialogSubmit}/>
             ];
             bar = (<Flex.Layout flex={1} center horizontal style={styles.bar} title={speech.title}>{speech.title}
                 <Flex.Layout endJustified flex={1} center horizontal>
@@ -175,7 +177,7 @@ module.exports = React.createClass({
             </Flex.Layout>;
 
             let users = null;
-            let tips = {};
+            let tips = null;
             if (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) {
                 users = speech.participants;
                 tips = "Participants";
@@ -183,6 +185,7 @@ module.exports = React.createClass({
                 users = speech.audiences;
                 tips = "Audiences";
             }
+            if (users === undefined) users = [];
             speechAudiences = <Flex.Layout horizontal style={styles.detailItem}>
                 <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-people" title={tips}/></Flex.Layout>
                 <Flex.Layout center>
@@ -251,6 +254,11 @@ module.exports = React.createClass({
     },
     _handleDeleteDialogCancel() {
         this.refs.deleteDialog.dismiss();
+    },
+    _handleDeleteDialogSubmit() {
+        ActivityAction.deleteActivity(this.state.speech.id, () => {
+            this.context.router.transitionTo("activity");
+        });
     },
     _updateSpeech() {
 

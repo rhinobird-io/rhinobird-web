@@ -51,4 +51,24 @@ export default {
                 fail(e.status);
         });
     },
+
+    deleteActivity(id, success, fail) {
+        $.ajax({
+            url: `/activity/speeches/${id}`,
+            type: "delete",
+            datatype: "json"
+        }).done(() => {
+            AppDispatcher.dispatch({
+                type: Constants.ActionTypes.DELETE_ACTIVITY,
+                data: id
+            });
+            if (success && typeof success === "function") {
+                success();
+            }
+        }).fail(e => {
+            console.error(e);
+            if (fail && typeof fail === 'function')
+                fail(e.status);
+        });
+    }
 };

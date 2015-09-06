@@ -10,6 +10,9 @@ let _activitiesIdMap = {};
 function _addSpeech(speech) {
     _activitiesIdMap[speech.id.toString()] = speech;
 }
+function _deleteSpeech(id) {
+    delete _activitiesIdMap[id];
+}
 
 const md5 = require('blueimp-md5');
 let SpeechStore = assign({}, BaseStore, {
@@ -47,6 +50,9 @@ let SpeechStore = assign({}, BaseStore, {
                 break;
             case Constants.ActionTypes.CREATE_ACTIVITY:
                 _addSpeech(data);
+                break;
+            case Constants.ActionTypes.DELETE_ACTIVITY:
+                _deleteSpeech(data);
                 break;
             default:
                 changed = false;
