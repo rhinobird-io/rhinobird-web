@@ -171,7 +171,6 @@ let DaysView = React.createClass({
                 }
             });
 
-            console.log(`MaxCrossRange${maxCrossRange}`);
             headerHeight += 28 * (maxRange + maxCrossRange);
             allDays = (
                 <Flex.Layout flex={1} horizontal style={{minHeight: 0}}>

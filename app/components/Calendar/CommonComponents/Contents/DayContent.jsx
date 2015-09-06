@@ -172,28 +172,27 @@ let DayContent = React.createClass({
             let columnMaxToTimes = [];
             columns[0] = [range];
             columnMaxToTimes[0] = range.to;
+            let totalMax = range.to;
 
             let j = i + 1;
             loop1:
             for (; j < sorted.length; j++) {
                 let from = new Date(sorted[j].from);
-                // let to = sorted[j].to;
-                let lastFrom = new Date(sorted[j - 1].from);
-                let lastTo = new Date(sorted[j - 1].to);
-                if (lastTo - lastFrom <= 1800000) {
-                    lastTo = new Date(lastFrom.getTime() + 1800000);
-                }
-                if (from >= lastFrom && from < lastTo) {
+
+                if (from < totalMax) {
                     let placed = false;
                     loop2:
                     for (let i1 = 0; i1 < columns.length; i1++) {
-                        if (from > columnMaxToTimes[i1]) {
+                        console.log(from);
+                        console.log(columnMaxToTimes[i1]);
+                        if (from >= columnMaxToTimes[i1]) {
                             columns[i1].push(sorted[j]);
                             let to = sorted[j].to;
-                            if (to - sorted[j].from <= 1800000) {
-                                to = sorted[j].from + 1800000;
+                            console.log(to - sorted[j].from);
+                            if (to - sorted[j].from < 1800000) {
+                                to = new Date(sorted[j].from.getTime() + 1800000);
                             }
-                            if (!columnMaxToTimes[i1] || columnMaxToTimes[i1] <= to) {
+                            if (!columnMaxToTimes[i1] || columnMaxToTimes[i1] < to) {
                                 columnMaxToTimes[i1] = to;
                             }
                             placed = true;
@@ -204,10 +203,13 @@ let DayContent = React.createClass({
                     if (!placed) {
                         columns.push([sorted[j]]);
                         let to = sorted[j].to;
-                        if (to - sorted[j].from <= 1800000) {
-                            to = sorted[j].from + 1800000;
+                        if (to - sorted[j].from < 1800000) {
+                            to = new Date(sorted[j].from.getTime() + 1800000);
                         }
                         columnMaxToTimes.push(to);
+                    }
+                    if (sorted[j].to > totalMax) {
+                        totalMax = sorted[j].to;
                     }
                 } else {
                     break loop1;
