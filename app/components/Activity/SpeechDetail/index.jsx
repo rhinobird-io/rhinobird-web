@@ -16,6 +16,7 @@ const LoginStore = require('../../../stores/LoginStore');
 const ActivityConstants = require('../../../constants/ActivityConstants');
 const StepBar = require('../../StepBar');
 const Enum = require('enum');
+const Moment = require("moment");
 
 var speechStatus = new Enum({"New": 0, "Auditing": 1, "Approved": 2, "Confirmed": 3, "Finished": 4}, { ignoreCase: true });
 module.exports = React.createClass({
@@ -148,7 +149,7 @@ module.exports = React.createClass({
 
             speechTime = <Flex.Layout horizontal style={styles.detailItem}>
                 <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className='icon-schedule' title="Time"/></Flex.Layout>
-                <Flex.Layout center><Common.Display type="subhead">{speech.time}</Common.Display></Flex.Layout>
+                <Flex.Layout center><Common.Display type="subhead">{Moment(speech.time).format('YYYY-MM-DD HH:mm')}</Common.Display></Flex.Layout>
             </Flex.Layout>;
 
             let hour = Math.floor(speech.expected_duration / 60);
@@ -156,8 +157,8 @@ module.exports = React.createClass({
             speechDuration = <Flex.Layout horizontal style={styles.detailItem}>
                 <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-timer" title="Expected Duration"/></Flex.Layout>
                 {hour > 0 ?
-                    <Flex.Layout horizontal>
-                        <Common.Display type="subhead">{hour} h </Common.Display>
+                    <Flex.Layout horizontal style={{marginRight: 6}}>
+                        <Common.Display type="subhead">{hour} h</Common.Display>
                     </Flex.Layout>
                     : undefined}
                 <Flex.Layout horizontal>
