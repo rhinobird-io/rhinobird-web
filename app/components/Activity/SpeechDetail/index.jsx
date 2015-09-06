@@ -115,7 +115,11 @@ module.exports = React.createClass({
                     primary={true}
                     onTouchTap={this._handleDeleteDialogSubmit}/>
             ];
-            bar = (<Flex.Layout flex={1} center horizontal style={styles.bar} title={speech.title}>{speech.title}
+            bar = (<Flex.Layout flex={1} center horizontal style={styles.bar} title={speech.title}>
+                <Flex.Layout>
+                    <MUI.IconButton onClick={() => history.back()} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-keyboard-arrow-left" />
+                </Flex.Layout>
+                {speech.title}
                 <Flex.Layout endJustified flex={1} center horizontal>
                     <div>
                     <MUI.IconButton onClick={this._editSpeech} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/>
