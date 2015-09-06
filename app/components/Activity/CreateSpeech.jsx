@@ -6,9 +6,11 @@ const Flex = require('../Flex');
 const SmartEditor = require('../SmartEditor').SmartEditor;
 const Range = require('lodash/utility/range');
 const ActivityAction = require('../../actions/ActivityAction');
+const ActivityStore = require('../../stores/ActivityStore');
+const LoginStore = require('../../stores/LoginStore');
 
 module.exports = React.createClass({
-    mixins: [React.addons.LinkedStateMixin],
+    mixins: [React.addons.LinkedStateMixin, React.addons.PureRenderMixin],
     contextTypes: {
         muiTheme: React.PropTypes.object,
         router: React.PropTypes.func.isRequired
@@ -19,21 +21,42 @@ module.exports = React.createClass({
         durationRequired: "Speech duration is required."
     },
 
-    componentDidMount() {
-        this.refs.title.focus();
-    },
-
     category: "weekly",
 
     getInitialState() {
         return {
+            mode: 'create',
+            speech: {},
             titleError: "",
             descriptionError: "",
             durationError: "",
-            minutes: "10"
+            title: "",
+            description: "",
+            category: "",
+            duration: 10
         }
     },
+    componentDidMount() {
+        this.refs.title.focus();
+        ActivityStore.addChangeListener(this._onChange);
+        if (this.props.params.id)
+            ActivityAction.receiveSpeech(this.props.params.id);
 
+    },
+    _onChange() {
+        var speech = ActivityStore.getSpeech(this.props.params.id) || {};
+        var user = LoginStore.getUser();
+        if (speech && user && speech.user_id === user.id) {
+            this.setState({
+                mode: 'edit',
+                speech: speech,
+                title: speech.title,
+                description: speech.description,
+                category: speech.category,
+                duration: speech.expected_duration
+            });
+        }
+    },
     render() {
         let styles = {
             inner: {
@@ -61,12 +84,13 @@ module.exports = React.createClass({
                         <MUI.Paper zDepth={1} style={styles.inner}>
                             <div style={{padding: 20}}>
                                 <Flex.Layout horizontal justified>
-                                    <h3 style={{marginBottom: 0}}>Create Speech</h3>
+                                    <h3 style={{marginBottom: 0}}>{this.state.mode === 'create' ? 'Create' : 'Edit'} Speech</h3>
                                 </Flex.Layout>
 
                                 <MUI.TextField
                                     ref="title"
                                     hintText="Title"
+                                    valueLink={this.linkState('title')}
                                     errorText={this.state.titleError}
                                     floatingLabelText="Title"
                                     style={{width: "100%"}} />
@@ -75,6 +99,7 @@ module.exports = React.createClass({
                                     multiLine={true}
                                     ref="description"
                                     hintText="Description"
+                                    valueLink={this.linkState('description')}
                                     errorText={this.state.descriptionError}
                                     floatingLabelText="Description"
                                     style={{width: "100%"}} />
@@ -87,6 +112,7 @@ module.exports = React.createClass({
                                         ref="category"
                                         style={{minWidth: 250}}
                                         labelStyle={styles.category}
+                                        selectedIndex={this.state.category === 'weekly' ? 0 : 1}
                                         onChange={this._onChangeCategory}
                                         menuItems={categoryItems} />
                                 </Flex.Layout>
@@ -99,7 +125,7 @@ module.exports = React.createClass({
                                         <MUI.TextField
                                             ref="expected_duration"
                                             hintText="Minutes"
-                                            defaultValue={this.state.expected_duration}
+                                            valueLink={this.linkState('duration')}
                                             errorText={this.state.durationError}
                                             floatingLabelText="Minutes"
                                             style={{width: "100%"}} />
@@ -108,7 +134,7 @@ module.exports = React.createClass({
 
                                 <Flex.Layout horizontal justified style={{marginTop: 20}}>
                                     <MUI.RaisedButton label="Cancel" onClick={() => history.back()} />
-                                    <MUI.RaisedButton type="submit" label="Create Speech" primary={true} onClick={this._handleSubmit}/>
+                                    <MUI.RaisedButton type="submit" label={`${this.state.mode === 'create' ? 'Create' : 'Update'} Speech`} primary={true} onClick={this._handleSubmit}/>
                                 </Flex.Layout>
                             </div>
                         </MUI.Paper>
@@ -153,14 +179,21 @@ module.exports = React.createClass({
             this.setState({durationError: ""});
         }
 
-        let speech = {};
+        let speech = this.state.speech;
         speech.title = title;
         speech.description = description;
         speech.category = this.category;
         speech.expected_duration = duration;
-
-        ActivityAction.createActivity(speech,
-            (r) => this.context.router.transitionTo("speech-detail", {id: r.id}),
-            (e) => {});
+        if (this.state.mode === 'create') {
+            ActivityAction.createActivity(speech,
+                (r) => this.context.router.transitionTo("speech-detail", {id: r.id}),
+                (e) => {
+                });
+        } else if (this.state.mode === 'edit'){
+            ActivityAction.updateActivity(speech,
+                (r) => this.context.router.transitionTo("speech-detail", {id: r.id}),
+                (e) => {
+                });
+        }
     }
 });

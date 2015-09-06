@@ -5,7 +5,8 @@ export default {
         ACTIVITIES_UPDATE: null,
         RECEIVE_ACTIVITY: null,
         CREATE_ACTIVITY: null,
-        DELETE_ACTIVITY: null
+        DELETE_ACTIVITY: null,
+        UPDATE_ACTIVITY: null
     }),
 
     SPEECH_STATUS: {

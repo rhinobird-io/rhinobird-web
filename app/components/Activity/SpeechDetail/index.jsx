@@ -118,7 +118,7 @@ module.exports = React.createClass({
             bar = (<Flex.Layout flex={1} center horizontal style={styles.bar} title={speech.title}>{speech.title}
                 <Flex.Layout endJustified flex={1} center horizontal>
                     <div>
-                    <MUI.IconButton iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/>
+                    <MUI.IconButton onClick={this._editSpeech} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/>
                     <MUI.IconButton onClick={this._deleteSpeech} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-delete"/>
                     <MUI.Dialog actions={dialogActions} title="Deleting Speech" ref='deleteDialog'>
                         Are you sure to delete this speech?
@@ -259,6 +259,9 @@ module.exports = React.createClass({
         ActivityAction.deleteActivity(this.state.speech.id, () => {
             this.context.router.transitionTo("activity");
         });
+    },
+    _editSpeech() {
+        this.context.router.transitionTo("edit-speech", {id: this.state.speech.id});
     },
     _updateSpeech() {
 
