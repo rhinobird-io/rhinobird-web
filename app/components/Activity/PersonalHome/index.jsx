@@ -32,6 +32,7 @@ module.exports = React.createClass({
         });
     },
     render(){
+        let urgent = this.state.myActivities.filter(a => a.status === 'approved');
         return <PerfectScroll style={{height: '100%', position:'relative', padding:24}}>
             <div style={{margin:'0 auto', maxWidth:1000}}>
                 <Flex.Layout justified>
@@ -40,9 +41,15 @@ module.exports = React.createClass({
                     </Flex.Item>
                     <Flex.Item style={{paddingLeft: 212}} flex={1}>
                         {
+                            urgent.length > 0 ?
+                                (<Flex.Item flex={1}>
+                                    <ActivityList title={"Urgent Activities"} list={urgent} showStatus={true}/>
+                                </Flex.Item>) : undefined
+                        }
+                        {
                             this.state.myActivities.length > 0 ?
-                                (<Flex.Item flex={1} id='My'>
-                                    <ActivityList title={"My Activities"} list={this.state.myActivities} showStatus={true} showFilter={true}/>
+                                (<Flex.Item flex={1} id='Personal'>
+                                    <ActivityList title={"Personal Activities"} list={this.state.myActivities} showStatus={true} showFilter={true}/>
                                 </Flex.Item>) : undefined
                         }
                         {

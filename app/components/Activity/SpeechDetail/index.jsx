@@ -12,44 +12,16 @@ const FileUploader = require('../../FileUploader');
 const Thread = require('../../Thread');
 const ActivityAction = require('../../../actions/ActivityAction');
 const ActivityStore = require('../../../stores/ActivityStore');
+const LoginStore = require('../../../stores/LoginStore');
+const ActivityConstants = require('../../../constants/ActivityConstants');
+const StepBar = require('../../StepBar');
+const Enum = require('enum');
 
-
-const STATUS_PENDING = 0,
-    STATUS_APPROVED = 1,
-    STATUS_CONFIRMED = 2,
-    STATUS_FINISHED = 3,
-    STATUS_CANCELLED = 4;
-
-const ROLE_ADMIN = 1,
-    ROLE_SPEAKER = 2,
-    ROLE_AUDIENCE = 3;
-
-const CATEGORY_WEEKLY = 1,
-    CATEGORY_MONTHLY = 2;
-
+var speechStatus = new Enum({"New": 0, "Auditing": 1, "Approved": 2, "Confirmed": 3, "Finished": 4}, { ignoreCase: true });
 module.exports = React.createClass({
 
     contextTypes: {
         muiTheme: React.PropTypes.object
-    },
-
-    statusMap: {
-        0: 'Pending',
-        1: 'Approved',
-        2: 'Confirmed',
-        3: 'Finished',
-        4: 'Cancelled'
-    },
-
-    roleMap: {
-        1: 'Administrator',
-        2: 'Speaker',
-        3: 'Audience'
-    },
-
-    categoryMap: {
-        1: 'Weekly',
-        2: 'Monthly'
     },
 
     errorMsg: {
@@ -64,7 +36,7 @@ module.exports = React.createClass({
         ActivityStore.addChangeListener(this._onChange);
         if (!this.state.id) {
             let params = this.props.params;
-            ActivityAction.receiveSpeech(params.id);
+            ActivityAction.receiveSpeech(params.id, {}, (e => this.setState({notFound: true})));
         }
     },
 
@@ -83,220 +55,203 @@ module.exports = React.createClass({
 
     render() {
         let styles = {
-            inner: {
-                width: 600,
-                padding: 0,
-                margin: 20
+            bar: {
+                fontSize: "2em",
+                padding: 12,
+                minHeight: 50,
+                maxHeight: 50,
+                color: this.context.muiTheme.palette.canvasColor,
+                backgroundColor: this.context.muiTheme.palette.primary1Color,
+                whiteSpace:'nowrap',
+                textOverflow:'ellipsis',
+                overflow:'hidden'
             },
-            picker: {
-                width: "auto !important"
+            inner: {
+                width: '80%',
+                height: '100%',
+                padding: 0,
+                margin: '0 auto'
+            },
+            detailItem: {
+                fontSize: "1em",
+                padding: "1em 0"
+            },
+            detailKey: {
+                minWidth: 20,
+                marginRight: 20
             }
         };
 
         let speech = this.state.speech;
-        let speechTitle = null;
+        let bar = null;
         let speechAudiences = null;
         let speechDescription = null;
         let speechSpeaker = null;
         let speechCategory = null;
-        let speechHoldTime = null;
+        let speechTime = null;
         let speechDuration = null;
         let speechFiles = null;
         let speechComment = null;
         let speechActions = null;
         let speechContent = null;
+        let stepBar = null;
 
         if (this.state.notFound) {
             speechContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Speech not found</h3>;
         } else if (speech === null || speech === undefined) {
             speechContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Loading</h3>;
         } else {
-            speechAudiences = <Common.Display type="body2">{speech.audiences} people wants to attend</Common.Display>;
+            let speaker = UserStore.getUser(speech.user_id);
+            let user = LoginStore.getUser();
 
-            speechTitle = <MUI.TextField
-                disabled={true}
-                ref="title"
-                hintText="Title"
-                defaultValue={speech.title}
-                errorText=""
-                floatingLabelText="Title"
-                style={{width: "100%"}} />;
+            let dialogActions = [
+                <MUI.FlatButton
+                    label="Cancel"
+                    secondary={true}
+                    onTouchTap={this._handleDeleteDialogCancel}/>,
+                <MUI.FlatButton
+                    label="Delete"
+                    primary={true}/>
+            ];
+            bar = (<Flex.Layout flex={1} center horizontal style={styles.bar} title={speech.title}>{speech.title}
+                <Flex.Layout endJustified flex={1} center horizontal>
+                    <div>
+                    <MUI.IconButton iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/>
+                    <MUI.IconButton onClick={this._deleteSpeech} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-delete"/>
+                    <MUI.Dialog actions={dialogActions} title="Deleting Speech" ref='deleteDialog'>
+                        Are you sure to delete this speech?
+                    </MUI.Dialog>
+                    </div>
+                </Flex.Layout>
+            </Flex.Layout>);
 
-            speechSpeaker = <Flex.Layout horizontal center justified>
-                <Common.Display type="body3">Speaker</Common.Display>
-                <Flex.Layout horizontal center onClick={(e)=>{e.stopPropagation()}}>
-                    <Member.Avatar scale={0.8} member={speech.speaker}/>
-                    <Member.Name style={{marginLeft: 4}} member={speech.speaker}/>
+            stepBar = <StepBar style={{width: 600, marginLeft: 20}} activeStep={speechStatus.get(speech.status)} stepTitles={["New", "Auditing", "Approved", "Confirmed", "Finished"]}/>
+
+            speechSpeaker = <Flex.Layout horizontal style={styles.detailItem}>
+                <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-person" title="Speaker"/></Flex.Layout>
+                <Flex.Layout center onClick={(e)=>{e.stopPropagation()}}>
+                    <Member.Avatar scale={0.8} member={speaker}/>
+                    <Member.Name style={{marginLeft: 4}} member={speaker}/>
                 </Flex.Layout>
             </Flex.Layout>;
 
-            speechDescription = <SmartDisplay
-                key="description"
-                value={speech.description || ""}
-                multiLine
-                floatingLabelText="Description"
-                style={{width: "100%"}} />;
+            speechCategory = <Flex.Layout horizontal style={styles.detailItem}>
+                <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-label" title="Category"/></Flex.Layout>
+                <Flex.Layout center><Common.Display type="subhead">{speech.category}</Common.Display></Flex.Layout>
+            </Flex.Layout>;
 
-            speechCategory = <Flex.Layout justified>
-                <Flex.Layout center style={{minWidth: 80}}>
-                    <Common.Display type="body3">Category</Common.Display>
+            speechTime = <Flex.Layout horizontal style={styles.detailItem}>
+                <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className='icon-schedule' title="Time"/></Flex.Layout>
+                <Flex.Layout center><Common.Display type="subhead">{speech.time}</Common.Display></Flex.Layout>
+            </Flex.Layout>;
+
+            let hour = Math.floor(speech.expected_duration / 60);
+            let minute = speech.expected_duration % 60;
+            speechDuration = <Flex.Layout horizontal style={styles.detailItem}>
+                <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-timer" title="Expected Duration"/></Flex.Layout>
+                {hour > 0 ?
+                    <Flex.Layout horizontal>
+                        <Common.Display type="subhead">{hour} h </Common.Display>
+                    </Flex.Layout>
+                    : undefined}
+                <Flex.Layout horizontal>
+                    <Common.Display type="subhead">{minute} m</Common.Display>
                 </Flex.Layout>
+            </Flex.Layout>;
 
-                <MUI.TextField
-                    ref="category"
-                    disabled={true}
-                    defaultValue={this.categoryMap[speech.category]}
+            speechDescription = <Flex.Layout horizontal style={styles.detailItem}>
+                <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-description" title="Description"/></Flex.Layout>
+                <Flex.Layout top>
+                    <SmartDisplay
+                    value={speech.description || ""}
+                    multiLine
                     style={{width: "100%"}} />
-            </Flex.Layout>
+                </Flex.Layout>
+            </Flex.Layout>;
 
-            let holdTimeDisabled = true;
-            let durationDisabled = true;
-            let upload = null;
-            let updateBtn = null;
-            let approveBtn = null;
-            let cancelBtn = null;
-            let confirmBtn = null;
-            let attendBtn = null;
+            speechFiles = <Flex.Layout horizontal style={styles.detailItem}>
+                <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-attach-file" title="Attachments"/></Flex.Layout>
+                <FileUploader ref="fileUploader" text={"Upload Attachments"} showResult maxSize={10 * 1024 * 1024} acceptTypes={["pdf", "ppt", "pptx"]} />
+            </Flex.Layout>;
 
-            if (speech.viewerRole === ROLE_SPEAKER) {
-                if (speech.status === STATUS_PENDING) {
-                    durationDisabled = false;
-                } else if (speech.status === STATUS_APPROVED) {
-                    confirmBtn = <MUI.FlatButton type="submit" label="Confirm" primary={true} />;
-                }
-                if (speech.status !== STATUS_CANCELLED) {
-                    speechDescription = <SmartEditor
-                        multiLine={true}
-                        ref="description"
-                        hintText="Description"
-                        defaultValue={speech.description}
-                        errorText=""
-                        floatingLabelText="Description"
-                        style={{width: "100%"}} />
-                    updateBtn = <MUI.FlatButton type="submit" label="Update" primary={true} />;
-                    upload = <div style={{marginLeft: 20}}><FileUploader ref="fileUploader" text={"Upload Slides"} showReview showResult maxSize={10 * 1024 * 1024} acceptTypes={["pdf", "odp", "ppt"]} /></div>;
-                }
-            } else if (speech.viewerRole === ROLE_ADMIN) {
-                if (speech.status === STATUS_PENDING) {
-                    holdTimeDisabled = false;
-                    approveBtn = <MUI.FlatButton type="submit" label="Approve" primary={true} />;
-                }
-                if (speech.status !== STATUS_CANCELLED) {
-                    cancelBtn = <MUI.FlatButton type="submit" label="Cancel" primary={true} />;
-                }
-            } else if (speech.viewerRole === ROLE_AUDIENCE) {
-                if (speech.status === STATUS_CONFIRMED) {
-                    attendBtn = <MUI.FlatButton type="submit" label="Attend" primary={true} />;
+            let users = null;
+            let tips = null;
+            if (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) {
+                users = speech.participants;
+                tips = "Participants";
+            } else {
+                users = speech.audiences;
+                tips = "Audiences";
+            }
+            speechAudiences = <Flex.Layout horizontal style={styles.detailItem}>
+                <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-people" title={tips}/></Flex.Layout>
+                <Flex.Layout center>
+                    {users.map(p => {
+                        let u = UserStore.getUser(p.id);
+                        return <div><Member.Avatar scale={0.8} member={u}/><Member.Name style={{marginLeft: 4}} member={u}/></div>;
+                    })}
+                </Flex.Layout>
+            </Flex.Layout>;
+
+            let primaryBtn = null;
+            let secondaryBtn = null;
+            if (speech.user_id === user.id) {
+                if (speech.status === ActivityConstants.SPEECH_STATUS.NEW)
+                    primaryBtn = <MUI.RaisedButton type="submit" label="Submit" primary={true} />;
+                else if (speech.status === ActivityConstants.SPEECH_STATUS.AUDITING)
+                    primaryBtn = <MUI.RaisedButton type="submit" label="Withdraw" primary={true} />;
+                else if (speech.status === ActivityConstants.SPEECH_STATUS.APPROVED) {
+                    primaryBtn = <MUI.RaisedButton type="submit" label="Agree" primary={true}/>;
+                    secondaryBtn = <MUI.RaisedButton type="submit" label="Disagree" style={{marginRight: 12}}/>;
                 }
             }
-
-            speechHoldTime = <Flex.Layout horizontal justified>
-                <Flex.Layout center style={{minWidth: 80}}>
-                    <Common.Display type="body3">Holding Time</Common.Display>
-                </Flex.Layout>
-                <Flex.Layout horizontal justified style={{minWidth: 0}}>
-                    <MUI.DatePicker
-                        disabled={holdTimeDisabled}
-                        ref="date"
-                        hintText="Date"
-                        style={styles.picker}
-                        defaultDate={speech.date}
-                        floatingLabelText="Date" />
-                </Flex.Layout>
-                <Flex.Layout horizontal justified style={{minWidth: 0}}>
-                    <MUI.TimePicker
-                        disabled={holdTimeDisabled}
-                        format="ampm"
-                        ref="time"
-                        hintText="Time"
-                        style={styles.picker}
-                        defaultTime={speech.time}
-                        floatingLabelText="Time" />
-                </Flex.Layout>
+            speechActions = <Flex.Layout horizontal centerJustified style={{paddingLeft: 96}}>
+                {secondaryBtn}
+                {primaryBtn}
             </Flex.Layout>;
 
-            speechDuration = <Flex.Layout horizontal justified>
-                <Flex.Layout center style={{minWidth: 80}}>
-                    <Common.Display type="body3">Duration</Common.Display>
-                </Flex.Layout>
-                <Flex.Layout horizontal justified style={{minWidth: 0}}>
-                    <MUI.TextField
-                        disabled={durationDisabled}
-                        ref="hours"
-                        hintText="Hours"
-                        defaultValue={speech.hours}
-                        errorText=""
-                        floatingLabelText="Hours"
-                        style={{width: "100%"}} />
-                </Flex.Layout>
-                <Flex.Layout horizontal justified style={{minWidth: 0}}>
-                    <MUI.TextField
-                        disabled={durationDisabled}
-                        ref="minutes"
-                        hintText="Minutes"
-                        defaultValue={speech.minutes}
-                        errorText=""
-                        floatingLabelText="Minutes"
-                        style={{width: "100%"}} />
-                </Flex.Layout>
-            </Flex.Layout>;
-
-            speechFiles = <Flex.Layout endJustified>
-                <Flex.Layout horizontal center>
-                    <a href="#" target="_blank">slides.pdf</a>
-                </Flex.Layout>
-                {upload}
-            </Flex.Layout>;
-
-            speechComment = <Flex.Layout horizontal key="comments">
+            speechComment = (<Flex.Layout vertical key="comments" style={styles.detailItem}>
+                <Flex.Layout center style={{margin: '20px 0px'}}><Common.Display type='title'>Comments</Common.Display></Flex.Layout>
                 <Flex.Layout vertical startJustified flex={1}>
                     <Thread style={{width: "100%"}} threadKey={this.state.threadKey} threadTitle={`Comment ${speech.title}`} />
                 </Flex.Layout>
-            </Flex.Layout>;
-
-            speechActions = <Flex.Layout>
-                {approveBtn}
-                {cancelBtn}
-                {confirmBtn}
-                {updateBtn}
-                {attendBtn}
-            </Flex.Layout>;
+            </Flex.Layout>);
         }
 
         return (
-            <PerfectScroll style={{height: '100%', position:'relative', padding:24}}>
-                <Flex.Layout horizontal centerJustified wrap>
-                    <form onSubmit={(e) => e.preventDefault()}>
-                        <MUI.Paper zDepth={1} style={styles.inner}>
-                            <div style={{padding: 20}}>
-                                <Flex.Layout horizontal justified>
-                                    <h3 style={{marginBottom: 0}}>Speech Detail</h3>
-                                    {speechAudiences}
-                                </Flex.Layout>
+            <PerfectScroll style={{height: '100%', position:'relative', margin: '0 auto', padding:20}}>
+                <form onSubmit={(e) => e.preventDefault()}>
+                    <MUI.Paper zDepth={1} style={styles.inner}>
+                        {bar}
+                        <div style={{padding: 20}}>
+                            <Flex.Layout start centerJustified style={{padding: '20px 0px 30px 0px'}}>
+                                {stepBar}
+                                {speechActions}
+                            </Flex.Layout>
 
-                                {speechTitle}
-                                {speechSpeaker}
-                                {speechCategory}
-                                {speechHoldTime}
-                                {speechDuration}
-                                {speechDescription}
-                                {speechFiles}
-                                {speechContent}
+                            {speechSpeaker}
+                            {speechCategory}
+                            {speechTime}
+                            {speechDuration}
+                            {speechDescription}
+                            {speechFiles}
+                            {speechAudiences}
+                            {speechContent}
 
-                                <Flex.Layout horizontal justified style={{marginTop: 20}}>
-                                    <MUI.FlatButton label="Return" onClick={() => history.back()} />
-                                    {speechActions}
-                                </Flex.Layout>
-
-                                {speechComment}
-                            </div>
-                        </MUI.Paper>
-                    </form>
-                </Flex.Layout>
+                            {speechComment}
+                        </div>
+                    </MUI.Paper>
+                </form>
             </PerfectScroll>
         );
     },
 
+    _deleteSpeech() {
+        this.refs.deleteDialog.show();
+    },
+    _handleDeleteDialogCancel() {
+        this.refs.deleteDialog.dismiss();
+    },
     _updateSpeech() {
 
     },
@@ -319,9 +274,5 @@ module.exports = React.createClass({
         this.setState({
             speech: ActivityStore.getSpeech(params.id)
         });
-    },
-
-    _randomInt(n) {
-        return Math.floor((Math.random() * n) + 1);
     }
 });

@@ -11,7 +11,7 @@ module.exports = React.createClass({
         let numberStyle = {display: 'block', fontWeight: 'bold', fontSize: 20};
         let textStyle = {color: '#767676', fontSize: 13};
         let target = '#' + this.props.text;
-        return <Common.Link style={outStyle} href={target}>
+        return <Common.Link style={outStyle} href={target} title={this.props.title}>
             <strong style={numberStyle}>
                 {this.props.number}
             </strong>

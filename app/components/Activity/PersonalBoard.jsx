@@ -45,7 +45,7 @@ module.exports = React.createClass({
                     <Common.Display type='display1' style={{color:this.context.muiTheme.palette.primary1Color}}>{this.state.user.point_available}/{this.state.user.point_total}</Common.Display>
                     <Common.Display type='display1' style={{marginLeft:24}}>Points</Common.Display>
                 </div>
-                <Link to='personal-home'><mui.RaisedButton secondary={true} label="My activities"/></Link>
+                <Link to='personal-home' params={{"userid": LoginStore.getUser().id}}><mui.RaisedButton secondary={true} label="My activities"/></Link>
             </Flex.Layout>
             {this.state.next? <div>
             <Common.Hr style={{margin: '12px 12px'}}/>

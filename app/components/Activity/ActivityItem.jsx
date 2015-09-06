@@ -52,7 +52,7 @@ module.exports = React.createClass({
                 <Common.Display type='caption'>
                     <Flex.Layout justified center>
                         <div><span className='icon-access-time'/> {time.format('h:mm')}</div>
-                        <Flex.Layout center onClick={(e)=>{e.stopPropagation()}}>
+                        <Flex.Layout center onClick={this.props.showStatus ? undefined : (e)=>{e.stopPropagation()}}>
                             {rightContent}
                         </Flex.Layout>
                     </Flex.Layout>
