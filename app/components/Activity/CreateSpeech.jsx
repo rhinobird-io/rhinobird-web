@@ -44,7 +44,7 @@ module.exports = React.createClass({
                 margin: 20
             },
             category: {
-                width: 250,
+                marginLeft: "12%"
             },
             picker: {
                 width: "auto !important"
@@ -87,7 +87,8 @@ module.exports = React.createClass({
                                     </Flex.Layout>
                                     <MUI.DropDownMenu
                                         ref="category"
-                                        style={styles.category}
+                                        style={{minWidth: 250}}
+                                        labelStyle={styles.category}
                                         onChange={this._onChangeCategory}
                                         menuItems={categoryItems} />
                                 </Flex.Layout>
