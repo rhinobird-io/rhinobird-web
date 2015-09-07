@@ -40,9 +40,9 @@ module.exports = React.createClass({
         return <div style={outStyle}>
             <div style={topStyle}>{this.props.type}</div>
             <div style={bottomStyle}>
-                <div style={leftStyle}>{this.props.month}</div>
+                <div style={leftStyle}>{isNaN(this.props.month) ? 'N' : this.props.month}</div>
                 <div style={slashStyle}>/</div>
-                <div style={rightStyle}>{this.props.day}</div>
+                <div style={rightStyle}>{isNaN(this.props.day) ? 'N' : this.props.day}</div>
             </div>
         </div>
     }

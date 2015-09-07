@@ -51,7 +51,7 @@ module.exports = React.createClass({
                 <Common.Display>{title}</Common.Display>
                 <Common.Display type='caption'>
                     <Flex.Layout justified center>
-                        <div><span className='icon-access-time'/> {time.format('h:mm')}</div>
+                        <div><span className='icon-access-time'/> {time.isValid() ? time.format('HH:mm') : '--:--'}</div>
                         <Flex.Layout center onClick={this.props.showStatus ? undefined : (e)=>{e.stopPropagation()}}>
                             {rightContent}
                         </Flex.Layout>

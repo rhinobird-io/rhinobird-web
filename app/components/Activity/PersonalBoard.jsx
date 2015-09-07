@@ -42,7 +42,7 @@ module.exports = React.createClass({
         return <mui.Paper style={{padding:12, width:'100%'}}>
             <Flex.Layout start justified style={{marginLeft:12}}>
                 <div>
-                    <Common.Display type='display1' style={{color:this.context.muiTheme.palette.primary1Color}}>{this.state.user.point_available}/{this.state.user.point_total}</Common.Display>
+                    <Common.Display type='display1' style={{color:this.context.muiTheme.palette.primary1Color}} title="Available/Total">{this.state.user.point_available}/{this.state.user.point_total}</Common.Display>
                     <Common.Display type='display1' style={{marginLeft:24}}>Points</Common.Display>
                 </div>
                 {this.state.user.role === ActivityConstants.USER_ROLE.ADMIN ?

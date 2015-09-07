@@ -50,6 +50,9 @@ module.exports = React.createClass({
 
 
     },
+    componentWillUnmount() {
+        ActivityStore.removeChangeListener(this._onChange);
+    },
     _onChange() {
         var speech = ActivityStore.getSpeech(this.props.params.id) || {};
         var user = LoginStore.getUser();
@@ -134,7 +137,7 @@ module.exports = React.createClass({
                                     </Flex.Layout>
                                     <MUI.DropDownMenu
                                         ref="category"
-                                        style={{minWidth: 250}}
+                                        style={{minWidth: 200, height: 40}}
                                         labelStyle={styles.category}
                                         selectedIndex={this.state.category === 'weekly' ? 0 : 1}
                                         onChange={this._onChangeCategory}

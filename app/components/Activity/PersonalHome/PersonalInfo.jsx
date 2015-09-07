@@ -31,7 +31,7 @@ module.exports = React.createClass({
                     </Flex.Layout>
                     <Common.Hr style={{margin: '12px 5px'}}/>
                     <Flex.Layout centerJustified>
-                        <Common.Display type='subhead' style={{color:this.context.muiTheme.palette.primary1Color}}>{this.state.user.point_available}/{this.state.user.point_total}</Common.Display>
+                        <Common.Display type='subhead' style={{color:this.context.muiTheme.palette.primary1Color}} title="Available/Total">{this.state.user.point_available}/{this.state.user.point_total}</Common.Display>
                         <Common.Display type='subhead' style={{marginLeft:5}}>Points</Common.Display>
                     </Flex.Layout>
                     <Common.Hr style={{margin: '12px 5px'}}/>
