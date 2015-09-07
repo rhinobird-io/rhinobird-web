@@ -116,11 +116,11 @@ module.exports = React.createClass({
                     primary={true}
                     onTouchTap={this._handleDeleteDialogSubmit}/>
             ];
-            bar = (<Flex.Layout flex={1} center horizontal style={styles.bar} title={speech.title}>
+            bar = (<Flex.Layout flex={1} center horizontal style={styles.bar}>
                 <Flex.Layout>
                     <MUI.IconButton onClick={() => history.back()} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-keyboard-arrow-left" />
                 </Flex.Layout>
-                {speech.title}
+                <div title={speech.title}>{speech.title}</div>
                 <Flex.Layout endJustified flex={1} center horizontal>
                     <div>
                     <MUI.IconButton onClick={this._editSpeech} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/>
@@ -211,6 +211,8 @@ module.exports = React.createClass({
                 else if (speech.status === ActivityConstants.SPEECH_STATUS.APPROVED) {
                     primaryBtn = <MUI.RaisedButton type="submit" label="Agree" primary={true}/>;
                     secondaryBtn = <MUI.RaisedButton type="submit" label="Disagree" style={{marginRight: 12}}/>;
+                } else if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED) {
+                    primaryBtn = <MUI.RaisedButton type="submit" label="Finish" primary={true} />;
                 }
             }
             speechActions = <Flex.Layout horizontal centerJustified style={{paddingLeft: 96}}>
