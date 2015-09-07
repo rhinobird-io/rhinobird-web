@@ -328,10 +328,18 @@ module.exports = React.createClass({
         });
     },
     _finishSpeech() {
-
+        ActivityAction.finishSpeech(this.state.speech.id, speech => {
+            this.setState({
+                speech: speech
+            })
+        });
     },
     _closeSpeech() {
-
+        ActivityAction.closeSpeech(this.state.speech.id, speech => {
+            this.setState({
+                speech: speech
+            })
+        });
     },
 
     _onChange(){

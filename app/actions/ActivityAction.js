@@ -240,4 +240,36 @@ export default {
                     fail(e.status);
             });
     },
+    finishSpeech(speech_id, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/finish`)
+            .done((data) => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.UPDATE_ACTIVITY,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
+    },
+    closeSpeech(speech_id, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/close`)
+            .done((data) => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.UPDATE_ACTIVITY,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
+    }
 };
