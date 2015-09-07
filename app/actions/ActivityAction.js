@@ -142,4 +142,102 @@ export default {
                     fail(e.status);
             });
     },
+    applyAsAudience(speech_id, user_id, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/audiences`, {userid: user_id})
+            .done((data) => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.UPDATE_ACTIVITY,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
+    },
+    withdrawAsAudience(speech_id, user_id, success, fail) {
+        $.ajax({
+            url: `/activity/speeches/${speech_id}/audiences/${user_id}`,
+            type: "delete"
+        }).done((data) => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.UPDATE_ACTIVITY,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
+    },
+    approveActivity(speech_id, time, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/approve`, {time: time})
+            .done((data) => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.UPDATE_ACTIVITY,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
+    },
+    rejectActivity(speech_id, time, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/reject`)
+            .done((data) => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.UPDATE_ACTIVITY,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
+    },
+    agreeArrangement(speech_id, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/agree`)
+            .done((data) => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.UPDATE_ACTIVITY,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
+    },
+    disagreeArrangement(speech_id, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/disagree`)
+            .done((data) => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.UPDATE_ACTIVITY,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
+    },
 };

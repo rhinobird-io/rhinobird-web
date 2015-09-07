@@ -4,6 +4,7 @@ import Constants from '../constants/ActivityConstants';
 import BaseStore from './BaseStore';
 import assign from 'object-assign';
 import LoginStore from './LoginStore';
+import ActivityConstants from '../constants/ActivityConstants';
 
 let _users = [];
 
@@ -20,6 +21,12 @@ let ActivityUserStore= assign({}, BaseStore, {
     },
     getCurrentUser() {
         return this.getUser(LoginStore.getUser().id);
+    },
+    currentIsAdmin() {
+        let user = this.getUser(LoginStore.getUser().id);
+        if (user != null && user.role === ActivityConstants.USER_ROLE.ADMIN)
+            return true;
+        return false;
     },
     dispatcherIndex: AppDispatcher.register(function (payload) {
         let data = payload.data;

@@ -107,6 +107,7 @@ module.exports = React.createClass({
             let speaker = UserStore.getUser(speech.user_id);
             let user = LoginStore.getUser();
 
+            let showEditDelete = speech.status === ActivityConstants.SPEECH_STATUS.NEW && speech.user_id === user.id;
             let dialogActions = [
                 <MUI.FlatButton
                     label="Cancel"
@@ -124,8 +125,8 @@ module.exports = React.createClass({
                 <div title={speech.title}>{speech.title}</div>
                 <Flex.Layout endJustified flex={1} center horizontal>
                     <div>
-                    <MUI.IconButton onClick={this._editSpeech} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/>
-                    <MUI.IconButton onClick={this._deleteSpeech} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-delete"/>
+                        {showEditDelete ? <MUI.IconButton onClick={this._editSpeech} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/> : undefined}
+                        {showEditDelete ? <MUI.IconButton onClick={this._deleteSpeech} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-delete"/> : undefined}
                     <MUI.Dialog actions={dialogActions} title="Deleting Speech" ref='deleteDialog'>
                         Are you sure to delete this speech?
                     </MUI.Dialog>
@@ -148,10 +149,15 @@ module.exports = React.createClass({
                 <Flex.Layout center><Common.Display type="subhead">{speech.category}</Common.Display></Flex.Layout>
             </Flex.Layout>;
 
-            speechTime = <Flex.Layout horizontal style={styles.detailItem}>
-                <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className='icon-schedule' title="Time"/></Flex.Layout>
-                <Flex.Layout center><Common.Display type="subhead">{Moment(speech.time).format('YYYY-MM-DD HH:mm')}</Common.Display></Flex.Layout>
-            </Flex.Layout>;
+            if ((speech.status === ActivityConstants.SPEECH_STATUS.APPROVED && (user.id === speech.user_id || ActivityUserStore.currentIsAdmin()))
+                || speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED
+                || speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) {
+                speechTime = <Flex.Layout horizontal style={styles.detailItem}>
+                    <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className='icon-schedule' title="Time"/></Flex.Layout>
+                    <Flex.Layout center><Common.Display
+                        type="subhead">{Moment(speech.time).format('YYYY-MM-DD HH:mm')}</Common.Display></Flex.Layout>
+                </Flex.Layout>;
+            }
 
             let hour = Math.floor(speech.expected_duration / 60);
             let minute = speech.expected_duration % 60;
@@ -210,15 +216,16 @@ module.exports = React.createClass({
                 else if (speech.status === ActivityConstants.SPEECH_STATUS.AUDITING)
                     primaryBtn = <MUI.RaisedButton type="submit" label="Withdraw" primary={true} onClick={this._withdrawSpeech}/>;
                 else if (speech.status === ActivityConstants.SPEECH_STATUS.APPROVED) {
-                    primaryBtn = <MUI.RaisedButton type="submit" label="Agree" primary={true}/>;
-                    secondaryBtn = <MUI.RaisedButton type="submit" label="Disagree" style={{marginRight: 12}}/>;
+                    primaryBtn = <MUI.RaisedButton type="submit" label="Agree" primary={true} onClick={this._agreeArrangement}/>;
+                    secondaryBtn = <MUI.RaisedButton type="submit" label="Disagree" style={{marginRight: 12}} onClick={this._disagreeArrangement}/>;
                 }
-            } else if (ActivityUserStore.getCurrentUser().role === ActivityConstants.USER_ROLE.ADMIN) {
+            } else if (ActivityUserStore.currentIsAdmin()) {
                 if (speech.status === ActivityConstants.SPEECH_STATUS.AUDITING) {
                     primaryBtn = <MUI.RaisedButton type="submit" label="Approve" primary={true} onClick={this._approveSpeech}/>;
                     secondaryBtn = <MUI.RaisedButton type="submit" label="Reject" style={{marginRight: 12}} onClick={this._rejectSpeech}/>;
                 } else if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED) {
-                    primaryBtn = <MUI.RaisedButton type="submit" label="Finish" primary={true} />;
+                    primaryBtn = <MUI.RaisedButton type="submit" label="Finish" primary={true} onClick={this._finishSpeech}/>;
+                    secondaryBtn = <MUI.RaisedButton type="submit" label="Close" style={{marginRight: 12}} onClick={this._closeSpeech}/>;
                 }
             }
             speechActions = <Flex.Layout horizontal centerJustified style={{paddingLeft: 96}}>
@@ -292,14 +299,38 @@ module.exports = React.createClass({
     },
 
     _approveSpeech() {
-
+        ActivityAction.approveActivity(this.state.speech.id, new Date(), speech => {
+            this.setState({
+                speech: speech
+            })
+        });
     },
 
     _rejectSpeech() {
+        ActivityAction.rejectActivity(this.state.speech.id, speech => {
+            this.setState({
+                speech: speech
+            })
+        });
+    },
+    _agreeArrangement() {
+        ActivityAction.agreeArrangement(this.state.speech.id, speech => {
+            this.setState({
+                speech: speech
+            })
+        });
+    },
+    _disagreeArrangement() {
+        ActivityAction.disagreeArrangement(this.state.speech.id, speech => {
+            this.setState({
+                speech: speech
+            })
+        });
+    },
+    _finishSpeech() {
 
     },
-
-    _confirmSpeech() {
+    _closeSpeech() {
 
     },
 
