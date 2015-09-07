@@ -5,18 +5,18 @@ const Common = require('../Common');
 const UserStore = require('../../stores/UserStore');
 const LoginStore = require('../../stores/LoginStore');
 const ActivityStore = require('../../stores/ActivityStore');
+const ActivityUserStore = require('../../stores/ActivityUserStore');
 const Member = require('../Member');
 const ActivityItem = require('./ActivityItem');
 const Link = require('react-router').Link;
+const ActivityConstants = require('../../constants/ActivityConstants');
+const ActivityAction = require('../../actions/ActivityAction');
 
 module.exports = React.createClass({
     componentDidMount(){
         ActivityStore.addChangeListener(this._activityChange);
-        $.get(`/activity/users/${LoginStore.getUser().id}`).then(user =>{
-            Object.assign(user, LoginStore.getUser);
-            this.setState({
-                user: user
-            })
+        this.setState({
+            user: ActivityUserStore.getCurrentUser()
         });
     },
     componentWillUnmount() {
@@ -45,7 +45,11 @@ module.exports = React.createClass({
                     <Common.Display type='display1' style={{color:this.context.muiTheme.palette.primary1Color}}>{this.state.user.point_available}/{this.state.user.point_total}</Common.Display>
                     <Common.Display type='display1' style={{marginLeft:24}}>Points</Common.Display>
                 </div>
-                <Link to='personal-home' params={{"userid": LoginStore.getUser().id}}><mui.RaisedButton secondary={true} label="My activities"/></Link>
+                {this.state.user.role === ActivityConstants.USER_ROLE.ADMIN ?
+                    <Link to='administration'><mui.RaisedButton secondary={true} label="Administration"/></Link> :
+                    <Link to='personal-home' params={{"userid": LoginStore.getUser().id}}><mui.RaisedButton secondary={true} label="My activities"/></Link>}
+
+
             </Flex.Layout>
             {this.state.next? <div>
             <Common.Hr style={{margin: '12px 12px'}}/>

@@ -10,6 +10,9 @@ const ActivityIcon = require('./ActivityIcon');
 const PersonalBoard = require('./PersonalBoard');
 const ActivityList = require('./ActivityList');
 const RankBoard = require('./RankBoard');
+const ActivityUserStore = require('../../stores/ActivityUserStore');
+const LoginStore = require('../../stores/LoginStore');
+
 module.exports = React.createClass({
 
     contextTypes: {
@@ -20,9 +23,11 @@ module.exports = React.createClass({
             ActivityAction.updateActivities(data);
         });
         UserStore.addChangeListener(this._userChanged);
+        ActivityUserStore.addChangeListener(this._userChanged);
     },
     componentWillUnmount(){
         UserStore.removeChangeListener(this._userChanged);
+        ActivityUserStore.removeChangeListener(this._userChanged);
     },
     _userChanged(){
         this.forceUpdate();
@@ -31,7 +36,9 @@ module.exports = React.createClass({
         if (!UserStore.hasInitialized()) {
             return null;
         }
-        let u = UserStore.getUser(1);
+        if (ActivityUserStore.getCurrentUser() === null) {
+            return null;
+        }
         return (
             <PerfectScroll style={{height: '100%', position:'relative', padding:24}}>
                 <div style={{margin:'0 auto', maxWidth:1000}}>

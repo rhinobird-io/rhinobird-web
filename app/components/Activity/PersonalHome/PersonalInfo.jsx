@@ -2,24 +2,16 @@ const React = require("react");
 const Flex = require("../../Flex");
 const Common = require('../../Common');
 const LoginStore = require('../../../stores/LoginStore');
+const ActivityUserStore = require('../../../stores/ActivityUserStore');
 const Member = require('../../Member');
 const SummaryInfo = require('./SummaryInfo');
 
 module.exports = React.createClass({
 
-    componentDidMount(){
-        $.get(`/activity/users/${LoginStore.getUser().id}`).then(user =>{
-            Object.assign(user, LoginStore.getUser);
-            this.setState({
-                user: user
-            })
-        });
-    },
-    componentWillUnmount() {
-    },
     getInitialState() {
         return {
-        }
+            user: ActivityUserStore.getCurrentUser()
+        };
     },
     contextTypes: {
         muiTheme: React.PropTypes.object

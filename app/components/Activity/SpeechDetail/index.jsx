@@ -12,6 +12,7 @@ const FileUploader = require('../../FileUploader');
 const Thread = require('../../Thread');
 const ActivityAction = require('../../../actions/ActivityAction');
 const ActivityStore = require('../../../stores/ActivityStore');
+const ActivityUserStore = require('../../../stores/ActivityUserStore');
 const LoginStore = require('../../../stores/LoginStore');
 const ActivityConstants = require('../../../constants/ActivityConstants');
 const StepBar = require('../../StepBar');
@@ -211,6 +212,11 @@ module.exports = React.createClass({
                 else if (speech.status === ActivityConstants.SPEECH_STATUS.APPROVED) {
                     primaryBtn = <MUI.RaisedButton type="submit" label="Agree" primary={true}/>;
                     secondaryBtn = <MUI.RaisedButton type="submit" label="Disagree" style={{marginRight: 12}}/>;
+                }
+            } else if (ActivityUserStore.getCurrentUser().role === ActivityConstants.USER_ROLE.ADMIN) {
+                if (speech.status === ActivityConstants.SPEECH_STATUS.AUDITING) {
+                    primaryBtn = <MUI.RaisedButton type="submit" label="Approve" primary={true} onClick={this._approveSpeech}/>;
+                    secondaryBtn = <MUI.RaisedButton type="submit" label="Reject" style={{marginRight: 12}} onClick={this._rejectSpeech}/>;
                 } else if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED) {
                     primaryBtn = <MUI.RaisedButton type="submit" label="Finish" primary={true} />;
                 }
@@ -289,7 +295,7 @@ module.exports = React.createClass({
 
     },
 
-    _cancelSpeech() {
+    _rejectSpeech() {
 
     },
 
