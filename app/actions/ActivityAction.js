@@ -271,5 +271,21 @@ export default {
                 if (fail && typeof fail === 'function')
                     fail(e.status);
             });
+    },
+    uploadAttachment(speech_id, url, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/upload`, {resource_url: url})
+            .done((data) => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.UPDATE_ACTIVITY,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
     }
 };

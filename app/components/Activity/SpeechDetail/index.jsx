@@ -18,6 +18,7 @@ const ActivityConstants = require('../../../constants/ActivityConstants');
 const StepBar = require('../../StepBar');
 const Enum = require('enum');
 const Moment = require("moment");
+const Constants = require('../../FileUploader/constants');
 
 var speechStatus = new Enum({"New": 0, "Auditing": 1, "Approved": 2, "Confirmed": 3, "Finished": 4}, { ignoreCase: true });
 module.exports = React.createClass({
@@ -183,10 +184,17 @@ module.exports = React.createClass({
                 </Flex.Layout>
             </Flex.Layout>;
 
-            speechFiles = <Flex.Layout horizontal style={styles.detailItem}>
-                <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-attach-file" title="Attachments"/></Flex.Layout>
-                <FileUploader ref="fileUploader" text={"Upload Attachments"} showResult maxSize={10 * 1024 * 1024} acceptTypes={["pdf", "ppt", "pptx"]} />
-            </Flex.Layout>;
+            if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED
+                || speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) {
+                speechFiles = <Flex.Layout horizontal style={styles.detailItem}>
+                    <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-attach-file"
+                                                                               title="Attachments"/></Flex.Layout>
+                    {speech.resource_url ? <Flex.Layout center style={{paddingRight: 12}}><a href={`/file/files/${speech.resource_url}/download`} >Download</a></Flex.Layout> : undefined}
+                    {speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED && speech.user_id === user.id ?
+                        <FileUploader ref="fileUploader" text={"Upload Attachments"} showResult maxSize={10 * 1024 * 1024}
+                                  acceptTypes={["pdf", "ppt", "rar", "zip", "rar", "gz", "tgz", "bz2"]} afterUpload={this._uploadAttachment}/> : undefined}
+                </Flex.Layout>;
+            }
 
             let users = null;
             let tips = null;
@@ -341,7 +349,17 @@ module.exports = React.createClass({
             })
         });
     },
+    _uploadAttachment(result) {
+        if (result.result === Constants.UploadResult.SUCCESS) {
+            console.log(result.file);
+            ActivityAction.uploadAttachment(this.state.speech.id, result.file.id, speech => {
+                this.setState({
+                    speech: speech
+                })
+            });
+        }
 
+    },
     _onChange(){
         let params = this.props.params;
 
