@@ -19,6 +19,7 @@ const StepBar = require('../../StepBar');
 const Enum = require('enum');
 const Moment = require("moment");
 const Constants = require('../../FileUploader/constants');
+const Link = require("react-router").Link;
 
 var speechStatus = new Enum({"New": 0, "Auditing": 1, "Approved": 2, "Confirmed": 3, "Finished": 4}, { ignoreCase: true });
 module.exports = React.createClass({
@@ -126,7 +127,7 @@ module.exports = React.createClass({
                 <div title={speech.title}>{speech.title}</div>
                 <Flex.Layout endJustified flex={1} center horizontal>
                     <div>
-                        {showEditDelete ? <MUI.IconButton onClick={this._editSpeech} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/> : undefined}
+                        {showEditDelete ? <Link to="edit-speech" params={{ id: this.state.speech.id }}><MUI.IconButton iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/></Link> : undefined}
                         {showEditDelete ? <MUI.IconButton onClick={this._deleteSpeech} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-delete"/> : undefined}
                     <MUI.Dialog actions={dialogActions} title="Deleting Speech" ref='deleteDialog'>
                         Are you sure to delete this speech?
@@ -287,9 +288,6 @@ module.exports = React.createClass({
         ActivityAction.deleteActivity(this.state.speech.id, () => {
             this.context.router.transitionTo("activity");
         });
-    },
-    _editSpeech() {
-        this.context.router.transitionTo("edit-speech", {id: this.state.speech.id});
     },
     _submitSpeech() {
         ActivityAction.submitActivity(this.state.speech.id, speech => {
