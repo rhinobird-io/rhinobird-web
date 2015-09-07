@@ -1,13 +1,13 @@
 const React = require("react");
-const PerfectScroll = require("../PerfectScroll");
+const PerfectScroll = require("../../PerfectScroll/index");
 const MUI = require('material-ui');
-const Common = require('../Common');
-const Flex = require('../Flex');
-const SmartEditor = require('../SmartEditor').SmartEditor;
+const Common = require('../../Common/index');
+const Flex = require('../../Flex/index');
+const SmartEditor = require('../../SmartEditor/index').SmartEditor;
 const Range = require('lodash/utility/range');
-const ActivityAction = require('../../actions/ActivityAction');
-const ActivityStore = require('../../stores/ActivityStore');
-const LoginStore = require('../../stores/LoginStore');
+const ActivityAction = require('../../../actions/ActivityAction');
+const ActivityStore = require('../../../stores/ActivityStore');
+const LoginStore = require('../../../stores/LoginStore');
 
 module.exports = React.createClass({
     mixins: [React.addons.LinkedStateMixin, React.addons.PureRenderMixin],
@@ -25,22 +25,29 @@ module.exports = React.createClass({
 
     getInitialState() {
         return {
-            mode: 'create',
-            speech: {},
-            titleError: "",
-            descriptionError: "",
-            durationError: "",
-            title: "",
-            description: "",
-            category: "",
-            duration: 10
+            mode: 'loading'
         }
     },
     componentDidMount() {
         this.refs.title.focus();
-        ActivityStore.addChangeListener(this._onChange);
-        if (this.props.params.id)
-            ActivityAction.receiveSpeech(this.props.params.id);
+        if (this.props.params.id) {
+            ActivityStore.addChangeListener(this._onChange);
+            ActivityAction.receiveSpeech(this.props.params.id, null, (e) => {
+                this.setState({
+                    mode: 'error'
+                });
+            });
+        } else {
+            this.setState({
+                mode: 'create',
+                speech: {},
+                title: "",
+                description: "",
+                category: "",
+                duration: 30
+            });
+        }
+
 
     },
     _onChange() {
@@ -54,6 +61,10 @@ module.exports = React.createClass({
                 description: speech.description,
                 category: speech.category,
                 duration: speech.expected_duration
+            });
+        } else {
+            this.setState({
+                mode: 'error'
             });
         }
     },
@@ -77,14 +88,27 @@ module.exports = React.createClass({
             { payload: "monthly", text: 'monthly' }
         ];
 
+        let loadingIcon = null;
+        let errorIcon = null;
+        let submitButton = null;
+        if (this.state.mode === 'loading') {
+            loadingIcon = <MUI.CircularProgress mode="indeterminate" size={0.3} style={{marginTop: -20, marginBottom: -20}}/>;
+        } else if (this.state.mode === 'error') {
+            errorIcon = <MUI.FontIcon className="icon-error" color={this.context.muiTheme.palette.accent1Color} style={{marginLeft: 12, marginTop: -6}}/>
+        } else {
+            submitButton = <MUI.RaisedButton type="submit" label={`${this.state.mode === 'create' ? 'Create' : 'Update'} Speech`} primary={true} onClick={this._handleSubmit}/>;
+        }
+
         return (
             <PerfectScroll style={{height: '100%', position:'relative', padding:24}}>
                 <Flex.Layout horizontal centerJustified wrap>
                     <form onSubmit={(e) => e.preventDefault()}>
                         <MUI.Paper zDepth={1} style={styles.inner}>
                             <div style={{padding: 20}}>
-                                <Flex.Layout horizontal justified>
+                                <Flex.Layout horizontal startJustified>
                                     <h3 style={{marginBottom: 0}}>{this.state.mode === 'create' ? 'Create' : 'Edit'} Speech</h3>
+                                    {loadingIcon}
+                                    {errorIcon}
                                 </Flex.Layout>
 
                                 <MUI.TextField
@@ -134,7 +158,7 @@ module.exports = React.createClass({
 
                                 <Flex.Layout horizontal justified style={{marginTop: 20}}>
                                     <MUI.RaisedButton label="Cancel" onClick={() => history.back()} />
-                                    <MUI.RaisedButton type="submit" label={`${this.state.mode === 'create' ? 'Create' : 'Update'} Speech`} primary={true} onClick={this._handleSubmit}/>
+                                    {submitButton}
                                 </Flex.Layout>
                             </div>
                         </MUI.Paper>
