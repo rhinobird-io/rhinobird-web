@@ -54,7 +54,8 @@ module.exports = React.createClass({
         return {
             speech: ActivityStore.getSpeech(params.id),
             notFound: false,
-            threadKey: `/platform/activity/speeches/${params.id}`
+            threadKey: `/platform/activity/speeches/${params.id}`,
+            showSelectTime: false
         };
     },
 
@@ -63,16 +64,17 @@ module.exports = React.createClass({
             bar: {
                 fontSize: "2em",
                 padding: 12,
-                minHeight: 50,
-                maxHeight: 50,
+                minHeight: 60,
+                maxHeight: 60,
                 color: this.context.muiTheme.palette.canvasColor,
                 backgroundColor: this.context.muiTheme.palette.primary1Color,
                 whiteSpace:'nowrap',
                 textOverflow:'ellipsis',
-                overflow:'hidden'
+                overflow:'hidden',
+                lineHeight: 12
             },
             inner: {
-                width: '80%',
+                width: '100%',
                 height: '100%',
                 padding: 0,
                 margin: '0 auto'
@@ -84,6 +86,15 @@ module.exports = React.createClass({
             detailKey: {
                 minWidth: 20,
                 marginRight: 20
+            },
+            selectTime: {
+                overflow: 'hidden',
+                transition: "all 500ms",
+                opacity: this.state.showSelectTime ? 1 : 0,
+                width: this.state.showSelectTime ? 300 : 0,
+                height: "100%",
+                marginLeft: 30,
+                padding: 20
             }
         };
 
@@ -230,7 +241,7 @@ module.exports = React.createClass({
                 }
             } else if (ActivityUserStore.currentIsAdmin()) {
                 if (speech.status === ActivityConstants.SPEECH_STATUS.AUDITING) {
-                    primaryBtn = <MUI.RaisedButton type="submit" label="Approve" primary={true} onClick={this._approveSpeech}/>;
+                    primaryBtn = <MUI.RaisedButton type="submit" label="Approve" primary={true} onClick={this._showSelectTime}/>;
                     secondaryBtn = <MUI.RaisedButton type="submit" label="Reject" style={{marginRight: 12}} onClick={this._rejectSpeech}/>;
                 } else if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED) {
                     primaryBtn = <MUI.RaisedButton type="submit" label="Finish" primary={true} onClick={this._finishSpeech}/>;
@@ -240,7 +251,7 @@ module.exports = React.createClass({
             speechActions = <Flex.Layout horizontal centerJustified style={{paddingLeft: 96}}>
                 {secondaryBtn}
                 {primaryBtn}
-            </Flex.Layout>;
+                </Flex.Layout>;
 
             speechComment = (<Flex.Layout vertical key="comments" style={styles.detailItem}>
                 <Flex.Layout center style={{margin: '20px 0px'}}><Common.Display type='title'>Comments</Common.Display></Flex.Layout>
@@ -252,30 +263,60 @@ module.exports = React.createClass({
 
         return (
             <PerfectScroll style={{height: '100%', position:'relative', margin: '0 auto', padding:20}}>
-                <form onSubmit={(e) => e.preventDefault()}>
-                    <MUI.Paper zDepth={1} style={styles.inner}>
-                        {bar}
-                        <div style={{padding: 20}}>
-                            <Flex.Layout start centerJustified style={{padding: '20px 0px 30px 0px'}}>
-                                {stepBar}
-                                {speechActions}
+                <Flex.Layout horizontal centerJustified>
+                    <form onSubmit={(e) => e.preventDefault()}>
+                        <MUI.Paper zDepth={1} style={styles.inner}>
+                            {bar}
+                            <div style={{padding: 20}}>
+                                <Flex.Layout start centerJustified style={{padding: '20px 0px 30px 0px'}}>
+                                    {stepBar}
+                                    {speechActions}
+                                </Flex.Layout>
+
+                                {speechSpeaker}
+                                {speechCategory}
+                                {speechTime}
+                                {speechDuration}
+                                {speechDescription}
+                                {speechFiles}
+                                {speechAudiences}
+                                {speechContent}
+
+                                {speechComment}
+                            </div>
+                        </MUI.Paper>
+                    </form>
+                    <MUI.Paper zDepth={1} style={styles.selectTime}>
+                        <div>
+                            <Flex.Layout horizontal>
+                                <h3>Select Time</h3>
                             </Flex.Layout>
-
-                            {speechSpeaker}
-                            {speechCategory}
-                            {speechTime}
-                            {speechDuration}
-                            {speechDescription}
-                            {speechFiles}
-                            {speechAudiences}
-                            {speechContent}
-
-                            {speechComment}
+                            {this._getTimePicker()}
                         </div>
                     </MUI.Paper>
-                </form>
+                </Flex.Layout>
             </PerfectScroll>
         );
+    },
+    _getTimePicker() {
+        return (
+            <Flex.Layout vertical>
+                <MUI.DatePicker ref="date" hintText="Select Date" defaultDate={new Date()}/>
+                <MUI.TimePicker ref="time" hintText="Select Time" format="24hr" defaultTime={new Date()}/>
+                <Flex.Layout horizontal justified>
+                    <MUI.RaisedButton type="submit" label="Cancel" onClick={this._hideSelectTime}/>
+                    <MUI.RaisedButton type="submit" label="Approve" secondary={true} onClick={this._approveSpeech}/>
+                </Flex.Layout>
+            </Flex.Layout>
+        );
+    },
+    _showSelectTime() {
+        this.setState({
+            showSelectTime: !this.state.showSelectTime
+        });
+    },
+    _hideSelectTime() {
+        this.setState({showSelectTime: false});
     },
 
     _deleteSpeech() {
@@ -304,10 +345,28 @@ module.exports = React.createClass({
         });
     },
 
-    _approveSpeech() {
-        ActivityAction.approveActivity(this.state.speech.id, new Date(), speech => {
+    _applyAsAudience() {
+        ActivityAction.applyAsAudience(this.state.speech.id, LoginStore.getUser().id, speech => {
             this.setState({
                 speech: speech
+            })
+        });
+    },
+    _withdrawAsAudience() {
+        ActivityAction.withdrawAsAudience(this.state.speech.id, LoginStore.getUser().id, speech => {
+            this.setState({
+                speech: speech
+            })
+        });
+    },
+    _approveSpeech() {
+        let date = this.refs.date.getDate();
+        let time = this.refs.time.getTime();
+        let datetime = new Date(date.getFullYear(),date.getMonth(),date.getDate(),time.getHours(),time.getMinutes(), 0, 0);
+        ActivityAction.approveActivity(this.state.speech.id, datetime, speech => {
+            this.setState({
+                speech: speech,
+                showSelectTime: false
             })
         });
     },
