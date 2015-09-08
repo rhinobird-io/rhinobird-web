@@ -73,6 +73,7 @@ const SmartEditor = React.createClass({
     if (nextProps.valueLink) {
       let node = this._getInputNode();
       node.value = nextProps.valueLink.value;
+      this.refs.textfield.setValue(nextProps.valueLink.value);
       if(this.props.multiLine){
         this.refs.textfield.refs.input._syncHeightWithShadow(nextProps.valueLink.value);
       }
