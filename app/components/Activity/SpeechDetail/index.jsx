@@ -70,8 +70,7 @@ module.exports = React.createClass({
                 backgroundColor: this.context.muiTheme.palette.primary1Color,
                 whiteSpace:'nowrap',
                 textOverflow:'ellipsis',
-                overflow:'hidden',
-                lineHeight: 12
+                overflow:'hidden'
             },
             inner: {
                 width: '100%',
