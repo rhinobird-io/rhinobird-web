@@ -259,7 +259,7 @@ module.exports = React.createClass({
                 }
                 speechAudiences = <Flex.Layout horizontal style={styles.detailItem}>
                     <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-people" title={tips}/></Flex.Layout>
-                    <Flex.Layout center>
+                    <Flex.Layout center wrap>
                         {users.map(p => {
                             let u = UserStore.getUser(p.id);
                             return <div style={{paddingRight: 12}}><Member.Avatar scale={0.8} member={u}/><Member.Name style={{marginLeft: 4}} member={u}/></div>;
