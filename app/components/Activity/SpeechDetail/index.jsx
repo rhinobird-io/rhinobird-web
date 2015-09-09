@@ -75,7 +75,7 @@ module.exports = React.createClass({
                 maxHeight: 60,
                 color: this.context.muiTheme.palette.canvasColor,
                 backgroundColor: this.context.muiTheme.palette.primary1Color,
-                whiteSpace:'nowrap',
+                whiteSpace:'nowrap'
             },
             title: {
                 textOverflow:'ellipsis',

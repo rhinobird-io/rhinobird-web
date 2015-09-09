@@ -47,8 +47,8 @@ module.exports = React.createClass({
                             onClick={()=>{this.context.router.transitionTo('speech-detail', {id: this.props.activity.id})}} >
             <ActivityIcon type={type} month={time.month() + 1} day={time.date()}/>
 
-            <Flex.Layout vertical style={{marginLeft:12}} flex={1}>
-                <Common.Display>{title}</Common.Display>
+            <Flex.Layout vertical style={{marginLeft:12, width: 0}} flex={1}>
+                <Common.Display style={{textOverflow:'ellipsis', overflow:'hidden'}} title={title}>{title}</Common.Display>
                 <Common.Display type='caption'>
                     <Flex.Layout justified center>
                         <div><span className='icon-access-time'/> {time.isValid() ? time.format('HH:mm') : '--:--'}</div>
