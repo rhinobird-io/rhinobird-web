@@ -19,7 +19,8 @@ export default React.createClass({
         return (
             <div>
                 <div style={{height: 40}}></div>
-                <StepBar style={{width: 600, marginLeft: 20}} activeStep={1} stepTitles={["Draft", "Submitted", "Finished"]}/>
+                <StepBar style={{width: 600, marginLeft: 20}} activeStep={3} stepTitles={["Draft", "Submitted", "Finished", "xx", "yy"]}/>
+                <StepBar style={{height: 600}} vertical activeStep={3} stepTitles={["Draft", "Submitted", "Finished", "xx", "yy"]}/>
             </div>
         );
     }

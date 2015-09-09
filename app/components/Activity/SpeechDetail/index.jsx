@@ -70,7 +70,7 @@ module.exports = React.createClass({
         let styles = {
             bar: {
                 fontSize: "2em",
-                padding: 12,
+                padding: "12px 12px 12px 0",
                 minHeight: 60,
                 maxHeight: 60,
                 color: this.context.muiTheme.palette.canvasColor,
@@ -83,7 +83,7 @@ module.exports = React.createClass({
                 lineHeight: 12
             },
             inner: {
-                width: '80%',
+                maxWidth: 1000,
                 height: '100%',
                 padding: 0,
                 margin: '0 auto'
@@ -168,10 +168,6 @@ module.exports = React.createClass({
                     </div>
                 </Flex.Layout>
             </Flex.Layout>);
-
-
-            if (speech.status !== ActivityConstants.SPEECH_STATUS.CLOSED)
-                stepBar = <StepBar style={{width: 600, marginLeft: 20}} activeStep={speechStatus.get(speech.status)} stepTitles={["New", "Auditing", "Approved", "Confirmed", "Finished"]}/>
 
             speechSpeaker = <Flex.Layout horizontal style={styles.detailItem}>
                 <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-person" title="Speaker"/></Flex.Layout>
@@ -282,18 +278,18 @@ module.exports = React.createClass({
                     primaryBtn = <MUI.RaisedButton type="submit" label="Withdraw" primary={true} onClick={this._withdrawSpeech}/>;
                 else if (speech.status === ActivityConstants.SPEECH_STATUS.APPROVED) {
                     primaryBtn = <MUI.RaisedButton type="submit" label="Agree" primary={true} onClick={this._agreeArrangement}/>;
-                    secondaryBtn = <MUI.RaisedButton type="submit" label="Disagree" style={{marginRight: 12}} onClick={this._disagreeArrangement}/>;
+                    secondaryBtn = <MUI.RaisedButton type="submit" label="Disagree" style={{marginBottom: 12}} onClick={this._disagreeArrangement}/>;
                 }
             } else if (ActivityUserStore.currentIsAdmin()) {
                 if (speech.status === ActivityConstants.SPEECH_STATUS.AUDITING) {
                     primaryBtn = <MUI.RaisedButton type="submit" label="Approve" primary={true} onClick={this._showSelectTime}/>;
-                    secondaryBtn = <MUI.RaisedButton type="submit" label="Reject" style={{marginRight: 12}} onClick={this._rejectSpeech}/>;
+                    secondaryBtn = <MUI.RaisedButton type="submit" label="Reject" style={{marginBottom: 12}} onClick={this._rejectSpeech}/>;
                 } else if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED) {
                     primaryBtn = <MUI.RaisedButton type="submit" label="Finish" primary={true} onClick={this._showRecordParticipants}/>;
-                    secondaryBtn = <MUI.RaisedButton type="submit" label="Close" style={{marginRight: 12}} onClick={this._closeSpeech}/>;
+                    secondaryBtn = <MUI.RaisedButton type="submit" label="Close" style={{marginBottom: 12}} onClick={this._closeSpeech}/>;
                 }
             }
-            speechActions = <Flex.Layout horizontal centerJustified style={{paddingLeft: 96}}>
+            speechActions = <Flex.Layout vertical style={{padding: 24}}>
                 {secondaryBtn}
                 {primaryBtn}
                 </Flex.Layout>;
@@ -304,6 +300,13 @@ module.exports = React.createClass({
                     <Thread style={{width: "100%"}} threadKey={this.state.threadKey} threadTitle={`Comment ${speech.title}`} />
                 </Flex.Layout>
             </Flex.Layout>);
+            if (speech.status !== ActivityConstants.SPEECH_STATUS.CLOSED) {
+                stepBar = <Flex.Layout center vertical style={{borderLeft: '1px solid ' + this.context.muiTheme.palette.borderColor, width: 180, flexShrink:0}}>
+                    <StepBar vertical style={{padding:24, width:100, height:400}} activeStep={speechStatus.get(speech.status)} stepTitles={["New", "Auditing", "Approved", "Confirmed", "Finished"]}/>
+                    {speechActions}
+                </Flex.Layout>
+            }
+
         }
 
         return (
@@ -311,23 +314,27 @@ module.exports = React.createClass({
                 <form onSubmit={(e) => e.preventDefault()}>
                     <MUI.Paper zDepth={1} style={styles.inner}>
                         {bar}
-                        <div style={{padding: 20}}>
-                            <Flex.Layout start centerJustified style={{padding: '20px 0px 30px 0px'}}>
-                                {stepBar}
-                                {speechActions}
-                            </Flex.Layout>
+                        <Flex.Layout>
+                            <Flex.Item style={{padding: 20}} flex={1}>
+                                {/*<Flex.Layout start centerJustified style={{padding: '20px 0px 30px 0px'}}>
+                                    {speechActions}
+                                </Flex.Layout>*/}
 
-                            {speechSpeaker}
-                            {speechCategory}
-                            {speechTime}
-                            {speechDuration}
-                            {speechDescription}
-                            {speechFiles}
-                            {speechAudiences}
-                            {speechContent}
+                                {speechSpeaker}
+                                {speechCategory}
+                                {speechTime}
+                                {speechDuration}
+                                {speechDescription}
+                                {speechFiles}
+                                {speechAudiences}
+                                {speechContent}
 
-                            {speechComment}
-                        </div>
+                                {speechComment}
+                            </Flex.Item>
+
+                            {stepBar}
+                        </Flex.Layout>
+
                     </MUI.Paper>
                 </form>
                 <MUI.Paper zDepth={1} style={styles.selectTime}>
