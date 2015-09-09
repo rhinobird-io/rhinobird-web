@@ -25,20 +25,18 @@ module.exports = React.createClass({
         return <PerfectScroll style={{height: '100%', position:'relative', padding:24}}>
             <div style={{margin:'0 auto', maxWidth: '80%'}}>
                 <Flex.Layout vertical style={{padding: "24px 0px"}}>
-                    <Common.Display type="headline">Welcome administrator</Common.Display>
-                    <Common.Display type="headline">{auditing.length} activities are waiting for you to approve.</Common.Display>
-                    <Common.Display type="headline">{approved.length} activities are waiting for their speakers to confirm.</Common.Display>
+                    <Common.Display type="headline">Administration</Common.Display>
                 </Flex.Layout>
 
                 <Flex.Layout horizontal justified>
                     {
                         auditing.length > 0 ?
-                            <Flex.Layout horizontal flex={1} style={{paddingRight: 48, maxWidth: `${approved.length > 0 ? '50%' : '100%'}`}}><ActivityList title={"Waiting for you to approve"} list={auditing} /></Flex.Layout>
+                            <Flex.Layout horizontal flex={1} style={{paddingRight: 48, maxWidth: `${approved.length > 0 ? '50%' : '100%'}`}}><ActivityList title={"Waiting for you to approve"} list={auditing} adminPage={true} /></Flex.Layout>
                             : undefined
                     }
                     {
                         approved.length > 0 ?
-                            <Flex.Layout horizontal flex={1} style={{maxWidth: `${auditing.length > 0 ? '50%' : '100%'}`}}><ActivityList title={"Waiting for speakers to confirm"} list={approved}/></Flex.Layout>
+                            <Flex.Layout horizontal flex={1} style={{maxWidth: `${auditing.length > 0 ? '50%' : '100%'}`}}><ActivityList title={"Waiting for speakers to confirm"} list={approved} adminPage={true}/></Flex.Layout>
                             : undefined
                     }
                 </Flex.Layout>
@@ -46,4 +44,3 @@ module.exports = React.createClass({
         </PerfectScroll>
     }
 });
-
