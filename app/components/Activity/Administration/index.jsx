@@ -21,7 +21,7 @@ module.exports = React.createClass({
     },
     render(){
         let auditing = this.state.activities.filter(a => a.status === ActivityConstants.SPEECH_STATUS.AUDITING);
-        let approved = this.state.activities.filter(a => a.status === ActivityConstants.SPEECH_STATUS.APPROVED);
+        let approved = this.state.activities.filter(a => a.status === ActivityConstants.SPEECH_STATUS.APPROVED).sort((a, b) => new Date(a.time) - new Date(b.time));
         return <PerfectScroll style={{height: '100%', position:'relative', padding:24}}>
             <div style={{margin:'0 auto', maxWidth: '80%'}}>
                 <Flex.Layout vertical style={{padding: "24px 0px"}}>

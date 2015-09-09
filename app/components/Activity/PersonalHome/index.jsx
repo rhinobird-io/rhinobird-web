@@ -4,6 +4,7 @@ const PerfectScroll = require("../../PerfectScroll");
 const PersonalInfo = require('./PersonalInfo');
 const ActivityList = require('./ActivityList');
 const LoginStore = require('../../../stores/LoginStore');
+const Moment = require("moment");
 
 module.exports = React.createClass({
     getInitialState() {
@@ -32,7 +33,7 @@ module.exports = React.createClass({
         });
     },
     render(){
-        let urgent = this.state.myActivities.filter(a => a.status === 'approved');
+        let urgent = this.state.myActivities.filter(a => a.status === 'approved').sort((a, b) => new Date(a.time) - new Date(b.time));
         return <PerfectScroll style={{height: '100%', position:'relative', padding:24}}>
             <div style={{margin:'0 auto', maxWidth:1000}}>
                 <Flex.Layout justified>

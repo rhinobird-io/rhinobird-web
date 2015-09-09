@@ -44,7 +44,7 @@ module.exports = React.createClass({
                 title: "",
                 description: "",
                 category: "",
-                duration: 30
+                duration: 15
             });
         }
 
@@ -139,7 +139,7 @@ module.exports = React.createClass({
                                         ref="category"
                                         style={{minWidth: 200, height: 40}}
                                         labelStyle={styles.category}
-                                        selectedIndex={this.state.category === 'weekly' ? 0 : 1}
+                                        selectedIndex={this.state.category === 'monthly' ? 1 : 0}
                                         onChange={this._onChangeCategory}
                                         menuItems={categoryItems} />
                                 </Flex.Layout>
