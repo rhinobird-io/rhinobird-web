@@ -4,13 +4,29 @@ import Constants from '../constants/ActivityConstants';
 import ActivityStore from '../stores/ActivityStore';
 import UserStore from '../stores/UserStore';
 import LoginStore from '../stores/LoginStore';
-import ActivityUserStore from '../stores/ActivityUserStore.js';
+import ActivityUserStore from '../stores/ActivityUserStore';
+import ActivityConstants from '../constants/ActivityConstants';
 
 export default {
     getUser(id, success, fail) {
         $.get(`/activity/users/${id}`).done(data => {
             AppDispatcher.dispatch({
                 type: Constants.ActionTypes.RECEIVE_USER,
+                data: data
+            });
+            if (success && typeof success === "function") {
+                success(data);
+            }
+        }).fail(e => {
+            console.error(e);
+            if (fail && typeof fail === 'function')
+                fail(e.status);
+        });
+    },
+    getAllUsers(success, fail) {
+        $.get(`/activity/users`).done(data => {
+            AppDispatcher.dispatch({
+                type: Constants.ActionTypes.RECEIVE_USERS,
                 data: data
             });
             if (success && typeof success === "function") {
@@ -240,9 +256,26 @@ export default {
                     fail(e.status);
             });
     },
-    finishSpeech(speech_id, success, fail) {
-        $.post(`/activity/speeches/${speech_id}/finish`)
-            .done((data) => {
+    finishSpeech(speech, audiences, commentedUsers, success, fail) {
+        let participants = [];
+        participants.push({
+            user_id: speech.user_id,
+            role: ActivityConstants.ATTENDANCE_ROLE.SPEAKER,
+            point: speech.category === ActivityConstants.SPEECH_CATEGORY.MONTHLY ? 200 : 50,
+            commented: false});
+
+        audiences.map(id => {
+            participants.push({
+                user_id: id,
+                role: ActivityConstants.ATTENDANCE_ROLE.AUDIENCE,
+                point: 1,
+                commented: commentedUsers.indexOf(id) > -1});
+        });
+
+        $.post(`/activity/speeches/${speech.id}/finish`,
+            {
+                participants: participants
+            }).done((data) => {
                 AppDispatcher.dispatch({
                     type: Constants.ActionTypes.UPDATE_ACTIVITY,
                     data: data
@@ -272,8 +305,28 @@ export default {
                     fail(e.status);
             });
     },
-    uploadAttachment(speech_id, url, success, fail) {
-        $.post(`/activity/speeches/${speech_id}/upload`, {resource_url: url})
+    uploadAttachment(speech_id, url, name, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/upload`,
+            {
+                resource_url: url,
+                resource_name: name
+            })
+            .done((data) => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.UPDATE_ACTIVITY,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
+    },
+    addParticipants(speech_id, users, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/participants`, {userid: user_id})
             .done((data) => {
                 AppDispatcher.dispatch({
                     type: Constants.ActionTypes.UPDATE_ACTIVITY,

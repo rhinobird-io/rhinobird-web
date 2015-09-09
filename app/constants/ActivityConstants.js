@@ -8,7 +8,8 @@ export default {
         DELETE_ACTIVITY: null,
         UPDATE_ACTIVITY: null,
 
-        RECEIVE_USER: null
+        RECEIVE_USER: null,
+        RECEIVE_USERS: null
     }),
 
     SPEECH_STATUS: {

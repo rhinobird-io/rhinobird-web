@@ -11,6 +11,11 @@ let _users = [];
 function _addUser(user) {
     _users[user.id.toString()] = user;
 }
+function _addUsers(users) {
+    users.map(u => {
+        _users[u.id.toString()] = u;
+    });
+}
 
 let ActivityUserStore= assign({}, BaseStore, {
     getUser(id) {
@@ -28,6 +33,9 @@ let ActivityUserStore= assign({}, BaseStore, {
             return true;
         return false;
     },
+    getUsers() {
+        return _users;
+    },
     dispatcherIndex: AppDispatcher.register(function (payload) {
         let data = payload.data;
         let changed = true;
@@ -35,6 +43,9 @@ let ActivityUserStore= assign({}, BaseStore, {
         switch (payload.type) {
             case Constants.ActionTypes.RECEIVE_USER:
                 _addUser(data);
+                break;
+            case Constants.ActionTypes.RECEIVE_USERS:
+                _addUsers(data);
                 break;
             default:
                 changed = false;
