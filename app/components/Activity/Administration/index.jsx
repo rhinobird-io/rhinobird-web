@@ -4,6 +4,7 @@ const PerfectScroll = require("../../PerfectScroll");
 const ActivityList = require('../PersonalHome/ActivityList');
 const ActivityConstants = require('../../../constants/ActivityConstants');
 const Common = require('../../Common');
+const ActivityUserStore = require('../../../stores/ActivityUserStore');
 
 module.exports = React.createClass({
     getInitialState() {
@@ -13,13 +14,18 @@ module.exports = React.createClass({
     },
 
     componentDidMount(){
-        $.get(`/activity/speeches?status=${ActivityConstants.SPEECH_STATUS.AUDITING},${ActivityConstants.SPEECH_STATUS.APPROVED}`).done((data)=> {
-            this.setState({
-                activities: data
+        if (ActivityUserStore.currentIsAdmin()) {
+            $.get(`/activity/speeches?status=${ActivityConstants.SPEECH_STATUS.AUDITING},${ActivityConstants.SPEECH_STATUS.APPROVED}`).done((data)=> {
+                this.setState({
+                    activities: data
+                });
             });
-        });
+        }
     },
     render(){
+        if (!ActivityUserStore.currentIsAdmin()) {
+            return null;
+        }
         let auditing = this.state.activities.filter(a => a.status === ActivityConstants.SPEECH_STATUS.AUDITING);
         let approved = this.state.activities.filter(a => a.status === ActivityConstants.SPEECH_STATUS.APPROVED).sort((a, b) => new Date(a.time) - new Date(b.time));
         return <PerfectScroll style={{height: '100%', position:'relative', padding:24}}>
