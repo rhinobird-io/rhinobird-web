@@ -302,7 +302,10 @@ module.exports = React.createClass({
             }
             if (receiveCommentUsers.indexOf(speaker) <= -1)
                 receiveCommentUsers = receiveCommentUsers.push(speaker);
-            speechComment = (<Flex.Layout vertical key="comments" style={styles.detailItem}>
+            speechComment = (<Flex.Layout vertical key="comments" style={{
+                borderTop: `1px solid ${this.context.muiTheme.palette.borderColor}`,
+                padding: 24
+            }}>
                 <Flex.Layout center style={{margin: '20px 0px'}}><Common.Display type='title'>Comments</Common.Display></Flex.Layout>
                 <Flex.Layout vertical startJustified flex={1}>
                     <Thread style={{width: "100%"}} threadKey={this.state.threadKey} threadTitle={`Comment ${speech.title}`}
@@ -311,7 +314,7 @@ module.exports = React.createClass({
             </Flex.Layout>);
             if (speech.status !== ActivityConstants.SPEECH_STATUS.CLOSED) {
                 stepBar = <Flex.Layout center vertical style={{borderLeft: '1px solid ' + this.context.muiTheme.palette.borderColor, width: 180, flexShrink:0}}>
-                    <StepBar vertical style={{padding:24, width:100, height:400}} activeStep={speechStatus.get(speech.status)} stepTitles={["New", "Auditing", "Approved", "Confirmed", "Finished"]}/>
+                    <StepBar vertical style={{padding:24, width:100, height:300}} activeStep={speechStatus.get(speech.status)} stepTitles={["New", "Auditing", "Approved", "Confirmed", "Finished"]}/>
                     {speechActions}
                 </Flex.Layout>
             }
@@ -338,12 +341,12 @@ module.exports = React.createClass({
                                 {speechAudiences}
                                 {speechContent}
 
-                                {speechComment}
                             </Flex.Item>
 
                             {stepBar}
                         </Flex.Layout>
 
+                        {speechComment}
                     </MUI.Paper>
                 </form>
                 <MUI.Paper zDepth={1} style={styles.selectTime}>
