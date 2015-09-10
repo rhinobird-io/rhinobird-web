@@ -50,19 +50,19 @@ module.exports = React.createClass({
                         {
                             this.state.myActivities.length > 0 ?
                                 (<Flex.Item flex={1} id='Personal'>
-                                    <ActivityList title={"Personal Activities"} list={this.state.myActivities} showStatus={true} showFilter={true}/>
+                                    <ActivityList title={"Given (As speaker)"} list={this.state.myActivities} showStatus={true} showFilter={true}/>
                                 </Flex.Item>) : undefined
                         }
                         {
                             this.state.appliedActivities.length > 0 ?
                                 (<Flex.Item flex={1} id='Applied'>
-                                    <ActivityList title={"Applied Activities"} list={this.state.appliedActivities}/>
+                                    <ActivityList title={"Applied (Registered as audience)"} list={this.state.appliedActivities}/>
                                 </Flex.Item>) : undefined
                         }
                         {
                             this.state.attendedActivities.length > 0 ?
                                 (<Flex.Item flex={1} id='Attended'>
-                                    <ActivityList title={"Attended Activities"} list={this.state.attendedActivities}/>
+                                    <ActivityList title={"Attended (Joint as audience)"} list={this.state.attendedActivities}/>
                                 </Flex.Item>) : undefined
                         }
 
@@ -72,4 +72,3 @@ module.exports = React.createClass({
         </PerfectScroll>
     }
 });
-
