@@ -29,11 +29,6 @@ module.exports = React.createClass({
         let user = UserStore.getUser(this.props.activity.user_id);
         let status = this.props.activity.status;
 
-        let rightContent = null;
-        if (this.props.showStatus)
-            rightContent = status;
-        else
-            rightContent = (<div><Member.Avatar scale={0.5} member={user}/> <Member.Name style={{marginLeft:4}} member={user}/></div>);
         let style = {
             cursor: 'pointer',
             padding: 12,
@@ -41,15 +36,37 @@ module.exports = React.createClass({
         };
         let canvasColor = this.context.muiTheme.palette.canvasColor;
         let borderColor = 'rgba(0,0,0,0.03)';
+        let disabledColor = this.context.muiTheme.palette.disabledColor;
+
+        let titleStyle= {textOverflow:'ellipsis', overflow:'hidden'};
+        if(this.props.disabled) {
+            titleStyle.color = disabledColor;
+        }
+        let timeStyle = {};
+        if(this.props.disabled) {
+            timeStyle.color = disabledColor;
+        }
+        let rightContent = null;
+        if (this.props.showStatus) {
+            rightContent = status;
+        }
+        else {
+            let nameStyle = {marginLeft:4};
+            if(this.props.disabled) {
+                nameStyle.color = disabledColor;
+            }
+            rightContent = (<div><Member.Avatar scale={0.5} member={user}/> <Member.Name style={nameStyle} member={user}/></div>);
+        }
+
         return <Flex.Layout style={this.mergeAndPrefix(style, this.props.style)}
                             onMouseOver={()=>this.getDOMNode().style.backgroundColor = borderColor}
                             onMouseOut={()=>this.getDOMNode().style.backgroundColor = canvasColor}
                             onClick={()=>{this.context.router.transitionTo('speech-detail', {id: this.props.activity.id})}} >
-            <ActivityIcon type={type} month={time.month() + 1} day={time.date()}/>
+            <ActivityIcon type={type} month={time.month() + 1} day={time.date()} disabled={this.props.disabled}/>
 
             <Flex.Layout vertical style={{marginLeft:12, width: 0}} flex={1}>
-                <Common.Display style={{textOverflow:'ellipsis', overflow:'hidden'}} title={title}>{title}</Common.Display>
-                <Common.Display type='caption'>
+                <Common.Display style={titleStyle} title={title}>{title}</Common.Display>
+                <Common.Display type='caption' style={timeStyle}>
                     <Flex.Layout justified center>
                         <div><span className='icon-access-time'/> {time.isValid() ? time.format('HH:mm') : '--:--'}</div>
                         <Flex.Layout center onClick={this.props.showStatus ? undefined : (e)=>{e.stopPropagation()}}>
@@ -62,4 +79,3 @@ module.exports = React.createClass({
 
     }
 });
-

@@ -37,7 +37,7 @@ module.exports = React.createClass({
             <div>
                 <Common.Display type='body3' style={{marginLeft:12, marginBottom:18}}>Activities</Common.Display>
                 {this.state.list.map(activity=>{
-                    return <ActivityItem activity={activity}/>
+                    return <ActivityItem activity={activity} disabled={activity.status==='finished'}/>
                 })}
             </div>
             <Link to="create-speech"><mui.FloatingActionButton iconClassName='icon-add' mini={true} style={{position:'absolute', top:12, right: 24}}/></Link>

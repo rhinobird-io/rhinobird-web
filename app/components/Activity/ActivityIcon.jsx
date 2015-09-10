@@ -14,12 +14,12 @@ module.exports = React.createClass({
         }, topStyle = {
             fontWeight: 500,
             height: '50%',
-            backgroundColor: this.props.type === 'L' ? this.context.muiTheme.palette.primary1Color : this.context.muiTheme.palette.accent1Color,
+            backgroundColor: this.props.disabled? 'rgba(0,0,0,0.38)' :(this.props.type === 'L' ? this.context.muiTheme.palette.primary1Color : this.context.muiTheme.palette.accent1Color),
             color: this.context.muiTheme.palette.canvasColor
         }, bottomStyle = {
             height: '50%',
             fontSize: 12,
-            backgroundColor: this.props.type === 'L' ? this.context.muiTheme.palette.primary3Color : this.context.muiTheme.palette.accent3Color
+            backgroundColor: this.props.disabled? 'rgba(0,0,0,0.12)' : (this.props.type === 'L' ? this.context.muiTheme.palette.primary3Color : this.context.muiTheme.palette.accent3Color)
         }, leftStyle = {
             width: '40%',
             height: '100%',
