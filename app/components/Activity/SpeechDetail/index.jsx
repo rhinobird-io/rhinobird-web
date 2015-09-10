@@ -22,10 +22,10 @@ const Constants = require('../../FileUploader/constants');
 const Link = require("react-router").Link;
 const UserTable = require('./Table');
 const NotificationAction = require('../../../actions/NotificationActions');
+const Category = require('./Category');
 
 var speechStatus = new Enum({"New": 0, "Auditing": 1, "Approved": 2, "Confirmed": 3, "Finished": 4}, { ignoreCase: true });
 module.exports = React.createClass({
-
     mixins: [React.addons.LinkedStateMixin],
     contextTypes: {
         muiTheme: React.PropTypes.object,
@@ -54,15 +54,16 @@ module.exports = React.createClass({
 
     getInitialState() {
         let params = this.props.params;
+        let speech = ActivityStore.getSpeech(params.id);
         return {
-            speech: ActivityStore.getSpeech(params.id),
+            speech: speech,
             notFound: false,
             threadKey: `/platform/activity/speeches/${params.id}`,
             showSelectTime: false,
             showRecordParticipants: false,
             audiences: {
                 teams: [],
-                users: []
+                users: speech && speech.audiences ? speech.audiences.map(u => u.id).filter(id => id != speech.user_id) : []
             }
         };
     },
@@ -100,28 +101,6 @@ module.exports = React.createClass({
             detailKey: {
                 minWidth: 20,
                 marginRight: 20
-            },
-            selectTime: {
-                position: 'fixed',
-                right: this.state.showSelectTime ? 0 : -300,
-                top: 0,
-                zIndex: 1000,
-                transition: "all 500ms",
-                opacity: 1,
-                width: 300,
-                height: "100%",
-                padding: '20px 0px'
-            },
-            recordParticipants: {
-                position: 'fixed',
-                right: this.state.showRecordParticipants ? 0 : -600,
-                top: 0,
-                zIndex: 1000,
-                transition: "all 500ms",
-                opacity: 1,
-                width: 600,
-                height: "100%",
-                padding: '20px 0px'
             }
         };
 
@@ -182,7 +161,7 @@ module.exports = React.createClass({
 
             speechCategory = <div style={styles.detailItem}>
                 <Common.Display style={styles.label} type='body3'>Category:</Common.Display>
-                <Common.Display type="subhead">{speech.category}</Common.Display>
+                <Common.Display type="subhead"><Category category={speech.category}/></Common.Display>
             </div>;
 
             if ((speech.status === ActivityConstants.SPEECH_STATUS.APPROVED && (user.id === speech.user_id || ActivityUserStore.currentIsAdmin()))
@@ -249,7 +228,7 @@ module.exports = React.createClass({
                     }
                 }
                 speechAudiences = <Flex.Layout style={styles.detailItem}>
-                    <Common.Display style={styles.label} type='body3'>Audiences:</Common.Display>
+                    <Common.Display style={styles.label} type='body3'>{tips}:</Common.Display>
                     <Flex.Layout center wrap flex={1}>
                         {userIds.map(id => {
                             let u = UserStore.getUser(id);
@@ -300,8 +279,9 @@ module.exports = React.createClass({
             } else if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED && speech.audiences){
                 receiveCommentUsers = speech.audiences.map(u => UserStore.getUser(u.id));
             }
-            if (receiveCommentUsers.indexOf(speaker) <= -1)
+            if (receiveCommentUsers.indexOf(speaker) <= -1) {
                 receiveCommentUsers = receiveCommentUsers.push(speaker);
+            }
             speechComment = (<Flex.Layout vertical key="comments" style={{
                 borderTop: `1px solid ${this.context.muiTheme.palette.borderColor}`,
                 padding: 24
@@ -310,7 +290,8 @@ module.exports = React.createClass({
                 <Thread style={{width: "100%"}} threadKey={this.state.threadKey} threadTitle={`Comment ${speech.title}`}
                         participants={{users: receiveCommentUsers}}/>
             </Flex.Layout>);
-            if (speech.status !== ActivityConstants.SPEECH_STATUS.CLOSED) {
+            if (speech.status !== ActivityConstants.SPEECH_STATUS.CLOSED
+                && (user.id === speech.user_id || ActivityUserStore.currentIsAdmin())) {
                 stepBar = <Flex.Layout center vertical style={{borderLeft: '1px solid ' + this.context.muiTheme.palette.borderColor, width: 180, flexShrink:0}}>
                     <StepBar vertical style={{padding:24, width:100, height:300}} activeStep={speechStatus.get(speech.status)+1} stepTitles={["New", "Auditing", "Approved", "Confirmed", "Finished"]}/>
                     {speechActions}
@@ -326,9 +307,6 @@ module.exports = React.createClass({
                         {bar}
                         <Flex.Layout>
                             <Flex.Item style={{padding: 20}} flex={1}>
-                                {/*<Flex.Layout start centerJustified style={{padding: '20px 0px 30px 0px'}}>
-                                    {speechActions}
-                                </Flex.Layout>*/}
 
                                 {speechSpeaker}
                                 {speechCategory}
@@ -347,40 +325,81 @@ module.exports = React.createClass({
                         {speechComment}
                     </MUI.Paper>
                 </form>
-                <MUI.Paper zDepth={1} style={styles.selectTime}>
-                    <div style={{padding: '0px 20px'}}>
-                        <Flex.Layout horizontal>
-                            <h3>Select Time</h3>
-                        </Flex.Layout>
-                        {this._getTimePicker()}
-                    </div>
-                </MUI.Paper>
-                <MUI.Paper zDepth={1} style={styles.recordParticipants}>
-                    <PerfectScroll style={{height: '100%', position:'relative', padding:24}}>
-                    <div style={{padding: '0px 20px'}}>
-                        <Flex.Layout vertical>
-                            <Flex.Layout horizontal>
-                                <h3>Record Participants</h3>
-                            </Flex.Layout>
-                            <Member.MemberSelect
-                                hintText="Select Audiences"
-                                floatingLabelText="Select Audiences"
-                                style={{width: "100%"}}
-                                valueLink={this.linkState("audiences")}
-                                team={false}/>
-                            <UserTable ref="userTable" valueLink={this.linkState("audiences")}/>
-                            <Flex.Layout horizontal justified style={{marginTop: 12}}>
-                                <MUI.RaisedButton type="submit" label="Cancel" onClick={this._hideRecordParticipants}/>
-                                <MUI.RaisedButton type="submit" label="Finish" secondary={true} onClick={this._finishSpeech}/>
-                            </Flex.Layout>
-                        </Flex.Layout>
-                    </div>
-                    </PerfectScroll>
-                </MUI.Paper>
+                {this._getSelectTimeComponent(speech)}
+                {this._getRecordParticipantsComponent(speech)}
             </PerfectScroll>
         );
     },
-
+    _getSelectTimeComponent(speech) {
+        if (!speech || speech.status !== ActivityConstants.SPEECH_STATUS.AUDITING) {
+            return null;
+        }
+        let style = {
+            position: 'fixed',
+            right: this.state.showSelectTime ? 0 : -300,
+            top: 0,
+            zIndex: 1000,
+            transition: "all 500ms",
+            opacity: 1,
+            width: 300,
+            height: "100%",
+            padding: '20px 0px'
+        };
+        return <MUI.Paper zDepth={1} style={style}>
+            <div style={{padding: '0px 20px'}}>
+                <Flex.Layout horizontal>
+                    <h3>Select Time</h3>
+                </Flex.Layout>
+                <Flex.Layout vertical>
+                    <MUI.DatePicker ref="date" hintText="Select Date" defaultDate={new Date()}/>
+                    <MUI.TimePicker ref="time" hintText="Select Time" format="24hr" defaultTime={new Date()}/>
+                    <Flex.Layout horizontal justified>
+                        <MUI.RaisedButton type="submit" label="Cancel" onClick={this._hideSelectTime}/>
+                        <MUI.RaisedButton type="submit" label="Approve" secondary={true} onClick={this._approveSpeech}/>
+                    </Flex.Layout>
+                </Flex.Layout>
+            </div>
+        </MUI.Paper>
+    },
+    _getRecordParticipantsComponent(speech) {
+        if (!speech || speech.status !== ActivityConstants.SPEECH_STATUS.CONFIRMED) {
+            return null;
+        }
+        let style = {
+            position: 'fixed',
+            right: this.state.showRecordParticipants ? 0 : -600,
+            top: 0,
+            zIndex: 1000,
+            transition: "all 500ms",
+            opacity: 1,
+            width: 600,
+            height: "100%",
+            padding: '20px 0px'
+        };
+        return <MUI.Paper zDepth={1} style={style}>
+            <PerfectScroll style={{height: '100%', position:'relative', padding:24}}>
+                <div style={{padding: '0px 20px'}}>
+                    <Flex.Layout vertical>
+                        <Flex.Layout horizontal>
+                            <h3>Record Audiences</h3>
+                        </Flex.Layout>
+                        <Member.MemberSelect
+                            excludedUsers={[speech.user_id]}
+                            hintText="Select Audiences"
+                            floatingLabelText="Select Audiences"
+                            style={{width: "100%"}}
+                            valueLink={this.linkState("audiences")}
+                            team={false}/>
+                        <UserTable ref="userTable" valueLink={this.linkState("audiences")}/>
+                        <Flex.Layout horizontal justified style={{marginTop: 12}}>
+                            <MUI.RaisedButton type="submit" label="Cancel" onClick={this._hideRecordParticipants}/>
+                            <MUI.RaisedButton type="submit" label="Finish" secondary={true} onClick={this._finishSpeech}/>
+                        </Flex.Layout>
+                    </Flex.Layout>
+                </div>
+            </PerfectScroll>
+        </MUI.Paper>
+    },
     _showRecordParticipants() {
         this.setState({
             showRecordParticipants: !this.state.showRecordParticipants
@@ -388,18 +407,6 @@ module.exports = React.createClass({
     },
     _hideRecordParticipants() {
         this.setState({showRecordParticipants: false});
-    },
-    _getTimePicker() {
-        return (
-            <Flex.Layout vertical>
-                <MUI.DatePicker ref="date" hintText="Select Date" defaultDate={new Date()}/>
-                <MUI.TimePicker ref="time" hintText="Select Time" format="24hr" defaultTime={new Date()}/>
-                <Flex.Layout horizontal justified>
-                    <MUI.RaisedButton type="submit" label="Cancel" onClick={this._hideSelectTime}/>
-                    <MUI.RaisedButton type="submit" label="Approve" secondary={true} onClick={this._approveSpeech}/>
-                </Flex.Layout>
-            </Flex.Layout>
-        );
     },
     _showSelectTime() {
         this.setState({
@@ -526,7 +533,7 @@ module.exports = React.createClass({
     },
     _finishSpeech() {
         let audiences = this.state.audiences;
-        if( Object.prototype.toString.call(audiences) !== '[object Array]' ) {
+        if(Object.prototype.toString.call(audiences) !== '[object Array]') {
             audiences = [];
         }
         ActivityAction.finishSpeech(this.state.speech, audiences, this.refs.userTable.getSelectedUsers(), speech => {
@@ -588,9 +595,13 @@ module.exports = React.createClass({
     },
     _onChange(){
         let params = this.props.params;
-
+        let speech = ActivityStore.getSpeech(params.id);
         this.setState({
-            speech: ActivityStore.getSpeech(params.id)
+            speech: speech,
+            audiences: {
+                teams: [],
+                users: speech && speech.audiences ? speech.audiences.map(u => u.id).filter(id => id != speech.user_id) : []
+            }
         });
     }
 });

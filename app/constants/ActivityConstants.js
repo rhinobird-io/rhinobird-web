@@ -27,6 +27,11 @@ export default {
         MONTHLY: "monthly"
     },
 
+    SPEECH_CATEGORY_DISPLAY: {
+        WEEKLY: "Lightning talk",
+        MONTHLY: "Monthly study session"
+    },
+
     USER_ROLE: {
         USER: "user",
         ADMIN: "admin"
