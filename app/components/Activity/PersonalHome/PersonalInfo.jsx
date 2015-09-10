@@ -36,9 +36,9 @@ module.exports = React.createClass({
                     </Flex.Layout>
                     <Common.Hr style={{margin: '12px 5px'}}/>
                     <Flex.Layout centerJustified style={{height: '100%'}}>
-                        <SummaryInfo number={{my}} text={"Given"} title={"Personal activities"}/>
-                        <SummaryInfo number={{applied}} text={"Applied"} title={"Applied as audience"}/>
-                        <SummaryInfo number={{attended}} text={"Attended"} title={"Participant as audience or speaker"}/>
+                        <SummaryInfo number={{my}} text={"Given"} title={"As speaker"}/>
+                        <SummaryInfo number={{applied}} text={"Applied"} title={"Registered as audience"}/>
+                        <SummaryInfo number={{attended}} text={"Attended"} title={"Joint as audience"}/>
                     </Flex.Layout>
             </Flex.Layout>;
     }

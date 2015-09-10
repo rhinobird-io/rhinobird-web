@@ -38,7 +38,7 @@ module.exports = React.createClass({
 
                 { this.props.showFilter ?
                     (<mui.DropDownMenu menuItems={menuItems}
-                                       style={{height: 40, width: 140, float: 'right'}}
+                                       style={{height: 40, width: 140, position: 'absolute', top: 0, right: 0}}
                                        onChange={this._filter}/>)
                     : undefined}
                 {this.state.filtered.map(activity=>{

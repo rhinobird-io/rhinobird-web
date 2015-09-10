@@ -28,6 +28,7 @@ module.exports = React.createClass({
         let title = this.props.activity.title;
         let user = UserStore.getUser(this.props.activity.user_id);
         let status = this.props.activity.status;
+        let disabled = status === 'finished';
 
         let style = {
             cursor: 'pointer',
@@ -39,20 +40,20 @@ module.exports = React.createClass({
         let disabledColor = this.context.muiTheme.palette.disabledColor;
 
         let titleStyle= {textOverflow:'ellipsis', overflow:'hidden'};
-        if(this.props.disabled) {
+        if (disabled) {
             titleStyle.color = disabledColor;
         }
         let timeStyle = {};
-        if(this.props.disabled) {
+        if(disabled) {
             timeStyle.color = disabledColor;
         }
         let rightContent = null;
         if (this.props.showStatus) {
-            rightContent = status;
+            rightContent = status.charAt(0).toUpperCase() + status.substring(1);
         }
         else {
             let nameStyle = {marginLeft:4};
-            if(this.props.disabled) {
+            if(disabled) {
                 nameStyle.color = disabledColor;
             }
             rightContent = (<div><Member.Avatar scale={0.5} member={user}/> <Member.Name style={nameStyle} member={user}/></div>);
@@ -62,7 +63,7 @@ module.exports = React.createClass({
                             onMouseOver={()=>this.getDOMNode().style.backgroundColor = borderColor}
                             onMouseOut={()=>this.getDOMNode().style.backgroundColor = canvasColor}
                             onClick={()=>{this.context.router.transitionTo('speech-detail', {id: this.props.activity.id})}} >
-            <ActivityIcon type={type} month={time.month() + 1} day={time.date()} disabled={this.props.disabled}/>
+            <ActivityIcon type={type} month={time.month() + 1} day={time.date()} disabled={disabled}/>
 
             <Flex.Layout vertical style={{marginLeft:12, width: 0}} flex={1}>
                 <Common.Display style={titleStyle} title={title}>{title}</Common.Display>

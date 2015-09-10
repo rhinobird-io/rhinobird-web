@@ -215,7 +215,7 @@ module.exports = React.createClass({
                 let tips = null;
                 if (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) {
                     userIds = speech.attendances ? speech.attendances.map(u => u.user_id) : [];
-                    tips = "Participants";
+                    tips = "Attended";
                 } else {
                     userIds = speech.audiences ? speech.audiences.map(u => u.id) : [];
                     tips = "Audiences";
