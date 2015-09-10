@@ -321,7 +321,7 @@ export default {
             });
     },
     uploadAttachment(speech_id, url, name, success, fail) {
-        $.post(`/activity/speeches/${speech_id}/upload`,
+        $.post(`/activity/speeches/${speech_id}/attachments`,
             {
                 resource_url: url,
                 resource_name: name
@@ -339,5 +339,23 @@ export default {
                 if (fail && typeof fail === 'function')
                     fail(e.status);
             });
+    },
+    deleteAttachment(speech_id, url, success, fail) {
+        $.ajax({
+            url: `/activity/speeches/${speech_id}/attachments/${url}`,
+            type: "delete"
+        }).done((data) => {
+            AppDispatcher.dispatch({
+                type: Constants.ActionTypes.UPDATE_ACTIVITY,
+                data: data
+            });
+            if (success && typeof success === "function") {
+                success(data);
+            }
+        }).fail(e => {
+            console.error(e);
+            if (fail && typeof fail === 'function')
+                fail(e.status);
+        });
     }
 };

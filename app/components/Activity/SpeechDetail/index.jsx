@@ -194,19 +194,40 @@ module.exports = React.createClass({
 
             if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED
                 || speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) {
-                speechFiles = <div style={styles.detailItem}>
+                let fileList = null;
+                let operateFile = speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED && speech.user_id === user.id;
+                if (speech.resource_url && speech.resource_name) {
+                    let fileUrls = speech.resource_url.trim().split('/');
+                    let fileNames = speech.resource_name.trim().split('/');
+                    let files = [];
+                    for (let idx = 0; idx < Math.min(fileUrls.length, fileNames.length); idx++) {
+                        files.push({
+                            url: fileUrls[idx],
+                            name: fileNames[idx]
+                        });
+                    }
+                    fileList = files.map(file => {
+                        return <Flex.Layout center>
+                            <a href={`/file/files/${file.url}/download`} >{file.name}</a>
+                            {operateFile ? <MUI.IconButton iconClassName="icon-delete" tooltip={`Delete ${file.name}`} onClick={() => this._deleteAttachment(file.url)} /> : undefined}
+                        </Flex.Layout>
+                    });
+                    console.log(files);
+                }
+                speechFiles = <Flex.Layout style={styles.detailItem}>
                     <Common.Display style={styles.label} type='body3'>Attachments:</Common.Display>
-                    {speech.resource_url ?
-                        <Flex.Layout center style={{paddingRight: 12}}>
-                            <a href={`/file/files/${speech.resource_url}/download`} >{speech.resource_name || 'Download'}</a>
-                        </Flex.Layout> :
-                        (speech.user_id != user.id ?
-                            <Common.Display style={{color: this.context.muiTheme.palette.disabledColor}}>The speaker has not uploaded any attachments.</Common.Display>
-                            : undefined)}
-                    {speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED && speech.user_id === user.id ?
-                        <FileUploader ref="fileUploader" text={`${speech.resource_url ? 'Update' : 'Upload'} Attachments`} showResult maxSize={10 * 1024 * 1024}
-                                  acceptTypes={["pdf", "ppt", "rar", "zip", "rar", "gz", "tgz", "bz2"]} afterUpload={this._uploadAttachment}/> : undefined}
-                </div>;
+                    <Flex.Layout vertical>
+                        {fileList ? fileList
+                            : (speech.user_id != user.id ?
+                                <Common.Display style={{color: this.context.muiTheme.palette.disabledColor}}>The speaker has not uploaded any attachments.</Common.Display>
+                                : undefined)}
+                        {operateFile ?
+                            <Flex.Layout justified>
+                                <FileUploader ref="fileUploader" text="Add" showResult maxSize={10 * 1024 * 1024}
+                                              acceptTypes={["pdf", "ppt", "jpg", "rar", "zip", "rar", "gz", "tgz", "bz2"]} afterUpload={this._uploadAttachment}/>
+                            </Flex.Layout> : undefined}
+                    </Flex.Layout>
+                </Flex.Layout>;
             }
 
             if (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED
@@ -592,6 +613,13 @@ module.exports = React.createClass({
             });
         }
 
+    },
+    _deleteAttachment(url) {
+        ActivityAction.deleteAttachment(this.state.speech.id, url, speech => {
+            this.setState({
+                speech: speech
+            })
+        });
     },
     _onChange(){
         let params = this.props.params;
