@@ -71,12 +71,16 @@ module.exports = React.createClass({
         let styles = {
             bar: {
                 fontSize: "2em",
-                padding: 12,
+                padding: "12px 12px 12px 0",
                 minHeight: 60,
                 maxHeight: 60,
                 color: this.context.muiTheme.palette.canvasColor,
                 backgroundColor: this.context.muiTheme.palette.primary1Color,
                 whiteSpace:'nowrap'
+            },
+            label: {
+                width: 150,
+                flexShrink: 0
             },
             title: {
                 textOverflow:'ellipsis',
@@ -84,7 +88,7 @@ module.exports = React.createClass({
                 lineHeight: 12
             },
             inner: {
-                width: '80%',
+                maxWidth: 1000,
                 height: '100%',
                 padding: 0,
                 margin: '0 auto'
@@ -170,62 +174,49 @@ module.exports = React.createClass({
                 </Flex.Layout>
             </Flex.Layout>);
 
-
-            if (speech.status !== ActivityConstants.SPEECH_STATUS.CLOSED)
-                stepBar = <StepBar style={{width: 600, marginLeft: 20}} activeStep={speechStatus.get(speech.status)} stepTitles={["New", "Auditing", "Approved", "Confirmed", "Finished"]}/>
-
-            speechSpeaker = <Flex.Layout horizontal style={styles.detailItem}>
-                <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-person" title="Speaker"/></Flex.Layout>
-                <Flex.Layout center onClick={(e)=>{e.stopPropagation()}}>
-                    <Member.Avatar scale={0.8} member={speaker}/>
-                    <Member.Name style={{marginLeft: 4}} member={speaker}/>
-                </Flex.Layout>
+            speechSpeaker = <Flex.Layout style={styles.detailItem} center>
+                <Common.Display style={styles.label} type='body3'>Speaker:</Common.Display>
+                <Member.Avatar scale={0.8} member={speaker}/>
+                <Member.Name style={{marginLeft: 4}} member={speaker}/>
             </Flex.Layout>;
 
-            speechCategory = <Flex.Layout horizontal style={styles.detailItem}>
-                <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-label" title="Category"/></Flex.Layout>
-                <Flex.Layout center><Common.Display type="subhead">{speech.category}</Common.Display></Flex.Layout>
-            </Flex.Layout>;
+            speechCategory = <div style={styles.detailItem}>
+                <Common.Display style={styles.label} type='body3'>Category:</Common.Display>
+                <Common.Display type="subhead">{speech.category}</Common.Display>
+            </div>;
 
             if ((speech.status === ActivityConstants.SPEECH_STATUS.APPROVED && (user.id === speech.user_id || ActivityUserStore.currentIsAdmin()))
                 || speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED
                 || speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) {
-                speechTime = <Flex.Layout horizontal style={styles.detailItem}>
-                    <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className='icon-schedule' title="Time"/></Flex.Layout>
-                    <Flex.Layout center><Common.Display
-                        type="subhead">{Moment(speech.time).format('YYYY-MM-DD HH:mm')}</Common.Display></Flex.Layout>
-                </Flex.Layout>;
+                speechTime = <div style={styles.detailItem}>
+                    <Common.Display style={styles.label} type='body3'>Start time:</Common.Display>
+                    <Common.Display
+                        type="subhead">{Moment(speech.time).format('YYYY-MM-DD HH:mm')}</Common.Display>
+                </div>;
             }
 
             let hour = Math.floor(speech.expected_duration / 60);
             let minute = speech.expected_duration % 60;
-            speechDuration = <Flex.Layout horizontal style={styles.detailItem}>
-                <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-timer" title="Expected Duration"/></Flex.Layout>
+            speechDuration = <div horizontal style={styles.detailItem}>
+                <Common.Display style={styles.label} type='body3'>Estimated duration:</Common.Display>
                 {hour > 0 ?
-                    <Flex.Layout horizontal style={{marginRight: 6}}>
-                        <Common.Display type="subhead">{hour} h</Common.Display>
-                    </Flex.Layout>
+                    <Common.Display type="subhead" style={{marginRight: 6}}>{hour} h</Common.Display>
                     : undefined}
-                <Flex.Layout horizontal>
-                    <Common.Display type="subhead">{minute} m</Common.Display>
-                </Flex.Layout>
-            </Flex.Layout>;
+                <Common.Display type="subhead">{minute} m</Common.Display>
+            </div>;
 
-            speechDescription = <Flex.Layout horizontal style={styles.detailItem}>
-                <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-description" title="Description"/></Flex.Layout>
-                <Flex.Layout top>
-                    <SmartDisplay
+            speechDescription = <Flex.Layout style={styles.detailItem}>
+                <Common.Display style={styles.label} type='body3'>Description:</Common.Display>
+                <SmartDisplay
                     value={speech.description || ""}
                     multiLine
                     style={{width: "100%", maxWidth: "100%", textOverflow: 'clip'}} />
-                </Flex.Layout>
             </Flex.Layout>;
 
             if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED
                 || speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) {
-                speechFiles = <Flex.Layout horizontal style={styles.detailItem}>
-                    <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-attach-file"
-                                                                               title="Attachments"/></Flex.Layout>
+                speechFiles = <div style={styles.detailItem}>
+                    <Common.Display style={styles.label} type='body3'>Attachments:</Common.Display>
                     {speech.resource_url ?
                         <Flex.Layout center style={{paddingRight: 12}}>
                             <a href={`/file/files/${speech.resource_url}/download`} >{speech.resource_name || 'Download'}</a>
@@ -236,7 +227,7 @@ module.exports = React.createClass({
                     {speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED && speech.user_id === user.id ?
                         <FileUploader ref="fileUploader" text={`${speech.resource_url ? 'Update' : 'Upload'} Attachments`} showResult maxSize={10 * 1024 * 1024}
                                   acceptTypes={["pdf", "ppt", "rar", "zip", "rar", "gz", "tgz", "bz2"]} afterUpload={this._uploadAttachment}/> : undefined}
-                </Flex.Layout>;
+                </div>;
             }
 
             if (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED
@@ -257,9 +248,9 @@ module.exports = React.createClass({
                         break;
                     }
                 }
-                speechAudiences = <Flex.Layout horizontal style={styles.detailItem}>
-                    <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-people" title={tips}/></Flex.Layout>
-                    <Flex.Layout center wrap>
+                speechAudiences = <Flex.Layout style={styles.detailItem}>
+                    <Common.Display style={styles.label} type='body3'>Audiences:</Common.Display>
+                    <Flex.Layout center wrap flex={1}>
                         {userIds.map(id => {
                             let u = UserStore.getUser(id);
                             return <div style={{paddingRight: 12}}><Member.Avatar scale={0.8} member={u}/><Member.Name style={{marginLeft: 4}} member={u}/></div>;
@@ -267,8 +258,8 @@ module.exports = React.createClass({
                     </Flex.Layout>
                     {speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED ?
                     <Flex.Layout center endJustified>
-                        {showJoin ? <MUI.IconButton onClick={this._applyAsAudience} iconClassName="icon-add-circle-outline"/> : undefined}
-                        {!showJoin ? <MUI.IconButton onClick={this._withdrawAsAudience} iconClassName="icon-remove-circle-outline"/> : undefined}
+                        {showJoin ? <MUI.FlatButton onClick={this._applyAsAudience} label='join' primary={true}/> : undefined}
+                        {!showJoin ? <MUI.FlatButton onClick={this._withdrawAsAudience} label='quit' primary={true}/> : undefined}
                     </Flex.Layout> : undefined}
                 </Flex.Layout>;
             }
@@ -282,18 +273,18 @@ module.exports = React.createClass({
                     primaryBtn = <MUI.RaisedButton type="submit" label="Withdraw" primary={true} onClick={this._withdrawSpeech}/>;
                 else if (speech.status === ActivityConstants.SPEECH_STATUS.APPROVED) {
                     primaryBtn = <MUI.RaisedButton type="submit" label="Agree" primary={true} onClick={this._agreeArrangement}/>;
-                    secondaryBtn = <MUI.RaisedButton type="submit" label="Disagree" style={{marginRight: 12}} onClick={this._disagreeArrangement}/>;
+                    secondaryBtn = <MUI.RaisedButton type="submit" label="Disagree" style={{marginBottom: 12}} onClick={this._disagreeArrangement}/>;
                 }
             } else if (ActivityUserStore.currentIsAdmin()) {
                 if (speech.status === ActivityConstants.SPEECH_STATUS.AUDITING) {
                     primaryBtn = <MUI.RaisedButton type="submit" label="Approve" primary={true} onClick={this._showSelectTime}/>;
-                    secondaryBtn = <MUI.RaisedButton type="submit" label="Reject" style={{marginRight: 12}} onClick={this._rejectSpeech}/>;
+                    secondaryBtn = <MUI.RaisedButton type="submit" label="Reject" style={{marginBottom: 12}} onClick={this._rejectSpeech}/>;
                 } else if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED) {
                     primaryBtn = <MUI.RaisedButton type="submit" label="Finish" primary={true} onClick={this._showRecordParticipants}/>;
-                    secondaryBtn = <MUI.RaisedButton type="submit" label="Close" style={{marginRight: 12}} onClick={this._closeSpeech}/>;
+                    secondaryBtn = <MUI.RaisedButton type="submit" label="Close" style={{marginBottom: 12}} onClick={this._closeSpeech}/>;
                 }
             }
-            speechActions = <Flex.Layout horizontal centerJustified style={{paddingLeft: 96}}>
+            speechActions = <Flex.Layout vertical style={{padding: 24}}>
                 {secondaryBtn}
                 {primaryBtn}
                 </Flex.Layout>;
@@ -306,13 +297,21 @@ module.exports = React.createClass({
             }
             if (receiveCommentUsers.indexOf(speaker) <= -1)
                 receiveCommentUsers = receiveCommentUsers.push(speaker);
-            speechComment = (<Flex.Layout vertical key="comments" style={styles.detailItem}>
-                <Flex.Layout center style={{margin: '20px 0px'}}><Common.Display type='title'>Comments</Common.Display></Flex.Layout>
-                <Flex.Layout vertical startJustified flex={1}>
-                    <Thread style={{width: "100%"}} threadKey={this.state.threadKey} threadTitle={`Comment ${speech.title}`}
-                            participants={{users: receiveCommentUsers}}/>
-                </Flex.Layout>
+            speechComment = (<Flex.Layout vertical key="comments" style={{
+                borderTop: `1px solid ${this.context.muiTheme.palette.borderColor}`,
+                padding: 24
+            }}>
+                <Common.Display type='title'>Comments</Common.Display>
+                <Thread style={{width: "100%"}} threadKey={this.state.threadKey} threadTitle={`Comment ${speech.title}`}
+                        participants={{users: receiveCommentUsers}}/>
             </Flex.Layout>);
+            if (speech.status !== ActivityConstants.SPEECH_STATUS.CLOSED) {
+                stepBar = <Flex.Layout center vertical style={{borderLeft: '1px solid ' + this.context.muiTheme.palette.borderColor, width: 180, flexShrink:0}}>
+                    <StepBar vertical style={{padding:24, width:100, height:300}} activeStep={speechStatus.get(speech.status)+1} stepTitles={["New", "Auditing", "Approved", "Confirmed", "Finished"]}/>
+                    {speechActions}
+                </Flex.Layout>
+            }
+
         }
 
         return (
@@ -320,23 +319,27 @@ module.exports = React.createClass({
                 <form onSubmit={(e) => e.preventDefault()}>
                     <MUI.Paper zDepth={1} style={styles.inner}>
                         {bar}
-                        <div style={{padding: 20}}>
-                            <Flex.Layout start centerJustified style={{padding: '20px 0px 30px 0px'}}>
-                                {stepBar}
-                                {speechActions}
-                            </Flex.Layout>
+                        <Flex.Layout>
+                            <Flex.Item style={{padding: 20}} flex={1}>
+                                {/*<Flex.Layout start centerJustified style={{padding: '20px 0px 30px 0px'}}>
+                                    {speechActions}
+                                </Flex.Layout>*/}
 
-                            {speechSpeaker}
-                            {speechCategory}
-                            {speechTime}
-                            {speechDuration}
-                            {speechDescription}
-                            {speechFiles}
-                            {speechAudiences}
-                            {speechContent}
+                                {speechSpeaker}
+                                {speechCategory}
+                                {speechTime}
+                                {speechDuration}
+                                {speechDescription}
+                                {speechFiles}
+                                {speechAudiences}
+                                {speechContent}
 
-                            {speechComment}
-                        </div>
+                            </Flex.Item>
+
+                            {stepBar}
+                        </Flex.Layout>
+
+                        {speechComment}
                     </MUI.Paper>
                 </form>
                 <MUI.Paper zDepth={1} style={styles.selectTime}>
