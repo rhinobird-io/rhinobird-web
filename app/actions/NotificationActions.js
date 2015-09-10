@@ -109,6 +109,26 @@ let NotificationActions = {
       type: ActionTypes.READ_NOTIFI,
       data: data
     });
+  },
+
+  sendNotification(userIds, teamIds, content, email_subjtct, email_body, url, success, fail) {
+    $.post('/platform/api/users/notifications', {
+          users: userIds,
+          teams: teamIds,
+          content: {
+            content: content
+          },
+          email_subject: email_subjtct,
+          email_body: email_body,
+          url: url
+        }).done(() => {
+          if (success && typeof success === "function") {
+            success(data);
+          }
+        }).fail(e => {
+          if (fail && typeof fail === 'function')
+            fail(e);
+        });
   }
 
 };

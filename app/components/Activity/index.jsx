@@ -7,6 +7,7 @@ export default React.createClass({
     componentDidMount() {
         this.props.setTitle("Activity");
         ActivityAction.getUser(LoginStore.getUser().id);
+        ActivityAction.getAdmins();
     },
     render() {
         return (

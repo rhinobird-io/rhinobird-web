@@ -36,6 +36,9 @@ let ActivityUserStore= assign({}, BaseStore, {
     getUsers() {
         return _users;
     },
+    getAdminIds() {
+        return _users.filter(u => u.role === ActivityConstants.USER_ROLE.ADMIN).map(u => u.id);
+    },
     dispatcherIndex: AppDispatcher.register(function (payload) {
         let data = payload.data;
         let changed = true;

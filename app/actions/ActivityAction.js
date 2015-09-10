@@ -38,6 +38,21 @@ export default {
                 fail(e.status);
         });
     },
+    getAdmins(success, fail) {
+        $.post(`/activity/users/admins`).done(data => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.RECEIVE_USERS,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
+    },
 
     updateActivities(data) {
         AppDispatcher.dispatch({
@@ -208,7 +223,7 @@ export default {
                     fail(e.status);
             });
     },
-    rejectActivity(speech_id, time, success, fail) {
+    rejectActivity(speech_id, success, fail) {
         $.post(`/activity/speeches/${speech_id}/reject`)
             .done((data) => {
                 AppDispatcher.dispatch({
@@ -261,14 +276,14 @@ export default {
         participants.push({
             user_id: speech.user_id,
             role: ActivityConstants.ATTENDANCE_ROLE.SPEAKER,
-            point: speech.category === ActivityConstants.SPEECH_CATEGORY.MONTHLY ? 200 : 50,
+            point: speech.category === ActivityConstants.SPEECH_CATEGORY.MONTHLY ? ActivityConstants.POINT.MONTHLY : ActivityConstants.POINT.WEEKLY,
             commented: false});
 
         audiences.map(id => {
             participants.push({
                 user_id: id,
                 role: ActivityConstants.ATTENDANCE_ROLE.AUDIENCE,
-                point: 1,
+                point: ActivityConstants.POINT.AUDIENCE,
                 commented: commentedUsers.indexOf(id) > -1});
         });
 
@@ -311,22 +326,6 @@ export default {
                 resource_url: url,
                 resource_name: name
             })
-            .done((data) => {
-                AppDispatcher.dispatch({
-                    type: Constants.ActionTypes.UPDATE_ACTIVITY,
-                    data: data
-                });
-                if (success && typeof success === "function") {
-                    success(data);
-                }
-            }).fail(e => {
-                console.error(e);
-                if (fail && typeof fail === 'function')
-                    fail(e.status);
-            });
-    },
-    addParticipants(speech_id, users, success, fail) {
-        $.post(`/activity/speeches/${speech_id}/participants`, {userid: user_id})
             .done((data) => {
                 AppDispatcher.dispatch({
                     type: Constants.ActionTypes.UPDATE_ACTIVITY,

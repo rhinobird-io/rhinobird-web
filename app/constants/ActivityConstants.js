@@ -9,7 +9,8 @@ export default {
         UPDATE_ACTIVITY: null,
 
         RECEIVE_USER: null,
-        RECEIVE_USERS: null
+        RECEIVE_USERS: null,
+        RECEIVE_ADMINS: null
     }),
 
     SPEECH_STATUS: {
@@ -34,5 +35,11 @@ export default {
     ATTENDANCE_ROLE: {
         SPEAKER: "speaker",
         AUDIENCE: "audience"
+    },
+
+    POINT: {
+        MONTHLY: 200,
+        WEEKLY: 50,
+        AUDIENCE: 1
     }
 }

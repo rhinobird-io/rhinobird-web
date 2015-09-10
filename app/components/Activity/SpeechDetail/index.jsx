@@ -21,6 +21,7 @@ const Moment = require("moment");
 const Constants = require('../../FileUploader/constants');
 const Link = require("react-router").Link;
 const UserTable = require('./Table');
+const NotificationAction = require('../../../actions/NotificationActions');
 
 var speechStatus = new Enum({"New": 0, "Auditing": 1, "Approved": 2, "Confirmed": 3, "Finished": 4}, { ignoreCase: true });
 module.exports = React.createClass({
@@ -240,19 +241,18 @@ module.exports = React.createClass({
 
             if (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED
                 || speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED) {
-                let users = null;
+                let userIds = null;
                 let tips = null;
                 if (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) {
-                    users = speech.participants;
+                    userIds = speech.attendances ? speech.attendances.map(u => u.user_id) : [];
                     tips = "Participants";
                 } else {
-                    users = speech.audiences;
+                    userIds = speech.audiences ? speech.audiences.map(u => u.id) : [];
                     tips = "Audiences";
                 }
-                if (users === undefined || users === null) users = [];
                 let showJoin = true;
-                for (let i = 0; i < users.length; i++) {
-                    if (users[i].id === user.id) {
+                for (let i = 0; i < userIds.length; i++) {
+                    if (userIds[i] === user.id) {
                         showJoin = false;
                         break;
                     }
@@ -260,8 +260,8 @@ module.exports = React.createClass({
                 speechAudiences = <Flex.Layout horizontal style={styles.detailItem}>
                     <Flex.Layout center style={styles.detailKey}><MUI.FontIcon className="icon-people" title={tips}/></Flex.Layout>
                     <Flex.Layout center wrap>
-                        {users.map(p => {
-                            let u = UserStore.getUser(p.id);
+                        {userIds.map(id => {
+                            let u = UserStore.getUser(id);
                             return <div style={{paddingRight: 12}}><Member.Avatar scale={0.8} member={u}/><Member.Name style={{marginLeft: 4}} member={u}/></div>;
                         })}
                     </Flex.Layout>
@@ -298,10 +298,19 @@ module.exports = React.createClass({
                 {primaryBtn}
                 </Flex.Layout>;
 
+            let receiveCommentUsers = [];
+            if (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED && speech.attendances) {
+                receiveCommentUsers = speech.attendances.map(u => UserStore.getUser(u.user_id));
+            } else if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED && speech.audiences){
+                receiveCommentUsers = speech.audiences.map(u => UserStore.getUser(u.id));
+            }
+            if (receiveCommentUsers.indexOf(speaker) <= -1)
+                receiveCommentUsers = receiveCommentUsers.push(speaker);
             speechComment = (<Flex.Layout vertical key="comments" style={styles.detailItem}>
                 <Flex.Layout center style={{margin: '20px 0px'}}><Common.Display type='title'>Comments</Common.Display></Flex.Layout>
                 <Flex.Layout vertical startJustified flex={1}>
-                    <Thread style={{width: "100%"}} threadKey={this.state.threadKey} threadTitle={`Comment ${speech.title}`} />
+                    <Thread style={{width: "100%"}} threadKey={this.state.threadKey} threadTitle={`Comment ${speech.title}`}
+                            participants={{users: receiveCommentUsers}}/>
                 </Flex.Layout>
             </Flex.Layout>);
         }
@@ -406,6 +415,13 @@ module.exports = React.createClass({
     },
     _submitSpeech() {
         ActivityAction.submitActivity(this.state.speech.id, speech => {
+            NotificationAction.sendNotification(
+                ActivityUserStore.getAdminIds(),
+                [],
+                `Submitted a new activity ${speech.title}`,
+                `[RhinoBird] ${LoginStore.getUser().realname} submitted a new activity`,
+                `${LoginStore.getUser().realname} submitted a new activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                `/platform/activity/speeches/${speech.id}`);
             this.setState({
                 speech: speech
             })
@@ -413,6 +429,13 @@ module.exports = React.createClass({
     },
     _withdrawSpeech() {
         ActivityAction.withdrawActivity(this.state.speech.id, speech => {
+            NotificationAction.sendNotification(
+                ActivityUserStore.getAdminIds(),
+                [],
+                `Withdrew his activity ${speech.title}`,
+                `[RhinoBird] ${LoginStore.getUser().realname} Withdrew his activity`,
+                `${LoginStore.getUser().realname} withdrew his activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                `/platform/activity/speeches/${speech.id}`);
             this.setState({
                 speech: speech
             })
@@ -437,6 +460,13 @@ module.exports = React.createClass({
         let time = this.refs.time.getTime();
         let datetime = new Date(date.getFullYear(),date.getMonth(),date.getDate(),time.getHours(),time.getMinutes(), 0, 0);
         ActivityAction.approveActivity(this.state.speech.id, datetime, speech => {
+            NotificationAction.sendNotification(
+                [speech.user_id],
+                [],
+                `Approved your activity ${speech.title}`,
+                `[RhinoBird] ${LoginStore.getUser().realname} approved your activity`,
+                `${LoginStore.getUser().realname} approved your activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                `/platform/activity/speeches/${speech.id}`);
             this.setState({
                 speech: speech,
                 showSelectTime: false
@@ -446,6 +476,13 @@ module.exports = React.createClass({
 
     _rejectSpeech() {
         ActivityAction.rejectActivity(this.state.speech.id, speech => {
+            NotificationAction.sendNotification(
+                [speech.user_id],
+                [],
+                `Rejected your activity ${speech.title}`,
+                `[RhinoBird] ${LoginStore.getUser().realname} rejected your activity`,
+                `${LoginStore.getUser().realname} rejected your activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                `/platform/activity/speeches/${speech.id}`);
             this.setState({
                 speech: speech
             })
@@ -453,6 +490,13 @@ module.exports = React.createClass({
     },
     _agreeArrangement() {
         ActivityAction.agreeArrangement(this.state.speech.id, speech => {
+            NotificationAction.sendNotification(
+                ActivityUserStore.getAdminIds(),
+                [],
+                `Agreed with the time arrangement of the activity ${speech.title}`,
+                `[RhinoBird] ${LoginStore.getUser().realname} agreed with the time arrangement`,
+                `${LoginStore.getUser().realname} agreed with the time arrangement of the activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                `/platform/activity/speeches/${speech.id}`);
             this.setState({
                 speech: speech
             })
@@ -460,6 +504,13 @@ module.exports = React.createClass({
     },
     _disagreeArrangement() {
         ActivityAction.disagreeArrangement(this.state.speech.id, speech => {
+            NotificationAction.sendNotification(
+                ActivityUserStore.getAdminIds(),
+                [],
+                `Disagreed with the time arrangement of the activity ${speech.title}`,
+                `[RhinoBird] ${LoginStore.getUser().realname} disagreed with the time arrangement`,
+                `${LoginStore.getUser().realname} disagreed with the time arrangement of the activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                `/platform/activity/speeches/${speech.id}`);
             this.setState({
                 speech: speech
             })
@@ -471,6 +522,24 @@ module.exports = React.createClass({
             audiences = [];
         }
         ActivityAction.finishSpeech(this.state.speech, audiences, this.refs.userTable.getSelectedUsers(), speech => {
+            NotificationAction.sendNotification(
+                [speech.user_id],
+                [],
+                `Marked your activity ${speech.title} as finished`,
+                `[RhinoBird] ${LoginStore.getUser().realname} marked your activity as finished`,
+                `${LoginStore.getUser().realname} marked your activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a> as finished`,
+                `/platform/activity/speeches/${speech.id}`);
+            speech.attendances.map(a => {
+                let point = a.point + (a.commented ? 1 : 0);
+                NotificationAction.sendNotification(
+                    [a.user_id],
+                    [],
+                    `You got ${point} points from the activity ${speech.title}`,
+                    `[RhinoBird] You got ${point} points`,
+                    `You got ${point} points from the activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                    `/platform/activity/speeches/${speech.id}`);
+            });
+
             this.setState({
                 speech: speech,
                 showRecordParticipants: false
@@ -479,6 +548,13 @@ module.exports = React.createClass({
     },
     _closeSpeech() {
         ActivityAction.closeSpeech(this.state.speech.id, speech => {
+            NotificationAction.sendNotification(
+                [speech.user_id].concat(speech.audiences.map(u => u.id)),
+                [],
+                `Closed the activity ${speech.title}`,
+                `[RhinoBird] ${LoginStore.getUser().realname} closed the activity`,
+                `${LoginStore.getUser().realname} closed the activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                `/platform/activity/speeches/${speech.id}`);
             this.setState({
                 speech: speech
             })
@@ -488,6 +564,13 @@ module.exports = React.createClass({
         if (result.result === Constants.UploadResult.SUCCESS) {
             console.log(result.file);
             ActivityAction.uploadAttachment(this.state.speech.id, result.file.id, result.file.name, speech => {
+                NotificationAction.sendNotification(
+                    [speech.audiences.map(u => u.id)],
+                    [],
+                    `Uploaded new attachments ${speech.title}`,
+                    `[RhinoBird] ${LoginStore.getUser().realname} uploaded new attachments`,
+                    `${LoginStore.getUser().realname} uploaded new attachments for activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                    `/platform/activity/speeches/${speech.id}`);
                 this.setState({
                     speech: speech
                 })
