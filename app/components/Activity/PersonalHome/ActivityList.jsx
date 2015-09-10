@@ -31,6 +31,11 @@ module.exports = React.createClass({
         return <mui.Paper style={{padding: 12, width:'100%', marginBottom: 20, position:'relative'}}>
             <div>
                 <Common.Display type='body3' style={{marginLeft:12, marginBottom:18}}>{this.props.title}</Common.Display>
+                {this.props.adminPage && this.props.list.length > 0 ? (<span style={{padding: '0px 9px',fontSize: '12.025px',fontWeight: 'bold',
+                      color: '#ffffff',backgroundColor: '#999999',borderRadius: '9px',float: 'right'}}>
+                      {this.props.list.length > 99 ? '99+' : this.props.list.length}
+                </span>) : undefined}
+
                 { this.props.showFilter ?
                     (<mui.DropDownMenu menuItems={menuItems}
                                        style={{height: 40, width: 140, float: 'right'}}
@@ -53,4 +58,3 @@ module.exports = React.createClass({
         });
     }
 });
-
