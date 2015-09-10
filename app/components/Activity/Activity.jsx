@@ -12,6 +12,7 @@ const ActivityList = require('./ActivityList');
 const RankBoard = require('./RankBoard');
 const ActivityUserStore = require('../../stores/ActivityUserStore');
 const LoginStore = require('../../stores/LoginStore');
+const AdministrationBord = require('./AdministrationBord');
 
 module.exports = React.createClass({
 
@@ -44,8 +45,8 @@ module.exports = React.createClass({
                 <div style={{margin:'0 auto', maxWidth:1000}}>
                 <Flex.Layout justified>
                     <Flex.Item flex={1}>
+                        {ActivityUserStore.currentIsAdmin() ? <AdministrationBord/> : undefined}
                         <PersonalBoard/>
-
                         <ActivityList/>
                     </Flex.Item>
                     <RankBoard/>

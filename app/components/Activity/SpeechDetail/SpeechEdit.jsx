@@ -21,8 +21,6 @@ module.exports = React.createClass({
         durationRequired: "Speech duration is required."
     },
 
-    category: "weekly",
-
     getInitialState() {
         return {
             mode: 'loading'
@@ -86,11 +84,6 @@ module.exports = React.createClass({
             }
         };
 
-        let categoryItems = [
-            { payload: "weekly", text: 'weekly' },
-            { payload: "monthly", text: 'monthly' }
-        ];
-
         let loadingIcon = null;
         let errorIcon = null;
         let submitButton = null;
@@ -131,32 +124,30 @@ module.exports = React.createClass({
                                     floatingLabelText="Description"
                                     style={{width: "100%"}} />
 
-                                <Flex.Layout justified>
-                                    <Flex.Layout center style={{minWidth: 80}}>
-                                        <Common.Display type="body3">Category</Common.Display>
-                                    </Flex.Layout>
-                                    <MUI.DropDownMenu
-                                        ref="category"
-                                        style={{minWidth: 200, height: 40}}
-                                        labelStyle={styles.category}
-                                        selectedIndex={this.state.category === 'monthly' ? 1 : 0}
-                                        onChange={this._onChangeCategory}
-                                        menuItems={categoryItems} />
+                                <Flex.Layout center style={{marginTop: 24}}>
+                                    <MUI.RadioButtonGroup style={{display: 'inherit'}}
+                                                          defaultSelected={"weekly"}
+                                                          valueSelected={this.state.category === 'monthly' ? 'monthly' : 'weekly'}
+                                                          onChange={this._onChangeCategory}>
+                                        <MUI.RadioButton
+                                            value="weekly"
+                                            label="Lightning talk"
+                                            style={{marginBottom:16}}/>
+                                        <MUI.RadioButton
+                                            value="monthly"
+                                            label="Monthly study session"
+                                            style={{marginBottom:16}}/>
+                                    </MUI.RadioButtonGroup>
                                 </Flex.Layout>
 
-                                <Flex.Layout horizontal justified>
-                                    <Flex.Layout center style={{minWidth: 80}}>
-                                        <Common.Display type="body3">Duration</Common.Display>
-                                    </Flex.Layout>
-                                    <Flex.Layout horizontal justified style={{minWidth: 0}}>
-                                        <MUI.TextField
-                                            ref="expected_duration"
-                                            hintText="Minutes"
-                                            valueLink={this.linkState('duration')}
-                                            errorText={this.state.durationError}
-                                            floatingLabelText="Minutes"
-                                            style={{width: "100%"}} />
-                                    </Flex.Layout>
+                                <Flex.Layout center >
+                                    <MUI.TextField
+                                        ref="expected_duration"
+                                        hintText="Expected duration (min)"
+                                        valueLink={this.linkState('duration')}
+                                        errorText={this.state.durationError}
+                                        floatingLabelText="Expected duration (min)"
+                                        style={{width: "100%"}} />
                                 </Flex.Layout>
 
                                 <Flex.Layout horizontal justified style={{marginTop: 20}}>
@@ -171,8 +162,10 @@ module.exports = React.createClass({
         );
     },
 
-    _onChangeCategory: function(event, index, item) {
-        this.category = item.payload;
+    _onChangeCategory: function(event, selected) {
+        this.setState({
+            category: selected
+            });
     },
 
     _handleSubmit: function(e) {
@@ -209,7 +202,7 @@ module.exports = React.createClass({
         let speech = this.state.speech;
         speech.title = title;
         speech.description = description;
-        speech.category = this.category;
+        speech.category = this.state.category;
         speech.expected_duration = duration;
         if (this.state.mode === 'create') {
             ActivityAction.createActivity(speech,
