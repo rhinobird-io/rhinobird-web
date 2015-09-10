@@ -101,7 +101,8 @@ module.exports = React.createClass({
             {route: '/platform/team', iconClassName: 'icon-group', text: 'Team'},
             {route: '/platform/im/talk/default', iconClassName: 'icon-message', text: 'Instant Message'},
             {route: '/platform/post', iconClassName: 'icon-forum', text: 'Post'},
-            {route: '/platform/resource', iconClassName: 'icon-laptop   ', text: 'Resource Booking'}
+            {route: '/platform/resource', iconClassName: 'icon-laptop', text: 'Resource Booking'},
+            {route: '/platform/activity', iconClassName: 'icon-group-work', text: 'Activity'}
         ];
 
         return <LeftNav

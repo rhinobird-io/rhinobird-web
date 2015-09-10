@@ -19,7 +19,7 @@ const FileUploader = React.createClass({
         valueLink: React.PropTypes.shape({
             value: React.PropTypes.string.isRequired,
             requestChange: React.PropTypes.func.isRequired
-        }),
+        })
     },
 
     getDefaultProps() {
@@ -60,6 +60,8 @@ const FileUploader = React.createClass({
             this.refs.uploadResult.addResult(result);
             this._updateValueLink();
         }
+
+        this.props.afterUpload(result);
     },
     beforeUpload: function () {
         this.refs.uploadResult.clearResults();

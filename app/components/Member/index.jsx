@@ -13,11 +13,13 @@ function Member() {
 module.exports = Member;
 
 const MemberProfile = require('../MemberProfile');
-function _showMemberProfile(){
-    var self=this;
+function _showMemberProfile() {
+    var self = this;
     FloatingContentAction.updateFloatingContent({
         title: 'Member',
-        elementFactory: ()=>{ return <MemberProfile userId={self.props.member.id}/>},
+        elementFactory: ()=> {
+            return <MemberProfile userId={self.props.member.id}/>
+        },
         showFloatingContent: true
     });
 }
@@ -25,7 +27,7 @@ function _showMemberProfile(){
 Member.showMemberProfile = (id) => {
     FloatingContentAction.updateFloatingContent({
         title: 'Member',
-        elementFactory: () => <MemberProfile userId={id} />,
+        elementFactory: () => <MemberProfile userId={id}/>,
         showFloatingContent: true
     });
 };
@@ -52,10 +54,12 @@ Member.Avatar = React.createClass({
     render: function () {
         let size = 24 * this.props.scale;
         if (this.props.member) {
-            let display = <img className='avatar' style={{display: "inline-block", verticalAlign: "middle"}} width={size} height={size} {...this.props}
+            let display = <img className='avatar' style={{display: "inline-block", verticalAlign: "middle"}}
+                               width={size} height={size} {...this.props}
                                src={`http://www.gravatar.com/avatar/${this.props.member.emailMd5}?d=identicon`}/>;
             if (this.props.link) {
-                return <Common.Link onClick={_showMemberProfile.bind(this)} style={{display:'inline-flex', justifyContent:'center', flexDirection:'column'}}>
+                return <Common.Link onClick={_showMemberProfile.bind(this)}
+                                    style={{display:'inline-flex', justifyContent:'center', flexDirection:'column'}}>
                     {display}
                 </Common.Link>;
             } else {
@@ -76,7 +80,8 @@ Member.Name = React.createClass({
     },
     render: function () {
         if (this.props.member) {
-            let display = <span title={this.props.member.realname} className={this.props.className}>{this.props.member.realname}</span>;
+            let display = <span title={this.props.member.realname}
+                                className={this.props.className}>{this.props.member.realname}</span>;
             if (this.props.link) {
                 return <Common.Link onClick={_showMemberProfile.bind(this)} style={this.props.style}>
                     {display}
@@ -86,6 +91,19 @@ Member.Name = React.createClass({
             }
         } else {
             return <div/>;
+        }
+    }
+});
+
+Member.Link = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
+    render: function () {
+        if (this.props.member) {
+            return <div onClick={_showMemberProfile.bind(this)}>
+                {this.props.children}
+            </div>;
+        } else {
+            return <div>{this.props.children}</div>;
         }
     }
 });
@@ -110,7 +128,7 @@ Member.MemberSelect = React.createClass({
         this.refs.select.focus();
     },
 
-    getDefaultProps: function() {
+    getDefaultProps: function () {
         return {
             user: true,
             team: true
@@ -146,7 +164,7 @@ Member.MemberSelect = React.createClass({
         UserStore.removeChangeListener(this._onChange);
     },
 
-    render: function() {
+    render: function () {
         let {
             team,
             user,
@@ -154,13 +172,13 @@ Member.MemberSelect = React.createClass({
             onChange,
             style,
             ...other
-        } = this.props;
+            } = this.props;
 
         let users =
             user && this.state.users.length > 0 ?
                 this.state.users.map((u) => {
                     return <Flex.Layout horizontal center key={"user_" + u.id} value={"user_" + u.id} index={u}>
-                        <Member.Avatar member={u} /> &ensp;
+                        <Member.Avatar member={u}/> &ensp;
                         <span style={{fontWeight: 500, marginLeft: 6}}>{u.realname}</span>
                     </Flex.Layout>;
                 }) : null;
@@ -170,7 +188,7 @@ Member.MemberSelect = React.createClass({
                 this.state.teams.map((t) => {
                     return <Flex.Layout horizontal center key={"team_" + t.id} value={"team_" + t.id} index={t}>
                         <Flex.Layout vertical selfCenter>
-                            <span className="icon-group" style={{fontSize: "24px"}} />
+                            <span className="icon-group" style={{fontSize: "24px"}}/>
                         </Flex.Layout> &ensp;
                         <span style={{fontWeight: 500, marginLeft: 6}}>{t.name}</span>
                     </Flex.Layout>;
@@ -180,14 +198,18 @@ Member.MemberSelect = React.createClass({
 
         if (users) {
             if (teams) {
-                children = children.concat(<div key="user" style={{fontSize: "1.1em", fontWeight: 800, padding: "6px 10px"}}>User</div>);
+                children = children.concat(<div key="user"
+                                                style={{fontSize: "1.1em", fontWeight: 800, padding: "6px 10px"}}>
+                    User</div>);
             }
             children = children.concat(users);
         }
 
         if (teams) {
             if (users) {
-                children = children.concat(<div key="team" style={{fontSize: "1.1em", fontWeight: 800, padding: "6px 10px"}}>Team</div>);
+                children = children.concat(<div key="team"
+                                                style={{fontSize: "1.1em", fontWeight: 800, padding: "6px 10px"}}>
+                    Team</div>);
             }
             children = children.concat(teams);
         }
@@ -196,10 +218,10 @@ Member.MemberSelect = React.createClass({
             <div>
                 <label style={{color:'rgba(0,0,0,0.5)'}}>{this.props.label}</label>
                 <Select.Select ref='select'
-                    multiple
-                    hRestrict
-                    style={style}
-                    token={(v) => {
+                               multiple
+                               hRestrict
+                               style={style}
+                               token={(v) => {
                         let u;
                         if (v.indexOf("user_") === 0) {
                             u = UserStore.getUser(parseInt(v.substring(5)));
@@ -223,8 +245,8 @@ Member.MemberSelect = React.createClass({
                             </Flex.Layout>;
                         }
                     }}
-                    value={this.state.members}
-                    onChange={(selected) => {
+                               value={this.state.members}
+                               onChange={(selected) => {
                         let results = {};
                         if (team && user) {
                             results.teams = [];

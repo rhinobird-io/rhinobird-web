@@ -2,5 +2,7 @@
 /build
 .vagrant
 .idea/
+*.iml
 npm-debug.log
 start.sh
+dump.rdb
