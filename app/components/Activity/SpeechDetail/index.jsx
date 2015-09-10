@@ -301,11 +301,9 @@ module.exports = React.createClass({
                 borderTop: `1px solid ${this.context.muiTheme.palette.borderColor}`,
                 padding: 24
             }}>
-                <Flex.Layout center style={{margin: '20px 0px'}}><Common.Display type='title'>Comments</Common.Display></Flex.Layout>
-                <Flex.Layout vertical startJustified flex={1}>
-                    <Thread style={{width: "100%"}} threadKey={this.state.threadKey} threadTitle={`Comment ${speech.title}`}
-                            participants={{users: receiveCommentUsers}}/>
-                </Flex.Layout>
+                <Common.Display type='title'>Comments</Common.Display>
+                <Thread style={{width: "100%"}} threadKey={this.state.threadKey} threadTitle={`Comment ${speech.title}`}
+                        participants={{users: receiveCommentUsers}}/>
             </Flex.Layout>);
             if (speech.status !== ActivityConstants.SPEECH_STATUS.CLOSED) {
                 stepBar = <Flex.Layout center vertical style={{borderLeft: '1px solid ' + this.context.muiTheme.palette.borderColor, width: 180, flexShrink:0}}>
