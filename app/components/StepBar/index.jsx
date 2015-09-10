@@ -17,6 +17,8 @@ export default React.createClass({
 
     propTypes: {
         activeStep: React.PropTypes.number,
+        vertical: React.PropTypes.bool,
+        right: React.PropTypes.bool,
         stepTitles: React.PropTypes.arrayOf(React.PropTypes.string)
     },
 
@@ -39,84 +41,125 @@ export default React.createClass({
         let {
             style,
             stepTitles,
+            activeStep,
             ...other
         } = this.props;
 
+        let activeColor = this.context.muiTheme.palette.primary1Color;
+
+        let disabledColor = 'silver';
+
         let styles = {
-            line: {
-                position: "absolute",
-                top: "50%",
-                width: "100%",
-                height: 4,
-                borderRadius: 2,
-                marginTop: -2,
-                background: Colors.green500,
-                zIndex: 0
+            list: {
+                margin: 0,
+                padding: 0,
+                listStyleType: 'none',
+                display: 'flex',
+                flexDirection: 'column'
             },
-            step: {
-                width: 20,
+            item: {flex: 1},
+            span: {
+                display:'block',
+                position: 'absolute',
+                lineHeight: '20px',
                 height: 20,
-                display: "inline-block",
-                borderRadius: "50%",
-                lineHeight: "60px",
-                position: "relative",
-                background: Colors.green200,
-                textAlign: "center",
-                color: "white",
-                fontSize: "28px",
-                zIndex: 1
+                width: 20,
+                borderRadius: '50%',
             },
-            title: {
-                position: "absolute",
-                top: "100%",
-                fontSize: "18px",
-                lineHeight: "2em",
-                width: "200px",
-                left: "-90px",
-                textAlign: "center",
-                color: Colors.grey600
-            }
-        };
-
-        let steps = [];
-        for (let i = 0; i < stepTitles.length; i++) {
-            let step = {};
-            Assign(step, styles.step);
-            if (i <= this.props.activeStep) {
-                step.background = Colors.green500;
-            } else {
-                step.background = Colors.grey500;
-            }
-
-            let title = {};
-            Assign(title, styles.title);
-            if (i <= this.props.activeStep) {
-                title.color = Colors.green500;
-            } else {
-                title.color = Colors.grey500;
-            }
-            steps.push(<div key={`step${i}`} style={step}>
-                <div style={title}>{`${stepTitles[i] || ''}`}</div>
-            </div>);
+            itemTitle:{}
         }
+        if(!this.props.vertical) {
+            Object.assign(styles.item, {
+                display: 'inline-block',
+                textAlign: 'center',
+                lineHeight: '3em',
+                position: 'relative'
+            });
+            Object.assign(styles.span, {
+                bottom: '-12px',
+                left: '50%',
+                marginLeft: -10
+            });
+            styles.activeItem = Object.assign({}, styles.item);
 
-        let lines = [];
-        for (let i = 0; i < stepTitles.length - 1; i++) {
-            let line = {};
-            Assign(line, styles.line);
-            let width = 100 / (stepTitles.length - 1);
-            line.width = `${width}%`;
-            line.left = `${i * (100 / (stepTitles.length - 1))}%`;
-            if (i >= this.props.activeStep) {
-                line.background = Colors.grey500;
+            Object.assign(styles.item, {
+                color: disabledColor,
+                borderBottom: `4px solid ${disabledColor}`
+            });
+
+            Object.assign(styles.activeItem, {
+                color: activeColor,
+                borderBottom: `4px solid ${activeColor}`
+            });
+        } else {
+            if (!this.props.right){
+                styles.itemTitle = {
+                    position: 'absolute',
+                    top: '50%',
+                    marginTop: -10,
+                    left: 20
+                };
+                Object.assign(styles.item, {
+                    position: 'relative'
+                });
+                Object.assign(styles.span, {
+                    left: '-12px',
+                    top: '50%',
+                    marginTop: -10,
+                    textAlign: 'center'
+                });
+                styles.activeItem = Object.assign({}, styles.item);
+                Object.assign(styles.item, {
+                    color: disabledColor,
+                    borderLeft: `4px solid ${disabledColor}`
+                });
+
+                Object.assign(styles.activeItem, {
+                    color: activeColor,
+                    borderLeft: `4px solid ${activeColor}`
+                });
+            } else{
+                styles.itemTitle = {
+                    position: 'absolute',
+                    top: '50%',
+                    marginTop: -10,
+                    right: 20
+                };
+                Object.assign(styles.item, {
+                    position: 'relative'
+                });
+                Object.assign(styles.span, {
+                    right: '-12px',
+                    top: '50%',
+                    marginTop: -10,
+                    textAlign: 'center'
+                });
+                styles.activeItem = Object.assign({}, styles.item);
+                Object.assign(styles.item, {
+                    color: disabledColor,
+                    borderRight: `4px solid ${disabledColor}`
+                });
+
+                Object.assign(styles.activeItem, {
+                    color: activeColor,
+                    borderRight: `4px solid ${activeColor}`
+                });
             }
-            lines.push(<div style={line}></div>);
         }
+        let activeSpan = <span className='icon-done' style={Object.assign({}, styles.span, {
+                backgroundColor: activeColor,
+                color: this.context.muiTheme.palette.canvasColor
+            })}></span>;
+        let todoSpan = <span style={Object.assign({}, styles.span, {
+                backgroundColor: disabledColor
+            })}></span>;
         return (
-            <Flex.Layout horizontal justified style={Assign({width: 600, position: "relative"}, style || {})} {...other}>
-                {steps}
-                {lines}
-            </Flex.Layout>
+            <ol style={Object.assign(styles.list, style)}>
+                {stepTitles.map((t, i) => <li style={i < activeStep ? styles.activeItem : styles.item}>
+                    <span style={styles.itemTitle}>{t}</span>
+                    {i < activeStep ? activeSpan : todoSpan}
+                </li>)}
+            </ol>
         );
     }
 });
