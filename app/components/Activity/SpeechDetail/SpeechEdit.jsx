@@ -23,7 +23,8 @@ module.exports = React.createClass({
 
     getInitialState() {
         return {
-            mode: 'loading'
+            mode: 'loading',
+            category: 'weekly'
         }
     },
     componentDidMount() {
@@ -41,7 +42,7 @@ module.exports = React.createClass({
                 speech: {},
                 title: "",
                 description: "",
-                category: "",
+                category: 'weekly',
                 duration: 15
             });
         }
@@ -143,10 +144,10 @@ module.exports = React.createClass({
                                 <Flex.Layout center >
                                     <MUI.TextField
                                         ref="expected_duration"
-                                        hintText="Expected duration (min)"
+                                        hintText="Estimated duration (min)"
                                         valueLink={this.linkState('duration')}
                                         errorText={this.state.durationError}
-                                        floatingLabelText="Expected duration (min)"
+                                        floatingLabelText="Estimated duration (min)"
                                         style={{width: "100%"}} />
                                 </Flex.Layout>
 

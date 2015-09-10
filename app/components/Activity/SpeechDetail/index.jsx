@@ -266,27 +266,32 @@ module.exports = React.createClass({
 
             let primaryBtn = null;
             let secondaryBtn = null;
+            let adminPrimaryBtn = null;
+            let adminSecondaryBtn = null;
             if (speech.user_id === user.id) {
                 if (speech.status === ActivityConstants.SPEECH_STATUS.NEW)
-                    primaryBtn = <MUI.RaisedButton type="submit" label="Submit" primary={true} onClick={this._submitSpeech}/>;
+                    primaryBtn = <MUI.RaisedButton type="submit" label="Submit" style={{marginBottom: 12}} primary={true} onClick={this._submitSpeech}/>;
                 else if (speech.status === ActivityConstants.SPEECH_STATUS.AUDITING)
-                    primaryBtn = <MUI.RaisedButton type="submit" label="Withdraw" primary={true} onClick={this._withdrawSpeech}/>;
+                    primaryBtn = <MUI.RaisedButton type="submit" label="Withdraw" style={{marginBottom: 12}} primary={true} onClick={this._withdrawSpeech}/>;
                 else if (speech.status === ActivityConstants.SPEECH_STATUS.APPROVED) {
-                    primaryBtn = <MUI.RaisedButton type="submit" label="Agree" primary={true} onClick={this._agreeArrangement}/>;
+                    primaryBtn = <MUI.RaisedButton type="submit" label="Agree" style={{marginBottom: 12}} primary={true} onClick={this._agreeArrangement}/>;
                     secondaryBtn = <MUI.RaisedButton type="submit" label="Disagree" style={{marginBottom: 12}} onClick={this._disagreeArrangement}/>;
                 }
-            } else if (ActivityUserStore.currentIsAdmin()) {
+            }
+            if (ActivityUserStore.currentIsAdmin()) {
                 if (speech.status === ActivityConstants.SPEECH_STATUS.AUDITING) {
-                    primaryBtn = <MUI.RaisedButton type="submit" label="Approve" primary={true} onClick={this._showSelectTime}/>;
-                    secondaryBtn = <MUI.RaisedButton type="submit" label="Reject" style={{marginBottom: 12}} onClick={this._rejectSpeech}/>;
+                    adminPrimaryBtn = <MUI.RaisedButton type="submit" label="Approve" style={{marginBottom: 12}} primary={true} onClick={this._showSelectTime}/>;
+                    adminSecondaryBtn = <MUI.RaisedButton type="submit" label="Reject" style={{marginBottom: 12}} onClick={this._rejectSpeech}/>;
                 } else if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED) {
-                    primaryBtn = <MUI.RaisedButton type="submit" label="Finish" primary={true} onClick={this._showRecordParticipants}/>;
-                    secondaryBtn = <MUI.RaisedButton type="submit" label="Close" style={{marginBottom: 12}} onClick={this._closeSpeech}/>;
+                    adminPrimaryBtn = <MUI.RaisedButton type="submit" label="Finish" style={{marginBottom: 12}} primary={true} onClick={this._showRecordParticipants}/>;
+                    adminSecondaryBtn = <MUI.RaisedButton type="submit" label="Close" style={{marginBottom: 12}} onClick={this._closeSpeech}/>;
                 }
             }
             speechActions = <Flex.Layout vertical style={{padding: 24}}>
                 {secondaryBtn}
                 {primaryBtn}
+                {adminSecondaryBtn}
+                {adminPrimaryBtn}
                 </Flex.Layout>;
 
             let receiveCommentUsers = [];

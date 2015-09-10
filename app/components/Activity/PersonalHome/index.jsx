@@ -44,7 +44,7 @@ module.exports = React.createClass({
                         {
                             urgent.length > 0 ?
                                 (<Flex.Item flex={1}>
-                                    <ActivityList title={"Waiting for you to confirm"} list={urgent} showStatus={true}/>
+                                    <ActivityList title={"Waiting you to confirm"} list={urgent} showStatus={true}/>
                                 </Flex.Item>) : undefined
                         }
                         {
