@@ -40,6 +40,7 @@ const UploadButton = React.createClass({
         var input = $(document.createElement('input'));
         input.attr("type", "file");
         input.attr("multiple", "true");
+        this.props.acceptTypes && this.props.acceptTypes.length > 0 && input.attr("accept", this.props.acceptTypes.join(','));
 
         input.change(function(e) {
             if (e && e.target && e.target.files && e.target.files.length > 0) {

@@ -41,8 +41,9 @@ let ResourceDetailContent = React.createClass({
         }
     },
     componentDidMount() {
-        if (this.state.view === 'detail')
+        if (this.state.view === 'detail') {
             this._toggleResourceInfo();
+        }
     },
 
     render() {
@@ -95,18 +96,16 @@ let ResourceDetailContent = React.createClass({
             <Flex.Layout vertical style={{height: "100%"}}>
                 {actions}
                 <ResourceInfo ref="resourceInfo" resource={resource}/>
-                <div style={{position: "absolute", left: 0, right: 0, bottom: 0, top: 60}}>
-                    <CalendarView
-                        ref="calendar"
-                        date={new Date()}
-                        data={resource.resourceBookings}
-                        views={['day', 'week', 'fourDays']}
-                        rangeContent={this._rangeContent}
-                        awayExceptions={() => this.refs.resourceBooking.getDOMNode()}
-                        onRangeCreate={this._showResourceBookingPopup}
-                        onRangeCancel={this._dismissResourceBookingPopup}
-                        onRangeClicked={this._showUpdateResourceBookingPopup} />
-                </div>
+                <CalendarView
+                    ref="calendar"
+                    date={new Date()}
+                    data={resource.resourceBookings}
+                    views={['day', 'week', 'fourDays']}
+                    rangeContent={this._rangeContent}
+                    awayExceptions={() => this.refs.resourceBooking.getDOMNode()}
+                    onRangeCreate={this._showResourceBookingPopup}
+                    onRangeCancel={this._dismissResourceBookingPopup}
+                    onRangeClicked={this._showUpdateResourceBookingPopup} />
                 {this._getCreateResourceBookingPopup()}
                 {this._getUpdateResourceBookingPopup()}
                 <MUI.Snackbar ref="bookingSuccess" message={`Booking ${resource.name} successfully`} />
