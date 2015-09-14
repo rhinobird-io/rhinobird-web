@@ -105,7 +105,7 @@ let CreateResource = React.createClass({
                                     errorText={this.state.descriptionError}
                                     valueLink={this.linkState('description')}
                                     style={{width: "100%"}} />
-                                <FileUploader ref="fileUploader" text={"Upload Attachments"} valueLink={this.linkState('images')} showReview showResult maxSize={10 * 1024 * 1024} acceptTypes={["png", "jpeg", "jpg", "bmp"]} />
+                                <FileUploader ref="fileUploader" text={"Upload Attachments"} valueLink={this.linkState('images')} showReview showResult maxSize={10 * 1024 * 1024} acceptTypes={[".png", ".jpeg", ".jpg", ".bmp"]} />
                                 <br/>
                                 <Flex.Layout horizontal justified>
                                     <MUI.RaisedButton label="Cancel" onClick={this._cancel}/>

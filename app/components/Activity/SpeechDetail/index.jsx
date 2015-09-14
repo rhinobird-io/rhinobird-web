@@ -227,7 +227,7 @@ module.exports = React.createClass({
                         </Flex.Layout>
                         {operateFile ?
                                 <FileUploader ref="fileUploader" text="Add" showResult maxSize={10 * 1024 * 1024} buttonStyle={{float: 'right'}}
-                                              acceptTypes={["pdf", "ppt", "rar", "zip", "rar", "gz", "tgz", "bz2"]} afterUpload={this._uploadAttachment}/>
+                                              afterUpload={this._uploadAttachment}/>
                              : undefined}
                     </Flex.Layout>
                 </Flex.Layout>;
