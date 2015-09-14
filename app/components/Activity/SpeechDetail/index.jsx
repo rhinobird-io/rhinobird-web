@@ -26,6 +26,8 @@ const Category = require('./Category');
 
 var speechStatus = new Enum({"New": 0, "Auditing": 1, "Approved": 2, "Confirmed": 3, "Finished": 4}, { ignoreCase: true });
 module.exports = React.createClass({
+    baseUrl: "http://rhinobird.workslan",
+
     mixins: [React.addons.LinkedStateMixin],
     contextTypes: {
         muiTheme: React.PropTypes.object,
@@ -464,7 +466,7 @@ module.exports = React.createClass({
                 [],
                 `Submitted a new activity ${speech.title}`,
                 `[RhinoBird] ${LoginStore.getUser().realname} submitted a new activity`,
-                `${LoginStore.getUser().realname} submitted a new activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                `${LoginStore.getUser().realname} submitted a new activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
                 `/platform/activity/speeches/${speech.id}`);
             this.setState({
                 speech: speech
@@ -478,7 +480,7 @@ module.exports = React.createClass({
                 [],
                 `Withdrew his activity ${speech.title}`,
                 `[RhinoBird] ${LoginStore.getUser().realname} Withdrew his activity`,
-                `${LoginStore.getUser().realname} withdrew his activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                `${LoginStore.getUser().realname} withdrew his activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
                 `/platform/activity/speeches/${speech.id}`);
             this.setState({
                 speech: speech
@@ -509,7 +511,7 @@ module.exports = React.createClass({
                 [],
                 `Approved your activity ${speech.title}`,
                 `[RhinoBird] ${LoginStore.getUser().realname} approved your activity`,
-                `${LoginStore.getUser().realname} approved your activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                `${LoginStore.getUser().realname} approved your activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
                 `/platform/activity/speeches/${speech.id}`);
             this.setState({
                 speech: speech,
@@ -525,7 +527,7 @@ module.exports = React.createClass({
                 [],
                 `Rejected your activity ${speech.title}`,
                 `[RhinoBird] ${LoginStore.getUser().realname} rejected your activity`,
-                `${LoginStore.getUser().realname} rejected your activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                `${LoginStore.getUser().realname} rejected your activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
                 `/platform/activity/speeches/${speech.id}`);
             this.setState({
                 speech: speech
@@ -539,7 +541,7 @@ module.exports = React.createClass({
                 [],
                 `Agreed with the time arrangement of the activity ${speech.title}`,
                 `[RhinoBird] ${LoginStore.getUser().realname} agreed with the time arrangement`,
-                `${LoginStore.getUser().realname} agreed with the time arrangement of the activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                `${LoginStore.getUser().realname} agreed with the time arrangement of the activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
                 `/platform/activity/speeches/${speech.id}`);
             this.setState({
                 speech: speech
@@ -553,7 +555,7 @@ module.exports = React.createClass({
                 [],
                 `Disagreed with the time arrangement of the activity ${speech.title}`,
                 `[RhinoBird] ${LoginStore.getUser().realname} disagreed with the time arrangement`,
-                `${LoginStore.getUser().realname} disagreed with the time arrangement of the activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                `${LoginStore.getUser().realname} disagreed with the time arrangement of the activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
                 `/platform/activity/speeches/${speech.id}`);
             this.setState({
                 speech: speech
@@ -571,7 +573,7 @@ module.exports = React.createClass({
                 [],
                 `Marked your activity ${speech.title} as finished`,
                 `[RhinoBird] ${LoginStore.getUser().realname} marked your activity as finished`,
-                `${LoginStore.getUser().realname} marked your activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a> as finished`,
+                `${LoginStore.getUser().realname} marked your activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a> as finished`,
                 `/platform/activity/speeches/${speech.id}`);
             speech.attendances.map(a => {
                 let point = a.point + (a.commented ? 1 : 0);
@@ -580,7 +582,7 @@ module.exports = React.createClass({
                     [],
                     `You got ${point} points from the activity ${speech.title}`,
                     `[RhinoBird] You got ${point} points`,
-                    `You got ${point} points from the activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                    `You got ${point} points from the activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
                     `/platform/activity/speeches/${speech.id}`);
             });
 
@@ -597,7 +599,7 @@ module.exports = React.createClass({
                 [],
                 `Closed the activity ${speech.title}`,
                 `[RhinoBird] ${LoginStore.getUser().realname} closed the activity`,
-                `${LoginStore.getUser().realname} closed the activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                `${LoginStore.getUser().realname} closed the activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
                 `/platform/activity/speeches/${speech.id}`);
             this.setState({
                 speech: speech
@@ -613,7 +615,7 @@ module.exports = React.createClass({
                     [],
                     `Uploaded new attachments for activity ${speech.title}`,
                     `[RhinoBird] ${LoginStore.getUser().realname} uploaded new attachments`,
-                    `${LoginStore.getUser().realname} uploaded new attachments for activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                    `${LoginStore.getUser().realname} uploaded new attachments for activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
                     `/platform/activity/speeches/${speech.id}`);
                 this.setState({
                     speech: speech
