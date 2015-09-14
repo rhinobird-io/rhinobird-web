@@ -601,9 +601,9 @@ module.exports = React.createClass({
             console.log(result.file);
             ActivityAction.uploadAttachment(this.state.speech.id, result.file.id, result.file.name, speech => {
                 NotificationAction.sendNotification(
-                    [speech.audiences.map(u => u.id)],
+                    speech.audiences.map(u => u.id),
                     [],
-                    `Uploaded new attachments ${speech.title}`,
+                    `Uploaded new attachments for activity ${speech.title}`,
                     `[RhinoBird] ${LoginStore.getUser().realname} uploaded new attachments`,
                     `${LoginStore.getUser().realname} uploaded new attachments for activity <a href="/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
                     `/platform/activity/speeches/${speech.id}`);
