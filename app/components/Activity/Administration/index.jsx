@@ -45,6 +45,9 @@ module.exports = React.createClass({
                             <Flex.Layout horizontal flex={1} style={{maxWidth: `${auditing.length > 0 ? '50%' : '100%'}`}}><ActivityList title={"Waiting speakers to confirm"} list={approved} adminPage={true}/></Flex.Layout>
                             : undefined
                     }
+                    {
+                        auditing.length === 0 && approved.length === 0 ? <div>No applications</div> : undefined
+                    }
                 </Flex.Layout>
             </div>
         </PerfectScroll>

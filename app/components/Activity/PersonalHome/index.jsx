@@ -65,6 +65,9 @@ module.exports = React.createClass({
                                     <ActivityList title={"Attended (Joint as audience)"} list={this.state.attendedActivities}/>
                                 </Flex.Item>) : undefined
                         }
+                        {
+                            (this.state.myActivities.length === 0 && this.state.appliedActivities.length === 0 && this.state.attendedActivities.length === 0) ? <div style={{marginLeft: 24}}>No activities</div> : undefined
+                        }
 
                     </Flex.Item>
                 </Flex.Layout>
