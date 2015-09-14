@@ -97,7 +97,12 @@ const UploadButton = React.createClass({
 
     render() {
         return (
-            <MUI.RaisedButton type="button" label={this.props.text ? this.props.text : 'Upload'} secondary={true} onClick={this._uploadFile}/>
+            <div>
+            <MUI.FloatingActionButton iconClassName='icon-add' mini={true}
+                                      label={this.props.text ? this.props.text : 'Upload'} secondary={true} onClick={this._uploadFile}
+                                      style={this.props.buttonStyle}/>
+                <div style={{clear: 'both'}}/>
+                </div>
         );
     }
 });

@@ -209,23 +209,24 @@ module.exports = React.createClass({
                     fileList = files.map(file => {
                         return <Flex.Layout center>
                             <a href={`/file/files/${file.url}/download`} >{file.name}</a>
-                            {operateFile ? <MUI.IconButton iconClassName="icon-delete" tooltip={`Delete ${file.name}`} onClick={() => this._deleteAttachment(file.url)} /> : undefined}
+                            {operateFile ? <MUI.IconButton iconClassName="icon-delete" onClick={() => this._deleteAttachment(file.url)} /> : undefined}
                         </Flex.Layout>
                     });
                     console.log(files);
                 }
                 speechFiles = <Flex.Layout style={styles.detailItem}>
                     <Common.Display style={styles.label} type='body3'>Attachments:</Common.Display>
-                    <Flex.Layout vertical>
+                    <Flex.Layout horizontal justified style={{width: '100%'}}>
+                        <Flex.Layout vertical>
                         {fileList ? fileList
                             : (speech.user_id != user.id ?
                                 <Common.Display style={{color: this.context.muiTheme.palette.disabledColor}}>The speaker has not uploaded any attachments.</Common.Display>
                                 : undefined)}
+                        </Flex.Layout>
                         {operateFile ?
-                            <Flex.Layout justified>
-                                <FileUploader ref="fileUploader" text="Add" showResult maxSize={10 * 1024 * 1024}
-                                              acceptTypes={["pdf", "ppt", "jpg", "rar", "zip", "rar", "gz", "tgz", "bz2"]} afterUpload={this._uploadAttachment}/>
-                            </Flex.Layout> : undefined}
+                                <FileUploader ref="fileUploader" text="Add" showResult maxSize={10 * 1024 * 1024} buttonStyle={{float: 'right'}}
+                                              acceptTypes={["pdf", "ppt", "rar", "zip", "rar", "gz", "tgz", "bz2"]} afterUpload={this._uploadAttachment}/>
+                             : undefined}
                     </Flex.Layout>
                 </Flex.Layout>;
             }
@@ -242,10 +243,17 @@ module.exports = React.createClass({
                     tips = "Audiences";
                 }
                 let showJoin = true;
-                for (let i = 0; i < userIds.length; i++) {
-                    if (userIds[i] === user.id) {
-                        showJoin = false;
-                        break;
+                let showQuit = false;
+                if (user.id === speech.user_id) {
+                    showJoin = false;
+                    showQuit = false;
+                } else {
+                    for (let i = 0; i < userIds.length; i++) {
+                        if (userIds[i] === user.id) {
+                            showJoin = false;
+                            showQuit = true;
+                            break;
+                        }
                     }
                 }
                 speechAudiences = <Flex.Layout style={styles.detailItem}>
@@ -259,7 +267,7 @@ module.exports = React.createClass({
                     {speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED ?
                     <Flex.Layout center endJustified>
                         {showJoin ? <MUI.FlatButton onClick={this._applyAsAudience} label='join' primary={true}/> : undefined}
-                        {!showJoin ? <MUI.FlatButton onClick={this._withdrawAsAudience} label='quit' primary={true}/> : undefined}
+                        {showQuit ? <MUI.FlatButton onClick={this._withdrawAsAudience} label='quit' primary={true}/> : undefined}
                     </Flex.Layout> : undefined}
                 </Flex.Layout>;
             }
@@ -301,7 +309,7 @@ module.exports = React.createClass({
                 receiveCommentUsers = speech.audiences.map(u => UserStore.getUser(u.id));
             }
             if (receiveCommentUsers.indexOf(speaker) <= -1) {
-                receiveCommentUsers = receiveCommentUsers.push(speaker);
+                receiveCommentUsers.push(speaker);
             }
             speechComment = (<Flex.Layout vertical key="comments" style={{
                 borderTop: `1px solid ${this.context.muiTheme.palette.borderColor}`,

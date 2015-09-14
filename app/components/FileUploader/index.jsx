@@ -16,6 +16,7 @@ const FileUploader = React.createClass({
         showReview: React.PropTypes.bool,
         showResult: React.PropTypes.bool,
         text: React.PropTypes.string,
+        buttonStyle: React.PropTypes.element,
         valueLink: React.PropTypes.shape({
             value: React.PropTypes.string.isRequired,
             requestChange: React.PropTypes.func.isRequired
@@ -61,7 +62,7 @@ const FileUploader = React.createClass({
             this._updateValueLink();
         }
 
-        this.props.afterUpload(result);
+        this.props.afterUpload && this.props.afterUpload(result);
     },
     beforeUpload: function () {
         this.refs.uploadResult.clearResults();
