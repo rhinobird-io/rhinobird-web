@@ -33,6 +33,7 @@
     "d3": "^3.5.5",
     "dagre-d3": "^0.4.7",
     "emojify.js": "=1.0.1",
+    "enum": "2.1.0",
     "express": "^4.7.2",
     "extract-text-webpack-plugin": "^0.3.5",
     "file-loader": "^0.8.1",

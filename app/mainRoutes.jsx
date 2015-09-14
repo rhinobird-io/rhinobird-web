@@ -45,6 +45,14 @@ module.exports = (
         <Route name="post-detail" path="post/:id" handler={require("react-router-proxy!./components/Post/PostDetail")}>
         </Route>
         <Route name="create-post" path="create-post" handler={require("react-router-proxy!./components/Post/PostDetail")}/>
+        <Route name="activity" path="activity" handler={require("react-router-proxy!./components/Activity")}>
+            <Route name="speech-detail" path="speeches/:id" handler={require("react-proxy!./components/Activity/SpeechDetail")} />
+            <Route name="create-speech" path="create-speech" handler={require("react-proxy!./components/Activity/SpeechDetail/SpeechEdit")} />
+            <Route name="edit-speech" path="edit-speech/:id" handler={require("react-proxy!./components/Activity/SpeechDetail/SpeechEdit")} />
+            <Route name="personal-home" path="users/:userid" handler={require("react-proxy!./components/Activity/PersonalHome")} />
+            <Route name="administration" path="administration" handler={require("react-proxy!./components/Activity/Administration")} />
+            <DefaultRoute handler={require("react-proxy!./components/Activity/Activity")} />
+        </Route>
         <Redirect from="/platform" to="/platform/dashboard" />
         <Redirect from="/platform/" to="/platform/dashboard" />
         <Redirect from="/" to="/platform/dashboard" />
