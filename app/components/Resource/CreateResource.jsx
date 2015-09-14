@@ -48,7 +48,7 @@ let CreateResource = React.createClass({
     _onChange() {
         var resource = ResourceStore.getResourceById(this.props.params.id) || {};
         var user = LoginStore.getUser();
-        if (resource && user && resource.userId === user.id) {
+        if (resource && user && (!resource.userId || resource.userId === user.id)) {
             this.setState({
                 mode: 'edit',
                 resource: resource,
