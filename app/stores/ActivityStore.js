@@ -28,14 +28,18 @@ let SpeechStore = assign({}, BaseStore, {
         return null;
     },
     nextSpeech(){
-        let firstAfterComing = _activities.findIndex(a => new Date(a.time) < new Date() && a.status !== ActivityConstants.SPEECH_STATUS.FINISHED);
+        let confirmedActivities = _activities.filter(a => a.status === ActivityConstants.SPEECH_STATUS.CONFIRMED);
+        if (confirmedActivities.length === 0) {
+            return null;
+        }
+        let firstAfterComing = confirmedActivities.findIndex(a => new Date(a.time) < new Date());
         if (firstAfterComing == 0) {
             return null;
         } else if (firstAfterComing == -1) {
-            return _activities[_activities.length - 1];
+            return confirmedActivities[confirmedActivities.length - 1];
         }
         else {
-            return _activities[firstAfterComing];
+            return confirmedActivities[firstAfterComing - 1];
         }
     },
     dispatcherIndex: AppDispatcher.register(function (payload) {
