@@ -56,7 +56,7 @@ Member.Avatar = React.createClass({
         if (this.props.member) {
             let display = <img className='avatar' style={{display: "inline-block", verticalAlign: "middle"}}
                                width={size} height={size} {...this.props}
-                               src={`http://www.gravatar.com/avatar/${this.props.member.emailMd5}?d=identicon`}/>;
+                               src={`http://www.gravatar.com/avatar/${this.props.member.emailMd5}?s=${size}&d=identicon`}/>;
             if (this.props.link) {
                 return <Common.Link onClick={_showMemberProfile.bind(this)}
                                     style={{display:'inline-flex', justifyContent:'center', flexDirection:'column'}}>
@@ -305,7 +305,3 @@ Member.MemberSelect = React.createClass({
         });
     }
 });
-
-
-
-
