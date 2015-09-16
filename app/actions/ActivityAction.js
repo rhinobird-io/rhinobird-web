@@ -357,5 +357,12 @@ export default {
             if (fail && typeof fail === 'function')
                 fail(e.status);
         });
-    }
+    },
+
+    updatePrizes(data) {
+        AppDispatcher.dispatch({
+            type: Constants.ActionTypes.PRIZES_UPDATE,
+            data: data
+        });
+    },
 };

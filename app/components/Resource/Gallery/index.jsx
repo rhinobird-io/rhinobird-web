@@ -54,6 +54,7 @@ let Gallery = React.createClass({
                 showNext = false;
         }
 
+        let showSwitch = showPrevious || showNext;
         let styles = {
             content: {
                 height: 200,
@@ -69,7 +70,8 @@ let Gallery = React.createClass({
                 display: 'flex',
                 overflow: 'hidden',
                 cursor: hasImage ? '' : 'pointer',
-                backgroundColor: hasImage ? 'transparent' : this.context.muiTheme.palette.primary3Color
+                backgroundColor: hasImage ? 'transparent' : this.context.muiTheme.palette.primary3Color,
+                paddingLeft: showSwitch ? 0 : 12
             },
             thumbsContainer: {
                 width: '100%',
@@ -83,19 +85,19 @@ let Gallery = React.createClass({
                     {content}
                 </div>
                 <div style={styles.thumbsStyles} onClick={hasImage ? undefined : _this.clickImage}>
-                    {showPrevious ?
+                    {showSwitch ?
                         <MUI.IconButton className='icon' onClick={this.movePrevious} iconStyle={{fontSize: 40}}
-                                        iconClassName="icon-chevron-left"/>
-                        : <MUI.IconButton className='icon' disabled/>}
+                                        iconClassName="icon-chevron-left" disabled={!showPrevious}/>
+                        : undefined}
                     <div ref="thumbsContainer" style={styles.thumbsContainer}>
                         <div style={{width: '100%', position: 'relative', left: `${- this.state.view * (picWidth + 2 * border + margin)}px`, transition: 'left 1s'}}>
                             {thumbnails}
                         </div>
                     </div>
-                    {showNext ?
+                    {showSwitch ?
                         <MUI.IconButton className='icon' onClick={this.moveNext} iconStyle={{fontSize: 40}}
-                                        iconClassName="icon-chevron-right"/>
-                        : <MUI.IconButton className='icon' disabled/>}
+                                        iconClassName="icon-chevron-right" disabled={!showNext}/>
+                        : undefined}
                 </div>
             </div>
         );
@@ -162,7 +164,7 @@ let Gallery = React.createClass({
         });
     },
     clickImage: function () {
-        this.props.onClick();
+        this.props.onClick && this.props.onClick();
     }
 
 });

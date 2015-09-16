@@ -10,7 +10,13 @@ export default {
 
         RECEIVE_USER: null,
         RECEIVE_USERS: null,
-        RECEIVE_ADMINS: null
+        RECEIVE_ADMINS: null,
+
+        PRIZES_UPDATE: null,
+        CREATE_PRIZE: null,
+        UPDATE_PRIZE: null,
+        DELETE_PRIZE: null,
+        RECEIVE_PRIZE: null
     }),
 
     SPEECH_STATUS: {
