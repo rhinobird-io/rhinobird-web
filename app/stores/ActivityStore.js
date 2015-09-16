@@ -28,15 +28,13 @@ let SpeechStore = assign({}, BaseStore, {
         return null;
     },
     nextSpeech(){
-        let firstAfterComing = _activities.findIndex(a => new Date(a.time) < new Date() && a.status !== ActivityConstants.SPEECH_STATUS.FINISHED);
-        if (firstAfterComing == 0) {
-            return null;
-        } else if (firstAfterComing == -1) {
-            return _activities[_activities.length - 1];
+        for (let i = _activities.length - 1; i >= 0; i--) {
+            let a = _activities[i];
+            if (new Date(a.time) >= new Date() && a.status === ActivityConstants.SPEECH_STATUS.CONFIRMED) {
+                return a;
+            }
         }
-        else {
-            return _activities[firstAfterComing];
-        }
+        return null;
     },
     dispatcherIndex: AppDispatcher.register(function (payload) {
         let data = payload.data;
