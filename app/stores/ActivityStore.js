@@ -28,19 +28,13 @@ let SpeechStore = assign({}, BaseStore, {
         return null;
     },
     nextSpeech(){
-        let confirmedActivities = _activities.filter(a => a.status === ActivityConstants.SPEECH_STATUS.CONFIRMED);
-        if (confirmedActivities.length === 0) {
-            return null;
+        for (let i = _activities.length - 1; i >= 0; i--) {
+            let a = _activities[i];
+            if (new Date(a.time) >= new Date() && a.status === ActivityConstants.SPEECH_STATUS.CONFIRMED) {
+                return a;
+            }
         }
-        let firstAfterComing = confirmedActivities.findIndex(a => new Date(a.time) < new Date());
-        if (firstAfterComing == 0) {
-            return null;
-        } else if (firstAfterComing == -1) {
-            return confirmedActivities[confirmedActivities.length - 1];
-        }
-        else {
-            return confirmedActivities[firstAfterComing - 1];
-        }
+        return null;
     },
     dispatcherIndex: AppDispatcher.register(function (payload) {
         let data = payload.data;
