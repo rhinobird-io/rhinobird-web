@@ -66,7 +66,7 @@ module.exports = React.createClass({
                 fontSize: '.875em',
                 fontWeight: 'bold',
                 textAlign: 'center',
-                background: currentUser.point_available >= prize.price ? '#a7d155' : 'grey',
+                background: currentUser.point_available >= prize.price ? '#a7d155' : muiTheme.palette.disabledColor,
                 borderRadius: '.25em',
                 cursor: currentUser.point_available >= prize.price ? 'pointer' : 'normal'
             }
@@ -130,7 +130,7 @@ module.exports = React.createClass({
             <MUI.Dialog actions={exchangeDialogActions} title="Exchanging Prize" ref='exchangeDialog'>
                     <Common.Display type='subhead'>Are you sure to exchange this prize?</Common.Display><br/>
                     <Common.Display type='subhead'>Your current point is <p style={{color: 'green', display: 'inline'}}>{currentUser.point_available}</p>.</Common.Display><br/>
-                    <Common.Display type='subhead'>Your point will be subtracted <p style={{color: 'red', display: 'inline'}}>{prize.price}</p>.</Common.Display>
+                    <Common.Display type='subhead'>This prize will cost you <p style={{color: 'red', display: 'inline'}}>{prize.price}</p> point.</Common.Display>
             </MUI.Dialog>
         </MUI.Paper>
     },

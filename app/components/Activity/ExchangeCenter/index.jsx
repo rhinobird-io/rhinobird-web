@@ -7,18 +7,17 @@ const ActivityAction = require('../../../actions/ActivityAction');
 const PrizeItem = require('./PrizeItem');
 const Link = require("react-router").Link;
 const ActivityUserStore = require('../../../stores/ActivityUserStore');
+const FilterBar = require('./FilterBar');
 
 module.exports = React.createClass({
     getInitialState() {
         return {
-            column: 'exchanged_times',
-            order: 'desc',
             prizes: []
         }
     },
     componentDidMount() {
         PrizeStore.addChangeListener(this._prizeChanged);
-        $.get(`/activity/prizes?column=${this.state.column}&&order=${this.state.order}`).then(data=>{
+        $.get(`/activity/prizes?column=exchanged_times&&order=desc`).then(data=>{
             ActivityAction.updatePrizes(data);
         });
     },
@@ -32,6 +31,7 @@ module.exports = React.createClass({
     },
     render(){
         return <PerfectScroll style={{height: '100%', position:'relative', padding:24}}>
+            <FilterBar onChange={this._sort}/>
             <Flex.Layout wrap>
                 {this.state.prizes.map(p =>  <PrizeItem prize={p}/>)}
             </Flex.Layout>
@@ -42,5 +42,20 @@ module.exports = React.createClass({
                     </Link> : undefined
             }
         </PerfectScroll>
+    },
+    _sort(column, order, showAfford) {
+        let _sort = undefined;
+        if (column === 'price') {
+            _sort = order === 'asc' ? (a, b) => a.price - b.price : (a, b) => b.price - a.price;
+        } else if (column === 'exchanged_times') {
+            _sort = order === 'asc' ? (a, b) => a.exchanged_times - b.exchanged_times : (a, b) => b.exchanged_times - a.exchanged_times;
+        }
+        let _filter = undefined;
+        if (showAfford) {
+            _filter = p => p.price <= ActivityUserStore.getCurrentUser().point_available;
+        }
+        this.setState({
+            prizes: PrizeStore.getPrizes(_sort, _filter)
+        });
     }
 });

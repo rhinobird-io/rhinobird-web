@@ -21,8 +21,15 @@ function _deletePrize(id) {
 
 let PrizeStore = assign({}, BaseStore, {
 
-    getPrizes() {
-        return _prizes;
+    getPrizes(_sort, _filter) {
+        let result = _prizes;
+        if (_filter) {
+            result = result.filter(_filter);
+        }
+        if (_sort) {
+            result = result.sort(_sort);
+        }
+        return result;
     },
     getPrize() {
         return _prize;
