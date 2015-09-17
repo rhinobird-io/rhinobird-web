@@ -33,7 +33,7 @@ let Gallery = React.createClass({
             showPrevious = true,
             showNext = true,
             _this = this,
-            hasImage = images && images.length;
+            hasImage = images && images.length > 0;
 
         if (hasImage){
             content = <Picture src={images[this.state.current]}/>;

@@ -16,7 +16,8 @@ export default {
         CREATE_PRIZE: null,
         UPDATE_PRIZE: null,
         DELETE_PRIZE: null,
-        RECEIVE_PRIZE: null
+        RECEIVE_PRIZE: null,
+        EXCHANGE_PRIZE: null
     }),
 
     SPEECH_STATUS: {

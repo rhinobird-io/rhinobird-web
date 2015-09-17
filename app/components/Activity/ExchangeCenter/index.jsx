@@ -1,11 +1,12 @@
 const React = require("react");
+const MUI = require('material-ui');
 const Flex = require("../../Flex");
 const PerfectScroll = require("../../PerfectScroll");
-const LoginStore = require('../../../stores/LoginStore');
-const Moment = require("moment");
 const PrizeStore = require('../../../stores/PrizeStore');
 const ActivityAction = require('../../../actions/ActivityAction');
 const PrizeItem = require('./PrizeItem');
+const Link = require("react-router").Link;
+const ActivityUserStore = require('../../../stores/ActivityUserStore');
 
 module.exports = React.createClass({
     getInitialState() {
@@ -34,6 +35,12 @@ module.exports = React.createClass({
             <Flex.Layout wrap>
                 {this.state.prizes.map(p =>  <PrizeItem prize={p}/>)}
             </Flex.Layout>
+            {
+                ActivityUserStore.currentIsAdmin() ?
+                    <Link to='create-prize'>
+                        <MUI.FloatingActionButton style={{position:'fixed', right: 24, bottom: 24, zIndex:100}} iconClassName="icon-add"/>
+                    </Link> : undefined
+            }
         </PerfectScroll>
     }
 });

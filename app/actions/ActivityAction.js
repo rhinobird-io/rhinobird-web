@@ -359,10 +359,106 @@ export default {
         });
     },
 
+    receivePrize(id, success, fail) {
+        $.get(`/activity/prizes/${id}`).done(data => {
+            AppDispatcher.dispatch({
+                type: Constants.ActionTypes.RECEIVE_PRIZE,
+                data: data
+            });
+            if (success && typeof success === "function") {
+                success(data);
+            }
+        }).fail(e => {
+            console.error(e);
+            if (fail && typeof fail === 'function')
+                fail(e.status);
+        });
+    },
     updatePrizes(data) {
         AppDispatcher.dispatch({
             type: Constants.ActionTypes.PRIZES_UPDATE,
             data: data
         });
+    },
+    createPrize(prize, success, fail) {
+        $.post(`/activity/prizes`,
+            {
+                name: prize.name,
+                description: prize.description,
+                picture_url: prize.picture_url,
+                price: prize.price
+            }).done(data => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.CREATE_PRIZE,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
+    },
+    updatePrize(prize, success, fail) {
+        $.ajax({
+            url: `/activity/prizes/${prize.id}`,
+            type: 'put',
+            data: {
+                name: prize.name,
+                description: prize.description,
+                picture_url: prize.picture_url,
+                price: prize.price
+            }
+        }).done(data => {
+            AppDispatcher.dispatch({
+                type: Constants.ActionTypes.UPDATE_PRIZE,
+                data: data
+            });
+            if (success && typeof success === "function") {
+                success(data);
+            }
+        }).fail(e => {
+            console.error(e);
+            if (fail && typeof fail === 'function')
+                fail(e.status);
+        });
+    },
+    deletePrize(id, success, fail) {
+        $.ajax({
+            url: `/activity/prizes/${id}`,
+            type: "delete"
+        }).done((data) => {
+            AppDispatcher.dispatch({
+                type: Constants.ActionTypes.DELETE_PRIZE,
+                data: id
+            });
+            if (success && typeof success === "function") {
+                success(data);
+            }
+        }).fail(e => {
+            console.error(e);
+            if (fail && typeof fail === 'function')
+                fail(e.status);
+        });
+    },
+    exchange(id, success, fail) {
+        $.post(`/activity/exchanges`,
+            {
+                prize_id: id
+            }).done(data => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.EXCHANGE_PRIZE,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
     },
 };
