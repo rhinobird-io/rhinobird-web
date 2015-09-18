@@ -34,39 +34,23 @@ module.exports = React.createClass({
                 height: 25,
                 padding: 0
             },
-            circleStyle: {
-                width: "50px",
-                height: "50px",
-                color: "white",
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                borderRadius: "0 0 0 100%",
-                backgroundColor: muiTheme.palette.accent1Color
-            },
-            circleTextStyle: {
-                fontSize: "14px",
-                verticalAlign: "baseline",
-                textAlign: "right",
-                marginRight: 10
-            },
             priceStyle: {
-                fontSize: 24,
-                color: '#383838'
+                fontSize: 24
             },
             timesStyle: {
                 fontSize: 12,
-                color: '#909090',
+                color: muiTheme.palette.disabledColor,
                 textAlign: 'right'
             },
             getStyle: {
+                color: muiTheme.palette.canvasColor,
                 width: '100%',
                 position: 'relative',
                 padding: '.6em',
                 fontSize: '.875em',
                 fontWeight: 'bold',
                 textAlign: 'center',
-                background: currentUser.point_available >= prize.price ? '#a7d155' : muiTheme.palette.disabledColor,
+                background: currentUser.point_available >= prize.price ? muiTheme.palette.primary1Color : muiTheme.palette.disabledColor,
                 borderRadius: '.25em',
                 cursor: currentUser.point_available >= prize.price ? 'pointer' : 'normal'
             }
@@ -122,15 +106,16 @@ module.exports = React.createClass({
                             <MUI.IconButton disabled style={styles.iconStyle} />
                         </Flex.Layout>
                     }
-                    <div style={styles.timesStyle}>Has been exchanged for <p style={{color: 'red', display: 'inline'}}>{prize.exchanged_times}</p> times.</div>
+                    <div style={styles.timesStyle}>Has been exchanged for <p style={{color: muiTheme.palette.accent1Color, display: 'inline'}}>{prize.exchanged_times}</p> times.</div>
                 </Flex.Layout>
             </Flex.Layout>
 
             <MUI.Snackbar ref="exchangeSuccess" message={`Exchanged successfully.`} />
             <MUI.Dialog actions={exchangeDialogActions} title="Exchanging Prize" ref='exchangeDialog'>
-                    <Common.Display type='subhead'>Are you sure to exchange this prize?</Common.Display><br/>
-                    <Common.Display type='subhead'>Your current point is <p style={{color: 'green', display: 'inline'}}>{currentUser.point_available}</p>.</Common.Display><br/>
-                    <Common.Display type='subhead'>This prize will cost you <p style={{color: 'red', display: 'inline'}}>{prize.price}</p> point.</Common.Display>
+                <Common.Display type='subhead'>Are you sure to exchange this prize? <p style={{color: muiTheme.palette.accent1Color, display: 'inline'}}>This action can not be revoked.</p></Common.Display><br/>
+                <Common.Display type='subhead'>Your current point is <p style={{color: muiTheme.palette.primary1Color, display: 'inline'}}>{currentUser.point_available}</p>.</Common.Display><br/>
+                <Common.Display type='subhead'>This prize will cost you <p style={{color: muiTheme.palette.accent1Color, display: 'inline'}}>{prize.price}</p> point.</Common.Display><br/>
+                <Common.Display type='subhead'>After this exchange, your point will be <p style={{color: muiTheme.palette.primary1Color, display: 'inline'}}>{currentUser.point_available - prize.price}</p> point.</Common.Display>
             </MUI.Dialog>
         </MUI.Paper>
     },
@@ -154,7 +139,7 @@ module.exports = React.createClass({
         this.refs.deleteDialog.dismiss();
     },
     _handleDeleteDialogSubmit() {
-        ActivityAction.deletePrize(this.props.prize.id);
+        ActivityAction.deletePrize(this.props.prize.id, (data) => {this.refs.deleteDialog.dismiss();});
     },
     _exchange() {
         if (ActivityUserStore.getCurrentUser().point_available >= this.props.prize.price) {
@@ -165,6 +150,6 @@ module.exports = React.createClass({
         this.refs.exchangeDialog.dismiss();
     },
     _handleExchangeDialogSubmit() {
-        ActivityAction.exchange(this.props.prize.id, (data) => {this.refs.exchangeDialog.dismiss(); this.refs.exchangeSuccess.show()});
+        ActivityAction.exchange(this.props.prize.id, (data) => {this.refs.exchangeDialog.dismiss(); this.refs.exchangeSuccess.show();});
     }
 });
