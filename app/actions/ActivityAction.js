@@ -280,11 +280,12 @@ export default {
             commented: false});
 
         audiences.map(id => {
+            let commented = commentedUsers.indexOf(id) > -1;
             participants.push({
                 user_id: id,
                 role: ActivityConstants.ATTENDANCE_ROLE.AUDIENCE,
-                point: ActivityConstants.POINT.AUDIENCE,
-                commented: commentedUsers.indexOf(id) > -1});
+                point: ActivityConstants.POINT.AUDIENCE + (commented ? 1 : 0),
+                commented: commented});
         });
 
         $.post(`/activity/speeches/${speech.id}/finish`,

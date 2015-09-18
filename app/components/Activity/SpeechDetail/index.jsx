@@ -565,7 +565,7 @@ module.exports = React.createClass({
     _finishSpeech() {
         let audiences = this.state.audiences;
         if(Object.prototype.toString.call(audiences) !== '[object Array]') {
-            audiences = [];
+            audiences = audiences.users ? audiences.users : [];
         }
         ActivityAction.finishSpeech(this.state.speech, audiences, this.refs.userTable.getSelectedUsers(), speech => {
             NotificationAction.sendNotification(
@@ -576,7 +576,7 @@ module.exports = React.createClass({
                 `${LoginStore.getUser().realname} marked your activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a> as finished`,
                 `/platform/activity/speeches/${speech.id}`);
             speech.attendances.map(a => {
-                let point = a.point + (a.commented ? 1 : 0);
+                let point = a.point;
                 NotificationAction.sendNotification(
                     [a.user_id],
                     [],
