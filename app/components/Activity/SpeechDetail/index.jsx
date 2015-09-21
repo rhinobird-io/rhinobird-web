@@ -181,9 +181,9 @@ module.exports = React.createClass({
             speechDuration = <div horizontal style={styles.detailItem}>
                 <Common.Display style={styles.label} type='body3'>Estimated duration:</Common.Display>
                 {hour > 0 ?
-                    <Common.Display type="subhead" style={{marginRight: 6}}>{hour} h</Common.Display>
+                    <Common.Display type="subhead" style={{marginRight: 6}}>{hour} hour</Common.Display>
                     : undefined}
-                <Common.Display type="subhead">{minute} m</Common.Display>
+                <Common.Display type="subhead">{minute} min</Common.Display>
             </div>;
 
             speechDescription = <Flex.Layout style={styles.detailItem}>
