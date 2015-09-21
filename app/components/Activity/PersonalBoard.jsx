@@ -46,6 +46,7 @@ module.exports = React.createClass({
                     <Common.Display type='display1' style={{marginLeft:24}}>Points</Common.Display>
                 </div>
                 <Link to='personal-home' params={{"userid": LoginStore.getUser().id}}><mui.RaisedButton secondary={true} label="My activities"/></Link>
+                <Link to='exchange-center'><mui.RaisedButton secondary={true} label="Exchange Center"/></Link>
             </Flex.Layout>
             {this.state.next? <div>
             <Common.Hr style={{margin: '12px 12px'}}/>

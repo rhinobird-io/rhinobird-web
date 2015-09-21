@@ -42,9 +42,6 @@ module.exports = React.createClass({
                         <SummaryInfo number={{applied}} text={"Applied"} title={"Registered as audience"}/>
                         <SummaryInfo number={{attended}} text={"Attended"} title={"Joint as audience"}/>
                     </Flex.Layout>
-                    <Flex.Layout centerJustified>
-                        <Link to='exchange-center'><mui.RaisedButton secondary={true} label="Exchange Center"/></Link>
-                    </Flex.Layout>
             </Flex.Layout>;
     }
 });

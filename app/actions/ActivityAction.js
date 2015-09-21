@@ -462,4 +462,31 @@ export default {
                     fail(e.status);
             });
     },
+    getAllExchanges(success, fail) {
+        $.get(`/activity/exchanges`).done(data => {
+            if (success && typeof success === "function") {
+                success(data);
+            }
+        }).fail(e => {
+            console.error(e);
+            if (fail && typeof fail === 'function')
+                fail(e.status);
+        });
+    },
+    markExchangeAsSent(id, success, fail) {
+        $.post(`/activity/exchanges/${id}/sent`)
+            .done(data => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.EXCHANGE_SENT,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
+    }
 };

@@ -9,7 +9,7 @@ let _prizes = [];
 let _prize = {};
 
 function _addPrize(prize) {
-
+    _prizes.push(prize);
 }
 function _updatePrize(prize) {
     let index = _prizes.findIndex(p => p.id === prize.id);
@@ -46,6 +46,7 @@ let PrizeStore = assign({}, BaseStore, {
                 _prize = data;
                 break;
             case Constants.ActionTypes.CREATE_PRIZE:
+                _addPrize(data);
                 break;
             case Constants.ActionTypes.DELETE_PRIZE:
                 _deletePrize(data);

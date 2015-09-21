@@ -17,7 +17,8 @@ export default {
         UPDATE_PRIZE: null,
         DELETE_PRIZE: null,
         RECEIVE_PRIZE: null,
-        EXCHANGE_PRIZE: null
+        EXCHANGE_PRIZE: null,
+        EXCHANGE_SENT: null
     }),
 
     SPEECH_STATUS: {
@@ -53,5 +54,10 @@ export default {
         MONTHLY: 200,
         WEEKLY: 50,
         AUDIENCE: 1
+    },
+
+    EXCHANGE_STATUS: {
+        NEW: 0,
+        SENT: 1
     }
 }

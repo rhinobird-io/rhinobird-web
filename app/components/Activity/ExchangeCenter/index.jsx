@@ -12,12 +12,15 @@ const FilterBar = require('./FilterBar');
 module.exports = React.createClass({
     getInitialState() {
         return {
-            prizes: []
+            prizes: [],
+            column: 'exchanged_times',
+            order: 'desc',
+            showAfford: false
         }
     },
     componentDidMount() {
         PrizeStore.addChangeListener(this._prizeChanged);
-        $.get(`/activity/prizes?column=exchanged_times&&order=desc`).then(data=>{
+        $.get(`/activity/prizes?column=${this.state.column}&&order=${this.state.order}`).then(data=>{
             ActivityAction.updatePrizes(data);
         });
     },
@@ -25,15 +28,26 @@ module.exports = React.createClass({
         PrizeStore.removeChangeListener(this._prizeChanged);
     },
     _prizeChanged(){
-        this.setState({
-            prizes: PrizeStore.getPrizes()
-        });
+        this._sort(this.state.column, this.state.order, this.state.showAfford);
     },
     render(){
+        let available = ActivityUserStore.getCurrentUser().point_available;
         return <PerfectScroll style={{height: '100%', position:'relative', padding:24}}>
             <FilterBar onChange={this._sort}/>
             <Flex.Layout wrap>
-                {this.state.prizes.map(p =>  <PrizeItem prize={p}/>)}
+                {this.state.prizes.map(p => {
+                    let display = !this.state.showAfford || p.price <= available;
+                    return <MUI.Paper style={{flex: "1 1 400px",
+                                            margin: 20,
+                                            maxWidth: "50%",
+                                            whiteSpace:'nowrap',
+                                            textOverflow:'ellipsis',
+                                            overflow:'hidden',
+                                            position: 'relative',
+                                            display: display ? '' : 'none'}} key={p.id}>
+                        <PrizeItem prize={p}/>
+                    </MUI.Paper>;
+                })}
             </Flex.Layout>
             {
                 ActivityUserStore.currentIsAdmin() ?
@@ -50,12 +64,11 @@ module.exports = React.createClass({
         } else if (column === 'exchanged_times') {
             _sort = order === 'asc' ? (a, b) => a.exchanged_times - b.exchanged_times : (a, b) => b.exchanged_times - a.exchanged_times;
         }
-        let _filter = undefined;
-        if (showAfford) {
-            _filter = p => p.price <= ActivityUserStore.getCurrentUser().point_available;
-        }
         this.setState({
-            prizes: PrizeStore.getPrizes(_sort, _filter)
+            prizes: PrizeStore.getPrizes(_sort),
+            column: column,
+            order: order,
+            showAfford: showAfford
         });
     }
 });

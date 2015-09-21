@@ -20,7 +20,8 @@ module.exports = React.createClass({
     errorMsg: {
         nameRequired: "Prize name is required.",
         descriptionRequired: "Prize description is required.",
-        priceRequired: "Prize price is required."
+        priceRequired: "Prize price is required.",
+        priceTooSmall: "Prize price must be a nonnegative integer."
     },
 
     getInitialState() {
@@ -64,7 +65,7 @@ module.exports = React.createClass({
                 description: prize.description,
                 picture_url: prize.picture_url,
                 images: (prize.picture_url && prize.picture_url.length > 0) ? prize.picture_url.split(',') : [],
-                price: prize.price
+                price: prize.price + ''
             });
         } else {
             this.setState({
@@ -132,7 +133,7 @@ module.exports = React.createClass({
                                         ref="price"
                                         hintText="Price (point)"
                                         valueLink={this.linkState('price')}
-                                        errorText={this.state.durationError}
+                                        errorText={this.state.priceError}
                                         floatingLabelText="Price (point)"
                                         style={{width: "100%"}} />
                                 </Flex.Layout>
@@ -178,8 +179,14 @@ module.exports = React.createClass({
         if (price.length === 0) {
             this.setState({priceError: errorMsg.priceRequired});
             return;
-        } else {
-            this.setState({priceError: ""});
+        } else{
+            price = +price;
+            if (price < 0 || price !== parseInt(price)) {
+                this.setState({priceError: errorMsg.priceTooSmall});
+                return;
+            } else {
+                this.setState({priceError: ""});
+            }
         }
 
         let prize = this.state.prize;

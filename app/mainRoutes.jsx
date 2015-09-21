@@ -54,6 +54,7 @@ module.exports = (
             <Route name="exchange-center" path="prizes" handler={require("react-proxy!./components/Activity/ExchangeCenter")} />
             <Route name="create-prize" path="create-prize" handler={require("react-proxy!./components/Activity/ExchangeCenter/PrizeEdit")} />
             <Route name="edit-prize" path="edit-prize/:id" handler={require("react-proxy!./components/Activity/ExchangeCenter/PrizeEdit")} />
+            <Route name="exchange-list" path="exchanges" handler={require("react-proxy!./components/Activity/ExchangeCenter/Exchanges")} />
             <DefaultRoute handler={require("react-proxy!./components/Activity/Activity")} />
         </Route>
         <Redirect from="/platform" to="/platform/dashboard" />
