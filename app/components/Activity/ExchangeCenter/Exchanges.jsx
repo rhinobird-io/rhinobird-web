@@ -33,7 +33,7 @@ module.exports = React.createClass({
                         let current = Moment(e.exchange_time);
                         if (current.format('MM-DD') !== previous) {
                             previous = current.format('MM-DD');
-                            return <div style={{marginTop: 12}}>
+                            return <div style={{marginTop: 12}} key={"outer" + e.id}>
                                 <Common.Display type="title">{previous}</Common.Display>
                                 <Common.Hr />
                                 <ExchangeItem exchange={e} key={e.id}/>

@@ -149,7 +149,7 @@ module.exports = React.createClass({
                         {showEditDelete ? <Link to="edit-speech" params={{ id: this.state.speech.id }}><MUI.IconButton iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/></Link> : undefined}
                         {showEditDelete ? <MUI.IconButton onClick={this._deleteSpeech} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-delete"/> : undefined}
                     <MUI.Dialog actions={dialogActions} title="Deleting Speech" ref='deleteDialog'>
-                        Are you sure to delete this speech?
+                        <div style={{color: muiTheme.palette.textColor, fontSize: 14}}>Are you sure to delete this speech?</div>
                     </MUI.Dialog>
                     </div>
                 </Flex.Layout>
@@ -209,12 +209,11 @@ module.exports = React.createClass({
                         });
                     }
                     fileList = files.map(file => {
-                        return <Flex.Layout center>
+                        return <Flex.Layout center key={file.url}>
                             <a href={`/file/files/${file.url}/download`} >{file.name}</a>
                             {operateFile ? <MUI.IconButton iconClassName="icon-delete" onClick={() => this._deleteAttachment(file.url)} /> : undefined}
                         </Flex.Layout>
                     });
-                    console.log(files);
                 }
                 speechFiles = <Flex.Layout style={styles.detailItem}>
                     <Common.Display style={styles.label} type='body3'>Attachments:</Common.Display>
@@ -263,7 +262,7 @@ module.exports = React.createClass({
                     <Flex.Layout center wrap flex={1}>
                         {userIds.map(id => {
                             let u = UserStore.getUser(id);
-                            return <div style={{paddingRight: 12}}><Member.Avatar scale={0.8} member={u}/><Member.Name style={{marginLeft: 4}} member={u}/></div>;
+                            return <div style={{paddingRight: 12}} key={id}><Member.Avatar scale={0.8} member={u}/><Member.Name style={{marginLeft: 4}} member={u}/></div>;
                         })}
                     </Flex.Layout>
                     {speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED ?
@@ -608,7 +607,6 @@ module.exports = React.createClass({
     },
     _uploadAttachment(result) {
         if (result.result === Constants.UploadResult.SUCCESS) {
-            console.log(result.file);
             ActivityAction.uploadAttachment(this.state.speech.id, result.file.id, result.file.name, speech => {
                 NotificationAction.sendNotification(
                     speech.audiences.map(u => u.id),

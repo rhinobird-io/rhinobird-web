@@ -11,7 +11,7 @@ module.exports = React.createClass({
     getInitialState() {
         return {
             list: this.props.list,
-            filtered: this.props.list
+            filter: 'all'
         }
     },
     render(){
@@ -41,20 +41,16 @@ module.exports = React.createClass({
                                        style={{height: 40, width: 140, position: 'absolute', top: 0, right: 0}}
                                        onChange={this._filter}/>)
                     : undefined}
-                {this.state.filtered.map(activity=>{
-                    return <ActivityItem activity={activity} showStatus={this.props.showStatus}/>
+                {this.state.list.map(activity=>{
+                    let display = this.state.filter === 'all' || this.state.filter === activity.status.toLowerCase() ? '' : 'none';
+                    return <div style={{display: display}} key={activity.id}><ActivityItem activity={activity} showStatus={this.props.showStatus}/></div>;
                 })}
             </div>
         </mui.Paper>;
     },
     _filter(e, selectedIndex, menuItem) {
-        let temp = [];
-        this.state.list.map(activity => {
-            if (menuItem.payload.toLowerCase() === 'all' || activity.status.toLowerCase() === menuItem.payload.toLowerCase())
-                temp.push(activity);
-        });
         this.setState({
-            filtered: temp
+            filter: menuItem.payload.toLowerCase()
         });
     }
 });

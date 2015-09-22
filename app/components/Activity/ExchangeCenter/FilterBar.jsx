@@ -41,7 +41,6 @@ module.exports = React.createClass({
                 </Flex.Layout>
                 {
                     ActivityUserStore.currentIsAdmin() ?
-
                         <Flex.Layout flex={1} endJustified>
                             <Link to='exchange-list'><MUI.RaisedButton style={{margin: 6, flexShrink: 0}} label="Exchange List" /></Link>
                         </Flex.Layout> : undefined

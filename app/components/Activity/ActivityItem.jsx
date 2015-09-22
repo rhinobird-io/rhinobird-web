@@ -12,13 +12,13 @@ const StylePropable = require('material-ui/lib/mixins/style-propable');
 const typeMap = {
     'monthly': 'M',
     'weekly': 'L'
-}
+};
 module.exports = React.createClass({
     contextTypes: {
         muiTheme: React.PropTypes.object,
         router: React.PropTypes.func.isRequired
     },
-    mixins: [StylePropable],
+    mixins: [StylePropable, React.addons.PureRenderMixin],
     render() {
         if (!this.props.activity) {
             return null;
