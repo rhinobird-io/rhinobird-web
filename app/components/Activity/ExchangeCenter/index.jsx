@@ -13,6 +13,7 @@ const NotificationAction = require('../../../actions/NotificationActions');
 const LoginStore = require('../../../stores/LoginStore');
 
 module.exports = React.createClass({
+    firstTime: true,
     getInitialState() {
         return {
             mode: "loading",
@@ -20,7 +21,8 @@ module.exports = React.createClass({
             column: 'exchanged_times',
             order: 'desc',
             showAfford: false,
-            exchangingPrize: undefined
+            exchangingPrize: undefined,
+            target: this.props.query.id
         }
     },
     componentDidMount() {
@@ -34,6 +36,13 @@ module.exports = React.createClass({
     },
     _prizeChanged(){
         this._sort(this.state.column, this.state.order, this.state.showAfford);
+    },
+    componentDidUpdate(prevProps, prevState) {
+        if (this.firstTime && this.refs.target) {
+            this._scrollTo(this.refs.target);
+            this.firstTime = false;
+            this._borderTransition(this.refs.target);
+        }
     },
     render(){
         let currentUser = ActivityUserStore.getCurrentUser();
@@ -56,6 +65,7 @@ module.exports = React.createClass({
                 }
                 {this.state.prizes.map(p => {
                     let display = !this.state.showAfford || p.price <= available;
+                    let ref = this.state.target === p.id + '' ? 'target' : undefined;
                     return <MUI.Paper style={{flex: "1 1 400px",
                                             margin: 20,
                                             maxWidth: "50%",
@@ -63,7 +73,9 @@ module.exports = React.createClass({
                                             textOverflow:'ellipsis',
                                             overflow:'hidden',
                                             position: 'relative',
-                                            display: display ? '' : 'none'}} key={p.id}>
+                                            display: display ? '' : 'none',
+                                            boxShadow: ref ? '0 1px 6px ' + muiTheme.palette.accent1Color : '0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24)',
+                                            transition: 'box-shadow 5s'}} key={p.id} ref={ref}>
                         <PrizeItem prize={p} canAfford={p.price <= available} onExchange={this._onExchange}/>
                     </MUI.Paper>;
                 })}
@@ -115,9 +127,27 @@ module.exports = React.createClass({
                     [],
                     `Exchanged prize ${data.name}`,
                     `[RhinoBird] ${LoginStore.getUser().realname} exchanged prize ${data.name}`,
-                    `${LoginStore.getUser().realname} exchanged prize <a href="${this.baseUrl}/platform/activity/prizes">${data.name}</a>`,
+                    `${LoginStore.getUser().realname} exchanged prize <a href="${this.baseUrl}/platform/activity/prizes?id=${data.id}">${data.name}</a>`,
                     `/platform/activity/exchanges`);
             }
         );
+    },
+    _scrollTo(ref) {
+        if (ref) {
+            let self = this.getDOMNode();
+            let target = ref.getDOMNode();
+            let offsetTop = 0, offsetParent = target;
+            while (offsetParent !== self && offsetParent !== null) {
+                offsetTop += offsetParent.offsetTop;
+                offsetParent = offsetParent.offsetParent;
+            }
+            self.scrollTop = offsetTop + target.offsetHeight / 2 - self.offsetHeight / 2;
+        }
+    },
+    _borderTransition(ref) {
+        if (ref) {
+            let target = ref.getDOMNode();
+            target.style.boxShadow = '0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24)';
+        }
     }
 });

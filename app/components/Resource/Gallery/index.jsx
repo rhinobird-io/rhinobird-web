@@ -38,10 +38,14 @@ let Gallery = React.createClass({
         if (hasImage){
             content = <Picture src={images[this.state.current]}/>;
             thumbnails = images.map((image) => (
-                <Picture style={{height: 40, width: picWidth,
-                            border: `${border}px solid ${image === images[this.state.current] ? '#E4393C' : this.context.muiTheme.palette.borderColor}`,
-                            margin: `0 ${margin}px`}}
-                         src={image} onClick={{}} onHover={_this.hoverThumbnail}/>
+                <Picture key={image}
+                         style={{height: 40,
+                                width: picWidth,
+                                border: `${border}px solid ${image === images[this.state.current] ? '#E4393C' : this.context.muiTheme.palette.borderColor}`,
+                                margin: `0 ${margin}px`}}
+                         src={image}
+                         onClick={undefined}
+                         onHover={_this.hoverThumbnail}/>
             ));
         }
 
@@ -60,7 +64,7 @@ let Gallery = React.createClass({
                 height: 200,
                 width: '100%',
                 display: 'flex',
-                paddingBottom: 5,
+                padding: 5,
                 cursor: 'pointer',
                 backgroundColor: hasImage ? 'transparent' : this.context.muiTheme.palette.primary3Color
             },

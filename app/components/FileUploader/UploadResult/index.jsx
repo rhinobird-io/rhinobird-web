@@ -43,7 +43,7 @@ const UploadResult = React.createClass({
         let content = [];
         if (this.state.results && this.state.results.length > 0)
             content = this.state.results.map((result) => (
-                <span style={this.mergeAndPrefix(result.style, this.props.style)}>
+                <span key={result.url} style={this.mergeAndPrefix(result.style, this.props.style)}>
                     {result.url ? <a href={result.url}>{result.name}</a> : ''}
                     {result.msg}
                 </span>

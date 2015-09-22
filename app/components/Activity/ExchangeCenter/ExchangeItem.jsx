@@ -40,9 +40,9 @@ module.exports = React.createClass({
                 <Flex.Layout center>
                     <Member.Avatar scale={0.5} member={user} /> <Member.Name member={user} style={{marginLeft: 6, color: color}}/>
                     <Common.Display type="subhead" style={{marginLeft: 6, color: color}}>exchanged prize</Common.Display>
-                    <Common.RouterLink to='exchange-center' style={{margin: '0px 6px', color: color, fontSize: 16}}>
+                    <Link to='exchange-center' query={{id: exchange.prize.id}} style={{margin: '0px 6px', color: color, fontSize: 16}}>
                         {exchange.prize.name}
-                    </Common.RouterLink>
+                    </Link>
                     <Common.Display type="subhead" style={{color: color}}> at {time.format('MM-DD HH:mm')}</Common.Display>
                 </Flex.Layout>
                 <Flex.Layout>

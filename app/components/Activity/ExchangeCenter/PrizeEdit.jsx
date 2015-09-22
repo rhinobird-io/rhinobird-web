@@ -198,12 +198,12 @@ module.exports = React.createClass({
         prize.price = price;
         if (this.state.mode === 'create') {
             ActivityAction.createPrize(prize,
-                (r) => this.context.router.transitionTo("exchange-center"),
+                (r) => this.context.router.transitionTo("exchange-center", undefined, {id: r.id}),
                 (e) => {
                 });
         } else if (this.state.mode === 'edit'){
             ActivityAction.updatePrize(prize,
-                (r) => this.context.router.transitionTo("exchange-center"),
+                (r) => this.context.router.transitionTo("exchange-center", undefined, {id: r.id}),
                 (e) => {
                 });
         }
