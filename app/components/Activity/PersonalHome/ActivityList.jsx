@@ -2,6 +2,7 @@ const React = require("react");
 const mui = require("material-ui");
 const Common = require('../../Common');
 const ActivityItem = require('../ActivityItem');
+const ExpandableContainer = require('../ExpandableContainer');
 
 module.exports = React.createClass({
 
@@ -28,7 +29,7 @@ module.exports = React.createClass({
             { payload: 'closed', text: 'Closed' }
         ];
 
-        return <mui.Paper style={{padding: 12, width:'100%', marginBottom: 20, position:'relative'}}>
+        return <ExpandableContainer>
             <div>
                 <Common.Display type='body3' style={{marginLeft:12, marginBottom:18}}>{this.props.title}</Common.Display>
                 {this.props.adminPage && this.props.list.length > 0 ? (<span style={{padding: '0px 9px',fontSize: '12.025px',fontWeight: 'bold',
@@ -46,7 +47,7 @@ module.exports = React.createClass({
                     return <div style={{display: display}} key={activity.id}><ActivityItem activity={activity} showStatus={this.props.showStatus}/></div>;
                 })}
             </div>
-        </mui.Paper>;
+        </ExpandableContainer>;
     },
     _filter(e, selectedIndex, menuItem) {
         this.setState({

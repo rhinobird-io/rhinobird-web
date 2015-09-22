@@ -3,6 +3,7 @@ const Flex = require("../../Flex");
 const PerfectScroll = require("../../PerfectScroll");
 const PersonalInfo = require('./PersonalInfo');
 const ActivityList = require('./ActivityList');
+const PointHistoryList = require("./PointHistoryList");
 const LoginStore = require('../../../stores/LoginStore');
 const Moment = require("moment");
 
@@ -11,7 +12,8 @@ module.exports = React.createClass({
         return {
             myActivities: [],
             attendedActivities: [],
-            appliedActivities: []
+            appliedActivities: [],
+            pointsHistory: []
         }
     },
 
@@ -29,6 +31,11 @@ module.exports = React.createClass({
         $.get(`/activity/users/${LoginStore.getUser().id}/applied_speeches`).then((data)=> {
             this.setState({
                 appliedActivities: data
+            });
+        });
+        $.get(`/activity/users/${LoginStore.getUser().id}/points_history`).then((data)=> {
+            this.setState({
+                pointsHistory: data
             });
         });
     },
@@ -64,6 +71,12 @@ module.exports = React.createClass({
                                 (<Flex.Item flex={1} id='Attended'>
                                     <ActivityList title={"Attended (Joint as audience)"} list={this.state.attendedActivities}/>
                                 </Flex.Item>) : undefined
+                        }
+                        {
+                          this.state.pointsHistory.length > 0 ?
+                              (<Flex.Item flex={1} id='PointHistory'>
+                                  <PointHistoryList title={"Point History"} list={this.state.pointsHistory}/>
+                              </Flex.Item>) : undefined
                         }
                         {
                             (this.state.myActivities.length === 0 && this.state.appliedActivities.length === 0 && this.state.attendedActivities.length === 0) ? <div style={{marginLeft: 24}}>No activities</div> : undefined
