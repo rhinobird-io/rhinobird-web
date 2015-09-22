@@ -18,14 +18,13 @@ module.exports = React.createClass({
         router: React.PropTypes.func.isRequired
     },
     shouldComponentUpdate(nextProps, nextState) {
-        return this.props.prize !== nextProps.prize;
+        return this.props.canAfford !== nextProps.canAfford || this.props.prize.exchanged_times !== nextProps.prize.exchanged_times;
     },
     render(){
         let prize = this.props.prize;
         if (!prize) {
             return null;
         }
-        let currentUser = ActivityUserStore.getCurrentUser();
         let styles = {
             iconStyle: {
                 color: this.context.muiTheme.palette.textColor,
@@ -52,9 +51,9 @@ module.exports = React.createClass({
                 fontSize: '.875em',
                 fontWeight: 'bold',
                 textAlign: 'center',
-                background: currentUser.point_available >= prize.price ? muiTheme.palette.primary1Color : muiTheme.palette.disabledColor,
+                background: this.props.canAfford ? muiTheme.palette.primary1Color : muiTheme.palette.disabledColor,
                 borderRadius: '.25em',
-                cursor: currentUser.point_available >= prize.price ? 'pointer' : 'normal'
+                cursor: this.props.canAfford ? 'pointer' : 'normal'
             }
         };
         let images = undefined;
@@ -71,16 +70,7 @@ module.exports = React.createClass({
                 primary={true}
                 onTouchTap={this._handleDeleteDialogSubmit}/>
         ];
-        let exchangeDialogActions = [
-            <MUI.FlatButton
-                label="Cancel"
-                secondary={true}
-                onTouchTap={this._handleExchangeDialogCancel}/>,
-            <MUI.FlatButton
-                label="Exchange"
-                primary={true}
-                onTouchTap={this._handleExchangeDialogSubmit}/>
-        ];
+
         return  <Flex.Layout vertical
                              onMouseEnter={this._onHover}
                              onMouseLeave={this._onLeave}>
@@ -106,13 +96,6 @@ module.exports = React.createClass({
 
                     <div style={styles.timesStyle}>Has been exchanged for <p style={{color: muiTheme.palette.accent1Color, display: 'inline'}}>{prize.exchanged_times}</p> times.</div>
                 </Flex.Layout>
-               <MUI.Snackbar ref="exchangeSuccess" message={`Exchanged successfully.`} />
-               <MUI.Dialog actions={exchangeDialogActions} title="Exchanging Prize" ref='exchangeDialog'>
-                   <Common.Display type='subhead'>Are you sure to exchange this prize? <p style={{color: muiTheme.palette.accent1Color, display: 'inline'}}>This action can not be revoked.</p></Common.Display><br/>
-                   <Common.Display type='subhead'>Your current point is <p style={{color: muiTheme.palette.primary1Color, display: 'inline'}}>{currentUser.point_available}</p>.</Common.Display><br/>
-                   <Common.Display type='subhead'>This prize will cost you <p style={{color: muiTheme.palette.accent1Color, display: 'inline'}}>{prize.price}</p> point.</Common.Display><br/>
-                   <Common.Display type='subhead'>After this exchange, your point will be <p style={{color: muiTheme.palette.primary1Color, display: 'inline'}}>{currentUser.point_available - prize.price}</p> point.</Common.Display>
-               </MUI.Dialog>
             </Flex.Layout>;
     },
     _onHover() {
@@ -136,26 +119,9 @@ module.exports = React.createClass({
         ActivityAction.deletePrize(this.props.prize.id);
     },
     _exchange() {
-        if (ActivityUserStore.getCurrentUser().point_available >= this.props.prize.price) {
-            this.refs.exchangeDialog.show();
+        if (this.props.canAfford) {
+            this.props.onExchange(this.props.prize);
         }
-    },
-    _handleExchangeDialogCancel() {
-        this.refs.exchangeDialog.dismiss();
-    },
-    _handleExchangeDialogSubmit() {
-        ActivityAction.exchange(this.props.prize.id,
-            (data) => {
-                this.refs.exchangeDialog.dismiss();
-                this.refs.exchangeSuccess.show();
-                NotificationAction.sendNotification(
-                    ActivityUserStore.getAdminIds(),
-                    [],
-                    `Exchanged prize ${data.name}`,
-                    `[RhinoBird] ${LoginStore.getUser().realname} exchanged prize ${data.name}`,
-                    `${LoginStore.getUser().realname} exchanged prize <a href="${this.baseUrl}/platform/activity/prizes">${data.name}</a>`,
-                    `/platform/activity/exchanges`);
-            }
-        );
     }
+
 });

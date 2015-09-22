@@ -52,6 +52,7 @@ let PrizeStore = assign({}, BaseStore, {
                 _deletePrize(data);
                 break;
             case Constants.ActionTypes.UPDATE_PRIZE:
+                _updatePrize(data);
                 break;
             case Constants.ActionTypes.EXCHANGE_PRIZE:
                 _updatePrize(data);

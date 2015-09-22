@@ -6,11 +6,13 @@ const ActivityUserStore = require('../../../stores/ActivityUserStore');
 const ExchangeItem = require('./ExchangeItem');
 const Moment = require('moment');
 const Common = require('../../Common');
+const MUI = require('material-ui');
 
 module.exports = React.createClass({
 
     getInitialState() {
         return {
+            mode: 'loading',
             exchanges: []
         }
     },
@@ -18,6 +20,7 @@ module.exports = React.createClass({
         if (ActivityUserStore.currentIsAdmin()) {
             ActivityAction.getAllExchanges((data)=> {
                 this.setState({
+                    mode: 'view',
                     exchanges: data.filter(e => e.prize !== undefined)
                 });
             });
@@ -28,6 +31,9 @@ module.exports = React.createClass({
         let previous = '';
         return (
             <PerfectScroll noScrollX style={{height: '100%', position:'relative', padding:24, margin: '0 auto', maxWidth: 800}}>
+                {this.state.mode === 'loading' ?
+                    <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em", width: '100%'}}>Loading</h3> : undefined
+                }
                 <Flex.Layout vertical>
                     {this.state.exchanges.map(e => {
                         let current = Moment(e.exchange_time);
