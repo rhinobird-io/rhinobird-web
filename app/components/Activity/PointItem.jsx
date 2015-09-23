@@ -63,7 +63,15 @@ module.exports = React.createClass({
         let title = this.props.item.category === 'gain' ? 'You have gained ' + points + ' points from speech ' + this.props.item.title
                                 : 'You have used ' + points + ' points to exchange ' + this.props.item.title;
 
-        return <Flex.Layout style={style}>
+        let itemId = this.props.item.id;
+        let path = '';
+        if ( itemId.lastIndexOf('exchange_', 0) === 0 ) {
+          path = '/platform/activity/prizes?id=' + this.props.item.prizeId;
+        } else if ( itemId.lastIndexOf('attendance_', 0) === 0 ) {
+          path = '/platform/activity/speeches/' + this.props.item.speechId;
+        }
+
+        return <Flex.Layout style={style} onClick={() => {this.context.router.transitionTo(path)}}>
                   <PointIcon item={this.props.item}/>
                     <Flex.Layout vertical style={{marginLeft:12, width: 0}} flex={1}>
                         <Common.Display style={titleStyle} title={title}>{title}</Common.Display>
