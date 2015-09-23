@@ -18,6 +18,9 @@ module.exports = React.createClass({
             exchange: this.props.exchange
         }
     },
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.state.exchange.status != nextState.exchange.status;
+    },
     render() {
         let exchange = this.state.exchange;
         if (!exchange) {
@@ -49,7 +52,7 @@ module.exports = React.createClass({
                     {
                         this.state.exchange.status === Constants.EXCHANGE_STATUS.NEW ?
                             <MUI.FlatButton style={{lineHeight: '36px'}} onClick={this._sendPrize} label="Mark as sent" primary={true}/> :
-                            <Common.Display type="subhead" style={{color: color, padding: '0px 16px', lineHeight: '36px'}}>sent</Common.Display>
+                            <Common.Display type="subhead" style={{color: color, padding: '0px 16px', lineHeight: '36px'}}>SENT</Common.Display>
                     }
                     <MUI.Dialog actions={dialogActions} title="Mark as sent" ref='sendDialog'>
                         Are you sure to mark this record as sent?

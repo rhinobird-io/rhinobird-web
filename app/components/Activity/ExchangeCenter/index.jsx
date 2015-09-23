@@ -98,9 +98,37 @@ module.exports = React.createClass({
     _sort(column, order, showAfford) {
         let _sort = undefined;
         if (column === 'price') {
-            _sort = order === 'asc' ? (a, b) => a.price - b.price : (a, b) => b.price - a.price;
+            _sort = order === 'asc' ?
+                (a, b) => {
+                    if (a.price === b.price) {
+                        return a.id - b.id;
+                    } else {
+                        return a.price - b.price;
+                    }
+                }
+                : (a, b) => {
+                    if (a.price === b.price) {
+                        return a.id - b.id;
+                    } else {
+                        return b.price - a.price;
+                    }
+                }
         } else if (column === 'exchanged_times') {
-            _sort = order === 'asc' ? (a, b) => a.exchanged_times - b.exchanged_times : (a, b) => b.exchanged_times - a.exchanged_times;
+            _sort = order === 'asc' ?
+                (a, b) => {
+                    if (a.exchanged_times === b.exchanged_times) {
+                        return a.id - b.id;
+                    } else {
+                        return a.exchanged_times - b.exchanged_times;
+                    }
+                }
+                : (a, b) => {
+                    if (a.exchanged_times === b.exchanged_times) {
+                        return a.id - b.id;
+                    } else {
+                        return b.exchanged_times - a.exchanged_times;
+                    }
+                };
         }
         this.setState({
             mode: 'view',

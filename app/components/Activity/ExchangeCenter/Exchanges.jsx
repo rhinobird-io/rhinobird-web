@@ -7,13 +7,15 @@ const ExchangeItem = require('./ExchangeItem');
 const Moment = require('moment');
 const Common = require('../../Common');
 const MUI = require('material-ui');
+const InfiniteScroll = require('../../InfiniteScroll');
 
 module.exports = React.createClass({
 
     getInitialState() {
         return {
             mode: 'loading',
-            exchanges: []
+            exchanges: [],
+            noMore: false
         }
     },
     componentDidMount() {
@@ -34,6 +36,22 @@ module.exports = React.createClass({
                 {this.state.mode === 'loading' ?
                     <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em", width: '100%'}}>Loading</h3> : undefined
                 }
+                <InfiniteScroll lowerThreshold={this.state.noMore ? undefined : 300} onLowerTrigger={()=>{
+                    let lastId = this.state.exchanges[this.state.exchanges.length - 1].id;
+                    $.get(`/activity/exchanges?before=${lastId}`).then((data)=> {
+                        if(data.length === 0) {
+                            this.setState({
+                                noMore: true
+                            })
+                        } else {
+                            this.setState({
+                                exchanges: this.state.exchanges.concat(data.filter(e => e.prize != undefined))
+                            });
+                        }
+                    });
+                }} scrollTarget={()=>{
+                    return this.getDOMNode();
+                }}/>
                 <Flex.Layout vertical>
                     {this.state.exchanges.map(e => {
                         let current = Moment(e.exchange_time);
