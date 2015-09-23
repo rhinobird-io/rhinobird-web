@@ -5,6 +5,8 @@ const LoginStore = require('../../../stores/LoginStore');
 const ActivityUserStore = require('../../../stores/ActivityUserStore');
 const Member = require('../../Member');
 const SummaryInfo = require('./SummaryInfo');
+const Link = require('react-router').Link;
+const mui = require("material-ui");
 
 module.exports = React.createClass({
 

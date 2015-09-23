@@ -2,6 +2,7 @@ const React = require("react");
 const mui = require("material-ui");
 const Common = require('../../Common');
 const ActivityItem = require('../ActivityItem');
+const ExpandableContainer = require('../ExpandableContainer');
 
 module.exports = React.createClass({
 
@@ -11,7 +12,7 @@ module.exports = React.createClass({
     getInitialState() {
         return {
             list: this.props.list,
-            filtered: this.props.list
+            filter: 'all'
         }
     },
     render(){
@@ -28,7 +29,7 @@ module.exports = React.createClass({
             { payload: 'closed', text: 'Closed' }
         ];
 
-        return <mui.Paper style={{padding: 12, width:'100%', marginBottom: 20, position:'relative'}}>
+        return <ExpandableContainer style={this.props.style}>
             <div>
                 <Common.Display type='body3' style={{marginLeft:12, marginBottom:18}}>{this.props.title}</Common.Display>
                 {this.props.adminPage && this.props.list.length > 0 ? (<span style={{padding: '0px 9px',fontSize: '12.025px',fontWeight: 'bold',
@@ -41,20 +42,16 @@ module.exports = React.createClass({
                                        style={{height: 40, width: 140, position: 'absolute', top: 0, right: 0}}
                                        onChange={this._filter}/>)
                     : undefined}
-                {this.state.filtered.map(activity=>{
-                    return <ActivityItem activity={activity} showStatus={this.props.showStatus}/>
+                {this.state.list.map(activity=>{
+                    let display = this.state.filter === 'all' || this.state.filter === activity.status.toLowerCase() ? '' : 'none';
+                    return <div style={{display: display}} key={activity.id}><ActivityItem activity={activity} showStatus={this.props.showStatus}/></div>;
                 })}
             </div>
-        </mui.Paper>;
+        </ExpandableContainer>;
     },
     _filter(e, selectedIndex, menuItem) {
-        let temp = [];
-        this.state.list.map(activity => {
-            if (menuItem.payload.toLowerCase() === 'all' || activity.status.toLowerCase() === menuItem.payload.toLowerCase())
-                temp.push(activity);
-        });
         this.setState({
-            filtered: temp
+            filter: menuItem.payload.toLowerCase()
         });
     }
 });

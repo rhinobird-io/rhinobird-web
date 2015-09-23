@@ -6,6 +6,7 @@ const ListDivider = MUI.ListDivider;
 const Member = require('../../Member')
 const UserStore = require('../../../stores/UserStore');
 const Common = require('../../Common');
+const UserItem = require('./UserItem');
 
 module.exports = React.createClass({
 
@@ -37,38 +38,15 @@ module.exports = React.createClass({
         let _users = [];
         _ids.map(id => _users.push(UserStore.getUser(id)));
 
-        return <div>
-            <div style={{float: 'right', marginTop: 12, marginBottom: -10}}>Commented</div>
-            <div style={{clear: 'both'}}/>
-            <List>
-            {_users.map(u => {
-                    let name = `cbn${u.id}`;
-                    let value = `cbv${u.id}`;
-                    let checkBox = <MUI.Checkbox style={{position: '', float: 'right'}} title="commented" name={name}
-                                                 value={value} onCheck={this._onCheck} checked={this.state.selected.indexOf(u.id) > -1}/>;
-                    return <div>
-                        <ListItem
-                            style={{height: 12, paddingTop: 12, paddingLeft: 0}}
-                            leftCheckbox={checkBox}
-                            secondaryText={
-                                <div>
-                                    <Member.Avatar scale={0.8} member={u}/>
-                                    <Member.Name style={{marginLeft: 4}} member={u}/>
-                                </div>
-                            }
-                            secondaryTextLines={2}/>
-                        <ListDivider/>
-                    </div>
-                }
-            )}
-
-            </List>
+        return <div style={{position: 'relative'}}>
+                <div style={{position: 'absolute', right: 12, top: 12}}>Commented</div>
+                <List style={{marginTop: 24}}>
+                {_users.map(u => <UserItem user={u} key={u.id} onCheck={this._onCheck}/>)}
+                </List>
             </div>
 
     },
-    _onCheck(event, checked) {
-        let target = event.target;
-        let id = parseInt(target.name.substring(3));
+    _onCheck(id, checked) {
         let s = this.state.selected;
         if (checked) {
             s.push(id);

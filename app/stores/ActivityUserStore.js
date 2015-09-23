@@ -16,7 +16,9 @@ function _addUsers(users) {
         _users[u.id.toString()] = u;
     });
 }
+function _updateUserPoint() {
 
+}
 let ActivityUserStore= assign({}, BaseStore, {
     getUser(id) {
         if (_users[id]) {
@@ -49,6 +51,9 @@ let ActivityUserStore= assign({}, BaseStore, {
                 break;
             case Constants.ActionTypes.RECEIVE_USERS:
                 _addUsers(data);
+                break;
+            case Constants.ActionTypes.EXCHANGE_PRIZE:
+                _users[LoginStore.getUser().id].point_available -= data.price;
                 break;
             default:
                 changed = false;

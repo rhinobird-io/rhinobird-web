@@ -17,6 +17,7 @@ const FileUploader = React.createClass({
         showResult: React.PropTypes.bool,
         text: React.PropTypes.string,
         buttonStyle: React.PropTypes.element,
+        floatingActionButton: React.PropTypes.bool,
         valueLink: React.PropTypes.shape({
             value: React.PropTypes.string.isRequired,
             requestChange: React.PropTypes.func.isRequired
@@ -29,7 +30,8 @@ const FileUploader = React.createClass({
             maxSize: 100 * 1024 * 1024, //max size is 100M by default
             acceptTypes: [], //all file types are supported
             showReview: false,
-            showResult: false
+            showResult: false,
+            floatingActionButton: false
         };
     },
     componentDidMount() {

@@ -10,7 +10,15 @@ export default {
 
         RECEIVE_USER: null,
         RECEIVE_USERS: null,
-        RECEIVE_ADMINS: null
+        RECEIVE_ADMINS: null,
+
+        PRIZES_UPDATE: null,
+        CREATE_PRIZE: null,
+        UPDATE_PRIZE: null,
+        DELETE_PRIZE: null,
+        RECEIVE_PRIZE: null,
+        EXCHANGE_PRIZE: null,
+        EXCHANGE_SENT: null
     }),
 
     SPEECH_STATUS: {
@@ -46,5 +54,10 @@ export default {
         MONTHLY: 200,
         WEEKLY: 50,
         AUDIENCE: 1
+    },
+
+    EXCHANGE_STATUS: {
+        NEW: 0,
+        SENT: 1
     }
 }

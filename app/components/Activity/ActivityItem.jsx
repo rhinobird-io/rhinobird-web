@@ -12,13 +12,13 @@ const StylePropable = require('material-ui/lib/mixins/style-propable');
 const typeMap = {
     'monthly': 'M',
     'weekly': 'L'
-}
+};
 module.exports = React.createClass({
     contextTypes: {
         muiTheme: React.PropTypes.object,
         router: React.PropTypes.func.isRequired
     },
-    mixins: [StylePropable],
+    mixins: [StylePropable, React.addons.PureRenderMixin],
     render() {
         if (!this.props.activity) {
             return null;
@@ -39,7 +39,7 @@ module.exports = React.createClass({
         let borderColor = 'rgba(0,0,0,0.03)';
         let disabledColor = this.context.muiTheme.palette.disabledColor;
 
-        let titleStyle= {textOverflow:'ellipsis', overflow:'hidden'};
+        let titleStyle= {textOverflow:'ellipsis', overflow:'hidden', whiteSpace: 'nowrap'};
         if (disabled) {
             titleStyle.color = disabledColor;
         }
@@ -69,7 +69,7 @@ module.exports = React.createClass({
                 <Common.Display style={titleStyle} title={title}>{title}</Common.Display>
                 <Common.Display type='caption' style={timeStyle}>
                     <Flex.Layout justified center>
-                        <div><span className='icon-access-time'/> {time.isValid() ? time.format('HH:mm') : '--:--'}</div>
+                        <div><span className='icon-access-time'/> {time.isValid() ? time.format('YYYY/MM/DD HH:mm') : '--:--'}</div>
                         <Flex.Layout center onClick={this.props.showStatus ? undefined : (e)=>{e.stopPropagation()}}>
                             {rightContent}
                         </Flex.Layout>

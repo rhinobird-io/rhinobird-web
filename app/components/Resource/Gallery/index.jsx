@@ -33,15 +33,19 @@ let Gallery = React.createClass({
             showPrevious = true,
             showNext = true,
             _this = this,
-            hasImage = images && images.length;
+            hasImage = images && images.length > 0;
 
         if (hasImage){
             content = <Picture src={images[this.state.current]}/>;
             thumbnails = images.map((image) => (
-                <Picture style={{height: 40, width: picWidth,
-                            border: `${border}px solid ${image === images[this.state.current] ? '#E4393C' : this.context.muiTheme.palette.borderColor}`,
-                            margin: `0 ${margin}px`}}
-                         src={image} onClick={{}} onHover={_this.hoverThumbnail}/>
+                <Picture key={image}
+                         style={{height: 40,
+                                width: picWidth,
+                                border: `${border}px solid ${image === images[this.state.current] ? '#E4393C' : this.context.muiTheme.palette.borderColor}`,
+                                margin: `0 ${margin}px`}}
+                         src={image}
+                         onClick={undefined}
+                         onHover={_this.hoverThumbnail}/>
             ));
         }
 
@@ -54,12 +58,13 @@ let Gallery = React.createClass({
                 showNext = false;
         }
 
+        let showSwitch = showPrevious || showNext;
         let styles = {
             content: {
                 height: 200,
                 width: '100%',
                 display: 'flex',
-                paddingBottom: 5,
+                padding: 5,
                 cursor: 'pointer',
                 backgroundColor: hasImage ? 'transparent' : this.context.muiTheme.palette.primary3Color
             },
@@ -69,7 +74,8 @@ let Gallery = React.createClass({
                 display: 'flex',
                 overflow: 'hidden',
                 cursor: hasImage ? '' : 'pointer',
-                backgroundColor: hasImage ? 'transparent' : this.context.muiTheme.palette.primary3Color
+                backgroundColor: hasImage ? 'transparent' : this.context.muiTheme.palette.primary3Color,
+                paddingLeft: showSwitch ? 0 : 12
             },
             thumbsContainer: {
                 width: '100%',
@@ -83,19 +89,19 @@ let Gallery = React.createClass({
                     {content}
                 </div>
                 <div style={styles.thumbsStyles} onClick={hasImage ? undefined : _this.clickImage}>
-                    {showPrevious ?
+                    {showSwitch ?
                         <MUI.IconButton className='icon' onClick={this.movePrevious} iconStyle={{fontSize: 40}}
-                                        iconClassName="icon-chevron-left"/>
-                        : <MUI.IconButton className='icon' disabled/>}
+                                        iconClassName="icon-chevron-left" disabled={!showPrevious}/>
+                        : undefined}
                     <div ref="thumbsContainer" style={styles.thumbsContainer}>
                         <div style={{width: '100%', position: 'relative', left: `${- this.state.view * (picWidth + 2 * border + margin)}px`, transition: 'left 1s'}}>
                             {thumbnails}
                         </div>
                     </div>
-                    {showNext ?
+                    {showSwitch ?
                         <MUI.IconButton className='icon' onClick={this.moveNext} iconStyle={{fontSize: 40}}
-                                        iconClassName="icon-chevron-right"/>
-                        : <MUI.IconButton className='icon' disabled/>}
+                                        iconClassName="icon-chevron-right" disabled={!showNext}/>
+                        : undefined}
                 </div>
             </div>
         );
@@ -162,7 +168,7 @@ let Gallery = React.createClass({
         });
     },
     clickImage: function () {
-        this.props.onClick();
+        this.props.onClick && this.props.onClick();
     }
 
 });
