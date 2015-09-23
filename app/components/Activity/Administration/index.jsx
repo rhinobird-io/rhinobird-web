@@ -34,15 +34,15 @@ module.exports = React.createClass({
                     <Common.Display type="headline">Administration</Common.Display>
                 </Flex.Layout>
 
-                <Flex.Layout horizontal justified>
+                <Flex.Layout horizontal justified start>
                     {
                         auditing.length > 0 ?
-                            <Flex.Layout horizontal flex={1} style={{paddingRight: 48, maxWidth: `${approved.length > 0 ? '50%' : '100%'}`}}><ActivityList title={"Waiting you to approve"} list={auditing} adminPage={true} /></Flex.Layout>
+                            <ActivityList style={{marginRight: 48}} title={"Waiting you to approve"} list={auditing} adminPage={true} />
                             : undefined
                     }
                     {
                         approved.length > 0 ?
-                            <Flex.Layout horizontal flex={1} style={{maxWidth: `${auditing.length > 0 ? '50%' : '100%'}`}}><ActivityList title={"Waiting speakers to confirm"} list={approved} adminPage={true}/></Flex.Layout>
+                            <ActivityList title={"Waiting speakers to confirm"} list={approved} adminPage={true}/>
                             : undefined
                     }
                     {

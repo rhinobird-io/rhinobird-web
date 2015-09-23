@@ -29,7 +29,7 @@ module.exports = React.createClass({
             { payload: 'closed', text: 'Closed' }
         ];
 
-        return <ExpandableContainer>
+        return <ExpandableContainer style={this.props.style}>
             <div>
                 <Common.Display type='body3' style={{marginLeft:12, marginBottom:18}}>{this.props.title}</Common.Display>
                 {this.props.adminPage && this.props.list.length > 0 ? (<span style={{padding: '0px 9px',fontSize: '12.025px',fontWeight: 'bold',

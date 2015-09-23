@@ -3,8 +3,10 @@ import $ from 'jquery';
 const React = require("react");
 const MUI = require("material-ui"), ListItem = MUI.ListItem;
 const Flex = require("../Flex");
+const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 module.exports = React.createClass({
+    mixins: [StylePropable],
     getInitialState() {
         return {
             innerHeight: 0,
@@ -72,7 +74,7 @@ module.exports = React.createClass({
         overflow:'hidden'
       };
 
-      return <MUI.Paper style={outerStyle} id={this.state.containerId}>
+      return <MUI.Paper style={this.mergeAndPrefix(outerStyle, this.props.style)} id={this.state.containerId}>
                 <div style={expandableStyle}>
                   {this.props.children}
                 </div>
