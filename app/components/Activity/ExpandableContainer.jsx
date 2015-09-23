@@ -53,8 +53,8 @@ module.exports = React.createClass({
         height: 0,
         borderLeft: '12px solid transparent',
         borderRight: '12px solid transparent',
-        borderTop: this.state.arrowDirection == 'down' ? '15px solid #bdbdbd' : 'none',
-        borderBottom: this.state.arrowDirection == 'up' ? '15px solid #bdbdbd' : 'none',
+        borderTop: this.state.arrowDirection == 'down' ? '12px solid #bdbdbd' : 'none',
+        borderBottom: this.state.arrowDirection == 'up' ? '12px solid #bdbdbd' : 'none',
         margin: '0 auto',
         cursor: 'pointer',
         display: this.state.showLoadMore ? 'inline' : 'none'
