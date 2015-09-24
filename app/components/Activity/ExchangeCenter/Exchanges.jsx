@@ -30,6 +30,9 @@ module.exports = React.createClass({
     },
 
     render() {
+        if (!ActivityUserStore.currentIsAdmin()) {
+            return null;
+        }
         let previous = '';
         return (
             <PerfectScroll noScrollX style={{height: '100%', position:'relative', padding:24, margin: '0 auto', maxWidth: 800}}>

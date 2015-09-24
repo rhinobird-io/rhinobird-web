@@ -72,8 +72,8 @@ module.exports = React.createClass({
         ];
 
         return  <Flex.Layout vertical
-                             onMouseEnter={this._onHover}
-                             onMouseLeave={this._onLeave}>
+                             onMouseEnter={ActivityUserStore.currentIsAdmin() ? this._onHover : undefined}
+                             onMouseLeave={ActivityUserStore.currentIsAdmin() ? this._onLeave : undefined}>
                 <Gallery images={images}/>
                 <Flex.Layout style={{padding: '12px 12px 0 12px'}}>
                     <Flex.Layout vertical flex={1} style={{marginRight: 6}}>
