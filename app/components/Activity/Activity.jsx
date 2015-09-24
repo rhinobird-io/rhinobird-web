@@ -20,11 +20,12 @@ module.exports = React.createClass({
         muiTheme: React.PropTypes.object
     },
     componentDidMount() {
+        UserStore.addChangeListener(this._userChanged);
+        ActivityUserStore.addChangeListener(this._userChanged);
+        ActivityAction.getUser(LoginStore.getUser().id);
         $.get('/activity/speeches').then(data=>{
             ActivityAction.updateActivities(data);
         });
-        UserStore.addChangeListener(this._userChanged);
-        ActivityUserStore.addChangeListener(this._userChanged);
     },
     componentWillUnmount(){
         UserStore.removeChangeListener(this._userChanged);
