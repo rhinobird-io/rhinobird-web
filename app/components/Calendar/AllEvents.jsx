@@ -132,6 +132,7 @@ let AllEvents = React.createClass({
         return (
             <Flex.Layout vertical style={{height: "100%"}}>
                 <CalendarView
+                    style={{height: '100%'}}
                     ref="calendar"
                     withAllDay={true}
                     date={new Date()}

@@ -10,6 +10,7 @@ const Display = require('../../Common').Display;
 const Selector = require('../../Select').Selector;
 const EventList = require('../EventList');
 const DatePickerDialog = require('material-ui/lib/date-picker/date-picker-dialog');
+const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 let VIEW_TYPES = ['week', 'month', 'day', 'fourDays', 'timeLine'];
 let VIEW_TYPE_TITLES = {
@@ -33,6 +34,7 @@ let NEXT_TOOLTIPS = {
 };
 
 let CalendarView = React.createClass({
+    mixins: [StylePropable],
     propType: {
         data: React.PropTypes.array,
         date: React.PropTypes.object,
@@ -94,6 +96,7 @@ let CalendarView = React.createClass({
     render() {
         let {
             date,
+            style,
             ...other
         } = this.props;
 
@@ -124,9 +127,12 @@ let CalendarView = React.createClass({
                 <EventList />
             );
         }
-
+        let outerStyle = {minHeight: 0};
+        if (style) {
+            outerStyle = this.mergeAndPrefix(this.props.style, outerStyle);
+        }
         return (
-            <Flex.Layout vertical stretch style={{height: "100%"}}>
+            <Flex.Layout vertical stretch style={outerStyle}>
                 {calendarHeader}
                 {calendarView}
                 {switcher}
@@ -192,15 +198,15 @@ let CalendarView = React.createClass({
             headerDateRange += ` ~ ${Moment(rangeEnd).format(endFormat)}`;
         }
         return (
-            <Flex.Layout horizontal center style={{minHeight: 48, textAlign: "center"}}>
-                <Flex.Layout flex={1} style={{width: 0}}>
+            <Flex.Layout horizontal center style={{minHeight: 48, textAlign: "center", flexShrink: 0}}>
+                <Flex.Layout style={{width: 130, flexShrink: 0}}>
                     <MUI.FlatButton
                         label="Go To Today"
                         onClick={this._gotoToday}
                         disabled={isTodayInView}
                         secondary={!isTodayInView}/>
                 </Flex.Layout>
-                <Flex.Layout flex={1} style={{width: 0}} center centerJustified>
+                <Flex.Layout flex={1} center centerJustified>
                     <MUI.IconButton
                         title={tooltipNavigateBefore}
                         onClick={this._navigateBefore}
@@ -216,7 +222,7 @@ let CalendarView = React.createClass({
                         iconClassName="icon-event"
                         onClick={() => this.refs.datePicker.show()} />
                 </Flex.Layout>
-                <Flex.Layout flex={1} style={{width: 0}}>
+                <Flex.Layout style={{width: 130, flexShrink: 0}}>
                 </Flex.Layout>
             </Flex.Layout>
         )
@@ -224,6 +230,9 @@ let CalendarView = React.createClass({
 
     _getViewTypeSwitcher() {
         let views = this.props.views;
+        if (views.length === 1) {
+            return null;
+        }
         let viewTypes = views.map((type, index) => <span key={`switcher${index}`} name={type}>{VIEW_TYPE_TITLES[type]}</span>);
         return (
             <Flex.Layout  horizontal center centerJustified style={{minHeight: 48, borderTop: "1px solid " + muiTheme.palette.borderColor}}>

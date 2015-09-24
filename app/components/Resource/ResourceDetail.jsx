@@ -17,7 +17,7 @@ let ResourceDetail = React.createClass({
     componentDidMount() {
         ResourceStore.addChangeListener(this._onChange);
         let params = this.props.params;
-        ResourceAction.receiveById(params.id);
+        ResourceAction.refreshResource(params.id);
     },
     componentWillUnmount() {
         ResourceStore.removeChangeListener(this._onChange);

@@ -89,6 +89,16 @@ let ResourceActions = {
             });
         }
     },
+    refreshResource(id) {
+        $.get(`/resource/resources/${id}`).done(data => {
+            AppDispatcher.dispatch({
+                type: ResourceActionTypes.RECEIVE_RESOURCE,
+                data: data
+            });
+        }).fail(e => {
+            console.error(e);
+        });
+    },
 
     bookResource(id, fromTime, toTime, success, fail) {
         $.post(`/resource/resources/${id}/book/${fromTime}/${toTime}`).done(data => {

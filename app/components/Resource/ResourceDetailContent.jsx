@@ -100,7 +100,7 @@ let ResourceDetailContent = React.createClass({
                     ref="calendar"
                     date={new Date()}
                     data={resource.resourceBookings}
-                    views={['day', 'week', 'fourDays']}
+                    views={['week']}
                     rangeContent={this._rangeContent}
                     awayExceptions={() => this.refs.resourceBooking.getDOMNode()}
                     onRangeCreate={this._showResourceBookingPopup}
