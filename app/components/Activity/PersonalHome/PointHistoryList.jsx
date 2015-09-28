@@ -19,13 +19,14 @@ module.exports = React.createClass({
             return null;
         }
 
-        return <ExpandableContainer>
-                  <div>
+        return <mui.Paper style={{padding: 12}}>
                       <Common.Display type='body3' style={{marginLeft:12, marginBottom:18}}>Point History</Common.Display>
+                      <ExpandableContainer>
                         {this.props.list.map(item => {
                             return <PointItem key={item.id} item={item}/>
                         })}
-                  </div>
-            </ExpandableContainer>;
+
+                      </ExpandableContainer>
+                  </mui.Paper>;
     }
 });

@@ -10,7 +10,7 @@ module.exports = React.createClass({
     getInitialState() {
         return {
             innerHeight: 0,
-            containerMaxHeight: this.props.maxHeight ? this.props.maxHeight : '360px',
+            containerMaxHeight: this.props.maxHeight ? this.props.maxHeight : '320px',
             arrowDirection: 'down',
             expanded: true,
             containerId: this.generateUuid()
@@ -23,6 +23,8 @@ module.exports = React.createClass({
         if ( nodeHeight > maxHeight ) {
           this.setState({showLoadMore: true});
           this.setState({expanded: false});
+        } else {
+            this.setState({showLoadMore: false});
         }
     },
     _onClickTriangle: function(event) {
@@ -50,38 +52,37 @@ module.exports = React.createClass({
         s4() + '-' + s4() + s4() + s4();
     },
     render() {
-      let triangleStyle = {
-        width: 0,
-        height: 0,
-        borderLeft: '12px solid transparent',
-        borderRight: '12px solid transparent',
-        borderTop: this.state.arrowDirection == 'down' ? '12px solid #bdbdbd' : 'none',
-        borderBottom: this.state.arrowDirection == 'up' ? '12px solid #bdbdbd' : 'none',
-        margin: '0 auto',
-        cursor: 'pointer',
-        display: this.state.showLoadMore ? 'inline' : 'none'
-      };
+        let triangleStyle = {
+            width: 0,
+            height: 0,
+            borderLeft: '12px solid transparent',
+            borderRight: '12px solid transparent',
+            borderTop: this.state.arrowDirection == 'down' ? '12px solid #bdbdbd' : 'none',
+            borderBottom: this.state.arrowDirection == 'up' ? '12px solid #bdbdbd' : 'none',
+            margin: '0 auto'
+        };
+        let expandMoreStyle = {
+            cursor: 'pointer',
+            display: this.state.showLoadMore ? 'inline' : 'none'
+        };
 
-      let outerStyle = {
-        padding: 12,
-        width:'100%',
-        marginBottom: 20,
-        position:'relative'
-      };
+        let outerStyle = {
+            width:'100%',
+            position:'relative'
+        };
 
-      let expandableStyle = {
-        maxHeight: this.state.expanded ? 'none' : this.state.containerMaxHeight,
-        overflow:'hidden'
-      };
+        let expandableStyle = {
+            maxHeight: this.state.expanded ? 'none' : this.state.containerMaxHeight,
+            overflow:'hidden'
+        };
 
-      return <MUI.Paper style={this.mergeAndPrefix(outerStyle, this.props.style)} id={this.state.containerId}>
+        return <div style={this.mergeAndPrefix(outerStyle, this.props.style)} id={this.state.containerId}>
                 <div style={expandableStyle}>
                   {this.props.children}
                 </div>
-                <Flex.Layout >
-                  <div style={triangleStyle} onClick={this._onClickTriangle}>
-                  </div>
-                </Flex.Layout>
-            </MUI.Paper>;
+                <div style={expandMoreStyle} onClick={this._onClickTriangle}>
+                  <div style={triangleStyle}/>
+                </div>
+            </div>;
     }
 });

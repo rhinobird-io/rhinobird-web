@@ -37,12 +37,12 @@ module.exports = React.createClass({
                 <Flex.Layout horizontal justified start>
                     {
                         auditing.length > 0 ?
-                            <ActivityList style={{marginRight: 48}} title={"Waiting you to approve"} list={auditing} adminPage={true} />
+                            <ActivityList style={{marginRight: 48, flex: 1}} title={"Waiting you to approve"} list={auditing} adminPage={true} />
                             : undefined
                     }
                     {
                         approved.length > 0 ?
-                            <ActivityList title={"Waiting speakers to confirm"} list={approved} adminPage={true}/>
+                            <ActivityList title={"Waiting speakers to confirm"} style={{flex: 1}} list={approved} adminPage={true}/>
                             : undefined
                     }
                     {

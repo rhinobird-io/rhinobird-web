@@ -3,9 +3,11 @@ const mui = require("material-ui");
 const Common = require('../../Common');
 const ActivityItem = require('../ActivityItem');
 const ExpandableContainer = require('../ExpandableContainer');
+const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 module.exports = React.createClass({
 
+    mixins: [StylePropable],
     contextTypes: {
         muiTheme: React.PropTypes.object
     },
@@ -29,8 +31,7 @@ module.exports = React.createClass({
             { payload: 'closed', text: 'Closed' }
         ];
 
-        return <ExpandableContainer style={this.props.style}>
-            <div>
+        return  <mui.Paper style={this.mergeAndPrefix({padding: 12, marginBottom: 24, position: 'relative'}, this.props.style)}>
                 <Common.Display type='body3' style={{marginLeft:12, marginBottom:18}}>{this.props.title}</Common.Display>
                 {this.props.adminPage && this.props.list.length > 0 ? (<span style={{padding: '0px 9px',fontSize: '12.025px',fontWeight: 'bold',
                       color: '#ffffff',backgroundColor: '#999999',borderRadius: '9px',float: 'right'}}>
@@ -42,12 +43,13 @@ module.exports = React.createClass({
                                        style={{height: 40, width: 140, position: 'absolute', top: 0, right: 0}}
                                        onChange={this._filter}/>)
                     : undefined}
+                <ExpandableContainer>
                 {this.state.list.map(activity=>{
                     let display = this.state.filter === 'all' || this.state.filter === activity.status.toLowerCase() ? '' : 'none';
                     return <div style={{display: display}} key={activity.id}><ActivityItem activity={activity} showStatus={this.props.showStatus}/></div>;
                 })}
-            </div>
-        </ExpandableContainer>;
+                </ExpandableContainer>
+            </mui.Paper>;
     },
     _filter(e, selectedIndex, menuItem) {
         this.setState({
