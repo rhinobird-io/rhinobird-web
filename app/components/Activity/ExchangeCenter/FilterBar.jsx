@@ -23,7 +23,7 @@ module.exports = React.createClass({
         }
     },
     render(){
-        return <MUI.Paper zDepth={1} style={{margin: 20}}>
+        return <MUI.Paper zDepth={0} style={{margin: 20}}>
             <Flex.Layout center justified>
                 <Flex.Layout center>
                     <Common.Display style={{margin: '6px 6px 6px 12px'}} type="subhead">Sort: </Common.Display>
@@ -42,7 +42,7 @@ module.exports = React.createClass({
                 {
                     ActivityUserStore.currentIsAdmin() ?
                         <Flex.Layout flex={1} endJustified>
-                            <Link to='exchange-list'><MUI.RaisedButton style={{margin: 6, flexShrink: 0}} label="Exchange List" /></Link>
+                            <Link to='exchange-list'><MUI.RaisedButton style={{margin: 6, flexShrink: 0}} secondary={true} label="Exchange List" /></Link>
                         </Flex.Layout> : undefined
                 }
             </Flex.Layout>
