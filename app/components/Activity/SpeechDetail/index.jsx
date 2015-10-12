@@ -23,8 +23,9 @@ const Link = require("react-router").Link;
 const UserTable = require('./Table');
 const NotificationAction = require('../../../actions/NotificationActions');
 const Category = require('./Category');
+const Tooltip = require('./Tooltip');
 
-var speechStatus = new Enum({"New": 0, "Auditing": 1, "Approved": 2, "Confirmed": 3, "Finished": 4}, { ignoreCase: true });
+var speechStatus = new Enum({"Auditing": 0, "Approved": 1, "Confirmed": 2, "Finished": 3}, { ignoreCase: true });
 module.exports = React.createClass({
     baseUrl: "http://rhinobird.workslan",
 
@@ -39,7 +40,8 @@ module.exports = React.createClass({
         dateRequired: "Date is required.",
         timeRequired: "Time is required.",
         hoursRequired: "Hours is required.",
-        minutesRequired: "Minutes is required."
+        minutesRequired: "Minutes is required.",
+        commentRequired: "Comment required."
     },
 
     componentDidMount() {
@@ -119,6 +121,7 @@ module.exports = React.createClass({
         let speechActions = null;
         let speechContent = null;
         let stepBar = null;
+        let speechMemo = null;
 
         if (this.state.notFound) {
             speechContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Speech not found</h3>;
@@ -128,7 +131,7 @@ module.exports = React.createClass({
             let speaker = UserStore.getUser(speech.user_id);
             let user = LoginStore.getUser();
 
-            let showEditDelete = speech.status === ActivityConstants.SPEECH_STATUS.NEW && speech.user_id === user.id;
+            let showEditDelete = speech.status === ActivityConstants.SPEECH_STATUS.AUDITING && speech.user_id === user.id;
             let dialogActions = [
                 <MUI.FlatButton
                     label="Cancel"
@@ -290,20 +293,53 @@ module.exports = React.createClass({
             let secondaryBtn = null;
             let adminPrimaryBtn = null;
             let adminSecondaryBtn = null;
+            let dialogs = [];
             if (speech.user_id === user.id) {
-                if (speech.status === ActivityConstants.SPEECH_STATUS.NEW)
-                    primaryBtn = <MUI.RaisedButton type="submit" label="Submit" style={{marginBottom: 12}} primary={true} onClick={this._submitSpeech}/>;
-                else if (speech.status === ActivityConstants.SPEECH_STATUS.AUDITING)
-                    primaryBtn = <MUI.RaisedButton type="submit" label="Withdraw" style={{marginBottom: 12}} primary={true} onClick={this._withdrawSpeech}/>;
-                else if (speech.status === ActivityConstants.SPEECH_STATUS.APPROVED) {
+                if (speech.status === ActivityConstants.SPEECH_STATUS.APPROVED) {
                     primaryBtn = <MUI.RaisedButton type="submit" label="Agree" style={{marginBottom: 12}} primary={true} onClick={this._agreeArrangement}/>;
                     secondaryBtn = <MUI.RaisedButton type="submit" label="Disagree" style={{marginBottom: 12}} onClick={this._disagreeArrangement}/>;
+                    let disagreeDialogActions = [
+                        <MUI.FlatButton
+                            label="Cancel"
+                            secondary={true}
+                            onTouchTap={this._handleDisagreeDialogCancel}/>,
+                        <MUI.FlatButton
+                            label="Disagree"
+                            primary={true}
+                            onTouchTap={this._handleDisagreeDialogSubmit}/>
+                    ];
+                    dialogs.push(<MUI.Dialog actions={disagreeDialogActions} title="Disagree Speech" ref='disagreeDialog'>
+                        <MUI.TextField
+                            ref="disagreeComment"
+                            hintText="Comment"
+                            floatingLabelText="Comment"
+                            errorText={this.state.commentError}
+                            style={{width: "100%"}} />
+                    </MUI.Dialog>);
                 }
             }
             if (ActivityUserStore.currentIsAdmin()) {
                 if (speech.status === ActivityConstants.SPEECH_STATUS.AUDITING) {
                     adminPrimaryBtn = <MUI.RaisedButton type="submit" label="Approve" style={{marginBottom: 12}} primary={true} onClick={this._showSelectTime}/>;
                     adminSecondaryBtn = <MUI.RaisedButton type="submit" label="Reject" style={{marginBottom: 12}} onClick={this._rejectSpeech}/>;
+                    let rejectDialogActions = [
+                        <MUI.FlatButton
+                            label="Cancel"
+                            secondary={true}
+                            onTouchTap={this._handleRejectDialogCancel}/>,
+                        <MUI.FlatButton
+                            label="Reject"
+                            primary={true}
+                            onTouchTap={this._handleRejectDialogSubmit}/>
+                    ];
+                    dialogs.push(<MUI.Dialog actions={rejectDialogActions} title="Reject Speech" ref='rejectDialog'>
+                        <MUI.TextField
+                            ref="rejectComment"
+                            hintText="Comment"
+                            errorText={this.state.commentError}
+                            floatingLabelText="Comment"
+                            style={{width: "100%"}} />
+                    </MUI.Dialog>);
                 } else if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED) {
                     adminPrimaryBtn = <MUI.RaisedButton type="submit" label="Finish" style={{marginBottom: 12}} primary={true} onClick={this._showRecordParticipants}/>;
                     adminSecondaryBtn = <MUI.RaisedButton type="submit" label="Close" style={{marginBottom: 12}} onClick={this._closeSpeech}/>;
@@ -314,6 +350,7 @@ module.exports = React.createClass({
                 {primaryBtn}
                 {adminSecondaryBtn}
                 {adminPrimaryBtn}
+                {dialogs}
                 </Flex.Layout>;
 
             let receiveCommentUsers = [];
@@ -335,8 +372,10 @@ module.exports = React.createClass({
             </Flex.Layout>);
             if (speech.status !== ActivityConstants.SPEECH_STATUS.CLOSED
                 && (user.id === speech.user_id || ActivityUserStore.currentIsAdmin())) {
+                speechMemo = <Tooltip memo={speech.comment}/>;
                 stepBar = <Flex.Layout center vertical style={{borderLeft: '1px solid ' + this.context.muiTheme.palette.borderColor, width: 180, flexShrink:0}}>
-                    <StepBar vertical style={{padding:24, width:100, height:300}} activeStep={speechStatus.get(speech.status)+1} stepTitles={["New", "Auditing", "Approved", "Confirmed", "Finished"]}/>
+                    <StepBar vertical style={{padding:24, width:100, height:300}} activeStep={speechStatus.get(speech.status)+1} stepTitles={["Auditing", "Approved", "Confirmed", "Finished"]}/>
+                    {speechMemo}
                     {speechActions}
                 </Flex.Layout>
             }
@@ -396,6 +435,11 @@ module.exports = React.createClass({
                 <Flex.Layout vertical>
                     <MUI.DatePicker ref="date" hintText="Select Date" defaultDate={new Date()}/>
                     <MUI.TimePicker ref="time" hintText="Select Time" format="24hr" defaultTime={new Date()}/>
+                    <MUI.TextField
+                        ref="comment"
+                        hintText="Comment"
+                        floatingLabelText="Comment (Optional)"
+                        style={{width: "100%"}} />
                     <Flex.Layout horizontal justified>
                         <MUI.RaisedButton type="submit" label="Cancel" onClick={this._hideSelectTime}/>
                         <MUI.RaisedButton type="submit" label="Approve" secondary={true} onClick={this._approveSpeech}/>
@@ -471,34 +515,6 @@ module.exports = React.createClass({
             this.context.router.transitionTo("activity");
         });
     },
-    _submitSpeech() {
-        ActivityAction.submitActivity(this.state.speech.id, speech => {
-            NotificationAction.sendNotification(
-                ActivityUserStore.getAdminIds(),
-                [],
-                `Submitted a new activity ${speech.title}`,
-                `[RhinoBird] ${LoginStore.getUser().realname} submitted a new activity`,
-                `${LoginStore.getUser().realname} submitted a new activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
-                `/platform/activity/speeches/${speech.id}`);
-            this.setState({
-                speech: speech
-            })
-        });
-    },
-    _withdrawSpeech() {
-        ActivityAction.withdrawActivity(this.state.speech.id, speech => {
-            NotificationAction.sendNotification(
-                ActivityUserStore.getAdminIds(),
-                [],
-                `Withdrew his activity ${speech.title}`,
-                `[RhinoBird] ${LoginStore.getUser().realname} Withdrew his activity`,
-                `${LoginStore.getUser().realname} withdrew his activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
-                `/platform/activity/speeches/${speech.id}`);
-            this.setState({
-                speech: speech
-            })
-        });
-    },
     _applyAsAudience() {
         ActivityAction.applyAsAudience(this.state.speech.id, LoginStore.getUser().id, speech => {
             this.setState({
@@ -516,8 +532,9 @@ module.exports = React.createClass({
     _approveSpeech() {
         let date = this.refs.date.getDate();
         let time = this.refs.time.getTime();
+        let comment = this.refs.comment.getValue();
         let datetime = new Date(date.getFullYear(),date.getMonth(),date.getDate(),time.getHours(),time.getMinutes(), 0, 0);
-        ActivityAction.approveActivity(this.state.speech.id, datetime, speech => {
+        ActivityAction.approveActivity(this.state.speech.id, datetime, comment, speech => {
             NotificationAction.sendNotification(
                 [speech.user_id],
                 [],
@@ -533,7 +550,19 @@ module.exports = React.createClass({
     },
 
     _rejectSpeech() {
-        ActivityAction.rejectActivity(this.state.speech.id, speech => {
+        this.setState({commentError: ''});
+        this.refs.rejectDialog.show();
+    },
+    _handleRejectDialogCancel() {
+        this.refs.rejectDialog.dismiss();
+    },
+    _handleRejectDialogSubmit() {
+        let comment = this.refs.rejectComment.getValue();
+        if (!comment || comment.length === 0) {
+            this.setState({commentError: this.errorMsg.commentRequired});
+            return;
+        }
+        ActivityAction.rejectActivity(this.state.speech.id, this.refs.rejectComment.getValue(), speech => {
             NotificationAction.sendNotification(
                 [speech.user_id],
                 [],
@@ -543,8 +572,9 @@ module.exports = React.createClass({
                 `/platform/activity/speeches/${speech.id}`);
             this.setState({
                 speech: speech
-            })
+            });
         });
+        this.refs.rejectDialog.dismiss();
     },
     _agreeArrangement() {
         ActivityAction.agreeArrangement(this.state.speech.id, speech => {
@@ -561,7 +591,19 @@ module.exports = React.createClass({
         });
     },
     _disagreeArrangement() {
-        ActivityAction.disagreeArrangement(this.state.speech.id, speech => {
+        this.setState({commentError: ''});
+        this.refs.disagreeDialog.show();
+    },
+    _handleDisagreeDialogCancel() {
+        this.refs.disagreeDialog.dismiss();
+    },
+    _handleDisagreeDialogSubmit() {
+        let comment = this.refs.disagreeComment.getValue();
+        if (!comment || comment.length === 0) {
+            this.setState({commentError: this.errorMsg.commentRequired});
+            return;
+        }
+        ActivityAction.disagreeArrangement(this.state.speech.id, this.refs.disagreeComment.getValue(), speech => {
             NotificationAction.sendNotification(
                 ActivityUserStore.getAdminIds(),
                 [],
@@ -571,8 +613,9 @@ module.exports = React.createClass({
                 `/platform/activity/speeches/${speech.id}`);
             this.setState({
                 speech: speech
-            })
+            });
         });
+        this.refs.disagreeDialog.dismiss();
     },
     _finishSpeech() {
         let audiences = this.state.audiences;

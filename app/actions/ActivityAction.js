@@ -83,7 +83,8 @@ export default {
                 title: activity.title,
                 description: activity.description,
                 expected_duration: activity.expected_duration,
-                category: activity.category
+                category: activity.category,
+                comment: activity.comment
             }).done(data => {
             AppDispatcher.dispatch({
                 type: Constants.ActionTypes.CREATE_ACTIVITY,
@@ -106,7 +107,8 @@ export default {
                 title: activity.title,
                 description: activity.description,
                 expected_duration: activity.expected_duration,
-                category: activity.category
+                category: activity.category,
+                comment: activity.comment
             }
         }).done(data => {
             AppDispatcher.dispatch({
@@ -207,8 +209,8 @@ export default {
                     fail(e.status);
             });
     },
-    approveActivity(speech_id, time, success, fail) {
-        $.post(`/activity/speeches/${speech_id}/approve`, {time: time})
+    approveActivity(speech_id, time, comment, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/approve`, {time: time, comment: comment})
             .done((data) => {
                 AppDispatcher.dispatch({
                     type: Constants.ActionTypes.UPDATE_ACTIVITY,
@@ -223,8 +225,8 @@ export default {
                     fail(e.status);
             });
     },
-    rejectActivity(speech_id, success, fail) {
-        $.post(`/activity/speeches/${speech_id}/reject`)
+    rejectActivity(speech_id, comment, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/reject`, {comment: comment})
             .done((data) => {
                 AppDispatcher.dispatch({
                     type: Constants.ActionTypes.UPDATE_ACTIVITY,
@@ -255,8 +257,8 @@ export default {
                     fail(e.status);
             });
     },
-    disagreeArrangement(speech_id, success, fail) {
-        $.post(`/activity/speeches/${speech_id}/disagree`)
+    disagreeArrangement(speech_id, comment, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/disagree`, {comment: comment})
             .done((data) => {
                 AppDispatcher.dispatch({
                     type: Constants.ActionTypes.UPDATE_ACTIVITY,

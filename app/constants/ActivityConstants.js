@@ -22,7 +22,6 @@ export default {
     }),
 
     SPEECH_STATUS: {
-        NEW: "new",
         AUDITING: "auditing",
         APPROVED: "approved",
         CONFIRMED: "confirmed",

@@ -43,7 +43,8 @@ module.exports = React.createClass({
                 title: "",
                 description: "",
                 category: 'weekly',
-                duration: 15
+                duration: 15,
+                comment: ''
             });
         }
 
@@ -62,7 +63,8 @@ module.exports = React.createClass({
                 title: speech.title,
                 description: speech.description,
                 category: speech.category,
-                duration: speech.expected_duration
+                duration: speech.expected_duration,
+                comment: speech.comment
             });
         } else {
             this.setState({
@@ -151,6 +153,13 @@ module.exports = React.createClass({
                                         style={{width: "100%"}} />
                                 </Flex.Layout>
 
+                                <MUI.TextField
+                                    ref="comment"
+                                    hintText="Comment (e.g. expected speech time)"
+                                    valueLink={this.linkState('comment')}
+                                    floatingLabelText="Comment"
+                                    style={{width: "100%"}} />
+
                                 <Flex.Layout horizontal justified style={{marginTop: 20}}>
                                     <MUI.RaisedButton label="Cancel" onClick={() => history.back()} />
                                     {submitButton}
@@ -178,6 +187,7 @@ module.exports = React.createClass({
         let title = refs.title.getValue();
         let description = refs.description.getValue();
         let duration = refs.expected_duration.getValue();
+        let comment = refs.comment.getValue();
 
         if (title.length === 0) {
             this.setState({titleError: errorMsg.titleRequired});
@@ -205,6 +215,7 @@ module.exports = React.createClass({
         speech.description = description;
         speech.category = this.state.category;
         speech.expected_duration = duration;
+        speech.comment = comment || '';
         if (this.state.mode === 'create') {
             ActivityAction.createActivity(speech,
                 (r) => this.context.router.transitionTo("speech-detail", {id: r.id}),
