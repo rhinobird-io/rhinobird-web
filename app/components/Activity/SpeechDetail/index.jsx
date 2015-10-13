@@ -145,7 +145,7 @@ module.exports = React.createClass({
               likeButton = <MUI.IconButton iconStyle={{color: this.context.muiTheme.palette.canvasColor}} title="Do you like this speech?" iconClassName="icon-thumb-up" onClick={this._likeSpeech}/>
               for (let index = 0; index < speech.attendances.length; index++ ){
                 if (speech.attendances[index].user_id === user.id && speech.attendances[index].liked) {
-                  likeButton = <MUI.IconButton iconClassName="icon-thumb-up" title="You liked this speech" iconStyle={{color : '#F59DBA'}} disabled={true} />
+                  likeButton = <MUI.IconButton iconClassName="icon-thumb-up" title="You liked this speech" iconStyle={{color : MUI.Styles.Colors.pink100}} disabled={true} />
                   break;
                 }
               }
