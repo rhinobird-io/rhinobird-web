@@ -372,7 +372,7 @@ module.exports = React.createClass({
             </Flex.Layout>);
             if (speech.status !== ActivityConstants.SPEECH_STATUS.CLOSED
                 && (user.id === speech.user_id || ActivityUserStore.currentIsAdmin())) {
-                speechMemo = <Tooltip memo={speech.comment}/>;
+                speechMemo = <Tooltip comments={speech.comments}/>;
                 stepBar = <Flex.Layout center vertical style={{borderLeft: '1px solid ' + this.context.muiTheme.palette.borderColor, width: 180, flexShrink:0}}>
                     <StepBar vertical style={{padding:24, width:100, height:300}} activeStep={speechStatus.get(speech.status)+1} stepTitles={["Auditing", "Approved", "Confirmed", "Finished"]}/>
                     {speechMemo}
@@ -552,6 +552,8 @@ module.exports = React.createClass({
     _rejectSpeech() {
         this.setState({commentError: ''});
         this.refs.rejectDialog.show();
+        this.refs.rejectComment.setValue('');
+        this.refs.rejectComment.focus();
     },
     _handleRejectDialogCancel() {
         this.refs.rejectDialog.dismiss();
@@ -593,6 +595,8 @@ module.exports = React.createClass({
     _disagreeArrangement() {
         this.setState({commentError: ''});
         this.refs.disagreeDialog.show();
+        this.refs.disagreeComment.setValue('');
+        this.refs.disagreeComment.focus();
     },
     _handleDisagreeDialogCancel() {
         this.refs.disagreeDialog.dismiss();
