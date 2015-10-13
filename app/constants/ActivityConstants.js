@@ -52,8 +52,10 @@ export default {
 
     POINT: {
         MONTHLY: 200,
-        WEEKLY: 50,
-        AUDIENCE: 1
+        WEEKLY: 100,
+        AUDIENCE_MONTHLY: 20,
+        AUDIENCE_WEEKLY: 10,
+        LIKE: 2
     },
 
     EXCHANGE_STATUS: {

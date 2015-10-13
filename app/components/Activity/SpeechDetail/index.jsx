@@ -139,6 +139,18 @@ module.exports = React.createClass({
                     primary={true}
                     onTouchTap={this._handleDeleteDialogSubmit}/>
             ];
+
+            let likeButton = null;
+            if (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED &&  speech.user_id != user.id) {
+              likeButton = <MUI.IconButton iconStyle={{color: this.context.muiTheme.palette.canvasColor}} title="Do you like this speech?" iconClassName="icon-thumb-up" onClick={this._likeSpeech}/>
+              for (let index = 0; index < speech.attendances.length; index++ ){
+                if (speech.attendances[index].user_id === user.id && speech.attendances[index].liked) {
+                  likeButton = <MUI.IconButton iconClassName="icon-thumb-up" title="You liked this speech" iconStyle={{color : MUI.Styles.Colors.pink100}} disabled={true} />
+                  break;
+                }
+              }
+            }
+
             bar = (<Flex.Layout flex={1} center horizontal style={styles.bar}>
                 <Flex.Layout>
                     <MUI.IconButton onClick={() => history.back()} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-keyboard-arrow-left" />
@@ -148,6 +160,7 @@ module.exports = React.createClass({
                     <div>
                         {showEditDelete ? <Link to="edit-speech" params={{ id: this.state.speech.id }}><MUI.IconButton iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/></Link> : undefined}
                         {showEditDelete ? <MUI.IconButton onClick={this._deleteSpeech} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-delete"/> : undefined}
+                        {likeButton}
                     <MUI.Dialog actions={dialogActions} title="Deleting Speech" ref='deleteDialog'>
                         <div style={{color: muiTheme.palette.textColor, fontSize: 14}}>Are you sure to delete this speech?</div>
                     </MUI.Dialog>
@@ -639,5 +652,12 @@ module.exports = React.createClass({
                 users: speech && speech.audiences ? speech.audiences.map(u => u.id).filter(id => id != speech.user_id) : []
             }
         });
+    },
+    _likeSpeech(){
+      ActivityAction.likeSpeech(this.state.speech.id, LoginStore.getUser().id, speech => {
+          this.setState({
+              speech: speech
+          })
+      });
     }
 });

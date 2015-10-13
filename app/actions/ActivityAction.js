@@ -281,10 +281,11 @@ export default {
 
         audiences.map(id => {
             let commented = commentedUsers.indexOf(id) > -1;
+            let audience_point = speech.category === ActivityConstants.SPEECH_CATEGORY.MONTHLY ? ActivityConstants.POINT.AUDIENCE_MONTHLY : ActivityConstants.POINT.AUDIENCE_WEEKLY
             participants.push({
                 user_id: id,
                 role: ActivityConstants.ATTENDANCE_ROLE.AUDIENCE,
-                point: ActivityConstants.POINT.AUDIENCE + (commented ? 1 : 0),
+                point: audience_point + (commented ? 1 : 0),
                 commented: commented});
         });
 
@@ -358,6 +359,23 @@ export default {
             if (fail && typeof fail === 'function')
                 fail(e.status);
         });
+    },
+    likeSpeech(speech_id, user_id, success, fail) {
+        $.post(`/activity/speeches/${user_id}/like/${speech_id}`, {
+            point : ActivityConstants.POINT.LIKE
+        }).done((data) => {
+                AppDispatcher.dispatch({
+                    type: Constants.ActionTypes.UPDATE_ACTIVITY,
+                    data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+                console.error(e);
+                if (fail && typeof fail === 'function')
+                    fail(e.status);
+            });
     },
 
     receivePrize(id, success, fail) {
