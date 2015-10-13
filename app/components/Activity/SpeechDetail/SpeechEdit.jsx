@@ -8,6 +8,8 @@ const Range = require('lodash/utility/range');
 const ActivityAction = require('../../../actions/ActivityAction');
 const ActivityStore = require('../../../stores/ActivityStore');
 const LoginStore = require('../../../stores/LoginStore');
+const NotificationAction = require('../../../actions/NotificationActions');
+const ActivityUserStore = require('../../../stores/ActivityUserStore');
 
 module.exports = React.createClass({
     mixins: [React.addons.LinkedStateMixin, React.addons.PureRenderMixin],
@@ -43,7 +45,8 @@ module.exports = React.createClass({
                 title: "",
                 description: "",
                 category: 'weekly',
-                duration: 15
+                duration: 15,
+                comment: undefined
             });
         }
 
@@ -56,13 +59,24 @@ module.exports = React.createClass({
         var speech = ActivityStore.getSpeech(this.props.params.id) || {};
         var user = LoginStore.getUser();
         if (speech && user && speech.user_id === user.id) {
+            var comments = speech.comments;
+            var comment = '';
+            if (comments && comments.length > 0) {
+                for (var i = 0; i < comments.length; i++) {
+                    if (comments[i].step === 'auditing') {
+                        comment = comments[i].comment;
+                        break;
+                    }
+                }
+            }
             this.setState({
                 mode: 'edit',
                 speech: speech,
                 title: speech.title,
                 description: speech.description,
                 category: speech.category,
-                duration: speech.expected_duration
+                duration: speech.expected_duration,
+                comment: comment
             });
         } else {
             this.setState({
@@ -151,6 +165,13 @@ module.exports = React.createClass({
                                         style={{width: "100%"}} />
                                 </Flex.Layout>
 
+                                <MUI.TextField
+                                    ref="comment"
+                                    hintText="Comment (e.g. expected speech time)"
+                                    valueLink={this.linkState('comment')}
+                                    floatingLabelText="Comment (Optional)"
+                                    style={{width: "100%"}} />
+
                                 <Flex.Layout horizontal justified style={{marginTop: 20}}>
                                     <MUI.RaisedButton label="Cancel" onClick={() => history.back()} />
                                     {submitButton}
@@ -178,6 +199,7 @@ module.exports = React.createClass({
         let title = refs.title.getValue();
         let description = refs.description.getValue();
         let duration = refs.expected_duration.getValue();
+        let comment = refs.comment.getValue();
 
         if (title.length === 0) {
             this.setState({titleError: errorMsg.titleRequired});
@@ -205,9 +227,19 @@ module.exports = React.createClass({
         speech.description = description;
         speech.category = this.state.category;
         speech.expected_duration = duration;
+        speech.comment = comment || '';
         if (this.state.mode === 'create') {
             ActivityAction.createActivity(speech,
-                (r) => this.context.router.transitionTo("speech-detail", {id: r.id}),
+                (speech) => {
+                    NotificationAction.sendNotification(
+                        ActivityUserStore.getAdminIds(),
+                        [],
+                        `Submitted an activity ${speech.title}`,
+                        `[RhinoBird] ${LoginStore.getUser().realname} submitted an activity`,
+                        `${LoginStore.getUser().realname} submitted an activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
+                        `/platform/activity/speeches/${speech.id}`);
+                    this.context.router.transitionTo("speech-detail", {id: speech.id});
+                },
                 (e) => {
                 });
         } else if (this.state.mode === 'edit'){

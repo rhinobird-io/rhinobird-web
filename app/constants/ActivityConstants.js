@@ -22,7 +22,6 @@ export default {
     }),
 
     SPEECH_STATUS: {
-        NEW: "new",
         AUDITING: "auditing",
         APPROVED: "approved",
         CONFIRMED: "confirmed",
@@ -48,14 +47,6 @@ export default {
     ATTENDANCE_ROLE: {
         SPEAKER: "speaker",
         AUDIENCE: "audience"
-    },
-
-    POINT: {
-        MONTHLY: 200,
-        WEEKLY: 100,
-        AUDIENCE_MONTHLY: 20,
-        AUDIENCE_WEEKLY: 10,
-        LIKE: 2
     },
 
     EXCHANGE_STATUS: {

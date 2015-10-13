@@ -23,7 +23,6 @@ module.exports = React.createClass({
         }
         let menuItems = [
             { payload: 'all', text: 'All' },
-            { payload: 'new', text: 'New' },
             { payload: 'auditing', text: 'Auditing' },
             { payload: 'approved', text: 'Approved' },
             { payload: 'confirmed', text: 'Confirmed' },

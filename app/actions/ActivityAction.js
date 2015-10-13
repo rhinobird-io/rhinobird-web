@@ -83,7 +83,8 @@ export default {
                 title: activity.title,
                 description: activity.description,
                 expected_duration: activity.expected_duration,
-                category: activity.category
+                category: activity.category,
+                comment: activity.comment
             }).done(data => {
             AppDispatcher.dispatch({
                 type: Constants.ActionTypes.CREATE_ACTIVITY,
@@ -106,7 +107,8 @@ export default {
                 title: activity.title,
                 description: activity.description,
                 expected_duration: activity.expected_duration,
-                category: activity.category
+                category: activity.category,
+                comment: activity.comment
             }
         }).done(data => {
             AppDispatcher.dispatch({
@@ -140,38 +142,6 @@ export default {
             if (fail && typeof fail === 'function')
                 fail(e.status);
         });
-    },
-    submitActivity(id, success, fail) {
-        $.post(`/activity/speeches/${id}/submit`, {})
-            .done((data) => {
-                AppDispatcher.dispatch({
-                    type: Constants.ActionTypes.UPDATE_ACTIVITY,
-                    data: data
-                });
-                if (success && typeof success === "function") {
-                    success(data);
-                }
-            }).fail(e => {
-                console.error(e);
-                if (fail && typeof fail === 'function')
-                    fail(e.status);
-            });
-    },
-    withdrawActivity(id, success, fail) {
-        $.post(`/activity/speeches/${id}/withdraw`, {})
-            .done((data) => {
-                AppDispatcher.dispatch({
-                    type: Constants.ActionTypes.UPDATE_ACTIVITY,
-                    data: data
-                });
-                if (success && typeof success === "function") {
-                    success(data);
-                }
-            }).fail(e => {
-                console.error(e);
-                if (fail && typeof fail === 'function')
-                    fail(e.status);
-            });
     },
     applyAsAudience(speech_id, user_id, success, fail) {
         $.post(`/activity/speeches/${speech_id}/audiences`, {userid: user_id})
@@ -207,8 +177,8 @@ export default {
                     fail(e.status);
             });
     },
-    approveActivity(speech_id, time, success, fail) {
-        $.post(`/activity/speeches/${speech_id}/approve`, {time: time})
+    approveActivity(speech_id, time, comment, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/approve`, {time: time, comment: comment})
             .done((data) => {
                 AppDispatcher.dispatch({
                     type: Constants.ActionTypes.UPDATE_ACTIVITY,
@@ -223,8 +193,8 @@ export default {
                     fail(e.status);
             });
     },
-    rejectActivity(speech_id, success, fail) {
-        $.post(`/activity/speeches/${speech_id}/reject`)
+    rejectActivity(speech_id, comment, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/reject`, {comment: comment})
             .done((data) => {
                 AppDispatcher.dispatch({
                     type: Constants.ActionTypes.UPDATE_ACTIVITY,
@@ -255,8 +225,8 @@ export default {
                     fail(e.status);
             });
     },
-    disagreeArrangement(speech_id, success, fail) {
-        $.post(`/activity/speeches/${speech_id}/disagree`)
+    disagreeArrangement(speech_id, comment, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/disagree`, {comment: comment})
             .done((data) => {
                 AppDispatcher.dispatch({
                     type: Constants.ActionTypes.UPDATE_ACTIVITY,
@@ -276,16 +246,13 @@ export default {
         participants.push({
             user_id: speech.user_id,
             role: ActivityConstants.ATTENDANCE_ROLE.SPEAKER,
-            point: speech.category === ActivityConstants.SPEECH_CATEGORY.MONTHLY ? ActivityConstants.POINT.MONTHLY : ActivityConstants.POINT.WEEKLY,
             commented: false});
 
         audiences.map(id => {
             let commented = commentedUsers.indexOf(id) > -1;
-            let audience_point = speech.category === ActivityConstants.SPEECH_CATEGORY.MONTHLY ? ActivityConstants.POINT.AUDIENCE_MONTHLY : ActivityConstants.POINT.AUDIENCE_WEEKLY
             participants.push({
                 user_id: id,
                 role: ActivityConstants.ATTENDANCE_ROLE.AUDIENCE,
-                point: audience_point + (commented ? 1 : 0),
                 commented: commented});
         });
 
@@ -361,9 +328,8 @@ export default {
         });
     },
     likeSpeech(speech_id, user_id, success, fail) {
-        $.post(`/activity/speeches/${user_id}/like/${speech_id}`, {
-            point : ActivityConstants.POINT.LIKE
-        }).done((data) => {
+        $.post(`/activity/speeches/${user_id}/like/${speech_id}`)
+            .done((data) => {
                 AppDispatcher.dispatch({
                     type: Constants.ActionTypes.UPDATE_ACTIVITY,
                     data: data
