@@ -49,14 +49,6 @@ export default {
         AUDIENCE: "audience"
     },
 
-    POINT: {
-        MONTHLY: 200,
-        WEEKLY: 100,
-        AUDIENCE_MONTHLY: 20,
-        AUDIENCE_WEEKLY: 10,
-        LIKE: 2
-    },
-
     EXCHANGE_STATUS: {
         NEW: 0,
         SENT: 1
