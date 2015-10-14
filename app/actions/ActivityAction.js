@@ -328,7 +328,7 @@ export default {
         });
     },
     likeSpeech(speech_id, user_id, success, fail) {
-        $.post(`/activity/speeches/${user_id}/like/${speech_id}`)
+        $.post(`/activity/speeches/${speech_id}/like`)
             .done((data) => {
                 AppDispatcher.dispatch({
                     type: Constants.ActionTypes.UPDATE_ACTIVITY,
