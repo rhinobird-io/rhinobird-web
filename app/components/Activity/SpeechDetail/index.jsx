@@ -145,10 +145,13 @@ module.exports = React.createClass({
 
             let likeButton = null;
             if (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED &&  speech.user_id != user.id) {
-              likeButton = <MUI.IconButton iconStyle={{color: this.context.muiTheme.palette.canvasColor}} title="Do you like this speech?" iconClassName="icon-thumb-up" onClick={this._likeSpeech}/>
               for (let index = 0; index < speech.attendances.length; index++ ){
-                if (speech.attendances[index].user_id === user.id && speech.attendances[index].liked) {
-                  likeButton = <MUI.IconButton iconClassName="icon-thumb-up" title="You liked this speech" iconStyle={{color : MUI.Styles.Colors.pink100}} disabled={true} />
+                if (speech.attendances[index].user_id === user.id) {
+                    if (speech.attendances[index].liked) {
+                        likeButton = <MUI.IconButton iconClassName="icon-thumb-up" title="You liked this speech" iconStyle={{color : MUI.Styles.Colors.pink100}} disabled={true} />
+                    } else {
+                        likeButton = <MUI.IconButton iconStyle={{color: this.context.muiTheme.palette.canvasColor}} title="Do you like this speech?" iconClassName="icon-thumb-up" onClick={this._likeSpeech}/>
+                    }
                   break;
                 }
               }
@@ -634,16 +637,6 @@ module.exports = React.createClass({
                 `[RhinoBird] ${LoginStore.getUser().realname} marked your activity as finished`,
                 `${LoginStore.getUser().realname} marked your activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a> as finished`,
                 `/platform/activity/speeches/${speech.id}`);
-            speech.attendances.map(a => {
-                let point = a.point;
-                NotificationAction.sendNotification(
-                    [a.user_id],
-                    [],
-                    `You got ${point} points from the activity ${speech.title}`,
-                    `[RhinoBird] You got ${point} points`,
-                    `You got ${point} points from the activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
-                    `/platform/activity/speeches/${speech.id}`);
-            });
 
             this.setState({
                 speech: speech,
