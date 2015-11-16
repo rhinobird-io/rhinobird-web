@@ -43,7 +43,7 @@ export default React.createClass({
             error: false,
             passwordMatch: true
         });
-        $.post('/api/signup',{email:this.state.email, name:this.state.name,uniqueName:this.state.name, password:this.state.password}).then((data)=>{
+        $.post('/platform/api/signup',{email:this.state.email, name:this.state.name,uniqueName:this.state.name, password:this.state.password}).then((data)=>{
             LoginAction.updateLogin(data);
             this.context.router.transitionTo(this.context.router.getCurrentQuery().target || "/");
         }).fail(()=>{
@@ -57,7 +57,7 @@ export default React.createClass({
         return <mui.Paper zDepth={1} className="loginForm" rounded={false}>
             <form className="container" onSubmit={this._login}>
                 <div className="mui-font-style-title">Sign up</div>
-                <mui.TextField hintText='Email' valueLink={this.linkState('email')} autofocus/>
+                <mui.TextField hintText='Email' valueLink={this.linkState('email')} autofocus style={{display: 'inline-block', width: 158}}/><span>@worksap.co.jp</span>
                 <div className='uniqueNameField'>
                     <span className='mui-font-style-caption'>@</span>
                     <mui.TextField className='textField' hintText='Unique name' valueLink={this.linkState('uniqueName')}/>
