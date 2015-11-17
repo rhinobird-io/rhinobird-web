@@ -35,11 +35,11 @@ module.exports = React.createClass({
         return <mui.Paper style={{padding:12, width:'100%', marginBottom: 48}}>
             <Flex.Layout start justified style={{marginLeft:12}}>
                 <Flex.Layout vertical center>
-                    <Common.Display type='display1' style={{color:this.context.muiTheme.palette.primary1Color}} title="Available/Total">{auditing.length}</Common.Display>
+                    <Common.Display type='display1' style={{color:this.context.muiTheme.palette.primary1Color}}>{auditing.length}</Common.Display>
                     <Common.Display type='body3'>Waiting you to approve</Common.Display>
                 </Flex.Layout>
                 <Flex.Layout vertical center>
-                    <Common.Display type='display1' style={{color:this.context.muiTheme.palette.primary1Color}} title="Available/Total">{approved.length}</Common.Display>
+                    <Common.Display type='display1' style={{color:this.context.muiTheme.palette.primary1Color}}>{approved.length}</Common.Display>
                     <Common.Display type='body3'>Waiting speakers to confirm</Common.Display>
                 </Flex.Layout>
                 <Link to='administration'><mui.RaisedButton secondary={true} label="Administration"/></Link>

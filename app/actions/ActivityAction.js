@@ -273,8 +273,8 @@ export default {
                     fail(e.status);
             });
     },
-    closeSpeech(speech_id, success, fail) {
-        $.post(`/activity/speeches/${speech_id}/close`)
+    closeSpeech(speech_id, comment, success, fail) {
+        $.post(`/activity/speeches/${speech_id}/close`, {comment: comment})
             .done((data) => {
                 AppDispatcher.dispatch({
                     type: Constants.ActionTypes.UPDATE_ACTIVITY,
