@@ -1,4 +1,5 @@
 const React = require("react/addons");
+const Common = require('../Common');
 
 require('./style.less');
 
@@ -52,7 +53,8 @@ var Login = React.createClass({
                 <mui.TextField ref="email" hintText='Email' valueLink={this.linkState('email')} autofocus/>
                 <mui.TextField hintText='Password' type="password" valueLink={this.linkState('password')}
                     errorText={this.state.error? 'Email or password incorrect.' : undefined}/>
-                <div className="rightButton">
+                <div className="rightButton" style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                    <Common.Link href='/platform/signup'>Sign up now!</Common.Link>
                     <mui.RaisedButton label="Sign in" primary={true} onClick={this._login} type="submit"/>
                 </div>
             </form>

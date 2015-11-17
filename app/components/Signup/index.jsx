@@ -56,11 +56,11 @@ export default React.createClass({
     render() {
         return <mui.Paper zDepth={1} className="loginForm" rounded={false}>
             <form className="container" onSubmit={this._login}>
-                <div className="mui-font-style-title">Sign up</div>
+                <h2 style={{marginBottom: 24}}>Sign up</h2>
                 <mui.TextField hintText='Email' valueLink={this.linkState('email')} autofocus style={{display: 'inline-block', width: 158}}/><span>@worksap.co.jp</span>
                 <div className='uniqueNameField'>
                     <span className='mui-font-style-caption'>@</span>
-                    <mui.TextField className='textField' hintText='Unique name' valueLink={this.linkState('uniqueName')}/>
+                    <mui.TextField className='textField' hintText='unique_name' valueLink={this.linkState('uniqueName')}/>
                 </div>
                 <mui.TextField hintText='Display name' valueLink={this.linkState('name')}/>
 
