@@ -18,25 +18,49 @@ module.exports = React.createClass({
     },
     componentDidMount(){
         let node = React.findDOMNode(this);
-        let nodeHeight = node.offsetHeight;
+        let nodeHeight = node.scrollHeight;
         let maxHeight = this.state.containerMaxHeight.substring(0, this.state.containerMaxHeight.length - 2);
         if ( nodeHeight > maxHeight ) {
-          this.setState({showLoadMore: true});
-          this.setState({expanded: false});
+          this.setState({
+              showLoadMore: true,
+              expanded: false
+          });
         } else {
             this.setState({showLoadMore: false});
+        }
+    },
+    componentWillReceiveProps() {
+        this.setState({
+            expanded: false,
+            arrowDirection: 'down'
+        });
+    },
+    componentDidUpdate() {
+        let node = React.findDOMNode(this);
+        let nodeHeight = node.scrollHeight;
+        let maxHeight = this.state.containerMaxHeight.substring(0, this.state.containerMaxHeight.length - 2);
+        if ( nodeHeight > maxHeight ) {
+            this.refs.dataRegion.getDOMNode().style.overflow = 'hidden';
+            this.refs.expandRegion.getDOMNode().style.display = 'inline';
+        } else {
+            this.refs.dataRegion.getDOMNode().style.overflow = '';
+            this.refs.expandRegion.getDOMNode().style.display = 'none';
         }
     },
     _onClickTriangle: function(event) {
       event.preventDefault();
       if( this.state.arrowDirection == 'down'){
-          this.setState({arrowDirection: 'up'});
-          this.setState({expanded: true});
+          this.setState({
+              arrowDirection: 'up',
+              expanded: true
+          });
       } else if( this.state.arrowDirection == 'up'){
           let heightBefore = $('#'+this.state.containerId).height();
           let scrollTopBefore = $('.mainContent .ps-container').scrollTop();
-          this.setState({arrowDirection: 'down'});
-          this.setState({expanded: false}, function(){
+          this.setState({
+              arrowDirection: 'down',
+              expanded: false
+          }, function(){
             let heightAfter = $('#'+this.state.containerId).height();
             $('.mainContent .ps-container').scrollTop(scrollTopBefore - (heightBefore - heightAfter));
           });
@@ -72,15 +96,14 @@ module.exports = React.createClass({
         };
 
         let expandableStyle = {
-            maxHeight: this.state.expanded ? 'none' : this.state.containerMaxHeight,
-            overflow:'hidden'
+            maxHeight: this.state.expanded ? 'none' : this.state.containerMaxHeight
         };
 
         return <div style={this.mergeAndPrefix(outerStyle, this.props.style)} id={this.state.containerId}>
-                <div style={expandableStyle}>
+                <div ref="dataRegion" style={expandableStyle}>
                   {this.props.children}
                 </div>
-                <div style={expandMoreStyle} onClick={this._onClickTriangle}>
+                <div ref="expandRegion" style={expandMoreStyle} onClick={this._onClickTriangle}>
                   <div style={triangleStyle}/>
                 </div>
             </div>;
