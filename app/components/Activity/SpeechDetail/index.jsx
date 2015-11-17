@@ -346,6 +346,24 @@ module.exports = React.createClass({
                 } else if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED) {
                     adminPrimaryBtn = <MUI.RaisedButton type="submit" label="Finish" style={{marginBottom: 12}} primary={true} onClick={this._showRecordParticipants}/>;
                     adminSecondaryBtn = <MUI.RaisedButton type="submit" label="Close" style={{marginBottom: 12}} onClick={this._closeSpeech}/>;
+                    let closeDialogActions = [
+                        <MUI.FlatButton
+                            label="Cancel"
+                            secondary={true}
+                            onTouchTap={this._handleCloseDialogCancel}/>,
+                        <MUI.FlatButton
+                            label="Close Speech"
+                            primary={true}
+                            onTouchTap={this._handleCloseDialogSubmit}/>
+                    ];
+                    dialogs.push(<MUI.Dialog actions={closeDialogActions} title="Close Speech" ref='closeDialog'>
+                        <MUI.TextField
+                            ref="closeComment"
+                            hintText="Comment"
+                            errorText={this.state.commentError}
+                            floatingLabelText="Comment"
+                            style={{width: "100%"}} />
+                    </MUI.Dialog>);
                 }
             }
             speechActions = <Flex.Layout vertical style={{padding: 24}}>
@@ -373,11 +391,13 @@ module.exports = React.createClass({
                 <Thread style={{width: "100%"}} threadKey={this.state.threadKey} threadTitle={`Comment ${speech.title}`}
                         participants={{users: receiveCommentUsers}}/>
             </Flex.Layout>);
-            if (speech.status !== ActivityConstants.SPEECH_STATUS.CLOSED
-                && (user.id === speech.user_id || ActivityUserStore.currentIsAdmin())) {
+            if (user.id === speech.user_id || ActivityUserStore.currentIsAdmin()) {
                 speechMemo = <Tooltip comments={speech.comments}/>;
+                let steps = ["Auditing", "Approved", "Confirmed"];
+                steps.push(speech.status === ActivityConstants.SPEECH_STATUS.CLOSED ? 'Closed' : 'Finished');
+                let activeStep = speech.status === ActivityConstants.SPEECH_STATUS.CLOSED ? 4 : (speechStatus.get(speech.status) + 1);
                 stepBar = <Flex.Layout center vertical style={{borderLeft: '1px solid ' + this.context.muiTheme.palette.borderColor, width: 180, flexShrink:0}}>
-                    <StepBar vertical style={{padding:24, width:100, height:300}} activeStep={speechStatus.get(speech.status)+1} stepTitles={["Auditing", "Approved", "Confirmed", "Finished"]}/>
+                    <StepBar vertical style={{padding:24, width:100, height:300}} activeStep={activeStep} stepTitles={steps}/>
                     {speechMemo}
                     {speechActions}
                 </Flex.Layout>
@@ -567,7 +587,7 @@ module.exports = React.createClass({
             this.setState({commentError: this.errorMsg.commentRequired});
             return;
         }
-        ActivityAction.rejectActivity(this.state.speech.id, this.refs.rejectComment.getValue(), speech => {
+        ActivityAction.rejectActivity(this.state.speech.id, comment, speech => {
             NotificationAction.sendNotification(
                 [speech.user_id],
                 [],
@@ -610,7 +630,7 @@ module.exports = React.createClass({
             this.setState({commentError: this.errorMsg.commentRequired});
             return;
         }
-        ActivityAction.disagreeArrangement(this.state.speech.id, this.refs.disagreeComment.getValue(), speech => {
+        ActivityAction.disagreeArrangement(this.state.speech.id, comment, speech => {
             NotificationAction.sendNotification(
                 ActivityUserStore.getAdminIds(),
                 [],
@@ -645,7 +665,21 @@ module.exports = React.createClass({
         });
     },
     _closeSpeech() {
-        ActivityAction.closeSpeech(this.state.speech.id, speech => {
+        this.setState({commentError: ''});
+        this.refs.closeDialog.show();
+        this.refs.closeComment.setValue('');
+        this.refs.closeComment.focus();
+    },
+    _handleCloseDialogCancel() {
+        this.refs.closeDialog.dismiss();
+    },
+    _handleCloseDialogSubmit() {
+        let comment = this.refs.closeComment.getValue();
+        if (!comment || comment.length === 0) {
+            this.setState({commentError: this.errorMsg.commentRequired});
+            return;
+        }
+        ActivityAction.closeSpeech(this.state.speech.id, comment, speech => {
             NotificationAction.sendNotification(
                 [speech.user_id].concat(speech.audiences.map(u => u.id)),
                 [],
@@ -657,6 +691,7 @@ module.exports = React.createClass({
                 speech: speech
             })
         });
+        this.refs.closeDialog.dismiss();
     },
     _uploadAttachment(result) {
         if (result.result === Constants.UploadResult.SUCCESS) {
