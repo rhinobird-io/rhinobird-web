@@ -77,8 +77,7 @@ module.exports = React.createClass({
             bar: {
                 fontSize: "2em",
                 padding: "12px 12px 12px 0",
-                minHeight: 60,
-                maxHeight: 60,
+                height: 60,
                 color: this.context.muiTheme.palette.canvasColor,
                 backgroundColor: this.context.muiTheme.palette.primary1Color,
                 whiteSpace:'nowrap'
@@ -90,7 +89,7 @@ module.exports = React.createClass({
             title: {
                 textOverflow:'ellipsis',
                 overflow:'hidden',
-                lineHeight: 12
+                lineHeight: '1.2em'
             },
             inner: {
                 maxWidth: 1000,

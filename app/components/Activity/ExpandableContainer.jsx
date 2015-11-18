@@ -1,16 +1,12 @@
 import $ from 'jquery';
-
 const React = require("react");
-const MUI = require("material-ui"), ListItem = MUI.ListItem;
-const Flex = require("../Flex");
 const StylePropable = require('material-ui/lib/mixins/style-propable');
 
 module.exports = React.createClass({
     mixins: [StylePropable],
     getInitialState() {
         return {
-            innerHeight: 0,
-            containerMaxHeight: this.props.maxHeight ? this.props.maxHeight : '320px',
+            containerMaxHeight: this.props.maxHeight || '320px',
             arrowDirection: 'down',
             expanded: true,
             containerId: this.generateUuid()
