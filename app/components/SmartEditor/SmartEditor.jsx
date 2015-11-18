@@ -24,12 +24,12 @@ const SmartEditor = React.createClass({
 
   propTypes: {
     valueLink: React.PropTypes.shape({
-      value: React.PropTypes.string.isRequired,
-      requestChange: React.PropTypes.func.isRequired
+      value: React.PropTypes.string,
+      requestChange: React.PropTypes.func
     }),
     inputStyle: React.PropTypes.object,
     nohr: React.PropTypes.bool,
-    popupWidth: React.PropTypes.number,
+    popupWidth: React.PropTypes.string,
     popupMaxHeight: React.PropTypes.number,
     popupMarginTop: React.PropTypes.number,
     popupMinusTop: React.PropTypes.number

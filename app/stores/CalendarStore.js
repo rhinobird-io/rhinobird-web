@@ -146,7 +146,6 @@ Date.prototype.monthDays = function() {
 Date.prototype.calendarMonthDays = function() {
     let result = this.monthDays();
     let firstDay = result[0];
-    console.log(result);
     let lastDay = result[result.length - 1];
     let pres = [];
     let followings = [];

@@ -17,6 +17,20 @@ module.exports = React.createClass({
             filter: 'all'
         }
     },
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextState.filter !== this.state.filter) {
+            return true;
+        }
+        if (nextProps.list.length !== this.props.list.length) {
+            return true;
+        }
+        for (let i = 0; i < nextProps.list.length; i++) {
+            if (nextProps.list[i].id !== this.props.list[i].id) {
+                return true;
+            }
+        }
+        return false;
+    },
     render(){
         if(!this.props.list){
             return null;

@@ -83,7 +83,7 @@ let MonthView = React.createClass({
         };
         let weekdaysBar = weekdays.map(d => {
             return (
-                <Flex.Layout flex={1} style={styles.inner}>
+                <Flex.Layout key={d} flex={1} style={styles.inner}>
                     {d}
                 </Flex.Layout>
             );
@@ -155,7 +155,7 @@ let MonthView = React.createClass({
                 }
                 let ref = uuid();
                 return (
-                    <div ref={ref} style={styles.rangeOuter}
+                    <div key={ref} ref={ref} style={styles.rangeOuter}
                          onClick={() => this._handleRangeClick(ref, dayRange)}>
                         <div style={styles.rangeInner}>
                             {dayContent}
@@ -191,7 +191,7 @@ let MonthView = React.createClass({
                 //outStyle.backgroundColor = `${muiTheme.palette.accent3Color}`;
             }
             return (
-                <Flex.Layout ref={`day_${index}`} vertical flex={1} style={outStyle}>
+                <Flex.Layout key={`day_${index}`} ref={`day_${index}`} vertical flex={1} style={outStyle}>
                     <div style={styles.dayHeader}>{d.getDate()}</div>
                     <Flex.Layout vertical flex={1} style={{height: 0, width: "100%"}}>
                         {dayContents}
@@ -201,7 +201,7 @@ let MonthView = React.createClass({
         });
 
         return (
-            <Flex.Layout flex={1} horizontal stretch style={{minHeight: 100}}>
+            <Flex.Layout key={date} flex={1} horizontal stretch style={{minHeight: 100}}>
                 {weekContent}
             </Flex.Layout>
         );

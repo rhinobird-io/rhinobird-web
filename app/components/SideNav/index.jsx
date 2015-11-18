@@ -54,7 +54,7 @@ module.exports = React.createClass({
         let control = <mui.IconButton iconStyle={{color: this.context.muiTheme.palette.canvasColor}}
                                   iconClassName="icon-expand-more"/>;
         let menus = [];
-        menus.push(<mui.MenuItem onTouchTap={() => {
+        menus.push(<mui.MenuItem index={1} onTouchTap={() => {
             this.context.router.transitionTo('/platform/profile');
             this.refs.dropdown.dismiss();
             this.toggle();
@@ -66,7 +66,7 @@ module.exports = React.createClass({
                 <span>Profile</span>
             </Flex.Layout>
         </mui.MenuItem>);
-        menus.push(<mui.MenuItem onTouchTap={() => {
+        menus.push(<mui.MenuItem index={2} onTouchTap={() => {
             document.cookie = 'Auth=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
             LoginAction.updateLogin(undefined);
             this.context.router.transitionTo('/platform/signin');

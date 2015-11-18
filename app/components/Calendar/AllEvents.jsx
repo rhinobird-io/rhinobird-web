@@ -107,7 +107,6 @@ let AllEvents = React.createClass({
     },
 
     getInitialState() {
-        console.log(Cookie.load("calendarViewType"));
         return {
             events: [],
             members: {
@@ -172,8 +171,6 @@ let AllEvents = React.createClass({
     },
 
     _fetchEvents(date, viewType) {
-        console.log("viewType " + viewType);
-        console.log("date " + date);
         if (viewType === "week") {
             CalendarActions.receiveByWeek(date);
         } else if (viewType === "month") {

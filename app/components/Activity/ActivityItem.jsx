@@ -28,7 +28,7 @@ module.exports = React.createClass({
         let title = this.props.activity.title;
         let user = UserStore.getUser(this.props.activity.user_id);
         let status = this.props.activity.status;
-        let disabled = status === 'finished';
+        let disabled = status === 'finished' || status === 'closed';
 
         let style = {
             cursor: 'pointer',

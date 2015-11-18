@@ -141,6 +141,7 @@ module.exports = React.createClass({
 
                                 <Flex.Layout center style={{marginTop: 24}}>
                                     <MUI.RadioButtonGroup style={{display: 'inherit'}}
+                                                          name="speechType"
                                                           defaultSelected={"weekly"}
                                                           valueSelected={this.state.category === 'monthly' ? 'monthly' : 'weekly'}
                                                           onChange={this._onChangeCategory}>

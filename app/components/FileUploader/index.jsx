@@ -19,8 +19,8 @@ const FileUploader = React.createClass({
         buttonStyle: React.PropTypes.element,
         floatingActionButton: React.PropTypes.bool,
         valueLink: React.PropTypes.shape({
-            value: React.PropTypes.string.isRequired,
-            requestChange: React.PropTypes.func.isRequired
+            value: React.PropTypes.array,
+            requestChange: React.PropTypes.func
         })
     },
 
