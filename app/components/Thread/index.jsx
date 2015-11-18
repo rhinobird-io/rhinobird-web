@@ -201,7 +201,7 @@ const Thread = React.createClass({
         let {children, threadKey, ...other} = this.props;
         return <div {...other}>
 
-            {this.comments.map(c => <Comment onReply={this._reply} comment={c}/>)}
+            {this.comments.map(c => <Comment key={c.cid} onReply={this._reply} comment={c}/>)}
 
             <HelpDialog ref='infoDialog'/>
             <Flex.Layout center>

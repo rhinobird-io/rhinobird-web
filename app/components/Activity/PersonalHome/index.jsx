@@ -41,7 +41,7 @@ module.exports = React.createClass({
     },
     render(){
         let urgent = this.state.myActivities.filter(a => a.status === 'approved').sort((a, b) => new Date(a.time) - new Date(b.time));
-        return <PerfectScroll style={{height: '100%', position:'relative', padding:24}}>
+        return <PerfectScroll style={{height: '100%', position:'relative', padding:24}} id="scrollContainer">
             <div style={{margin:'0 auto', maxWidth:1000}}>
                 <Flex.Layout justified>
                     <Flex.Item style={{position: 'fixed', width: 192}}>

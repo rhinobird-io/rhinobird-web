@@ -123,7 +123,7 @@ let DaysView = React.createClass({
                     );
                 });
                 return (
-                    <Flex.Layout vertical stretch flex={1} style={{width: 0, borderLeft: "1px solid " + muiTheme.palette.borderColor}}>
+                    <Flex.Layout key={date} vertical stretch flex={1} style={{width: 0, borderLeft: "1px solid " + muiTheme.palette.borderColor}}>
                         {allDayContents}
                     </Flex.Layout>
                 );

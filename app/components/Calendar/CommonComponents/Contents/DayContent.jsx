@@ -183,12 +183,9 @@ let DayContent = React.createClass({
                     let placed = false;
                     loop2:
                     for (let i1 = 0; i1 < columns.length; i1++) {
-                        console.log(from);
-                        console.log(columnMaxToTimes[i1]);
                         if (from >= columnMaxToTimes[i1]) {
                             columns[i1].push(sorted[j]);
                             let to = sorted[j].to;
-                            console.log(to - sorted[j].from);
                             if (to - sorted[j].from < 1800000) {
                                 to = new Date(sorted[j].from.getTime() + 1800000);
                             }
