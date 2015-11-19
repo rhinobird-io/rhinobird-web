@@ -1,5 +1,6 @@
 const React = require("react");
 const Flex = require("../../Flex");
+const Common = require('../../Common');
 const PerfectScroll = require("../../PerfectScroll");
 const PersonalInfo = require('./PersonalInfo');
 const ActivityList = require('./ActivityList');
@@ -73,14 +74,20 @@ module.exports = React.createClass({
                                 </Flex.Item>) : undefined
                         }
                         {
+                            (this.state.myActivities.length === 0 && this.state.appliedActivities.length === 0 && this.state.attendedActivities.length === 0) ?
+                                <div style={{marginBottom: 24, lineHeight: '2em'}}>
+                                    <div>No activities.</div>
+                                    <div>You can <Common.Link href='/platform/activity/create-activity'>create an activity</Common.Link> or select one to participate in the <Common.Link href='/platform/activity'>homepage</Common.Link>.</div>
+                                </div>
+                                : undefined
+                        }
+                        {
                           this.state.pointsHistory.length > 0 ?
                               (<Flex.Item flex={1} id='PointHistory'>
                                   <PointHistoryList title={"Point History"} list={this.state.pointsHistory}/>
                               </Flex.Item>) : undefined
                         }
-                        {
-                            (this.state.myActivities.length === 0 && this.state.appliedActivities.length === 0 && this.state.attendedActivities.length === 0) ? <div style={{marginLeft: 24}}>No activities</div> : undefined
-                        }
+
 
                     </Flex.Item>
                 </Flex.Layout>

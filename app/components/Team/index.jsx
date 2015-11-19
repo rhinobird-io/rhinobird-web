@@ -281,8 +281,7 @@ let TeamGraph = React.createClass({
             svg.attr("class", "traditional");
             svg.attr('width', g.graph().width + 40);
             svg.attr("viewBox", `0 0 ${g.graph().width + 40} ${g.graph().height + 40}`);
-            svg.style('max-width', g.graph().width + 40);
-            svg.style('max-height', g.graph().height + 40);
+            svg.attr('style', `max-width: ${g.graph().width + 40}px; max-height: ${g.graph().height + 40}px`);
         } else {
             let connections = this._buildConnections(teams);
             let width = 960, height = 500;

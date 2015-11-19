@@ -26,7 +26,10 @@ module.exports = React.createClass({
 
     getInitialState() {
         return {
-            mode: 'loading'
+            mode: 'loading',
+            name: '',
+            description: '',
+            price: ''
         }
     },
     componentDidMount() {

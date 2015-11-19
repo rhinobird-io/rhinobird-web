@@ -36,7 +36,7 @@ module.exports = React.createClass({
     },
 
     errorMsg: {
-        descriptionRequired: "Speech description is required.",
+        descriptionRequired: "Activity description is required.",
         dateRequired: "Date is required.",
         timeRequired: "Time is required.",
         hoursRequired: "Hours is required.",
@@ -77,8 +77,7 @@ module.exports = React.createClass({
             bar: {
                 fontSize: "2em",
                 padding: "12px 12px 12px 0",
-                minHeight: 60,
-                maxHeight: 60,
+                height: 60,
                 color: this.context.muiTheme.palette.canvasColor,
                 backgroundColor: this.context.muiTheme.palette.primary1Color,
                 whiteSpace:'nowrap'
@@ -90,7 +89,7 @@ module.exports = React.createClass({
             title: {
                 textOverflow:'ellipsis',
                 overflow:'hidden',
-                lineHeight: 12
+                lineHeight: '1.2em'
             },
             inner: {
                 maxWidth: 1000,
@@ -124,7 +123,7 @@ module.exports = React.createClass({
         let speechMemo = null;
 
         if (this.state.notFound) {
-            speechContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Speech not found</h3>;
+            speechContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Activity not found</h3>;
         } else if (speech === null || speech === undefined) {
             speechContent = <h3 style={{textAlign: "center", padding: 24, fontSize: "1.5em"}}>Loading</h3>;
         } else {
@@ -148,9 +147,9 @@ module.exports = React.createClass({
               for (let index = 0; index < speech.attendances.length; index++ ){
                 if (speech.attendances[index].user_id === user.id) {
                     if (speech.attendances[index].liked) {
-                        likeButton = <MUI.IconButton iconClassName="icon-thumb-up" title="You liked this speech" iconStyle={{color : MUI.Styles.Colors.pink100}} disabled={true} />
+                        likeButton = <MUI.IconButton iconClassName="icon-thumb-up" title="You liked this activity" iconStyle={{color : MUI.Styles.Colors.pink100}} disabled={true} />
                     } else {
-                        likeButton = <MUI.IconButton iconStyle={{color: this.context.muiTheme.palette.canvasColor}} title="Do you like this speech?" iconClassName="icon-thumb-up" onClick={this._likeSpeech}/>
+                        likeButton = <MUI.IconButton iconStyle={{color: this.context.muiTheme.palette.canvasColor}} title="Do you like this activity?" iconClassName="icon-thumb-up" onClick={this._likeSpeech}/>
                     }
                   break;
                 }
@@ -167,8 +166,8 @@ module.exports = React.createClass({
                         {showEditDelete ? <Link to="edit-speech" params={{ id: this.state.speech.id }}><MUI.IconButton iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-edit"/></Link> : undefined}
                         {showEditDelete ? <MUI.IconButton onClick={this._deleteSpeech} iconStyle={{color: this.context.muiTheme.palette.canvasColor}} iconClassName="icon-delete"/> : undefined}
                         {likeButton}
-                    <MUI.Dialog actions={dialogActions} title="Deleting Speech" ref='deleteDialog'>
-                        <div style={{color: muiTheme.palette.textColor, fontSize: 14}}>Are you sure to delete this speech?</div>
+                    <MUI.Dialog actions={dialogActions} title="Deleting activity" ref='deleteDialog'>
+                        <div style={{color: muiTheme.palette.textColor, fontSize: 14}}>Are you sure to delete this activity?</div>
                     </MUI.Dialog>
                     </div>
                 </Flex.Layout>
@@ -311,7 +310,7 @@ module.exports = React.createClass({
                             primary={true}
                             onTouchTap={this._handleDisagreeDialogSubmit}/>
                     ];
-                    dialogs.push(<MUI.Dialog actions={disagreeDialogActions} title="Disagree Speech" ref='disagreeDialog'>
+                    dialogs.push(<MUI.Dialog actions={disagreeDialogActions} title="Disagree Activity" ref='disagreeDialog'>
                         <MUI.TextField
                             ref="disagreeComment"
                             hintText="Comment"
@@ -335,7 +334,7 @@ module.exports = React.createClass({
                             primary={true}
                             onTouchTap={this._handleRejectDialogSubmit}/>
                     ];
-                    dialogs.push(<MUI.Dialog actions={rejectDialogActions} title="Reject Speech" ref='rejectDialog'>
+                    dialogs.push(<MUI.Dialog actions={rejectDialogActions} title="Reject Activity" ref='rejectDialog'>
                         <MUI.TextField
                             ref="rejectComment"
                             hintText="Comment"
@@ -352,11 +351,11 @@ module.exports = React.createClass({
                             secondary={true}
                             onTouchTap={this._handleCloseDialogCancel}/>,
                         <MUI.FlatButton
-                            label="Close Speech"
+                            label="Close Activity"
                             primary={true}
                             onTouchTap={this._handleCloseDialogSubmit}/>
                     ];
-                    dialogs.push(<MUI.Dialog actions={closeDialogActions} title="Close Speech" ref='closeDialog'>
+                    dialogs.push(<MUI.Dialog actions={closeDialogActions} title="Close Activity" ref='closeDialog'>
                         <MUI.TextField
                             ref="closeComment"
                             hintText="Comment"
@@ -563,8 +562,8 @@ module.exports = React.createClass({
                 [],
                 `Approved your activity ${speech.title}`,
                 `[RhinoBird] ${LoginStore.getUser().realname} approved your activity`,
-                `${LoginStore.getUser().realname} approved your activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
-                `/platform/activity/speeches/${speech.id}`);
+                `${LoginStore.getUser().realname} approved your activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
+                `/platform/activity/activities/${speech.id}`);
             this.setState({
                 speech: speech,
                 showSelectTime: false
@@ -593,8 +592,8 @@ module.exports = React.createClass({
                 [],
                 `Rejected your activity ${speech.title}`,
                 `[RhinoBird] ${LoginStore.getUser().realname} rejected your activity`,
-                `${LoginStore.getUser().realname} rejected your activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
-                `/platform/activity/speeches/${speech.id}`);
+                `${LoginStore.getUser().realname} rejected your activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
+                `/platform/activity/activities/${speech.id}`);
             this.setState({
                 speech: speech
             });
@@ -608,8 +607,8 @@ module.exports = React.createClass({
                 [],
                 `Agreed with the time arrangement of the activity ${speech.title}`,
                 `[RhinoBird] ${LoginStore.getUser().realname} agreed with the time arrangement`,
-                `${LoginStore.getUser().realname} agreed with the time arrangement of the activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
-                `/platform/activity/speeches/${speech.id}`);
+                `${LoginStore.getUser().realname} agreed with the time arrangement of the activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
+                `/platform/activity/activities/${speech.id}`);
             this.setState({
                 speech: speech
             })
@@ -636,8 +635,8 @@ module.exports = React.createClass({
                 [],
                 `Disagreed with the time arrangement of the activity ${speech.title}`,
                 `[RhinoBird] ${LoginStore.getUser().realname} disagreed with the time arrangement`,
-                `${LoginStore.getUser().realname} disagreed with the time arrangement of the activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
-                `/platform/activity/speeches/${speech.id}`);
+                `${LoginStore.getUser().realname} disagreed with the time arrangement of the activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
+                `/platform/activity/activities/${speech.id}`);
             this.setState({
                 speech: speech
             });
@@ -655,8 +654,8 @@ module.exports = React.createClass({
                 [],
                 `Marked your activity ${speech.title} as finished`,
                 `[RhinoBird] ${LoginStore.getUser().realname} marked your activity as finished`,
-                `${LoginStore.getUser().realname} marked your activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a> as finished`,
-                `/platform/activity/speeches/${speech.id}`);
+                `${LoginStore.getUser().realname} marked your activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a> as finished`,
+                `/platform/activity/activities/${speech.id}`);
 
             this.setState({
                 speech: speech,
@@ -685,8 +684,8 @@ module.exports = React.createClass({
                 [],
                 `Closed the activity ${speech.title}`,
                 `[RhinoBird] ${LoginStore.getUser().realname} closed the activity`,
-                `${LoginStore.getUser().realname} closed the activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
-                `/platform/activity/speeches/${speech.id}`);
+                `${LoginStore.getUser().realname} closed the activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
+                `/platform/activity/activities/${speech.id}`);
             this.setState({
                 speech: speech
             })
@@ -701,8 +700,8 @@ module.exports = React.createClass({
                     [],
                     `Uploaded new attachments for activity ${speech.title}`,
                     `[RhinoBird] ${LoginStore.getUser().realname} uploaded new attachments`,
-                    `${LoginStore.getUser().realname} uploaded new attachments for activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
-                    `/platform/activity/speeches/${speech.id}`);
+                    `${LoginStore.getUser().realname} uploaded new attachments for activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
+                    `/platform/activity/activities/${speech.id}`);
                 this.setState({
                     speech: speech
                 })
