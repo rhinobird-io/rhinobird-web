@@ -1,4 +1,5 @@
 const React = require("react/addons");
+const Common = require('../Common');
 
 require('./style.less');
 
@@ -68,7 +69,8 @@ export default React.createClass({
                     />
                 <mui.TextField hintText='Confirm password' type="password" valueLink={this.linkState('confirmPassword')}
                     errorText={this.state.passwordMatch? undefined: 'Password do not match.'}/>
-                <div className="rightButton">
+                <div className="rightButton" style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                    <Common.Link href='/platform/signin'>Sign in now!</Common.Link>
                     <mui.RaisedButton label="Sign up" primary={true} onClick={this._signup} type="submit"/>
                 </div>
             </form>
