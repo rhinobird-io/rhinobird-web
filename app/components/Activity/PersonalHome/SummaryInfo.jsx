@@ -21,8 +21,13 @@ module.exports = React.createClass({
             </Common.Link>
     },
     scroll() {
-        $('#scrollContainer').animate({
-            scrollTop: $('#' + this.props.text).offset().top - $('#scrollContainer').offset().top + $('#scrollContainer').scrollTop()
+        let $target = $('#' + this.props.text);
+        if (!$target || $target.length === 0) {
+            return;
+        }
+        let $container = $('#scrollContainer');
+        $container.animate({
+            scrollTop: $target.offset().top - $container.offset().top + $container.scrollTop()
         }, 1000);
     }
 });

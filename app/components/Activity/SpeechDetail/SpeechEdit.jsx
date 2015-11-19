@@ -18,9 +18,9 @@ module.exports = React.createClass({
         router: React.PropTypes.func.isRequired
     },
     errorMsg: {
-        titleRequired: "Speech title is required.",
-        descriptionRequired: "Speech description is required.",
-        durationRequired: "Speech duration is required."
+        titleRequired: "Activity title is required.",
+        descriptionRequired: "Activity description is required.",
+        durationRequired: "Activity duration is required."
     },
 
     getInitialState() {
@@ -107,7 +107,7 @@ module.exports = React.createClass({
         } else if (this.state.mode === 'error') {
             errorIcon = <MUI.FontIcon className="icon-error" color={this.context.muiTheme.palette.accent1Color} style={{marginLeft: 12, marginTop: -6}}/>
         } else {
-            submitButton = <MUI.RaisedButton type="submit" label={`${this.state.mode === 'create' ? 'Create' : 'Update'} Speech`} primary={true} onClick={this._handleSubmit}/>;
+            submitButton = <MUI.RaisedButton type="submit" label={`${this.state.mode === 'create' ? 'Create' : 'Update'} Activity`} primary={true} onClick={this._handleSubmit}/>;
         }
 
         return (
@@ -117,7 +117,7 @@ module.exports = React.createClass({
                         <MUI.Paper zDepth={1} style={styles.inner}>
                             <div style={{padding: 20}}>
                                 <Flex.Layout horizontal startJustified>
-                                    <h3 style={{marginBottom: 0}}>{this.state.mode === 'create' ? 'Create' : 'Edit'} Speech</h3>
+                                    <h3 style={{marginBottom: 0}}>{this.state.mode === 'create' ? 'Create' : 'Edit'} Activity</h3>
                                     {loadingIcon}
                                     {errorIcon}
                                 </Flex.Layout>
@@ -168,7 +168,7 @@ module.exports = React.createClass({
 
                                 <MUI.TextField
                                     ref="comment"
-                                    hintText="Comment (e.g. expected speech time)"
+                                    hintText="Comment (e.g. expected start time)"
                                     valueLink={this.linkState('comment')}
                                     floatingLabelText="Comment (Optional)"
                                     style={{width: "100%"}} />
@@ -237,8 +237,8 @@ module.exports = React.createClass({
                         [],
                         `Submitted an activity ${speech.title}`,
                         `[RhinoBird] ${LoginStore.getUser().realname} submitted an activity`,
-                        `${LoginStore.getUser().realname} submitted an activity <a href="${this.baseUrl}/platform/activity/speeches/${speech.id}">${speech.title}</a>`,
-                        `/platform/activity/speeches/${speech.id}`);
+                        `${LoginStore.getUser().realname} submitted an activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
+                        `/platform/activity/activities/${speech.id}`);
                     this.context.router.transitionTo("speech-detail", {id: speech.id});
                 },
                 (e) => {

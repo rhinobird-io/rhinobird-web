@@ -63,7 +63,7 @@ module.exports = React.createClass({
                 {this.state.mode === 'loading' ?
                     <MUI.Paper style={{textAlign: "center", padding: 24, fontSize: "1.5em", width: '100%'}}>Loading</MUI.Paper> : undefined
                 }
-                {this.state.prizes.length === 0 ? <div style={{margin: '100px auto'}}><h4>Coming soon</h4></div> : undefined}
+                {this.state.mode === 'view' && this.state.prizes.length === 0 ? <div style={{margin: '100px auto'}}><h4>Coming soon</h4></div> : undefined}
                 {this.state.prizes.map(p => {
                     let display = !this.state.showAfford || p.price <= available;
                     let ref = this.state.target === p.id + '' ? 'target' : undefined;

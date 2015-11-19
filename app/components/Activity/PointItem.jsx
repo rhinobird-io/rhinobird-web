@@ -59,7 +59,7 @@ module.exports = React.createClass({
 
         let time = moment(this.props.item.time);
         let points = this.props.item.point;
-        let title = this.props.item.category === 'gain' ? 'You have gained ' + points + ' points from speech ' + this.props.item.title
+        let title = this.props.item.category === 'gain' ? 'You have gained ' + points + ' points from activity ' + this.props.item.title
                                 : 'You have used ' + points + ' points to exchange ' + this.props.item.title;
 
         let itemId = this.props.item.id;
@@ -67,7 +67,7 @@ module.exports = React.createClass({
         if ( itemId.lastIndexOf('exchange_', 0) === 0 ) {
           path = '/platform/activity/prizes?id=' + this.props.item.prizeId;
         } else if ( itemId.lastIndexOf('attendance_', 0) === 0 ) {
-          path = '/platform/activity/speeches/' + this.props.item.speechId;
+          path = '/platform/activity/activities/' + this.props.item.speechId;
         }
         let canvasColor = this.context.muiTheme.palette.canvasColor;
         let borderColor = 'rgba(0,0,0,0.03)';
