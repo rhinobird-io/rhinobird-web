@@ -47,7 +47,7 @@ module.exports = React.createClass({
                 </Flex.Layout>
                 <Common.Hr style={{margin:"24px 0 0 0"}}/>
                 <div style={{fontSize:14, fontWeight:500, lineHeight:'48px', color: 'rgba(0, 0, 0, 0.54)'}}>Email</div>
-                <Common.Display style={{marginLeft:56}} type='subhead'>{this.state.member.email}</Common.Display><br/>
+                <Common.Display style={{marginLeft:56, wordWrap: 'break-word', display: 'block' }} type='subhead'>{this.state.member.email}</Common.Display><br/>
                 <mui.List subheader="Teams" style={{marginLeft: -16}}>
                     {
                         this.state.member.teams.map(team=> {
