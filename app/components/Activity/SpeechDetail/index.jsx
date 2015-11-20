@@ -24,6 +24,7 @@ const UserTable = require('./Table');
 const NotificationAction = require('../../../actions/NotificationActions');
 const Category = require('./Category');
 const Tooltip = require('./Tooltip');
+const ActivityEmailHelper = require('../../../helper/ActivityEmailHelper');
 
 var speechStatus = new Enum({"Auditing": 0, "Approved": 1, "Confirmed": 2, "Finished": 3}, { ignoreCase: true });
 module.exports = React.createClass({
@@ -562,7 +563,10 @@ module.exports = React.createClass({
                 [],
                 `Approved your activity ${speech.title}`,
                 `[RhinoBird] ${LoginStore.getUser().realname} approved your activity`,
-                `${LoginStore.getUser().realname} approved your activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
+                ActivityEmailHelper.construct_email(UserStore.getUser(speech.user_id).realname,
+                    `${LoginStore.getUser().realname} approved your activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>
+                    <br/>Start time: ${Moment(datetime).format('MM/DD HH:mm')}
+                    <br/>Please <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">Login</a> to confirm the arrangement.`),
                 `/platform/activity/activities/${speech.id}`);
             this.setState({
                 speech: speech,
@@ -592,7 +596,10 @@ module.exports = React.createClass({
                 [],
                 `Rejected your activity ${speech.title}`,
                 `[RhinoBird] ${LoginStore.getUser().realname} rejected your activity`,
-                `${LoginStore.getUser().realname} rejected your activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
+                ActivityEmailHelper.construct_email(UserStore.getUser(speech.user_id).realname,
+                    `${LoginStore.getUser().realname} rejected your activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>
+                    <br/>Reason: ${comment}
+                    <br/>Please <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">Login</a> to optimize your activity.`),
                 `/platform/activity/activities/${speech.id}`);
             this.setState({
                 speech: speech
@@ -602,13 +609,21 @@ module.exports = React.createClass({
     },
     _agreeArrangement() {
         ActivityAction.agreeArrangement(this.state.speech.id, speech => {
-            NotificationAction.sendNotification(
-                ActivityUserStore.getAdminIds(),
-                [],
-                `Agreed with the time arrangement of the activity ${speech.title}`,
-                `[RhinoBird] ${LoginStore.getUser().realname} agreed with the time arrangement`,
-                `${LoginStore.getUser().realname} agreed with the time arrangement of the activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
-                `/platform/activity/activities/${speech.id}`);
+            let notifications = [];
+            let currentUserName = LoginStore.getUser().realname;
+            ActivityUserStore.getAdminIds().map(id => {
+                notifications.push({
+                    users: [id],
+                    content: {
+                        content: `Agreed with the time arrangement of the activity ${speech.title}`
+                    },
+                    email_subject: `[RhinoBird] ${currentUserName} agreed with the time arrangement`,
+                    email_body: ActivityEmailHelper.construct_email(UserStore.getUser(id).realname,
+                        `${currentUserName} agreed with the time arrangement of the activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`),
+                    url: `/platform/activity/activities/${speech.id}`
+                });
+            });
+            NotificationAction.sendNotifications(notifications);
             this.setState({
                 speech: speech
             })
@@ -630,13 +645,22 @@ module.exports = React.createClass({
             return;
         }
         ActivityAction.disagreeArrangement(this.state.speech.id, comment, speech => {
-            NotificationAction.sendNotification(
-                ActivityUserStore.getAdminIds(),
-                [],
-                `Disagreed with the time arrangement of the activity ${speech.title}`,
-                `[RhinoBird] ${LoginStore.getUser().realname} disagreed with the time arrangement`,
-                `${LoginStore.getUser().realname} disagreed with the time arrangement of the activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
-                `/platform/activity/activities/${speech.id}`);
+            let notifications = [];
+            let currentUserName = LoginStore.getUser().realname;
+            ActivityUserStore.getAdminIds().map(id => {
+                notifications.push({
+                    users: [id],
+                    content: {
+                        content: `Disagreed with the time arrangement of the activity ${speech.title}`
+                    },
+                    email_subject: `[RhinoBird] ${currentUserName} disagreed with the time arrangement`,
+                    email_body: ActivityEmailHelper.construct_email(UserStore.getUser(id).realname,
+                        `${currentUserName} disagreed with the time arrangement of the activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>
+                        <br/>Reason: ${comment}`),
+                    url: `/platform/activity/activities/${speech.id}`
+                });
+            });
+            NotificationAction.sendNotifications(notifications);
             this.setState({
                 speech: speech
             });
@@ -654,7 +678,8 @@ module.exports = React.createClass({
                 [],
                 `Marked your activity ${speech.title} as finished`,
                 `[RhinoBird] ${LoginStore.getUser().realname} marked your activity as finished`,
-                `${LoginStore.getUser().realname} marked your activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a> as finished`,
+                ActivityEmailHelper.construct_email(UserStore.getUser(speech.user_id).realname,
+                    `${LoginStore.getUser().realname} marked your activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a> as finished`),
                 `/platform/activity/activities/${speech.id}`);
 
             this.setState({
@@ -679,13 +704,22 @@ module.exports = React.createClass({
             return;
         }
         ActivityAction.closeSpeech(this.state.speech.id, comment, speech => {
-            NotificationAction.sendNotification(
-                [speech.user_id].concat(speech.audiences.map(u => u.id)),
-                [],
-                `Closed the activity ${speech.title}`,
-                `[RhinoBird] ${LoginStore.getUser().realname} closed the activity`,
-                `${LoginStore.getUser().realname} closed the activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
-                `/platform/activity/activities/${speech.id}`);
+            let notifications = [];
+            let currentUserName = LoginStore.getUser().realname;
+            [speech.user_id].concat(speech.audiences.map(u => u.id)).map(id => {
+                notifications.push({
+                    users: [id],
+                    content: {
+                        content: `Closed the activity ${speech.title}`
+                    },
+                    email_subject: `[RhinoBird] ${currentUserName} closed the activity`,
+                    email_body: ActivityEmailHelper.construct_email(UserStore.getUser(id).realname,
+                        `${currentUserName} closed the activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>
+                        <br/>Reason: ${comment}`),
+                    url: `/platform/activity/activities/${speech.id}`
+                });
+            });
+            NotificationAction.sendNotifications(notifications);
             this.setState({
                 speech: speech
             })
@@ -695,13 +729,21 @@ module.exports = React.createClass({
     _uploadAttachment(result) {
         if (result.result === Constants.UploadResult.SUCCESS) {
             ActivityAction.uploadAttachment(this.state.speech.id, result.file.id, result.file.name, speech => {
-                NotificationAction.sendNotification(
-                    speech.audiences.map(u => u.id),
-                    [],
-                    `Uploaded new attachments for activity ${speech.title}`,
-                    `[RhinoBird] ${LoginStore.getUser().realname} uploaded new attachments`,
-                    `${LoginStore.getUser().realname} uploaded new attachments for activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
-                    `/platform/activity/activities/${speech.id}`);
+                //let notifications = [];
+                //let currentUserName = LoginStore.getUser().realname;
+                //speech.audiences.map(u => u.id).map(id => {
+                //    notifications.push({
+                //        users: [id],
+                //        content: {
+                //            content: `Uploaded new attachments for activity ${speech.title}`
+                //        },
+                //        email_subject: `[RhinoBird] ${currentUserName} uploaded new attachments`,
+                //        email_body: ActivityEmailHelper.construct_email(UserStore.getUser(id).realname,
+                //            `${currentUserName} uploaded new attachments for activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`),
+                //        url: `/platform/activity/activities/${speech.id}`
+                //    });
+                //});
+                //NotificationAction.sendNotifications(notifications);
                 this.setState({
                     speech: speech
                 })

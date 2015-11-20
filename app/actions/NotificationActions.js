@@ -129,8 +129,19 @@ let NotificationActions = {
           if (fail && typeof fail === 'function')
             fail(e);
         });
+  },
+  sendNotifications(notifications, success, fail) {
+    $.post('/platform/api/users/notifications/batch', {
+      notifications: notifications
+    }).done(() => {
+      if (success && typeof success === "function") {
+        success(data);
+      }
+    }).fail(e => {
+      if (fail && typeof fail === 'function')
+        fail(e);
+    });
   }
-
 };
 
 module.exports = NotificationActions;

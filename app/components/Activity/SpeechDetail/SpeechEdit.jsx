@@ -10,8 +10,11 @@ const ActivityStore = require('../../../stores/ActivityStore');
 const LoginStore = require('../../../stores/LoginStore');
 const NotificationAction = require('../../../actions/NotificationActions');
 const ActivityUserStore = require('../../../stores/ActivityUserStore');
+const ActivityEmailHelper = require('../../../helper/ActivityEmailHelper');
+const UserStore = require('../../../stores/UserStore');
 
 module.exports = React.createClass({
+    baseUrl: "http://rhinobird.workslan",
     mixins: [React.addons.LinkedStateMixin, React.addons.PureRenderMixin],
     contextTypes: {
         muiTheme: React.PropTypes.object,
@@ -232,13 +235,21 @@ module.exports = React.createClass({
         if (this.state.mode === 'create') {
             ActivityAction.createActivity(speech,
                 (speech) => {
-                    NotificationAction.sendNotification(
-                        ActivityUserStore.getAdminIds(),
-                        [],
-                        `Submitted an activity ${speech.title}`,
-                        `[RhinoBird] ${LoginStore.getUser().realname} submitted an activity`,
-                        `${LoginStore.getUser().realname} submitted an activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
-                        `/platform/activity/activities/${speech.id}`);
+                    let notifications = [];
+                    let currentUserName = LoginStore.getUser().realname;
+                    ActivityUserStore.getAdminIds().map(id => {
+                        notifications.push({
+                            users: [id],
+                            content: {
+                                content: `Submitted an activity ${speech.title}`
+                            },
+                            email_subject: `[RhinoBird] ${currentUserName} submitted an activity`,
+                            email_body: ActivityEmailHelper.construct_email(UserStore.getUser(id).realname,
+                                `${currentUserName} submitted an activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`),
+                            url: `/platform/activity/activities/${speech.id}`
+                        });
+                    });
+                    NotificationAction.sendNotifications(notifications);
                     this.context.router.transitionTo("speech-detail", {id: speech.id});
                 },
                 (e) => {
