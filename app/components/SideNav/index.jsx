@@ -74,7 +74,7 @@ module.exports = React.createClass({
 
             this.refs.dropdown.dismiss();
             this.toggle();
-            $.post('/api/logout').then(()=>{
+            $.post('/platform/api/logout').then(()=>{
             })
         }}>
             <Flex.Layout horizontal style={{paddingRight: 36}}>
