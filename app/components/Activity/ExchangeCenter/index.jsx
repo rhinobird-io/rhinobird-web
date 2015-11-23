@@ -11,8 +11,11 @@ const FilterBar = require('./FilterBar');
 const Common = require('../../Common');
 const NotificationAction = require('../../../actions/NotificationActions');
 const LoginStore = require('../../../stores/LoginStore');
+const ActivityEmailHelper = require('../../../helper/ActivityEmailHelper');
+const UserStore = require('../../../stores/UserStore');
 
 module.exports = React.createClass({
+    baseUrl: "http://rhinobird.workslan",
     firstTime: true,
     getInitialState() {
         return {
@@ -151,13 +154,22 @@ module.exports = React.createClass({
             (data) => {
                 this.refs.exchangeDialog.dismiss();
                 this.refs.exchangeSuccess.show();
-                NotificationAction.sendNotification(
-                    ActivityUserStore.getAdminIds(),
-                    [],
-                    `Exchanged prize ${data.name}`,
-                    `[RhinoBird] ${LoginStore.getUser().realname} exchanged prize ${data.name}`,
-                    `${LoginStore.getUser().realname} exchanged prize <a href="${this.baseUrl}/platform/activity/prizes?id=${data.id}">${data.name}</a>`,
-                    `/platform/activity/exchanges`);
+
+                let notifications = [];
+                let currentUserName = LoginStore.getUser().realname;
+                ActivityUserStore.getAdminIds().map(id => {
+                    notifications.push({
+                        users: [id],
+                        content: {
+                            content: `Exchanged prize ${data.name}`
+                        },
+                        email_subject: `[RhinoBird] ${currentUserName} exchanged prize ${data.name}`,
+                        email_body: ActivityEmailHelper.construct_email(UserStore.getUser(id).realname,
+                            `${currentUserName} exchanged prize <a href="${this.baseUrl}/platform/activity/prizes?id=${data.id}">${data.name}</a>`),
+                        url: `/platform/activity/exchanges`
+                    });
+                });
+                NotificationAction.sendNotifications(notifications);
             }
         );
     },

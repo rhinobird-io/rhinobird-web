@@ -14,24 +14,30 @@ module.exports = React.createClass({
             myActivities: [],
             attendedActivities: [],
             appliedActivities: [],
-            pointsHistory: []
+            pointsHistory: [],
+            myDone: false,
+            attendedDone: false,
+            appliedDone: false
         }
     },
 
     componentDidMount(){
         $.get(`/activity/users/${LoginStore.getUser().id}/speeches`).then((data)=> {
             this.setState({
-                myActivities: data
+                myActivities: data,
+                myDone: true
             });
         });
         $.get(`/activity/users/${LoginStore.getUser().id}/attended_speeches`).then((data)=> {
             this.setState({
-                attendedActivities: data
+                attendedActivities: data,
+                attendedDone: true
             });
         });
         $.get(`/activity/users/${LoginStore.getUser().id}/applied_speeches`).then((data)=> {
             this.setState({
-                appliedActivities: data
+                appliedActivities: data,
+                appliedDone: true
             });
         });
         $.get(`/activity/users/${LoginStore.getUser().id}/points_history`).then((data)=> {
@@ -74,7 +80,9 @@ module.exports = React.createClass({
                                 </Flex.Item>) : undefined
                         }
                         {
-                            (this.state.myActivities.length === 0 && this.state.appliedActivities.length === 0 && this.state.attendedActivities.length === 0) ?
+                            (this.state.myDone && this.state.myActivities.length === 0
+                                && this.state.appliedDone && this.state.appliedActivities.length === 0
+                                && this.state.attendedDone && this.state.attendedActivities.length === 0) ?
                                 <div style={{marginBottom: 24, lineHeight: '2em'}}>
                                     <div>No activities.</div>
                                     <div>You can <Common.Link href='/platform/activity/create-activity'>create an activity</Common.Link> or select one to participate in the <Common.Link href='/platform/activity'>homepage</Common.Link>.</div>
