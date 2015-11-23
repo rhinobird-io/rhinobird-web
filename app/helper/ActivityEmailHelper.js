@@ -6,8 +6,8 @@ export default {
             </h2>
             <div style="font-size: 1.2em; line-height: 1.5em;">${content}</div>
             <br>
-            <p>Sent from <a href='http://rhinobird.workslan/platform/signin'>RhinoBird platform</a>.</p>
-            <p>If you have any question or feedback, contact with us at liu_yang@worksap.co.jp</p>
+            <p>Sent from <a href='http://rhinobird.workslan/platform/activity'>RhinoBird platform</a>.</p>
+            <p>If you have any question or feedback, contact with us at works-college@ml.worksap.com</p>
             <hr>
             <p style="text-align: center;">Designed by ATE-Shanghai, © Works Applications Co.,Ltd.</p>
         </div>`;
@@ -52,8 +52,8 @@ export default {
               </tbody>
           </table>
           <div style="margin: 32px auto;">Want more details? <a href='http://rhinobird.workslan/platform/activity/activities/${speechId}'>View</a> the details on RhinoBird</div>
-          <p>Sent from <a href='http://rhinobird.workslan/platform/signin'>RhinoBird platform</a>.</p>
-          <p>If you have any question or feedback, contact with us at liu_yang@worksap.co.jp</p>
+          <p>Sent from <a href='http://rhinobird.workslan/platform/activity'>RhinoBird platform</a>.</p>
+          <p>If you have any question or feedback, contact with us at works-college@ml.worksap.com</p>
           <hr>
           <p style="text-align: center;">Designed by ATE-Shanghai, © Works Applications Co.,Ltd.</p>
         </div>`;
