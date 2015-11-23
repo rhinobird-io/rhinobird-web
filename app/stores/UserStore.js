@@ -79,6 +79,8 @@ let _teams = {};
 //
 let _users = {};
 
+let _all_users = {};
+
 let _username_users = {};
 
 let UserStore = assign({}, BaseStore, {
@@ -114,7 +116,9 @@ let UserStore = assign({}, BaseStore, {
             return true;
         });
     },
-
+    getUserIds() {
+        return _all_users && _all_users.map(u => u.id);
+    },
     getUsersByTeamId(teamId, includeSub) {
         let team = _teams[teamId];
         let result = new Set(team.users || []);
@@ -217,6 +221,10 @@ let UserStore = assign({}, BaseStore, {
                     _username_users = tmp._username_users;
                     _initialized = true;
                     UserStore.emitChange();
+                });
+
+                $.get('/platform/api/users').then((data) => {
+                    _all_users = data;
                 });
                 break;
             default:
