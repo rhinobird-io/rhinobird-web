@@ -52,7 +52,8 @@ export default {
               </tbody>
           </table>
           <div style="margin: 32px auto;">Want more details? <a href='http://rhinobird.workslan/platform/activity/activities/${speechId}'>View</a> the details on RhinoBird</div>
-          <p>Sent from <a href='http://rhinobird.workslan/platform/activity'>RhinoBird platform</a>.</p>
+          <div style="margin: 32px auto;">Click join on <a href='http://rhinobird.workslan/platform/activity/activities/${speechId}'>details page</a> to receive the latest information!</div>
+          <p>Sent from RhinoBird platform.</p>
           <p>If you have any question or feedback, contact with us at works-college@ml.worksap.com</p>
           <hr>
           <p style="text-align: center;">Designed by ATE-Shanghai, © Works Applications Co.,Ltd.</p>
