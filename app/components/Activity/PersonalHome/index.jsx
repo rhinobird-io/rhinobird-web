@@ -87,7 +87,7 @@ module.exports = React.createClass({
                                     <div>No activities.</div>
                                     <div>You can <Common.Link href='/platform/activity/create-activity'>create an activity</Common.Link> or select one to participate in the <Common.Link href='/platform/activity'>homepage</Common.Link>.</div>
                                 </div>
-                                : <div/>
+                                : undefined
                         }
                         {
                           this.state.pointsHistory.length > 0 ?
