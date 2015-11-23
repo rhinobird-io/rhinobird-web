@@ -15,6 +15,7 @@ const ActivityEmailHelper = require('../../../helper/ActivityEmailHelper');
 const UserStore = require('../../../stores/UserStore');
 
 module.exports = React.createClass({
+    baseUrl: "http://rhinobird.workslan",
     firstTime: true,
     getInitialState() {
         return {
