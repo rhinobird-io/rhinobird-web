@@ -630,8 +630,8 @@ module.exports = React.createClass({
             NotificationAction.sendNotification(
                 UserStore.getUserIds(),
                 [],
-                `A new lightening talk ${speech.title} is pending.`,
-                `[RhinoBird] Join lightening talk ${speech.title} with us`,
+                `A new activity ${speech.title} is pending.`,
+                `[RhinoBird] Join activity ${speech.title} with us`,
                 ActivityEmailHelper.construct_speech_detail_email(speech.id, speech.title, speech.description, speechTime, speech.expected_duration),
                 `/platform/activity/activities/${speech.id}`);
 

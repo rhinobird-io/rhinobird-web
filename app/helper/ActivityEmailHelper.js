@@ -26,7 +26,7 @@ export default {
         </style>
         <div style="max-width: 600px; margin: auto;">
           <div style="font-size: 1.2em;">
-              This time we will hold below lightening talk:
+              This time we will hold below activity:
           </div>
           <br/>
           <table style="margin: auto; text-align: left;">
