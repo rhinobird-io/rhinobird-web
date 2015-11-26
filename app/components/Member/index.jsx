@@ -177,7 +177,7 @@ Member.MemberSelect = React.createClass({
         let users =
             user && this.state.users.length > 0 ?
                 this.state.users.map((u) => {
-                    return <Flex.Layout horizontal center key={"user_" + u.id} value={"user_" + u.id} index={u}>
+                    return <Flex.Layout horizontal center key={"user_" + u.id} value={"user_" + u.id} index={{name:u.name, realname:u.realname}}>
                         <Member.Avatar member={u}/> &ensp;
                         <span style={{fontWeight: 500, marginLeft: 6}}>{u.realname}</span>
                     </Flex.Layout>;
@@ -186,7 +186,7 @@ Member.MemberSelect = React.createClass({
         let teams =
             team && this.state.teams.length > 0 ?
                 this.state.teams.map((t) => {
-                    return <Flex.Layout horizontal center key={"team_" + t.id} value={"team_" + t.id} index={t}>
+                    return <Flex.Layout horizontal center key={"team_" + t.id} value={"team_" + t.id} index={t.name}>
                         <Flex.Layout vertical selfCenter>
                             <span className="icon-group" style={{fontSize: "24px"}}/>
                         </Flex.Layout> &ensp;

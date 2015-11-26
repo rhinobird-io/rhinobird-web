@@ -296,7 +296,7 @@ let Select = React.createClass({
                 onDismiss={() => {
                     this.refs.text.blur()
                 }}>
-                {this.state.children.slice(0, 8)}
+                {this.state.children.slice(0, 20)}
             </PopupSelect>;
 
         let tokens = [];
