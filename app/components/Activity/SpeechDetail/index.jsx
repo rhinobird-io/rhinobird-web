@@ -63,7 +63,7 @@ module.exports = React.createClass({
         return {
             speech: speech,
             notFound: false,
-            threadKey: `/platform/activity/speeches/${params.id}`,
+            threadKey: `/platform/activity/activities/${params.id}`,
             showSelectTime: false,
             showRecordParticipants: false,
             audiences: {
