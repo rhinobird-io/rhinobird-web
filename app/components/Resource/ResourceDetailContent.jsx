@@ -185,7 +185,7 @@ let ResourceDetailContent = React.createClass({
                 selfAlignOrigin={selfAlignOrigin}
                 relatedAlignOrigin={relatedAlignOrigin}
                 className={className}
-                onMouseDown={(e) => console.log(e.target)}
+                onMouseDown={(e) => {}}
                 style={{overflow: "visible !important"}}>
                 <div style={{minWidth: 250}}>
                     <h3 style={{padding: "24px 24px 20px 24px"}}><Display type="headline">Confirm Booking</Display></h3>
@@ -387,7 +387,7 @@ let ResourceDetailContent = React.createClass({
             top: rect.top - (224 - rect.height) / 2,
             height: rect.height
         };
-        
+
         let popupNode = updateResourceBooking.getDOMNode();
         if (popupNode.clientWidth < window.innerWidth - rect.right - 10) {
             position = 'r';

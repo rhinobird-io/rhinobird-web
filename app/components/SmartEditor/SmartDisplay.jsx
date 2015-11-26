@@ -77,8 +77,6 @@ const SmartDisplay = React.createClass({
                     }
                 }, false);
                 fileSource.addEventListener('error', (e)=>{
-                    console.log("error");
-                    console.log(e);
                 }, false);
             }
         });

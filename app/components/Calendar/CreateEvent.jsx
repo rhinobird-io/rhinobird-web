@@ -269,8 +269,6 @@ let CreateEvent = React.createClass({
         if (newDate > this.refs.toDate.getDate()) {
             this.refs.toDate.setDate(newDate);
         }
-        console.log(this.refs.fromDate.getDate());
-        console.log(newDate);
         if (newDate.toDateString() === this.refs.toDate.getDate().toDateString()) {
             if (this.refs.fromTime.getTime().toTimeString() > this.refs.toTime.getTime().toTimeString()) {
                 this.refs.toTime.setTime(this.refs.fromTime.getTime());

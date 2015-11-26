@@ -212,7 +212,6 @@ let EventUpdateContent = React.createClass({
             </Flex.Layout>
         );
 
-        console.log(event);
         return (
             <Flex.Layout vertical style={{width: "100%", height:"100%"}}>
                 {eventActions}

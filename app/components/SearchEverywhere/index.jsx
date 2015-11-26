@@ -99,7 +99,6 @@ let SearchEverywhere = React.createClass({
                     hRestrict
                     ref="popup"
                     onItemSelect={(value, e) => {
-                        console.log(value);
                     }}
                     relatedTo={() => this.refs.search}>
                     {results}

@@ -183,7 +183,6 @@ let DayView = React.createClass({
     },
 
     _handleMouseDown(e) {
-        console.log(e);
         let node = this.getDOMNode();
         let rect = node.getBoundingClientRect();
         this.startPosY = e.clientY - rect.top;

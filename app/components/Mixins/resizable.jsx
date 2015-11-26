@@ -47,7 +47,6 @@ module.exports = {
     },
 
     _handleDocumentMouseMove(e) {
-        console.log("move");
         let node = this.getDOMNode();
         let rect = node.getBoundingClientRect();
         if (rect.bottom - e.y <= 20) {
