@@ -481,7 +481,6 @@ const PostDetail = React.createClass({
     render() {
         let user = UserStore.getUser(this.state.creator_id);
         let tagsBlock = undefined;
-        console.log(this.state.body);
         if (this.state.tags){
             tagsBlock = this.state.tags.map(t=><Flex.Layout center style={{marginRight: 8}}>
                 <span style={{width:12, height:12, backgroundColor: t.color, marginRight:4}}></span><span>{t.name}</span>
