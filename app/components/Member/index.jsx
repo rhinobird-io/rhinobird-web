@@ -179,7 +179,7 @@ Member.MemberSelect = React.createClass({
                 this.state.users.map((u) => {
                     return <Flex.Layout horizontal center key={"user_" + u.id} value={"user_" + u.id} index={{name:u.name, realname:u.realname}}>
                         <Member.Avatar member={u}/> &ensp;
-                        <span style={{fontWeight: 500, marginLeft: 6}}>{u.realname}</span>
+                        <span style={{fontWeight: 500, marginLeft: 6}}>{u.realname}({u.name})</span>
                     </Flex.Layout>;
                 }) : null;
 
