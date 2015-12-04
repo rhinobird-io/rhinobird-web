@@ -52,5 +52,10 @@ export default {
     EXCHANGE_STATUS: {
         NEW: 0,
         SENT: 1
+    },
+
+    ATTACHMENT_TYPE: {
+        NORMAL: "normal",
+        VIDEO: "video"
     }
 }
