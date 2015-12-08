@@ -255,7 +255,7 @@ module.exports = React.createClass({
             if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED
                 || speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) {
                 let videoList = null;
-                let operateVideo = speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED && ActivityUserStore.currentIsAdmin();
+                let operateVideo = (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED || speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) && ActivityUserStore.currentIsAdmin();
                 if (speech.video_resource_url && speech.video_resource_name) {
                     let videoUrls = speech.video_resource_url.trim().split('/');
                     let videoNames = speech.video_resource_name.trim().split('/');
