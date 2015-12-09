@@ -784,24 +784,6 @@ module.exports = React.createClass({
             let attachmentType = type;
             if (result.result === Constants.UploadResult.SUCCESS) {
                 ActivityAction.uploadAttachment(_this.state.speech.id, result.file.id, result.file.name, attachmentType, speech => {
-                    if(attachmentType === ActivityConstants.ATTACHMENT_TYPE.VIDEO ) {
-                        NotificationAction.sendNotification(
-                            speech.audiences.map(u => u.id),
-                            [],
-                            `Uploaded new videos for activity ${speech.title}`,
-                            `[RhinoBird] ${LoginStore.getUser().realname} uploaded new videos`,
-                            `${LoginStore.getUser().realname} uploaded new videos for activity <a href="${_this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
-                            `/platform/activity/activities/${speech.id}`);
-                    } else {
-                        NotificationAction.sendNotification(
-                            speech.audiences.map(u => u.id),
-                            [],
-                            `Uploaded new attachments for activity ${speech.title}`,
-                            `[RhinoBird] ${LoginStore.getUser().realname} uploaded new attachments`,
-                            `${LoginStore.getUser().realname} uploaded new attachments for activity <a href="${_this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
-                            `/platform/activity/activities/${speech.id}`);
-                    }
-
                     _this.setState({
                         speech: speech
                     })
