@@ -283,7 +283,7 @@ module.exports = React.createClass({
                                 : undefined)}
                         </Flex.Layout>
                         {operateVideo ?
-                                <FileUploader ref="fileUploader" showResult maxSize={200 * 1024 * 1024} buttonStyle={{float: 'right'}} floatingActionButton
+                                <FileUploader ref="fileUploader" showResult maxSize={300 * 1024 * 1024} buttonStyle={{float: 'right'}} floatingActionButton
                                               afterUpload={this._uploadAttachment(ActivityConstants.ATTACHMENT_TYPE.VIDEO)}/>
                              : undefined}
                     </Flex.Layout>
