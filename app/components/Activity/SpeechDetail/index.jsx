@@ -117,6 +117,7 @@ module.exports = React.createClass({
         let speechTime = null;
         let speechDuration = null;
         let speechFiles = null;
+        let speechVideos = null;
         let speechComment = null;
         let speechActions = null;
         let speechContent = null;
@@ -230,7 +231,7 @@ module.exports = React.createClass({
                     fileList = files.map(file => {
                         return <Flex.Layout center key={file.url}>
                             <a href={`/file/files/${file.url}/download`} >{file.name}</a>
-                            {operateFile ? <MUI.IconButton iconClassName="icon-delete" onClick={() => this._deleteAttachment(file.url)} /> : undefined}
+                            {operateFile ? <MUI.IconButton iconClassName="icon-delete" onClick={() => this._deleteAttachment(ActivityConstants.ATTACHMENT_TYPE.NORMAL, file.url)} /> : undefined}
                         </Flex.Layout>
                     });
                 }
@@ -245,7 +246,45 @@ module.exports = React.createClass({
                         </Flex.Layout>
                         {operateFile ?
                                 <FileUploader ref="fileUploader" showResult maxSize={10 * 1024 * 1024} buttonStyle={{float: 'right'}} floatingActionButton
-                                              afterUpload={this._uploadAttachment}/>
+                                              afterUpload={this._uploadAttachment(ActivityConstants.ATTACHMENT_TYPE.NORMAL)}/>
+                             : undefined}
+                    </Flex.Layout>
+                </Flex.Layout>;
+            }
+
+            if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED
+                || speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) {
+                let videoList = null;
+                let operateVideo = (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED || speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) && ActivityUserStore.currentIsAdmin();
+                if (speech.video_resource_url && speech.video_resource_name) {
+                    let videoUrls = speech.video_resource_url.trim().split('/');
+                    let videoNames = speech.video_resource_name.trim().split('/');
+                    let videos = [];
+                    for (let idx = 0; idx < Math.min(videoUrls.length, videoNames.length); idx++) {
+                        videos.push({
+                            url: videoUrls[idx],
+                            name: videoNames[idx]
+                        });
+                    }
+                    videoList = videos.map(file => {
+                        return <Flex.Layout center key={file.url}>
+                            <a href={`/file/files/${file.url}/fetch`} target="_blank">{file.name}</a>
+                            {operateVideo ? <MUI.IconButton iconClassName="icon-delete" onClick={() => this._deleteAttachment(ActivityConstants.ATTACHMENT_TYPE.VIDEO, file.url)} /> : undefined}
+                        </Flex.Layout>
+                    });
+                }
+                speechVideos = <Flex.Layout style={styles.detailItem}>
+                    <Common.Display style={styles.label} type='body3'>Videos:</Common.Display>
+                    <Flex.Layout horizontal justified style={{width: '100%'}}>
+                        <Flex.Layout vertical>
+                        {videoList ? videoList
+                            : (speech.user_id != user.id ?
+                                <Common.Display style={{color: this.context.muiTheme.palette.disabledColor}}>No video uploaded.</Common.Display>
+                                : undefined)}
+                        </Flex.Layout>
+                        {operateVideo ?
+                                <FileUploader ref="fileUploader" showResult maxSize={200 * 1024 * 1024} buttonStyle={{float: 'right'}} floatingActionButton
+                                              afterUpload={this._uploadAttachment(ActivityConstants.ATTACHMENT_TYPE.VIDEO)}/>
                              : undefined}
                     </Flex.Layout>
                 </Flex.Layout>;
@@ -419,6 +458,7 @@ module.exports = React.createClass({
                                 {speechDuration}
                                 {speechDescription}
                                 {speechFiles}
+                                {speechVideos}
                                 {speechAudiences}
                                 {speechContent}
 
@@ -737,18 +777,40 @@ module.exports = React.createClass({
         });
         this.refs.closeDialog.dismiss();
     },
-    _uploadAttachment(result) {
-        if (result.result === Constants.UploadResult.SUCCESS) {
-            ActivityAction.uploadAttachment(this.state.speech.id, result.file.id, result.file.name, speech => {
-                this.setState({
-                    speech: speech
-                })
-            });
-        }
 
+    _uploadAttachment(type) {
+        let _this = this;
+        return function(result) {
+            let attachmentType = type;
+            if (result.result === Constants.UploadResult.SUCCESS) {
+                ActivityAction.uploadAttachment(_this.state.speech.id, result.file.id, result.file.name, attachmentType, speech => {
+                    if(attachmentType === ActivityConstants.ATTACHMENT_TYPE.VIDEO ) {
+                        NotificationAction.sendNotification(
+                            speech.audiences.map(u => u.id),
+                            [],
+                            `Uploaded new videos for activity ${speech.title}`,
+                            `[RhinoBird] ${LoginStore.getUser().realname} uploaded new videos`,
+                            `${LoginStore.getUser().realname} uploaded new videos for activity <a href="${_this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
+                            `/platform/activity/activities/${speech.id}`);
+                    } else {
+                        NotificationAction.sendNotification(
+                            speech.audiences.map(u => u.id),
+                            [],
+                            `Uploaded new attachments for activity ${speech.title}`,
+                            `[RhinoBird] ${LoginStore.getUser().realname} uploaded new attachments`,
+                            `${LoginStore.getUser().realname} uploaded new attachments for activity <a href="${_this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a>`,
+                            `/platform/activity/activities/${speech.id}`);
+                    }
+
+                    _this.setState({
+                        speech: speech
+                    })
+                });
+            }
+        }
     },
-    _deleteAttachment(url) {
-        ActivityAction.deleteAttachment(this.state.speech.id, url, speech => {
+    _deleteAttachment(type, url) {
+        ActivityAction.deleteAttachment(this.state.speech.id, url, type, speech => {
             this.setState({
                 speech: speech
             })

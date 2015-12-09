@@ -289,11 +289,12 @@ export default {
                     fail(e.status);
             });
     },
-    uploadAttachment(speech_id, url, name, success, fail) {
+    uploadAttachment(speech_id, url, name, type, success, fail) {
         $.post(`/activity/speeches/${speech_id}/attachments`,
             {
                 resource_url: url,
-                resource_name: name
+                resource_name: name,
+                attachmentType: type
             })
             .done((data) => {
                 AppDispatcher.dispatch({
@@ -309,9 +310,9 @@ export default {
                     fail(e.status);
             });
     },
-    deleteAttachment(speech_id, url, success, fail) {
+    deleteAttachment(speech_id, url, type, success, fail) {
         $.ajax({
-            url: `/activity/speeches/${speech_id}/attachments/${url}`,
+            url: `/activity/speeches/${speech_id}/attachments/${type}/${url}`,
             type: "delete"
         }).done((data) => {
             AppDispatcher.dispatch({
