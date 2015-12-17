@@ -25,6 +25,7 @@ const NotificationAction = require('../../../actions/NotificationActions');
 const Category = require('./Category');
 const Tooltip = require('./Tooltip');
 const ActivityEmailHelper = require('../../../helper/ActivityEmailHelper');
+const Video = require('../../Video');
 
 var speechStatus = new Enum({"Auditing": 0, "Approved": 1, "Confirmed": 2, "Finished": 3}, { ignoreCase: true });
 module.exports = React.createClass({
@@ -254,38 +255,47 @@ module.exports = React.createClass({
 
             if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED
                 || speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) {
-                let videoList = null;
-                let operateVideo = (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED || speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) && ActivityUserStore.currentIsAdmin();
-                if (speech.video_resource_url && speech.video_resource_name) {
-                    let videoUrls = speech.video_resource_url.trim().split('/');
-                    let videoNames = speech.video_resource_name.trim().split('/');
-                    let videos = [];
-                    for (let idx = 0; idx < Math.min(videoUrls.length, videoNames.length); idx++) {
-                        videos.push({
-                            url: videoUrls[idx],
-                            name: videoNames[idx]
-                        });
-                    }
-                    videoList = videos.map(file => {
-                        return <Flex.Layout center key={file.url}>
-                            <a href={`/file/files/${file.url}/fetch`} target="_blank">{file.name}</a>
-                            {operateVideo ? <MUI.IconButton iconClassName="icon-delete" onClick={() => this._deleteAttachment(ActivityConstants.ATTACHMENT_TYPE.VIDEO, file.url)} /> : undefined}
-                        </Flex.Layout>
-                    });
-                }
+                // let videoList = null;
+                // let operateVideo = (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED || speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) && ActivityUserStore.currentIsAdmin();
+                // if (speech.video_resource_url && speech.video_resource_name) {
+                //     let videoUrls = speech.video_resource_url.trim().split('/');
+                //     let videoNames = speech.video_resource_name.trim().split('/');
+                //     let videos = [];
+                //     for (let idx = 0; idx < Math.min(videoUrls.length, videoNames.length); idx++) {
+                //         videos.push({
+                //             url: videoUrls[idx],
+                //             name: videoNames[idx]
+                //         });
+                //     }
+                //     videoList = videos.map(file => {
+                //         return <Flex.Layout center key={file.url}>
+                //             <a href={`/file/files/${file.url}/fetch`} target="_blank">{file.name}</a>
+                //             {operateVideo ? <MUI.IconButton iconClassName="icon-delete" onClick={() => this._deleteAttachment(ActivityConstants.ATTACHMENT_TYPE.VIDEO, file.url)} /> : undefined}
+                //         </Flex.Layout>;
+                //     });
+                // }
+                // speechVideos = <Flex.Layout style={styles.detailItem}>
+                //     <Common.Display style={styles.label} type='body3'>Videos:</Common.Display>
+                //     <Flex.Layout horizontal justified style={{width: '100%'}}>
+                //         <Flex.Layout vertical>
+                //         {videoList ? videoList
+                //             : (speech.user_id != user.id ?
+                //                 <Common.Display style={{color: this.context.muiTheme.palette.disabledColor}}>No video uploaded.</Common.Display>
+                //                 : undefined)}
+                //         </Flex.Layout>
+                //         {operateVideo ?
+                //                 <FileUploader ref="fileUploader" showResult maxSize={300 * 1024 * 1024} buttonStyle={{float: 'right'}} floatingActionButton
+                //                               afterUpload={this._uploadAttachment(ActivityConstants.ATTACHMENT_TYPE.VIDEO)}/>
+                //              : undefined}
+                //     </Flex.Layout>
+                // </Flex.Layout>;
+                let videoUrl = "http://172.26.131.137:8081/video/activity_" + speech.id + ".mp4";
                 speechVideos = <Flex.Layout style={styles.detailItem}>
                     <Common.Display style={styles.label} type='body3'>Videos:</Common.Display>
                     <Flex.Layout horizontal justified style={{width: '100%'}}>
-                        <Flex.Layout vertical>
-                        {videoList ? videoList
-                            : (speech.user_id != user.id ?
-                                <Common.Display style={{color: this.context.muiTheme.palette.disabledColor}}>No video uploaded.</Common.Display>
-                                : undefined)}
+                        <Flex.Layout center>
+                           <Video url={videoUrl} type="video/mp4" width="640" height="360"/>
                         </Flex.Layout>
-                        {operateVideo ?
-                                <FileUploader ref="fileUploader" showResult maxSize={300 * 1024 * 1024} buttonStyle={{float: 'right'}} floatingActionButton
-                                              afterUpload={this._uploadAttachment(ActivityConstants.ATTACHMENT_TYPE.VIDEO)}/>
-                             : undefined}
                     </Flex.Layout>
                 </Flex.Layout>;
             }
