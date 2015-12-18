@@ -19,8 +19,11 @@ var Video =  React.createClass({
             v.parentNode.replaceChild(d, v);
           }, false);
     },
+    componentWillUnmount(){
+        React.findDOMNode(this.refs.video).src = "";
+    },
     render: function(){
-        return <video controls autoplay width={this.props.width} height={this.props.height}>
+        return <video ref='video' controls autoplay width={this.props.width} height={this.props.height}>
                     <source src={this.props.url} type={this.props.type}/>
                     Video Not Found
                </video>;
