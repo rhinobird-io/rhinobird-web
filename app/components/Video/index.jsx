@@ -25,7 +25,7 @@ var Video =  React.createClass({
             });
           }, false);
 
-          v.addEventListener('loadstart', (ev) => {
+          v.addEventListener('loadedmetadata', (ev) => {
             this.setState({
                 loaded: true
             });
