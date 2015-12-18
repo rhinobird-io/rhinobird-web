@@ -20,7 +20,9 @@ var Video =  React.createClass({
           }, false);
     },
     componentWillUnmount(){
-        React.findDOMNode(this.refs.video).src = "";
+        if(this.refs.video) {
+            React.findDOMNode(this.refs.video).src = "";
+        }
     },
     render: function(){
         return <video ref='video' controls autoplay width={this.props.width} height={this.props.height}>
