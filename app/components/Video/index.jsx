@@ -7,16 +7,28 @@ var Video =  React.createClass({
         width: React.PropTypes.number,
         height: React.PropTypes.number
     },
+    getInitialState(){
+        return {
+            hasVideo: true,
+            loaded: false
+        }
+    },
     componentDidMount: function() {
         let document = window.document;
         let v = document.querySelector('video'),
           sources = v.querySelectorAll('source'),
           lastsource = sources[sources.length-1];
 
-          lastsource.addEventListener('error', function(ev) {
-            let d = document.createElement('div');
-            d.innerHTML = v.innerHTML;
-            v.parentNode.replaceChild(d, v);
+          lastsource.addEventListener('error', (ev) => {
+            this.setState({
+                hasVideo: false
+            });
+          }, false);
+
+          v.addEventListener('loadstart', (ev) => {
+            this.setState({
+                loaded: true
+            });
           }, false);
     },
     componentWillUnmount(){
@@ -25,10 +37,15 @@ var Video =  React.createClass({
         }
     },
     render: function(){
-        return <video ref='video' controls autoplay width={this.props.width} height={this.props.height}>
-                    <source src={this.props.url} type={this.props.type}/>
-                    Video Not Found
-               </video>;
+        if(this.state.hasVideo) {
+            return <video style={{
+                    display: this.state.loaded ? 'block' : 'none'
+                }} ref='video' controls autoplay width={this.props.width} height={this.props.height}>
+                        <source src={this.props.url} type={this.props.type}/>
+                   </video>;
+        } else {
+            return <div>Video not found.</div>
+        }
     }
 });
 
