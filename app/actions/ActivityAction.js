@@ -84,7 +84,8 @@ export default {
                 description: activity.description,
                 expected_duration: activity.expected_duration,
                 category: activity.category,
-                comment: activity.comment
+                comment: activity.comment,
+                speaker_name: activity.speaker_name
             }).done(data => {
             AppDispatcher.dispatch({
                 type: Constants.ActionTypes.CREATE_ACTIVITY,
@@ -108,7 +109,8 @@ export default {
                 description: activity.description,
                 expected_duration: activity.expected_duration,
                 category: activity.category,
-                comment: activity.comment
+                comment: activity.comment,
+                speaker_name: activity.speaker_name
             }
         }).done(data => {
             AppDispatcher.dispatch({
@@ -243,19 +245,22 @@ export default {
     },
     finishSpeech(speech, audiences, commentedUsers, success, fail) {
         let participants = [];
-        participants.push({
-            user_id: speech.user_id,
-            role: ActivityConstants.ATTENDANCE_ROLE.SPEAKER,
-            commented: false});
-
-        audiences.map(id => {
-            let commented = commentedUsers.indexOf(id) > -1;
+        if (!speech.speaker_name) {
             participants.push({
-                user_id: id,
-                role: ActivityConstants.ATTENDANCE_ROLE.AUDIENCE,
-                commented: commented});
-        });
+                user_id: speech.user_id,
+                role: ActivityConstants.ATTENDANCE_ROLE.SPEAKER,
+                commented: false
+            });
 
+            audiences.map(id => {
+                let commented = commentedUsers.indexOf(id) > -1;
+                participants.push({
+                    user_id: id,
+                    role: ActivityConstants.ATTENDANCE_ROLE.AUDIENCE,
+                    commented: commented
+                });
+            });
+        }
         $.post(`/activity/speeches/${speech.id}/finish`,
             {
                 participants: participants
