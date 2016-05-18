@@ -1,3 +1,5 @@
+const Moment = require("moment");
+
 export default {
     construct_email(name, content) {
         return `<div style="max-width: 600px; margin: auto;">
@@ -13,7 +15,9 @@ export default {
         </div>`;
     },
 
-    construct_speech_detail_email(speechId, subject, description, when, duration) {
+    construct_speech_detail_email(speech) {
+        let speechTime = Moment(speech.time);
+        speechTime = speechTime.isValid() ? speechTime.format('YYYY/MM/DD HH:mm') : '--:--';
         return `<style>
             table tr td {
                 padding: 4px 8px;
@@ -33,26 +37,30 @@ export default {
               <tbody>
               <tr>
                 <td class="title">Subject</td>
-                <td>${subject}</td>
+                <td>${speech.title}</td>
               </tr>
               <tr>
                 <td class="title">Description</td>
-                <td>${description}</td>
+                <td>${speech.description}</td>
               </tr>
               <tr>
                 <td class="title">When</td>
-                <td>${when}</td>
+                <td>${speechTime}</td>
               </tr>
               <tr>
                 <td class="title">Duration</td>
-                <td>${duration} min</td>
+                <td>${speech.expected_duration} min</td>
               </tr>
               <div>
               </div>
               </tbody>
           </table>
-          <div style="margin: 32px auto;">Want more details? <a href='http://rhinobird.workslan/platform/activity/activities/${speechId}'>View</a> the details on RhinoBird</div>
-          <div style="margin: 32px auto;">Click join on <a href='http://rhinobird.workslan/platform/activity/activities/${speechId}'>details page</a> to receive the latest information!</div>
+          <div style="margin: 32px auto;">Want more details? <a href='http://rhinobird.workslan/platform/activity/activities/${speech.id}'>View</a> the details on RhinoBird</div>
+          {
+            speech.speaker_name ?
+             undefined :
+             <div style="margin: 32px auto;">Click join on <a href='http://rhinobird.workslan/platform/activity/activities/${speech.id}'>details page</a> to receive the latest information!</div>
+          }
           <p>Sent from RhinoBird platform.</p>
           <p>If you have any question or feedback, contact with us at works-college@ml.worksap.com</p>
           <hr>

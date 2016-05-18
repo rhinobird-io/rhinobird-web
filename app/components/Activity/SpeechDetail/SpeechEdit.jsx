@@ -49,7 +49,8 @@ module.exports = React.createClass({
                 description: "",
                 category: 'weekly',
                 duration: 15,
-                comment: undefined
+                comment: undefined,
+                speaker_name: undefined
             });
         }
 
@@ -79,7 +80,8 @@ module.exports = React.createClass({
                 description: speech.description,
                 category: speech.category,
                 duration: speech.expected_duration,
-                comment: comment
+                comment: comment,
+                speaker_name: speech.speaker_name
             });
         } else {
             this.setState({
@@ -142,6 +144,14 @@ module.exports = React.createClass({
                                     floatingLabelText="Description"
                                     style={{width: "100%"}} />
 
+                                {ActivityUserStore.currentIsAdmin() ?
+                                <MUI.TextField
+                                    ref="speaker_name"
+                                    hintText="Speaker name (only when you create activity for others)"
+                                    valueLink={this.linkState('speaker_name')}
+                                    floatingLabelText="Speaker name (optional)"
+                                    style={{width: "100%"}} /> : undefined}
+
                                 <Flex.Layout center style={{marginTop: 24}}>
                                     <MUI.RadioButtonGroup style={{display: 'inherit'}}
                                                           name="speechType"
@@ -173,7 +183,7 @@ module.exports = React.createClass({
                                     ref="comment"
                                     hintText="Comment (e.g. expected start time)"
                                     valueLink={this.linkState('comment')}
-                                    floatingLabelText="Comment (Optional)"
+                                    floatingLabelText="Comment (optional)"
                                     style={{width: "100%"}} />
 
                                 <Flex.Layout horizontal justified style={{marginTop: 20}}>
@@ -204,6 +214,7 @@ module.exports = React.createClass({
         let description = refs.description.getValue();
         let duration = refs.expected_duration.getValue();
         let comment = refs.comment.getValue();
+        let speaker_name = refs.speaker_name && refs.speaker_name.getValue();
 
         if (title.length === 0) {
             this.setState({titleError: errorMsg.titleRequired});
@@ -232,6 +243,7 @@ module.exports = React.createClass({
         speech.category = this.state.category;
         speech.expected_duration = duration;
         speech.comment = comment || '';
+        speech.speaker_name = speaker_name || '';
         if (this.state.mode === 'create') {
             ActivityAction.createActivity(speech,
                 (speech) => {

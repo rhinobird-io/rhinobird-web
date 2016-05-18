@@ -56,7 +56,11 @@ module.exports = React.createClass({
             if(disabled) {
                 nameStyle.color = disabledColor;
             }
-            rightContent = (<div><Member.Avatar scale={0.5} member={user}/> <Member.Name style={nameStyle} member={user}/></div>);
+            if (this.props.activity.speaker_name) {
+                rightContent = (<div style={nameStyle}>{this.props.activity.speaker_name}</div>);
+            } else {
+                rightContent = (<div><Member.Avatar scale={0.5} member={user}/> <Member.Name style={nameStyle} member={user}/></div>);
+            }
         }
 
         return <Flex.Layout style={this.mergeAndPrefix(style, this.props.style)}

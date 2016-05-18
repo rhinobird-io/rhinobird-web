@@ -146,7 +146,7 @@ module.exports = React.createClass({
             ];
 
             let likeButton = null;
-            if (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED &&  speech.user_id != user.id) {
+            if (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED && speech.user_id != user.id && !speech.speaker_name) {
               for (let index = 0; index < speech.attendances.length; index++ ){
                 if (speech.attendances[index].user_id === user.id) {
                     if (speech.attendances[index].liked) {
@@ -178,8 +178,12 @@ module.exports = React.createClass({
 
             speechSpeaker = <Flex.Layout style={styles.detailItem} center>
                 <Common.Display style={styles.label} type='body3'>Speaker:</Common.Display>
-                <Member.Avatar scale={0.8} member={speaker}/>
-                <Member.Name style={{marginLeft: 4}} member={speaker}/>
+                {speech.speaker_name ||
+                    <div style={{display: 'flex'}}>
+                        <Member.Avatar scale={0.8} member={speaker}/>
+                        <Member.Name style={{marginLeft: 4}} member={speaker}/>
+                    </div>
+                }
             </Flex.Layout>;
 
             speechCategory = <div style={styles.detailItem}>
@@ -255,40 +259,6 @@ module.exports = React.createClass({
 
             if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED
                 || speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) {
-                // let videoList = null;
-                // let operateVideo = (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED || speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) && ActivityUserStore.currentIsAdmin();
-                // if (speech.video_resource_url && speech.video_resource_name) {
-                //     let videoUrls = speech.video_resource_url.trim().split('/');
-                //     let videoNames = speech.video_resource_name.trim().split('/');
-                //     let videos = [];
-                //     for (let idx = 0; idx < Math.min(videoUrls.length, videoNames.length); idx++) {
-                //         videos.push({
-                //             url: videoUrls[idx],
-                //             name: videoNames[idx]
-                //         });
-                //     }
-                //     videoList = videos.map(file => {
-                //         return <Flex.Layout center key={file.url}>
-                //             <a href={`/file/files/${file.url}/fetch`} target="_blank">{file.name}</a>
-                //             {operateVideo ? <MUI.IconButton iconClassName="icon-delete" onClick={() => this._deleteAttachment(ActivityConstants.ATTACHMENT_TYPE.VIDEO, file.url)} /> : undefined}
-                //         </Flex.Layout>;
-                //     });
-                // }
-                // speechVideos = <Flex.Layout style={styles.detailItem}>
-                //     <Common.Display style={styles.label} type='body3'>Videos:</Common.Display>
-                //     <Flex.Layout horizontal justified style={{width: '100%'}}>
-                //         <Flex.Layout vertical>
-                //         {videoList ? videoList
-                //             : (speech.user_id != user.id ?
-                //                 <Common.Display style={{color: this.context.muiTheme.palette.disabledColor}}>No video uploaded.</Common.Display>
-                //                 : undefined)}
-                //         </Flex.Layout>
-                //         {operateVideo ?
-                //                 <FileUploader ref="fileUploader" showResult maxSize={300 * 1024 * 1024} buttonStyle={{float: 'right'}} floatingActionButton
-                //                               afterUpload={this._uploadAttachment(ActivityConstants.ATTACHMENT_TYPE.VIDEO)}/>
-                //              : undefined}
-                //     </Flex.Layout>
-                // </Flex.Layout>;
                 let videoUrl = "http://172.26.131.137:8081/video/activity_" + speech.id + ".mp4";
                 speechVideos = <Flex.Layout style={styles.detailItem}>
                     <Common.Display style={styles.label} type='body3'>Videos:</Common.Display>
@@ -300,8 +270,9 @@ module.exports = React.createClass({
                 </Flex.Layout>;
             }
 
-            if (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED
-                || speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED) {
+            if (!speech.speaker_name
+                && (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED
+                    || speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED)) {
                 let userIds = null;
                 let tips = null;
                 if (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) {
@@ -393,7 +364,7 @@ module.exports = React.createClass({
                             style={{width: "100%"}} />
                     </MUI.Dialog>);
                 } else if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED) {
-                    adminPrimaryBtn = <MUI.RaisedButton type="submit" label="Finish" style={{marginBottom: 12}} primary={true} onClick={this._showRecordParticipants}/>;
+                    adminPrimaryBtn = <MUI.RaisedButton type="submit" label="Finish" style={{marginBottom: 12}} primary={true} onClick={this._onFinishSpeech}/>;
                     adminSecondaryBtn = <MUI.RaisedButton type="submit" label="Close" style={{marginBottom: 12}} onClick={this._closeSpeech}/>;
                     let closeDialogActions = [
                         <MUI.FlatButton
@@ -413,6 +384,20 @@ module.exports = React.createClass({
                             floatingLabelText="Comment"
                             style={{width: "100%"}} />
                     </MUI.Dialog>);
+                    if (speech.speaker_name) {
+                        let finishDialogActions = [
+                            <MUI.FlatButton
+                                label="Cancel"
+                                secondary={true}
+                                onTouchTap={this._handleFinishDialogCancel}/>,
+                            <MUI.FlatButton
+                                label="Finish Activity"
+                                primary={true}
+                                onTouchTap={this._handleFinishDialogSubmit}/>
+                        ];
+                        dialogs.push(<MUI.Dialog actions={finishDialogActions} title="Finish Activity?" ref='finishDialog'>
+                        </MUI.Dialog>);
+                    }
                 }
             }
             speechActions = <Flex.Layout vertical style={{padding: 24}}>
@@ -560,6 +545,34 @@ module.exports = React.createClass({
             </PerfectScroll>
         </MUI.Paper>
     },
+    _onFinishSpeech() {
+        if (this.state.speech.speaker_name) {
+            this.refs.finishDialog.show();
+        } else {
+            this._showRecordParticipants();
+        }
+    },
+    _handleFinishDialogCancel() {
+        this.refs.finishDialog.dismiss();
+    },
+    _handleFinishDialogSubmit() {
+        ActivityAction.finishSpeech(this.state.speech, undefined, undefined, speech => {
+            NotificationAction.sendNotification(
+                [speech.user_id],
+                [],
+                `Marked your activity ${speech.title} as finished`,
+                `[RhinoBird] ${LoginStore.getUser().realname} marked your activity as finished`,
+                ActivityEmailHelper.construct_email(UserStore.getUser(speech.user_id).realname,
+                    `${LoginStore.getUser().realname} marked your activity <a href="${this.baseUrl}/platform/activity/activities/${speech.id}">${speech.title}</a> as finished`),
+                `/platform/activity/activities/${speech.id}`);
+
+            this.setState({
+                speech: speech,
+                showRecordParticipants: false
+            })
+        });
+        this.refs.finishDialog.dismiss();
+    },
     _showRecordParticipants() {
         this.setState({
             showRecordParticipants: !this.state.showRecordParticipants
@@ -675,14 +688,12 @@ module.exports = React.createClass({
             });
             NotificationAction.sendNotifications(notifications);
 
-            let speechTime = Moment(speech.time);
-            speechTime = speechTime.isValid() ? speechTime.format('YYYY/MM/DD HH:mm') : '--:--';
             NotificationAction.sendNotification(
                 UserStore.getUserIds(),
                 [],
                 `A new activity ${speech.title} is pending.`,
                 `[RhinoBird] Join activity ${speech.title} with us`,
-                ActivityEmailHelper.construct_speech_detail_email(speech.id, speech.title, speech.description, speechTime, speech.expected_duration),
+                ActivityEmailHelper.construct_speech_detail_email(speech),
                 `/platform/activity/activities/${speech.id}`);
 
             this.setState({
