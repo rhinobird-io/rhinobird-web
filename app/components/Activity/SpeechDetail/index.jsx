@@ -688,14 +688,6 @@ module.exports = React.createClass({
             });
             NotificationAction.sendNotifications(notifications);
 
-            //NotificationAction.sendNotification(
-            //    UserStore.getUserIds(),
-            //    [],
-            //    `A new activity ${speech.title} is pending.`,
-            //    `[RhinoBird] Join activity ${speech.title} with us`,
-            //    ActivityEmailHelper.construct_speech_detail_email(speech),
-            //    `/platform/activity/activities/${speech.id}`);
-
             this.setState({
                 speech: speech
             })
