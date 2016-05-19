@@ -56,7 +56,7 @@ export default {
               </tbody>
           </table>
           <div style="margin: 32px auto;">Want more details? <a href='http://rhinobird.workslan/platform/activity/activities/${speech.id}'>View</a> the details on RhinoBird</div>
-          {
+          ${
             speech.speaker_name ?
              undefined :
              <div style="margin: 32px auto;">Click join on <a href='http://rhinobird.workslan/platform/activity/activities/${speech.id}'>details page</a> to receive the latest information!</div>
