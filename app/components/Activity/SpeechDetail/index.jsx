@@ -296,20 +296,23 @@ module.exports = React.createClass({
                         }
                     }
                 }
-                speechAudiences = <Flex.Layout style={styles.detailItem}>
-                    <Common.Display style={styles.label} type='body3'>{tips}:</Common.Display>
-                    <Flex.Layout center wrap flex={1}>
-                        {userIds.map(id => {
-                            let u = UserStore.getUser(id);
-                            return <div style={{paddingRight: 12}} key={id}><Member.Avatar scale={0.8} member={u}/><Member.Name style={{marginLeft: 4}} member={u}/></div>;
-                        })}
-                    </Flex.Layout>
-                    {speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED ?
-                    <Flex.Layout center endJustified>
-                        {showJoin ? <MUI.FlatButton onClick={this._applyAsAudience} label='join' primary={true}/> : undefined}
-                        {showQuit ? <MUI.FlatButton onClick={this._withdrawAsAudience} label='quit' primary={true}/> : undefined}
-                    </Flex.Layout> : undefined}
-                </Flex.Layout>;
+            }
+            if (speech.status === ActivityConstants.SPEECH_STATUS.FINISHED
+                    || speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED)) {
+              speechAudiences = <Flex.Layout style={styles.detailItem}>
+                  <Common.Display style={styles.label} type='body3'>{tips}:</Common.Display>
+                  <Flex.Layout center wrap flex={1}>
+                      {userIds.map(id => {
+                          let u = UserStore.getUser(id);
+                          return <div style={{paddingRight: 12}} key={id}><Member.Avatar scale={0.8} member={u}/><Member.Name style={{marginLeft: 4}} member={u}/></div>;
+                      })}
+                  </Flex.Layout>
+                  {speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED ?
+                  <Flex.Layout center endJustified>
+                      {showJoin ? <MUI.FlatButton onClick={this._applyAsAudience} label='join' primary={true}/> : undefined}
+                      {showQuit ? <MUI.FlatButton onClick={this._withdrawAsAudience} label='quit' primary={true}/> : undefined}
+                  </Flex.Layout> : undefined}
+              </Flex.Layout>;
             }
 
             let primaryBtn = null;
