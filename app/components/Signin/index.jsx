@@ -55,6 +55,7 @@ var Login = React.createClass({
                     errorText={this.state.error? 'Email or password incorrect.' : undefined}/>
                 <div className="rightButton" style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
                     <Common.Link href='/platform/signup'>Sign up now!</Common.Link>
+                    <Common.Link href='http://mcenter.internal.worksap.com'>Login from Member Center</Common.Link>
                     <mui.RaisedButton label="Sign in" primary={true} onClick={this._login} type="submit"/>
                 </div>
             </form>
