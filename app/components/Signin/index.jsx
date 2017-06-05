@@ -50,11 +50,11 @@ var Login = React.createClass({
         return <mui.Paper zDepth={1} className="loginForm" rounded={false}>
             <form className="container" onSubmit={this._login}>
                 <h2 style={{marginBottom:24}}>Sign in</h2>
-                <mui.TextField ref="email" hintText='Email' valueLink={this.linkState('email')} autofocus/>
+                <mui.TextField ref="email" hintText='registered user_name in Genius Center' valueLink={this.linkState('email')} autofocus/>
                 <mui.TextField hintText='Password' type="password" valueLink={this.linkState('password')}
-                    errorText={this.state.error? 'Email or password incorrect.' : undefined}/>
+                    errorText={this.state.error? 'User_name or password incorrect.' : undefined}/>
                 <div className="rightButton" style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                    <Common.Link href='/platform/signup'>Sign up now!</Common.Link>
+                    <span>You are signing in <a href="http://genius.internal.worksap.com">GeniusCenter</a></span>
                     <mui.RaisedButton label="Sign in" primary={true} onClick={this._login} type="submit"/>
                 </div>
             </form>
