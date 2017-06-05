@@ -85,17 +85,6 @@ module.exports = React.createClass({
                         </div>
                 </mui.Paper>
 
-                <mui.Paper zDepth={1} style={{width:600, margin:24, padding:24}}>
-                        <h2 style={{marginBottom:24}}>Change password</h2>
-                        <mui.TextField floatingLabelText='Old password' type='password' valueLink={this.linkState('oldPwd')}
-                                       errorText={this.state.passwordIncorrect} style={{width:'100%'}}/>
-                        <mui.TextField floatingLabelText='New password' type='password' valueLink={this.linkState('newPwd')} style={{width:'100%'}}/>
-                        <mui.TextField style={{width:'100%'}} floatingLabelText='Confirm new password' type='password' valueLink={this.linkState('confirmPwd')}
-                            errorText={this.state.passwordError}/>
-                        <div className="rightButton">
-                            <mui.RaisedButton primary={true} label='Reset' onClick={this._changePassword}></mui.RaisedButton>
-                        </div>
-                </mui.Paper>
         </Flex.Layout>;
     }
 });
