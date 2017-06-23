@@ -27,7 +27,7 @@ var Login = React.createClass({
     },
     componentWillMount(){
         var query = this.context.router.getCurrentQuery();
-        if (query.ticket) {
+        if (query && query.ticket) {
             $.post('/platform/api/genius_coming', {ticket: query.ticket, sign: query.sign}).then((data) => {
                 LoginAction.updateLogin(data);
                 this.context.router.transitionTo(this.context.router.getCurrentQuery().target || "/");
