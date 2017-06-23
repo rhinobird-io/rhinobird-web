@@ -58,17 +58,21 @@ var Login = React.createClass({
     },
     render() {
         return <mui.Paper zDepth={1} className="loginForm" rounded={false}>
-            <Common.Link style={{border: 0, marginBottom: 0}}
-                         href='http://genius.internal.worksap.com/login?app_id=rhinobird'><h3 align="center">Quick Login
-                @GeniusCenter</h3></Common.Link>
             <form className="container" onSubmit={this._login}>
+                <h2 style={{marginBottom: 24}}>Sign in</h2>
                 <mui.TextField ref="email" hintText='Email' valueLink={this.linkState('email')} autofocus/>
                 <mui.TextField hintText='Password' type="password" valueLink={this.linkState('password')}
                                errorText={this.state.error ? 'Email or password incorrect.' : undefined}/>
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <div className="rightButton"
+                     style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <mui.RaisedButton label="Quick Login!" onClick={this._quick_login} primary={true} type="submit"/>
                     <mui.RaisedButton label="Sign in" onClick={this._login} type="submit"/>
-                    <mui.RaisedButton label="Quick Login" onClick={this._quick_login} primary={true} type="submit"/>
                 </div>
+                <p>
+                    <strong>Quick Login:</strong> Login ONCE for all applications from Genius Center.<br/>
+                    <br/>
+                    <Common.Link href="http://genius.internal.worksap.com/users/new">Register and try it
+                        now!</Common.Link></p>
             </form>
         </mui.Paper>;
     }
