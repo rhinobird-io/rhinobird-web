@@ -11,7 +11,8 @@ const UploadButton = React.createClass({
         maxSize: React.PropTypes.number.isRequired,
         minSize: React.PropTypes.number,
         beforeUpload: React.PropTypes.func.isRequired,
-        onUpload: React.PropTypes.func.isRequired
+        onUpload: React.PropTypes.func.isRequired,
+        customSaveFile: React.PropTypes.func
     },
 
     getDefaultProps() {
@@ -77,19 +78,26 @@ const UploadButton = React.createClass({
                     }
                     let formData = new FormData();
                     formData.append('file', file);
-                    $.post('/file/files', {name: file.name}).done((newFile)=> {
-                        $.ajax({
-                            url: `/file/files/${newFile.id}`,
-                            type: 'PUT',
-                            processData: false,
-                            contentType: false,
+                    if (_this.props.customSaveFile) {
+                        _this.props.customSaveFile({
+                            name: file.name,
                             data: formData
-                        }).done((uploadedFile) => {
-                            uploadedFile.url = `/file/files/${uploadedFile.id}/fetch`;
-                            _this.props.onUpload({result: Constants.UploadResult.SUCCESS, file: uploadedFile});
                         });
+                    } else {
+                        $.post('/file/files', {name: file.name}).done((newFile)=> {
+                            $.ajax({
+                                url: `/file/files/${newFile.id}`,
+                                type: 'PUT',
+                                processData: false,
+                                contentType: false,
+                                data: formData
+                            }).done((uploadedFile) => {
+                                uploadedFile.url = `/file/files/${uploadedFile.id}/fetch`;
+                                _this.props.onUpload({result: Constants.UploadResult.SUCCESS, file: uploadedFile});
+                            });
 
-                    });
+                        });
+                    }
                 }
             }
         });

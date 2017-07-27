@@ -333,6 +333,45 @@ export default {
                 fail(e.status);
         });
     },
+    uploadVideo(data, success, fail) {
+        $.ajax({
+            url: `/activity/speeches/${data.speech_id}/videos/upload`,
+            type: 'post',
+            processData: false,
+            contentType: false,
+            data: data.data
+        }).done((data) => {
+                AppDispatcher.dispatch({
+                  type: Constants.ActionTypes.UPDATE_ACTIVITY,
+                  data: data
+                });
+                if (success && typeof success === "function") {
+                    success(data);
+                }
+            }).fail(e => {
+              console.error(e);
+              if (fail && typeof fail === 'function')
+                  fail(e.status);
+          });
+    },
+    deleteVideo(speech_id, success, fail) {
+      $.ajax({
+          url: `/activity/speeches/${speech_id}/videos/delete`,
+          type: 'delete'
+      }).done((data) => {
+              AppDispatcher.dispatch({
+                type: Constants.ActionTypes.UPDATE_ACTIVITY,
+                data: data
+              });
+              if (success && typeof success === "function") {
+                  success(data);
+              }
+          }).fail(e => {
+            console.error(e);
+            if (fail && typeof fail === 'function')
+                fail(e.status);
+        });
+    },
     likeSpeech(speech_id, user_id, success, fail) {
         $.post(`/activity/speeches/${speech_id}/like`)
             .done((data) => {

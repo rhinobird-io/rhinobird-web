@@ -259,12 +259,19 @@ module.exports = React.createClass({
 
             if (speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED
                 || speech.status === ActivityConstants.SPEECH_STATUS.FINISHED) {
-                let videoUrl = "http://172.26.131.137:8081/video/activity_" + speech.id + ".mp4";
+                let canOperateVideo = speech.status === ActivityConstants.SPEECH_STATUS.CONFIRMED && ActivityUserStore.currentIsAdmin();
+                let videoUrl = `/activity/speeches/${speech.id}/video`;
                 speechVideos = <Flex.Layout style={styles.detailItem}>
                     <Common.Display style={styles.label} type='body3'>Videos:</Common.Display>
                     <Flex.Layout horizontal justified style={{width: '100%'}}>
                         <Flex.Layout center>
-                           <Video url={videoUrl} type="video/mp4" width="640" height="360"/>
+                            <Video url={videoUrl} type="video/mp4" width="640" height="360"/>
+                            {canOperateVideo ? <MUI.IconButton iconClassName="icon-delete" onClick={() => this._deleteVideo()} /> : undefined}
+                            {canOperateVideo ?
+                                <FileUploader ref="fileUploader" showResult maxSize={2 * 1024 * 1024 * 1024} buttonStyle={{float: 'right'}} floatingActionButton
+                                              customSaveFile={(data) => this._uploadVideo(data)}
+                                              afterUpload={this._uploadAttachment(ActivityConstants.ATTACHMENT_TYPE.VIDEO)}/>
+                                : undefined}
                         </Flex.Layout>
                     </Flex.Layout>
                 </Flex.Layout>;
@@ -809,6 +816,24 @@ module.exports = React.createClass({
             this.setState({
                 speech: speech
             })
+        });
+    },
+    _deleteVideo() {
+        ActivityAction.deleteVideo(this.state.speech.id, speech => {
+            this.setState({
+                speech: speech
+            })
+        });
+    },
+    _uploadVideo(data) {
+        let _this = this;
+        ActivityAction.uploadVideo({
+          speech_id: _this.state.speech.id,
+          data: data.data
+        }, speech => {
+          _this.setState({
+            speech: speech
+          });
         });
     },
     _onChange(){

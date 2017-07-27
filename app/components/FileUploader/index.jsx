@@ -21,7 +21,8 @@ const FileUploader = React.createClass({
         valueLink: React.PropTypes.shape({
             value: React.PropTypes.array,
             requestChange: React.PropTypes.func
-        })
+        }),
+        customSaveFile: React.PropTypes.func
     },
 
     getDefaultProps() {
