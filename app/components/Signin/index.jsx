@@ -1,5 +1,6 @@
 const React = require("react/addons");
 const LoginAction = require('../../actions/LoginAction');
+const GENIUS_APP_ID = 'rhinobird';
 
 var Login = React.createClass({
     mixins: [React.addons.LinkedStateMixin],
@@ -14,7 +15,7 @@ var Login = React.createClass({
                 this.context.router.transitionTo(this.context.router.getCurrentQuery().target || "/");
             });
         } else {
-            window.location = 'http://genius.internal.worksap.com/login?app_id=test_rhino';
+            window.location = 'http://genius.internal.worksap.com/login?app_id=' + GENIUS_APP_ID;
         }
     },
     render() {
