@@ -15,7 +15,7 @@ var Login = React.createClass({
                 this.context.router.transitionTo(this.context.router.getCurrentQuery().target || "/");
             });
         } else {
-            window.location = 'http://genius.internal.worksap.com/login?app_id=' + GENIUS_APP_ID;
+            window.location = 'http://genius.internal.worksap.com/login' + window.location.search + "&app_id=" + GENIUS_APP_ID;
         }
     },
     render() {
