@@ -2,7 +2,7 @@
 
 const React = require("react");
 const MUI = require("material-ui"), TextField = MUI.TextField;
-const CaretPosition = require("textarea-caret-position");
+const CaretPosition = require("textarea-caret");
 const EmojiPng = require.context("../../../node_modules/emojify.js/src/images/emoji", false, /png$/);
 
 const Avatar = require("../Member").Avatar;
