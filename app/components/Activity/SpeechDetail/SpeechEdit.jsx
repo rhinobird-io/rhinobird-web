@@ -153,30 +153,20 @@ module.exports = React.createClass({
                                     style={{width: "100%"}} /> : undefined}
 
                                 <Flex.Layout center style={{marginTop: 24}}>
-                                    <MUI.RadioButtonGroup style={{display: 'inherit'}}
+                                    <MUI.RadioButtonGroup style={{display: 'inherit', width:"100%"}}
                                                           name="speechType"
                                                           defaultSelected={"weekly"}
                                                           valueSelected={this.state.category === 'monthly' ? 'monthly' : 'weekly'}
                                                           onChange={this._onChangeCategory}>
                                         <MUI.RadioButton
                                             value="weekly"
-                                            label="Lightning talk"
+                                            label="Lightning talk(30min)"
                                             style={{marginBottom:16}}/>
                                         <MUI.RadioButton
                                             value="monthly"
-                                            label="Monthly study session"
+                                            label="Monthly study session(60min)"
                                             style={{marginBottom:16}}/>
                                     </MUI.RadioButtonGroup>
-                                </Flex.Layout>
-
-                                <Flex.Layout center >
-                                    <MUI.TextField
-                                        ref="expected_duration"
-                                        hintText="Estimated duration (min)"
-                                        valueLink={this.linkState('duration')}
-                                        errorText={this.state.durationError}
-                                        floatingLabelText="Estimated duration (min)"
-                                        style={{width: "100%"}} />
                                 </Flex.Layout>
 
                                 <MUI.TextField
@@ -212,7 +202,6 @@ module.exports = React.createClass({
 
         let title = refs.title.getValue();
         let description = refs.description.getValue();
-        let duration = refs.expected_duration.getValue();
         let comment = refs.comment.getValue();
         let speaker_name = refs.speaker_name && refs.speaker_name.getValue();
 
@@ -230,18 +219,16 @@ module.exports = React.createClass({
             this.setState({descriptionError: ""});
         }
 
-        if (duration.length === 0) {
-            this.setState({durationError: errorMsg.durationRequired});
-            return;
-        } else {
-            this.setState({durationError: ""});
-        }
-
         let speech = this.state.speech;
         speech.title = title;
         speech.description = description;
         speech.category = this.state.category;
-        speech.expected_duration = duration;
+        if(this.state.category === 'weekly'){
+            speech.expected_duration = 30;
+        }
+        else{
+            speech.expected_duration = 60;
+        }
         speech.comment = comment || '';
         speech.speaker_name = speaker_name || '';
         if (this.state.mode === 'create') {
