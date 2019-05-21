@@ -29,7 +29,8 @@ module.exports = React.createClass({
     getInitialState() {
         return {
             mode: 'loading',
-            category: 'weekly'
+            category: 'weekly',
+            speechLanguage: 'Chinese'
         }
     },
     componentDidMount() {
@@ -73,6 +74,14 @@ module.exports = React.createClass({
                     }
                 }
             }
+            var speechLanguage = 'Chinese'
+            if (comment && comment.length > 0){
+                var regex = /The speech language is 【(English|Chinese|Japanese)】/;
+                var found = paragraph.match(regex);
+                if (found){
+                    speechLanguage = found[1];
+                }
+            }
             this.setState({
                 mode: 'edit',
                 speech: speech,
@@ -81,7 +90,8 @@ module.exports = React.createClass({
                 category: speech.category,
                 duration: speech.expected_duration,
                 comment: comment,
-                speaker_name: speech.speaker_name
+                speaker_name: speech.speaker_name,
+                speechLanguage: speechLanguage
             });
         } else {
             this.setState({
@@ -169,6 +179,27 @@ module.exports = React.createClass({
                                     </MUI.RadioButtonGroup>
                                 </Flex.Layout>
 
+                                <Flex.Layout center style={{marginTop: 24}}>
+                                    <MUI.RadioButtonGroup style={{display: 'inherit', width:"100%"}}
+                                                          name="speechLanguage"
+                                                          defaultSelected={"English"}
+                                                          valueSelected={this.state.speechLanguage}
+                                                          onChange={this._onChangeSpeechLanguage}>
+                                        <MUI.RadioButton
+                                            value="English"
+                                            label="In English"
+                                            style={{marginBottom:10}}/>
+                                        <MUI.RadioButton
+                                            value="Japanese"
+                                            label="In Japanese"
+                                            style={{marginBottom:10}}/>
+                                        <MUI.RadioButton
+                                            value="Chinese"
+                                            label="In Chinese"
+                                            style={{marginBottom:10}}/>
+                                    </MUI.RadioButtonGroup>
+                                </Flex.Layout>
+
                                 <MUI.TextField
                                     ref="comment"
                                     hintText="Comment (e.g. expected start time)"
@@ -191,6 +222,12 @@ module.exports = React.createClass({
     _onChangeCategory: function(event, selected) {
         this.setState({
             category: selected
+            });
+    },
+
+    _onChangeSpeechLanguage: function(event, selected) {
+        this.setState({
+            speechLanguage: selected
             });
     },
 
@@ -230,6 +267,7 @@ module.exports = React.createClass({
             speech.expected_duration = 60;
         }
         speech.comment = comment || '';
+        speech.comment = 'The speech language is 【' + this.state.speechLanguage + '】' + speech.comment;
         speech.speaker_name = speaker_name || '';
         if (this.state.mode === 'create') {
             ActivityAction.createActivity(speech,
