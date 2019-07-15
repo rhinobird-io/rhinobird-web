@@ -167,6 +167,9 @@ module.exports = React.createClass({
                                     style={{width: "100%"}} /> : undefined}
 
                                 <Flex.Layout center style={{marginTop: 24}}>
+                                    <Common.Display style={styles.label} type='body3'>Speech Type:</Common.Display>
+                                </Flex.Layout>
+                                <Flex.Layout center style={{marginTop: 24}}>
                                     <MUI.RadioButtonGroup style={{display: 'inherit', width:"100%"}}
                                                           name="speechType"
                                                           defaultSelected={"weekly"}
@@ -184,7 +187,7 @@ module.exports = React.createClass({
                                 </Flex.Layout>
 
                                 <Flex.Layout center style={{marginTop: 24}}>
-                                    <Common.Display style={styles.label} type='body3'>SpeechLanguage:</Common.Display>
+                                    <Common.Display style={styles.label} type='body3'>Speech Language:</Common.Display>
                                 </Flex.Layout>
                                 <Flex.Layout center style={{marginTop: 24}}>
                                     <MUI.RadioButtonGroup style={{display: 'inherit', width:"100%"}}
@@ -194,15 +197,15 @@ module.exports = React.createClass({
                                                           onChange={this._onChangeSpeechLanguage}>
                                         <MUI.RadioButton
                                             value="English"
-                                            label="In English"
+                                            label="English"
                                             style={{marginBottom:10}}/>
                                         <MUI.RadioButton
                                             value="Japanese"
-                                            label="In Japanese"
+                                            label="Japanese"
                                             style={{marginBottom:10}}/>
                                         <MUI.RadioButton
                                             value="Chinese"
-                                            label="In Chinese"
+                                            label="Chinese"
                                             style={{marginBottom:10}}/>
                                     </MUI.RadioButtonGroup>
                                 </Flex.Layout>
