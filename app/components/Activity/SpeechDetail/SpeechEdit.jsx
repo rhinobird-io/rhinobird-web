@@ -106,6 +106,10 @@ module.exports = React.createClass({
                 padding: 0,
                 margin: 20
             },
+            label: {
+                width: 150,
+                flexShrink: 0
+            },
             category: {
                 marginLeft: "12%"
             },
@@ -179,6 +183,9 @@ module.exports = React.createClass({
                                     </MUI.RadioButtonGroup>
                                 </Flex.Layout>
 
+                                <Flex.Layout center style={{marginTop: 24}}>
+                                    <Common.Display style={styles.label} type='body3'>SpeechLanguage:</Common.Display>
+                                    </Flex.Layout>
                                 <Flex.Layout center style={{marginTop: 24}}>
                                     <MUI.RadioButtonGroup style={{display: 'inherit', width:"100%"}}
                                                           name="speechLanguage"
