@@ -185,7 +185,7 @@ module.exports = React.createClass({
 
                                 <Flex.Layout center style={{marginTop: 24}}>
                                     <Common.Display style={styles.label} type='body3'>SpeechLanguage:</Common.Display>
-                                    </Flex.Layout>
+                                </Flex.Layout>
                                 <Flex.Layout center style={{marginTop: 24}}>
                                     <MUI.RadioButtonGroup style={{display: 'inherit', width:"100%"}}
                                                           name="speechLanguage"
