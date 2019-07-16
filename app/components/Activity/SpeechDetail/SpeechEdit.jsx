@@ -167,7 +167,7 @@ module.exports = React.createClass({
                                     style={{width: "100%"}} /> : undefined}
 
                                 <Flex.Layout center style={{marginTop: 24}}>
-                                    <Common.Display style={styles.label} type='body3'>Speech Type:</Common.Display>
+                                    <Common.Display style={styles.label} type='body3'>Speech Type</Common.Display>
                                 </Flex.Layout>
                                 <Flex.Layout center style={{marginTop: 24}}>
                                     <MUI.RadioButtonGroup style={{display: 'inherit', width:"100%"}}
@@ -187,7 +187,7 @@ module.exports = React.createClass({
                                 </Flex.Layout>
 
                                 <Flex.Layout center style={{marginTop: 24}}>
-                                    <Common.Display style={styles.label} type='body3'>Speech Language:</Common.Display>
+                                    <Common.Display style={styles.label} type='body3'>Speech Language</Common.Display>
                                 </Flex.Layout>
                                 <Flex.Layout center style={{marginTop: 24}}>
                                     <MUI.RadioButtonGroup style={{display: 'inherit', width:"100%"}}
