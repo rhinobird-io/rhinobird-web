@@ -52,7 +52,7 @@
     "json-loader": "^0.5.1",
     "less": "^2.1.2",
     "less-loader": "^2.0.0",
-    "lodash": "^3.7.0",
+    "lodash": "^4.17.19",
     "markdown-it": "^4.2.0",
     "markdown-it-emoji": "markdown-it/markdown-it-emoji",
     "markdown-it-imsize": "^2.0.0",
